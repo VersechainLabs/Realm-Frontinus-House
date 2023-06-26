@@ -19,7 +19,7 @@ yarn build
 ## Usage
 
 ```ts
-import { getVotingPower } from '@prophouse/communities';
+import { getVotingPower } from 'prop-house-communities';
 
 const votes = await getVotingPower(address, communityAddress, provider, blockTag);
 ```

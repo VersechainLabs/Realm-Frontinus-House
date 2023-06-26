@@ -11,7 +11,7 @@ RUN yarn
 
 RUN yarn build
 
-WORKDIR /app/packages/@prophouse/communities
+WORKDIR /app/packages/prop-house-communities
 
 RUN yarn
 

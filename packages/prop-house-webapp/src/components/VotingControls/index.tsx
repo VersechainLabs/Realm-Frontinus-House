@@ -9,8 +9,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { countVotesAllottedToProp } from '../../utils/countVotesAllottedToProp';
 import { countVotesRemainingForTimedRound } from '../../utils/countVotesRemainingForTimedRound';
 import { useTranslation } from 'react-i18next';
+import { isInfAuction } from '../../utils/auctionType';
+import { countVotesRemainingForInfRound } from '../../utils/countVotesRemainingForInfRound';
 
-const TimedRoundVotingControls: React.FC<{
+const VotingControls: React.FC<{
   proposal: StoredProposalWithVotes;
   showVoteAllotmentModal?: boolean;
 }> = props => {
@@ -18,6 +20,7 @@ const TimedRoundVotingControls: React.FC<{
 
   const voteAllotments = useAppSelector(state => state.voting.voteAllotments);
   const votingPower = useAppSelector(state => state.voting.votingPower);
+  const round = useAppSelector(state => state.propHouse.activeRound);
   const votesByUserInActiveRound = useAppSelector(state => state.voting.votesByUserInActiveRound);
   const modalActive = useAppSelector(state => state.propHouse.modalActive);
 
@@ -31,14 +34,16 @@ const TimedRoundVotingControls: React.FC<{
   const [displayWarningTooltip, setDisplayWarningTooltip] = useState(false);
   const [attemptedInputVotes, setAttemptedInputVotes] = useState(0);
 
-  const votesRemaining = countVotesRemainingForTimedRound(
-    votingPower,
-    votesByUserInActiveRound,
-    voteAllotments,
-  );
+  const votesRemaining =
+    round && isInfAuction(round)
+      ? countVotesRemainingForInfRound(
+          proposal.id,
+          votingPower,
+          votesByUserInActiveRound,
+          voteAllotments,
+        )
+      : countVotesRemainingForTimedRound(votingPower, votesByUserInActiveRound, voteAllotments);
   const canAllotVotes = votesRemaining > 0;
-  const upVotesDisabled = votesRemaining === 0;
-  const downVotesDisabled = allottedVotesForProp === 0;
 
   const isAllotting = () => (allottedVotesForProp && allottedVotesForProp > 0) || inputIsInFocus;
 
@@ -54,12 +59,10 @@ const TimedRoundVotingControls: React.FC<{
     setVoteCountDisplayed(prev => (direction === Direction.Up ? prev + 1 : prev - 1));
     dispatch(
       allotVotes({
-        voteAllotment: {
-          proposalId: proposal.id,
-          proposalTitle: proposal.title,
-          direction: direction,
-          votes: 1,
-        },
+        proposalId: proposal.id,
+        proposalTitle: proposal.title,
+        direction: direction,
+        weight: 1,
       }),
     );
   };
@@ -85,24 +88,20 @@ const TimedRoundVotingControls: React.FC<{
     // reset prev allotment (reduce to 0)
     dispatch(
       allotVotes({
-        voteAllotment: {
-          proposalTitle: proposal.title,
-          proposalId: proposal.id,
-          direction: Direction.Down,
-          votes: voteCountDisplayed,
-        },
+        proposalTitle: proposal.title,
+        proposalId: proposal.id,
+        direction: Direction.Down,
+        weight: voteCountDisplayed,
       }),
     );
 
     // handle allottment
     dispatch(
       allotVotes({
-        voteAllotment: {
-          proposalTitle: proposal.title,
-          proposalId: proposal.id,
-          direction: Direction.Up,
-          votes: inputVotes,
-        },
+        proposalTitle: proposal.title,
+        proposalId: proposal.id,
+        direction: Direction.Up,
+        weight: inputVotes,
       }),
     );
 
@@ -130,12 +129,10 @@ const TimedRoundVotingControls: React.FC<{
 
       dispatch(
         allotVotes({
-          voteAllotment: {
-            proposalId: proposal.id,
-            proposalTitle: proposal.title,
-            direction: direction,
-            votes: 1,
-          },
+          proposalId: proposal.id,
+          proposalTitle: proposal.title,
+          direction: direction,
+          weight: 1,
         }),
       );
     },
@@ -182,14 +179,14 @@ const TimedRoundVotingControls: React.FC<{
             bgColor={isAllotting() ? ButtonColor.PurpleLight : ButtonColor.Gray}
             classNames={classes.voteBtn}
             onClick={e => handleClickVote(e, Direction.Down)}
-            disabled={downVotesDisabled}
+            disabled={allottedVotesForProp === 0}
           />
           <Button
             text="↑"
             bgColor={isAllotting() ? ButtonColor.PurpleLight : ButtonColor.Gray}
             classNames={classes.voteBtn}
             onClick={e => handleClickVote(e, Direction.Up)}
-            disabled={upVotesDisabled}
+            disabled={!canAllotVotes}
           />
         </div>
       </Col>
@@ -197,4 +194,4 @@ const TimedRoundVotingControls: React.FC<{
   );
 };
 
-export default TimedRoundVotingControls;
+export default VotingControls;

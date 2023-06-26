@@ -1,7 +1,7 @@
 import classes from './ProposalModalHeader.module.css';
 import EthAddress from '../EthAddress';
 import { ImArrowLeft2, ImArrowRight2 } from 'react-icons/im';
-import { StoredProposalWithVotes } from '@nouns/prop-house-wrapper/dist/builders';
+import { Direction, StoredProposalWithVotes } from '@nouns/prop-house-wrapper/dist/builders';
 import { useCallback, useEffect, useState } from 'react';
 import shareIcon from '../../assets/icons/share-icon.svg';
 import Tooltip from '../Tooltip';
@@ -77,10 +77,10 @@ const ProposalModalHeader: React.FC<ProposalModalHeaderProps> = props => {
   const handleKeyPress = useCallback(
     event => {
       if (event.key === 'ArrowLeft' && !isFirstProp && !showVoteAllotmentModal) {
-        handleDirectionalArrowClick(-1);
+        handleDirectionalArrowClick(Direction.Down);
       }
       if (event.key === 'ArrowRight' && !isLastProp && !showVoteAllotmentModal) {
-        handleDirectionalArrowClick(1);
+        handleDirectionalArrowClick(Direction.Up);
       }
     },
     [handleDirectionalArrowClick, isFirstProp, isLastProp, showVoteAllotmentModal],
@@ -125,13 +125,13 @@ const ProposalModalHeader: React.FC<ProposalModalHeaderProps> = props => {
         <div className={classes.propNavigationButtons}>
           <button
             disabled={isFirstProp || editProposalMode}
-            onClick={() => handleDirectionalArrowClick(-1)}
+            onClick={() => handleDirectionalArrowClick(Direction.Down)}
           >
             <ImArrowLeft2 size={'1.5rem'} />
           </button>
 
           <button
-            onClick={() => handleDirectionalArrowClick(1)}
+            onClick={() => handleDirectionalArrowClick(Direction.Up)}
             disabled={isLastProp || editProposalMode}
           >
             <ImArrowRight2 size={'1.5rem'} />

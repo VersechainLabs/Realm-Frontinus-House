@@ -67,7 +67,7 @@ p {
   --brand-green-hint: rgba(80, 186, 154, 0.1);
 
   /* Black */
-  --brand-black: #14161b;
+  --brand-black: #FFFFFF;
   --brand-black-transparent: rgba(20, 22, 27, 0.6);
   --brand-black-semi-transparent: rgba(20, 22, 27, 0.25);
 
@@ -84,9 +84,9 @@ p {
   --brand-gray-hint: rgba(102, 102, 102, 0.1);
 
   /* Utils */
-  --bg-light: #fff;
+  --bg-light: #1A1A1B;
   --bg-med: #fcfcfc;
-  --bg-dark: #f5f5f5;
+  --bg-dark: #1A1A1B;
 
   --border-light: rgba(0, 0, 0, 0.04);
   --border-med: rgba(0, 0, 0, 0.1);

@@ -146,8 +146,7 @@ export class InfiniteAuction extends Signable {
     public readonly communityId: number,
     public readonly balanceBlockTag: number,
     public readonly description: string,
-    public readonly quorumFor: number,
-    public readonly quorumAgainst: number,
+    public readonly quorum: number,
     public readonly votingPeriod: number,
   ) {
     super();
@@ -163,8 +162,7 @@ export class InfiniteAuction extends Signable {
       communityId: this.communityId,
       balanceBlockTag: this.balanceBlockTag,
       description: this.description,
-      quorumFor: this.quorumFor,
-      quorumAgainst: this.quorumAgainst,
+      quorum: this.quorum,
       votingPeriod: this.votingPeriod,
     };
   }
@@ -264,8 +262,7 @@ export interface StoredProposal extends Proposal {
   id: number;
   address: string;
   createdDate: Date;
-  voteCountFor: number;
-  voteCountAgainst: number;
+  voteCount: number;
   lastUpdatedDate: Date;
   deletedAt: Date;
   reqAmount: number | null;
@@ -289,7 +286,7 @@ export class DeleteProposal extends Signable {
 
 export enum Direction {
   Up = 1,
-  Down = 2,
+  Down = -1,
   Abstain = 0,
 }
 
@@ -373,43 +370,6 @@ export class Community extends Signable {
     };
   }
 }
-
-export class Reply extends Signable {
-  constructor(
-    public readonly communityAddress: string,
-    public readonly blockTag: number,
-    public readonly proposalId: number,
-    public readonly content: string,
-  ) {
-    super();
-  }
-
-  toPayload() {
-    return {
-      communityAddress: this.communityAddress,
-      blockTag: this.blockTag,
-      proposalId: this.proposalId,
-      content: this.content,
-    };
-  }
-}
-
-export class StoredReply {
-  constructor(
-    public readonly id: number,
-    public readonly createdAt: Date,
-    public readonly proposalId: number,
-    public readonly content: string,
-    public readonly address: string,
-  ) {
-    this.id = id;
-    this.createdAt = new Date(this.createdAt);
-    this.proposalId = proposalId;
-    this.content = content;
-    this.address = address;
-  }
-}
-
 export interface CommunityWithAuctions extends Community {
   auctions: StoredTimedAuction[];
 }

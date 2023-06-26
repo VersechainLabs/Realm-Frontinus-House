@@ -13,7 +13,7 @@
 }
 .date {
   margin: 0;
-  color: var(--brand-pink) !important;
+  color: #D0A059 !important;
   font-weight: bold;
 }
 .titleRow {
@@ -24,6 +24,7 @@
 }
 .titleRow .title {
   font-size: xx-large;
+  color:#F5EEE6;
   font-weight: 700;
 }
 .titleRow .contractAddressPill {
@@ -110,6 +111,8 @@
 }
 .backToAuction .commTitle {
   margin-left: 5px;
+  color: #F5EEE6;
+
 }
 
 @media (max-width: 576px) {
@@ -125,8 +128,8 @@
 }
 
 .stickyContainer {
-  background: white;
-  top: 0;
+  /*background: white;*/
+  /*top: 0;*/
   position: sticky !important;
   z-index: 1;
   padding-top: 12px;

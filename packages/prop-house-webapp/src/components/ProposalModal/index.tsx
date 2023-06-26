@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useDispatch } from 'react-redux';
 import {
+  Direction,
   SignatureState,
   StoredProposalWithVotes,
   Vote,
@@ -89,7 +90,7 @@ const ProposalModal = () => {
   useEffect(() => {
     if (activeProposal) document.title = `${activeProposal.title}`;
     return () => {
-      document.title = `Prop House`;
+      document.title = `Frontinus House`;
     };
   }, [activeProposal, dispatch]);
 
@@ -129,7 +130,7 @@ const ProposalModal = () => {
     };
   }, [handleKeyPress]);
 
-  const handleDirectionalArrowClick = (direction: 1 | -1) => {
+  const handleDirectionalArrowClick = (direction: Direction) => {
     if (
       !activeProposal ||
       !proposals ||
@@ -164,7 +165,7 @@ const ProposalModal = () => {
         .map(
           a =>
             new Vote(
-              a.direction,
+              1,
               a.proposalId,
               a.votes,
               community!.contractAddress,

@@ -1,4 +1,0 @@
-{
-  "deno.enablePaths": ["./packages/prop-house-supabase/supabase"],
-  "deno.unstable": true
-}

@@ -25,7 +25,6 @@ const NavBar = () => {
             {!isMobile() && (
               <>
                 <div className={classes.navbarBrand}>{t('propHouse')}</div>
-                <div className={classes.poweredByNouns}>{t('publicInfra')}</div>
               </>
             )}
           </Navbar.Brand>
@@ -45,14 +44,22 @@ const NavBar = () => {
             </Nav.Link>
 
             <div className={classes.buttonGroup}>
-              <LocaleSwitcher setIsNavExpanded={setIsNavExpanded} />
+              {/*<LocaleSwitcher setIsNavExpanded={setIsNavExpanded} />*/}
 
               <Nav.Link as="div" className={classes.connectBtnContainer}>
                 <Button
-                  text="Create a round"
+                  text="Delegate Selection"
                   bgColor={ButtonColor.Purple}
                   onClick={() => navigate('/create-round')}
                   classNames={classes.createRoundBtn}
+                />
+              </Nav.Link>
+              <Nav.Link as="div" className={classes.connectBtnContainer}>
+                <Button
+                    text="Create a round"
+                    bgColor={ButtonColor.Purple}
+                    onClick={() => navigate('/create-round')}
+                    classNames={classes.createRoundBtn}
                 />
               </Nav.Link>
 
@@ -60,9 +67,9 @@ const NavBar = () => {
                 <ConnectButton showBalance={false} label={t('connect')} />
               </Nav.Link>
 
-              <AdminTool>
-                <DevEnvDropDown />
-              </AdminTool>
+              {/*<AdminTool>*/}
+              {/*  <DevEnvDropDown />*/}
+              {/*</AdminTool>*/}
             </div>
           </Nav>
         </Navbar.Collapse>

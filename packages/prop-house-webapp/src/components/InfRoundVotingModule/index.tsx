@@ -5,11 +5,10 @@ import { useAppSelector } from '../../hooks';
 import { countTotalVotesAlloted } from '../../utils/countTotalVotesAlloted';
 import Button, { ButtonColor } from '../Button';
 import RoundModuleCard from '../RoundModuleCard';
-import { FiThumbsUp, FiThumbsDown } from 'react-icons/fi';
+import { countNumVotes } from '../../utils/countNumVotes';
 import ConnectButton from '../ConnectButton';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
-import { Direction } from '@nouns/prop-house-wrapper/dist/builders';
 
 export interface InfRoundVotingModuleProps {
   setShowVotingModal: Dispatch<SetStateAction<boolean>>;
@@ -22,6 +21,8 @@ const InfRoundVotingModule: React.FC<InfRoundVotingModuleProps> = (
 
   const voteAllotments = useAppSelector(state => state.voting.voteAllotments);
   const votingPower = useAppSelector(state => state.voting.votingPower);
+  const votesByUserInActiveRound = useAppSelector(state => state.voting.votesByUserInActiveRound);
+  const numVotesByUserInActiveRound = countNumVotes(votesByUserInActiveRound);
 
   const { t } = useTranslation();
 
@@ -29,7 +30,7 @@ const InfRoundVotingModule: React.FC<InfRoundVotingModuleProps> = (
   const subtitle = !account
     ? 'Props meeting quorum will be awarded'
     : account && votingPower > 0
-    ? `You have ${votingPower} vote${votingPower > 1 ? 's' : ''} per prop`
+    ? `You have ${votingPower} votes per prop`
     : '';
 
   const content = (
@@ -46,24 +47,25 @@ const InfRoundVotingModule: React.FC<InfRoundVotingModuleProps> = (
       ) : votingPower > 0 ? (
         <>
           <h1 className={clsx(classes.sideCardTitle, classes.votingInfo)}>
-            <span>{voteAllotments.length > 0 ? 'Your votes' : 'Allot your votes:'}</span>
+            <span>{voteAllotments.length > 0 ? 'Votes' : 'Allot your votes:'}</span>
           </h1>
 
           <div className={classes.bulletList}>
             {voteAllotments.length === 0 ? (
               <>
-                <div className={classes.bulletItem}>No votes yet</div>
+                <div className={classes.bulletItem}>
+                  <hr className={classes.bullet} />
+                  No votes yet
+                </div>
               </>
             ) : (
               voteAllotments.map(v => (
                 <>
-                  <div className={classes.vote}>
-                    {v.direction === Direction.Up ? (
-                      <FiThumbsUp className={classes.thumbsUp} />
-                    ) : (
-                      <FiThumbsDown className={classes.thumbsDown} />
-                    )}
-                    {v.proposalTitle}
+                  <div className={classes.bulletItem}>
+                    <hr className={classes.bullet} />
+                    <div className={classes.vote}>
+                      {v.votes} vote{v.votes > 1 ? 's' : ''} for {v.proposalTitle}
+                    </div>
                   </div>
                 </>
               ))
@@ -80,7 +82,10 @@ const InfRoundVotingModule: React.FC<InfRoundVotingModuleProps> = (
           text={t('submitVotes')}
           bgColor={ButtonColor.Purple}
           onClick={() => setShowVotingModal(true)}
-          disabled={countTotalVotesAlloted(voteAllotments) === 0}
+          disabled={
+            countTotalVotesAlloted(voteAllotments) === 0 ||
+            numVotesByUserInActiveRound === votingPower
+          }
         />
       ) : null}
     </>

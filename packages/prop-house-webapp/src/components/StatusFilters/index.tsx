@@ -11,6 +11,7 @@ export enum RoundStatus {
   Proposing,
   Voting,
   Ended,
+  delegateSelection,
 }
 
 export interface Status {
@@ -28,6 +29,11 @@ const statuses: Status[] = [
   {
     status: RoundStatus.AllRounds,
     title: 'allRounds',
+    bgColor: classes.black,
+  },
+  {
+    status: RoundStatus.delegateSelection,
+    title: 'delegateSelection',
     bgColor: classes.black,
   },
 ];

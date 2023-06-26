@@ -33,7 +33,7 @@ const { chains, provider } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'Prop House',
+  appName: 'Frontinus House',
   chains,
 });
 

@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { AuctionStatus, auctionStatus } from '../../utils/auctionStatus';
 import { useAppSelector } from '../../hooks';
 import { useDispatch } from 'react-redux';
-import { getVotingPower } from '@prophouse/communities';
+import { getVotingPower } from 'prop-house-communities';
 import { setVotingPower } from '../../state/slices/voting';
 import WinningProposalBanner from '../WinningProposalBanner/WinningProposalBanner';
 import ProposalModalVotingModule from '../ProposalModalVotingModule';
@@ -133,7 +133,7 @@ const ProposalModalFooter: React.FC<{
             {round &&
               isTimedAuction(round) &&
               (isRoundOver && isWinner ? (
-                <WinningProposalBanner numOfVotes={proposal.voteCountFor} />
+                <WinningProposalBanner numOfVotes={proposal.voteCount} />
               ) : !isRoundOver && !account ? (
                 connectDiv
               ) : isProposingWindow ? (
@@ -159,7 +159,7 @@ const ProposalModalFooter: React.FC<{
             {round &&
               isInfAuction(round) &&
               (isWinner ? (
-                <WinningProposalBanner numOfVotes={proposal.voteCountFor} />
+                <WinningProposalBanner numOfVotes={proposal.voteCount} />
               ) : !isRoundOver && !account ? (
                 connectDiv
               ) : (

@@ -65,7 +65,7 @@ const Proposal = () => {
     fetch();
 
     return () => {
-      document.title = 'Prop House';
+      document.title = 'Frontinus House';
     };
   }, [id, dispatch, failedFetch]);
 

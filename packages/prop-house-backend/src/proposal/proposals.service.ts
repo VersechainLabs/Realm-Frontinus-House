@@ -76,8 +76,8 @@ export class ProposalsService {
     return await this.proposalsRepository.save(proposal);
   }
 
-  async voteCountForById(id: number): Promise<number> {
+  async voteCountById(id: number): Promise<number> {
     const foundProposal = await this.proposalsRepository.findOneOrFail(id);
-    return foundProposal.voteCountFor;
+    return foundProposal.voteCount;
   }
 }

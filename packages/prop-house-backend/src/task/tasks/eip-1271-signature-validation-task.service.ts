@@ -200,8 +200,6 @@ export class EIP1271SignatureValidationTaskService {
       createdDate.getTime() + infRound.votingPeriod * 1000,
     );
 
-    return (
-      votingPeriodEnd > new Date() && proposal.voteCountFor < infRound.quorumFor
-    );
+    return votingPeriodEnd > new Date() && proposal.voteCount < infRound.quorum;
   }
 }

@@ -11,7 +11,7 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../hooks';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { refreshActiveProposals } from '../../utils/refreshActiveProposal';
-import { getVotingPower } from '@prophouse/communities';
+import { getVotingPower } from 'prop-house-communities';
 import ErrorMessageCard from '../ErrorMessageCard';
 import VoteConfirmationModal from '../VoteConfirmationModal';
 import SuccessVotingModal from '../SuccessVotingModal';
@@ -54,6 +54,7 @@ const RoundContent: React.FC<{
   const infRoundFilter = useAppSelector(state => state.propHouse.infRoundFilterType);
 
   const voteAllotments = useAppSelector(state => state.voting.voteAllotments);
+  const modalActive = useAppSelector(state => state.propHouse.modalActive);
   const host = useAppSelector(state => state.configuration.backendHost);
 
   const client = useRef(new PropHouseWrapper(host));
@@ -64,10 +65,8 @@ const RoundContent: React.FC<{
     ? t('submittedProposals')
     : infRoundFilter === InfRoundFilterType.Active
     ? 'Active proposals will show up here.'
-    : infRoundFilter === InfRoundFilterType.Rejected
-    ? 'Proposals that meet the rejection quorum will show up here.'
     : infRoundFilter === InfRoundFilterType.Winners
-    ? 'Proposals that meet the winner quorum will show up here.'
+    ? 'Proposals that meet quorum will show up here.'
     : 'Proposals that did not meet quorum before voting period ended will show up here.';
 
   useEffect(() => {
@@ -120,7 +119,7 @@ const RoundContent: React.FC<{
         .map(
           a =>
             new Vote(
-              a.direction,
+              1,
               a.proposalId,
               a.votes,
               community!.contractAddress,
@@ -169,7 +168,7 @@ const RoundContent: React.FC<{
         <ErrorMessageCard message={t('fundingRoundStartingSoon')} date={auction.startTime} />
       ) : (
         <>
-          {community && (
+          {community && !modalActive && (
             <Row className={classes.propCardsRow}>
               <Col xl={8} className={classes.propCardsCol}>
                 {proposals &&

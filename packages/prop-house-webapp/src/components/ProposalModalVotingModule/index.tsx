@@ -1,13 +1,14 @@
 import { ProgressBar } from 'react-bootstrap';
 import classes from './ProposalModalVotingModule.module.css';
 import clsx from 'clsx';
+import VotingControls from '../VotingControls';
 import Button, { ButtonColor } from '../Button';
 import { countTotalVotesAlloted } from '../../utils/countTotalVotesAlloted';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useAppSelector } from '../../hooks';
 import { countVotesRemainingForTimedRound } from '../../utils/countVotesRemainingForTimedRound';
 import { useDispatch } from 'react-redux';
-import { getVotingPower } from '@prophouse/communities';
+import { getVotingPower } from 'prop-house-communities';
 import { setVotesByUserInActiveRound, setVotingPower } from '../../state/slices/voting';
 import VoteAllotmentTooltip from '../VoteAllotmentTooltip';
 import { StoredProposalWithVotes } from '@nouns/prop-house-wrapper/dist/builders';
@@ -18,8 +19,6 @@ import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
 import { countVotesRemainingForInfRound } from '../../utils/countVotesRemainingForInfRound';
 import { countNumVotesForProp } from '../../utils/countNumVotesForProp';
 import { countVotesAllottedToProp } from '../../utils/countVotesAllottedToProp';
-import InfRoundVotingControls from '../InfRoundVotingControls';
-import TimedRoundVotingControls from '../TimedRoundVotingControls';
 
 const ProposalModalVotingModule: React.FC<{
   proposal: StoredProposalWithVotes;
@@ -127,19 +126,12 @@ const ProposalModalVotingModule: React.FC<{
           )}
 
           <div className={classes.icon}>
-            {round && isTimedAuction(round) && (
-              <>
-                <VotesDisplay proposal={proposal} /> <span>+</span>
-              </>
-            )}
+            <VotesDisplay proposal={proposal} /> <span>+</span>
           </div>
 
           <div className="mobileTooltipContainer">
-            {round && isInfAuction(round) ? (
-              <InfRoundVotingControls proposal={proposal} />
-            ) : (
-              <TimedRoundVotingControls proposal={proposal} />
-            )}
+            <VotingControls proposal={proposal} />
+
             <VoteAllotmentTooltip setShowVoteAllotmentModal={setShowVoteAllotmentModal} />
           </div>
 

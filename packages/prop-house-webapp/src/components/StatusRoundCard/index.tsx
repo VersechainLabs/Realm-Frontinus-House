@@ -24,7 +24,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAccount } from 'wagmi';
 import { InfuraProvider } from '@ethersproject/providers';
-import { getVotingPower } from '@prophouse/communities';
+import { getVotingPower } from 'prop-house-communities';
 import Countdown from '../Countdown';
 import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
 
@@ -232,7 +232,7 @@ const StatusRoundCard: React.FC<{
                     </p>
                     <p className={classes.info}>
                       {isInfAuction(round)
-                        ? `${round.quorumFor * 100}%`
+                        ? `${round.quorum * 100}%`
                         : diffTime(deadlineTime(round)).replace('months', 'mos')}{' '}
                     </p>
                   </>

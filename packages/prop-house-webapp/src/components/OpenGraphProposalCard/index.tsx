@@ -81,7 +81,7 @@ const OpenGraphProposalCard: React.FC = () => {
 
               {imageUrl && (
                 <div className={classes.propImgContainer}>
-                  <img src={imageUrl} crossOrigin="anonymous" alt="propImage" />
+                  <img src={imageUrl} alt="propImage" />
                 </div>
               )}
             </span>

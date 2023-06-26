@@ -15,7 +15,7 @@
   position: absolute;
   padding-left: 12px;
   padding-bottom: 3px;
-  color: var(--brand-black-semi-transparent);
+  color: #F5EEE680;
 }
 .searchBar input {
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
@@ -23,7 +23,10 @@
   padding: 9px 16px 8px 40px;
   font-weight: 500;
   height: 38px;
-  border: 1px solid var(--border-med);
+  background: #1A1A1B;
+  border: 1px solid #2C2C2D;
+  color: #2C2C2D;
+
 }
 .searchBar input:active,
 .searchBar input:focus:focus-visible {
@@ -31,7 +34,8 @@
   border: 1px solid var(--border-dark) !important;
 }
 .searchBar input::placeholder {
-  color: var(--brand-black-semi-transparent);
+  color: #F5EEE680;
+
 }
 
 @media (min-width: 768px) {

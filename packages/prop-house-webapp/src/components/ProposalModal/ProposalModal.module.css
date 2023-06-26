@@ -6,7 +6,9 @@
   font-family: 'PT Root UI', sans-serif;
   font-weight: bold;
   z-index: 100;
-  background: #ffffff;
+  background: linear-gradient(0deg, #1A1A1B, #1A1A1B),
+  linear-gradient(0deg, #2C2C2D, #2C2C2D);
+
   border: var(--border-light);
   box-shadow: 0px 2px 14px rgba(0, 0, 0, 0.08), 0px 6px 24px rgba(0, 0, 0, 0.08);
   border-radius: 24px 24px 0px 0px;

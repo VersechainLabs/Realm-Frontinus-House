@@ -7,8 +7,8 @@ import {
 
 export const isInfAuction = (
   auction: StoredAuctionBase | AuctionBase,
-): auction is StoredInfiniteAuction => 'quorumFor' in auction;
+): auction is StoredInfiniteAuction => 'quorum' in auction;
 
 export const isTimedAuction = (
   auction: StoredAuctionBase | AuctionBase,
-): auction is StoredTimedAuction => !('quorumFor' in auction);
+): auction is StoredTimedAuction => !('quorum' in auction);

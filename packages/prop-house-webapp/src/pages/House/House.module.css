@@ -1,13 +1,13 @@
 .houseContainer {
-  background: var(--bg-dark);
+  background: #111111;
 
   min-height: 350px;
   padding: 1rem;
 }
 
 .stickyContainer {
-  background: white;
-  top: 0;
+  /*background: white;*/
+  /*top: 0;*/
   position: sticky !important;
   z-index: 1;
   padding-top: 12px;

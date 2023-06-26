@@ -7,9 +7,3 @@
 .scoreAndIcon:hover {
   cursor: pointer;
 }
-.votingBtnsContainer {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--brand-gray) !important;
-}

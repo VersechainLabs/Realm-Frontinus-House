@@ -1,20 +1,16 @@
-<div align="center">
-  <p align="center">
-    <a href="https://prop.house/" target="blank"><img src="https://i.imgur.com/tPLjLwA.png" width="200" alt="Prop House Logo" /></a>
-  </p>
-  <h1>Prop House</h1>
-  <p>A public infrastructure project by <a href="https://nouns.wtf/" target="blank">Nouns DAO</a></p>
-</div>
+# Prop House
+
+Nouns Proposal Auction House (or Prop House) is a public infrastructure project by [Nouns DAO](https://nouns.wtf).
 
 ## About
 
-Prop House offers a novel mechanism for communities to deploy capital within their ecosystems: asset auctions where the bids placed are proposals. At the end of each auction, members of corresponding communities vote on which proposals get funded. Learn more by reading the [FAQs](https://prop.house/faq) or joining the [Discord](https://discord.gg/SKPzM8GHts).
+Prop House uses a novel mechanism for communities to deploy capital within their ecosystems: auctions of ETH where the bids placed are proposals. At the end of each auction, members of corresponding communities vote on which proposals get funded. Learn more by reading the [FAQs](https://prop.house/faq) or joining the [Discord](https://discord.gg/SKPzM8GHts).
 
 ## Packages
 
 ### prop-house-backend
 
-The [prop house backend](https://github.com/cryptoseneca/prop-house/tree/master/packages/prop-house-backend) is implemented using Nestjs and handles CRUD actions for storing prop house data. It provides a [GraphQL interface](https://prod.backend.prop.house/graphql) for querying data.
+The [prop house backend](https://github.com/cryptoseneca/prop-house/tree/master/packages/prop-house-backend) is implemented using Nestjs and handles  CRUD actions for storing prop house data. It provides a [GraphQL interface](https://prod.backend.prop.house/graphql) for querying data.
 
 ### prop-house-wrapper
 
@@ -24,9 +20,9 @@ The [prop house wrapper](https://github.com/cryptoseneca/prop-house/tree/master/
 
 The [prop house webapp](https://github.com/cryptoseneca/prop-house/tree/master/packages/prop-house-webapp) is the frontend for interacting with houses as hosted at [prop.house](https://prop.house).
 
-### @prophouse/communities
+### prop-house-communities
 
-The [prop house communities](https://github.com/cryptoseneca/prop-house/tree/master/packages/@prophouse/communities) package contains the logic to fetch voting data for individuals within the scope of their own communities.
+The [prop house communities](https://github.com/cryptoseneca/prop-house/tree/master/packages/prop-house-communities) package contains the logic to fetch voting data for individuals within the scope of their own communities.
 
 ## Quick Start
 

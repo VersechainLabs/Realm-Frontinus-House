@@ -1,9 +1,7 @@
 .footerContainer {
   position: sticky !important;
-  bottom: -1px;
-  bottom: 0px;
-  z-index: 1;
-  background: white !important;
+  background: linear-gradient(0deg, #1A1A1B, #1A1A1B),
+  linear-gradient(0deg, #2C2C2D, #2C2C2D);
   border-top: 1px solid rgba(0, 0, 0, 0.04) !important;
   width: 100%;
   max-width: 100%;

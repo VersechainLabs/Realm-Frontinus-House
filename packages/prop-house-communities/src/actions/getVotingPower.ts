@@ -19,9 +19,5 @@ export const getVotingPower = async (
 
   if (!strategy) throw new Error(`No strategy found for community address ${communityAddress}`);
 
-  try {
-    return await strategy(userAddress, communityAddress, blockTag, provider);
-  } catch (e) {
-    throw new Error(`Error fetching voting power for ${userAddress} in ${communityAddress}: ${e}`);
-  }
+  return await strategy(userAddress, communityAddress, blockTag, provider);
 };

@@ -24,6 +24,7 @@
 .titleRow .title {
   font-size: xx-large;
   font-weight: 700;
+  color: #F5EEE6;
 }
 .titleRow .contractAddressPill {
   border: 1px solid var(--border-light);
@@ -55,7 +56,7 @@
   font-size: large;
 }
 .itemTitle {
-  color: var(--brand-gray);
+  color: #F5EEE6;
   font-weight: 700;
 }
 .itemData {
@@ -72,15 +73,18 @@
   -webkit-line-clamp: 4;
   line-clamp: 4;
   -webkit-box-orient: vertical;
+  color: #F5EEE6;
 }
 .communityDescriptionRow a {
   color: var(--brand-pink) !important;
   text-decoration: underline;
   font-weight: 600;
+  color: #F5EEE6;
 }
 .communityDescriptionRow a:hover {
   text-decoration: underline !important;
   transition: all 0.15s ease-in-out;
+  color: #F5EEE6;
 }
 
 .houseTitleInfo {
@@ -93,7 +97,7 @@
 }
 
 .bullet {
-  color: rgba(102, 102, 102, 0.6);
+  color: #F5EEE6;
   font-size: 12px;
   padding: 0px 8px;
   align-self: center;
@@ -111,6 +115,7 @@
   .communityDescriptionRow p {
     -webkit-line-clamp: 10;
     line-clamp: 10;
+    color: #F5EEE6;
   }
   .communityInfoCol {
     margin: 0 1rem;
@@ -128,6 +133,8 @@
   }
   .longName .contractAddressPill {
     margin-left: 0 !important;
+    border: 1px solid #454343;
+    border-radius: 8px;
   }
 }
 
@@ -171,6 +178,7 @@
   }
   .communityDescriptionRow {
     margin: 0;
+    color: #F5EEE6;
   }
 }
 

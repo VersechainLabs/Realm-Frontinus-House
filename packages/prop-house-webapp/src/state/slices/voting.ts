@@ -18,38 +18,14 @@ const initialState: VotingSlice = {
 };
 
 export const updateVoteAllotment = (
-  oldAllotment: VoteAllotment,
-  newAllotment: VoteAllotment,
-): VoteAllotment => {
-  const { updatedWeight, updatedDirection } = calcNewWeightAndDirection(oldAllotment, newAllotment);
-  return {
-    ...newAllotment,
-    votes: updatedWeight,
-    direction: updatedDirection,
-  };
-};
-
-const calcNewWeightAndDirection = (
-  oldAllotment: VoteAllotment,
-  newAllotment: VoteAllotment,
-): { updatedWeight: number; updatedDirection: Direction } => {
-  const oldWeight = oldAllotment.votes;
-  const newWeight = newAllotment.votes;
-
-  const oldDirection = oldAllotment.direction;
-  const newDirection = newAllotment.direction;
-  const sameDirection = oldDirection === newDirection;
-  const adding = oldDirection === Direction.Down && newDirection === Direction.Up;
-
-  if (sameDirection)
-    return { updatedWeight: oldWeight + newWeight, updatedDirection: oldDirection };
-
-  // adding: -x + y else: x - y
-  const updatedWeight = adding ? oldWeight * -1 + newWeight : oldWeight - newWeight;
-  return updatedWeight < 0
-    ? { updatedWeight: updatedWeight * -1, updatedDirection: Direction.Down }
-    : { updatedWeight, updatedDirection: Direction.Up };
-};
+  v: VoteAllotment,
+  direction: Direction,
+  weight: number,
+): VoteAllotment => ({
+  proposalTitle: v.proposalTitle,
+  proposalId: v.proposalId,
+  votes: direction === Direction.Up ? v.votes + weight : v.votes - weight,
+});
 
 export const votingSlice = createSlice({
   name: 'voting',
@@ -67,24 +43,32 @@ export const votingSlice = createSlice({
     allotVotes: (
       state,
       action: PayloadAction<{
-        voteAllotment: VoteAllotment;
+        proposalTitle: string;
+        proposalId: number;
+        direction: Direction;
+        weight: number;
       }>,
     ) => {
-      const { voteAllotment } = action.payload;
+      const { proposalTitle, proposalId, direction, weight } = action.payload;
 
       // if no votes have been allotted yet, add new
       if (state.voteAllotments.length === 0) {
-        state.voteAllotments = [voteAllotment];
+        state.voteAllotments = [
+          { proposalTitle: proposalTitle, proposalId: proposalId, votes: weight },
+        ];
         return;
       }
 
       const preexistingVoteAllotment = state.voteAllotments.find(
-        allotment => allotment.proposalId === voteAllotment.proposalId,
+        allotment => allotment.proposalId === proposalId,
       );
 
       // if not already alloted to specific proposal,  add new allotment
       if (!preexistingVoteAllotment) {
-        state.voteAllotments = [...state.voteAllotments, voteAllotment];
+        state.voteAllotments = [
+          ...state.voteAllotments,
+          { proposalTitle, proposalId, votes: weight },
+        ];
         return;
       }
 
@@ -92,7 +76,7 @@ export const votingSlice = createSlice({
       const updated = state.voteAllotments
         .map(a =>
           a.proposalId === preexistingVoteAllotment.proposalId
-            ? updateVoteAllotment(a, voteAllotment)
+            ? updateVoteAllotment(a, direction, weight)
             : a,
         )
         .filter(allotment => allotment.votes > 0);

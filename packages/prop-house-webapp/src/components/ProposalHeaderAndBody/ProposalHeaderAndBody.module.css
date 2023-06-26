@@ -36,7 +36,8 @@
   position: sticky !important;
   top: 0;
   z-index: 10 !important;
-  background: white !important;
+  background: linear-gradient(0deg, #1A1A1B, #1A1A1B),
+  linear-gradient(0deg, #2C2C2D, #2C2C2D);
   margin: 0 !important;
   padding-top: 18px !important;
 }
