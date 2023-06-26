@@ -1,0 +1,20 @@
+{
+  "name": "prop-house",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:cryptoseneca/prop-house.git",
+  "author": "cryptoseneca <85328329+cryptoseneca@users.noreply.github.com>",
+  "license": "MIT",
+  "private": "true",
+  "scripts": {
+    "build": "yarn workspace @prophouse/communities build && yarn workspace @nouns/prop-house-wrapper build"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/**"
+    ],
+    "nohoist": [
+      "**/@nestjs/**"
+    ]
+  }
+}
