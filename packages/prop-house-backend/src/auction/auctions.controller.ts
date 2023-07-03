@@ -39,6 +39,7 @@ export class AuctionsController {
     auction.votingEndTime = ParseDate(createAuctionDto.votingEndTime);
     auction.title = createAuctionDto.title;
     auction.numWinners = createAuctionDto.numWinners;
+    auction.currencyType = createAuctionDto.currencyType;
     return this.auctionsService.store(auction);
   }
 

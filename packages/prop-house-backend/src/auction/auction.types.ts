@@ -31,6 +31,9 @@ export class CreateAuctionDto {
   @IsNumber()
   @IsPositive()
   numWinners: number;
+
+  @IsString()
+  currencyType: string;
 }
 
 export enum Order {
