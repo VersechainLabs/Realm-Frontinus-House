@@ -27,6 +27,10 @@ export class CreateAuctionDto {
   @IsNumber()
   @IsPositive()
   fundingAmount: number;
+
+  @IsNumber()
+  @IsPositive()
+  numWinners: number;
 }
 
 export enum Order {
