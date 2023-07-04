@@ -4,6 +4,7 @@
 .container h1 {
   font-size: 25px;
   font-weight: bold;
+  color:#F5EEE6;
 }
 .card {
   margin: 2rem 0;
@@ -25,14 +26,16 @@
 .step h2 {
   font-size: 22px;
   font-weight: bold;
+  color: #F5EEE6;
 }
 
 .step p {
   font-size: 16px;
   font-weight: medium;
+  color: #F5EEE6;
 }
 .step p a {
-  color: var(--brand-purple) !important;
+  color: #F8B73E !important;
   font-weight: bold;
   text-decoration: underline;
 }
