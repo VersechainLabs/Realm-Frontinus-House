@@ -34,6 +34,10 @@ export class CreateAuctionDto {
 
   @IsString()
   currencyType: string;
+
+  @IsNumber()
+  @IsPositive()
+  communityId: number;
 }
 
 export enum Order {

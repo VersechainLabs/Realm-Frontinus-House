@@ -84,6 +84,14 @@ export class Auction implements AuctionBase {
   @Field(() => Community)
   community: Community;
 
+  // Chao
+  // @RelationId((auction: Auction) => auction.community)
+  // @ManyToOne(() => Community, (community) => community.auctions)
+  @Column({ default: 1 })
+  @Field(() => Int)
+  communityId: number;
+  // End
+
   @Column()
   @Field(() => Date)
   createdDate: Date;
