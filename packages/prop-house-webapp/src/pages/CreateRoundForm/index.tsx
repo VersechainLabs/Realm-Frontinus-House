@@ -15,15 +15,33 @@ const CreateRound: React.FC<{}> = () => {
     }, [signer, host]);
 
 
-    const state = {
-        title: "",
+    const state:{
+        visible: boolean,
+        title: string,
+        startTime: string,
+        proposalEndTime: string,
+        votingEndTime: string,
+        fundingAmount: number,
+        currencyType: string,
+        numWinners: number,
+        community: number,
+        communityId: number,
+        balanceBlockTag: number,
+        description: string,}
+
+    = {
         description: "",
+        title: "",
         startTime: "",
         proposalEndTime: "",
         votingEndTime: "",
         numWinners: 0,
         currencyType: "",
         fundingAmount: 0,
+        visible: true,
+        community: 1,
+        communityId: 1,
+        balanceBlockTag: 0,
     }
 
     const saveFormTitle = (value:string) => {
