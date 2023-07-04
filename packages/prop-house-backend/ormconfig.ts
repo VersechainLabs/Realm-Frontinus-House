@@ -10,6 +10,14 @@ const config: PostgresConnectionOptions = {
   password: process.env.DB_PASS || 'example',
   database: process.env.DB_NAME || 'postgres',
   entities: ['dist/**/**.entity.js'],
+  // Chao - add to fix "no pg_hba.conf entry for host" issue
+  ssl: true,
+  extra: {
+    ssl: {
+      rejectUnauthorized: false
+    }
+  },
+  // End
   migrations: ['dist/src/db/migrations/*.js'],
   cli: {
     migrationsDir: 'src/db/migrations',
