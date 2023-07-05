@@ -44,6 +44,8 @@ const wagmiClient = createClient({
   provider,
 });
 
+localStorage.setItem('devEnv', 'development');
+
 function App() {
   const location = useLocation();
   const [noActiveCommunity, setNoActiveCommunity] = useState(false);

@@ -67,9 +67,9 @@ const NavBar = () => {
                 <ConnectButton showBalance={false} label={t('connect')} />
               </Nav.Link>
 
-              <AdminTool>
-                <DevEnvDropDown />
-              </AdminTool>
+              {/*<AdminTool>*/}
+              {/*  <DevEnvDropDown />*/}
+              {/*</AdminTool>*/}
             </div>
           </Nav>
         </Navbar.Collapse>
