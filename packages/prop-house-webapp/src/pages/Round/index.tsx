@@ -71,7 +71,7 @@ const Round = () => {
     const fetchCommunity = async () => {
       try {
         setLoadingComm(true);
-        const community = await client.current.getCommunityWithName(slugToName(communityName));
+        const community = await client.current.getCommunityWithId(1);
         dispatch(setActiveCommunity(community));
 
         setLoadingComm(false);
