@@ -40,7 +40,7 @@ export class AuctionsController {
     auction.title = createAuctionDto.title;
     auction.numWinners = createAuctionDto.numWinners;
     auction.currencyType = createAuctionDto.currencyType;
-    auction.communityId = createAuctionDto.communityId;
+    // auction.communityId = createAuctionDto.communityId;
     return this.auctionsService.store(auction);
   }
 
