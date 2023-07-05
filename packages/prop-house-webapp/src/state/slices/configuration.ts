@@ -33,7 +33,7 @@ const envToUri = (processEnv: BackendHost | undefined) => {
 
   if (devEnvSelected)
     return devEnvSelected === 'local'
-      ? backendHostURI(BackendHost.Dev)
+      ? backendHostURI(BackendHost.Local)
       : devEnvSelected === 'development'
       ? backendHostURI(BackendHost.Dev)
       : backendHostURI(BackendHost.Prod);
