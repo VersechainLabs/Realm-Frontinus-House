@@ -5,6 +5,7 @@ import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSigner } from 'wagmi';
 import {nameToSlug} from "../../utils/communitySlugs";
+import { TimedAuction } from '@nouns/prop-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 
 const CreateRound: React.FC<{}> = () => {
@@ -16,12 +17,12 @@ const CreateRound: React.FC<{}> = () => {
     }, [signer, host]);
     const navigate = useNavigate();
 
-    const state = {
+    const state  = {
         description: "",
         title: "",
-        startTime: "",
-        proposalEndTime: "",
-        votingEndTime: "",
+        startTime: new Date("") ,
+        proposalEndTime: new Date("") ,
+        votingEndTime:  new Date("") ,
         numWinners: 0,
         currencyType: "",
         fundingAmount: 0,
@@ -40,15 +41,16 @@ const CreateRound: React.FC<{}> = () => {
         console.log(state);
     }
     const saveFormStart = (value:string) => {
-        state.startTime = value;
+        state.startTime = new Date(value);
         console.log(state);
     }
     const saveFormProposal = (value:string) => {
-        state.proposalEndTime = value;
+        // state.proposalEndTime = Date.parse(value);
+        state.proposalEndTime = new Date(value);
         console.log(state);
     }
     const saveFormVote = (value:string) => {
-        state.votingEndTime = value;
+        state.votingEndTime = new Date(value);
         console.log(state);
     }
     const saveFormType = (value:string) => {
@@ -69,7 +71,21 @@ const CreateRound: React.FC<{}> = () => {
     const handleSubmit = async (e:any) => {
         //该方法阻止表单的提交
         e.preventDefault();
-        const round = await client.current.createAuction(state);
+
+        const round = await client.current.createAuction(new TimedAuction(
+            true,
+            state.title,
+            state.startTime,
+            state.proposalEndTime,
+            state.votingEndTime,
+            state.fundingAmount,
+            state.currencyType,
+            state.numWinners,
+            state.community,
+            state.communityId,
+            state.balanceBlockTag,
+            state.description,
+        ));
         console.log(round);
         navigate('/frontinus');
 
