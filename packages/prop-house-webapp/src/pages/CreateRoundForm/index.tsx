@@ -128,7 +128,7 @@ const CreateRound: React.FC<{}> = () => {
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          What is the symbol for the currency being used as the award? (eg $ETH, $NOUN))*
+                          What is the symbol for the currency being used as the award? (eg $ETH, $LORDS))*
                       </div>
 
                       <input onChange={event => saveFormType(event.target.value)} name={'currencyType'} className={classes.input} type="text"/>
