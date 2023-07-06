@@ -5,11 +5,8 @@ import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSigner } from 'wagmi';
 import {nameToSlug} from "../../utils/communitySlugs";
-<<<<<<< HEAD
 import { TimedAuction } from '@nouns/prop-house-wrapper/dist/builders';
-=======
 import { Link, useNavigate } from 'react-router-dom';
->>>>>>> a62c22c6237e969cb4b2b5a4cb502218c59a03cc
 
 const CreateRound: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
