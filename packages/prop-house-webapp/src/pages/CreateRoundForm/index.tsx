@@ -99,7 +99,8 @@ const CreateRound: React.FC<{}> = () => {
                           What is the round description? (Please use a markdown editor to format your description) *
                       </div>
 
-                      <input onChange={event => saveFormDesc(event.target.value)} name={'description'} className={classes.input} type="text"/>
+                      <textarea rows={5} onChange={event => saveFormDesc(event.target.value)} name={'description'} className={classes.input} >
+                      </textarea>
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
