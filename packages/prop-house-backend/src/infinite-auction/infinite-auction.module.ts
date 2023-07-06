@@ -8,6 +8,7 @@ import { ProposalsService } from 'src/proposal/proposals.service';
 import { InfiniteAuctionController } from './infinite-auction.controller';
 import { InfiniteAuction } from './infinite-auction.entity';
 import { InfiniteAuctionService } from './infinite-auction.service';
+import { Auction } from 'src/auction/auction.entity';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { InfiniteAuctionService } from './infinite-auction.service';
       InfiniteAuction,
       InfiniteAuctionProposal,
       Community,
+      Auction
     ]),
   ],
   controllers: [InfiniteAuctionController],
