@@ -5,7 +5,11 @@ import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSigner } from 'wagmi';
 import {nameToSlug} from "../../utils/communitySlugs";
+<<<<<<< HEAD
 import { TimedAuction } from '@nouns/prop-house-wrapper/dist/builders';
+=======
+import { Link, useNavigate } from 'react-router-dom';
+>>>>>>> a62c22c6237e969cb4b2b5a4cb502218c59a03cc
 
 const CreateRound: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
@@ -14,7 +18,7 @@ const CreateRound: React.FC<{}> = () => {
     useEffect(() => {
         client.current = new PropHouseWrapper(host, signer);
     }, [signer, host]);
-
+    const navigate = useNavigate();
 
     const state  = {
         description: "",
@@ -86,6 +90,8 @@ const CreateRound: React.FC<{}> = () => {
             state.description,
         ));
         console.log(round);
+        navigate('/frontinus');
+
     }
 
 
@@ -144,7 +150,7 @@ const CreateRound: React.FC<{}> = () => {
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          What is the symbol for the currency being used as the award? (eg $ETH, $NOUN))*
+                          What is the symbol for the currency being used as the award? (eg $ETH, $LORDS))*
                       </div>
 
                       <input onChange={event => saveFormType(event.target.value)} name={'currencyType'} className={classes.input} type="text"/>
