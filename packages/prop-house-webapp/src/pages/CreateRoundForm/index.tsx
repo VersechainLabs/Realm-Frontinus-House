@@ -15,21 +15,7 @@ const CreateRound: React.FC<{}> = () => {
   }, [signer, host]);
 
 
-  const state:{
-    visible: boolean,
-    title: string,
-    startTime: string,
-    proposalEndTime: string,
-    votingEndTime: string,
-    fundingAmount: number,
-    currencyType: string,
-    numWinners: number,
-    community: number,
-    communityId: number,
-    balanceBlockTag: number,
-    description: string,}
-
-      = {
+  const state = {
     description: "",
     title: "",
     startTime: "",
