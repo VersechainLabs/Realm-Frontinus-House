@@ -5,6 +5,7 @@ import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSigner } from 'wagmi';
 import {nameToSlug} from "../../utils/communitySlugs";
+import { Link, useNavigate } from 'react-router-dom';
 
 const CreateRound: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
@@ -13,7 +14,7 @@ const CreateRound: React.FC<{}> = () => {
     useEffect(() => {
         client.current = new PropHouseWrapper(host, signer);
     }, [signer, host]);
-
+    const navigate = useNavigate();
 
     const state = {
         description: "",
@@ -70,6 +71,8 @@ const CreateRound: React.FC<{}> = () => {
         e.preventDefault();
         const round = await client.current.createAuction(state);
         console.log(round);
+        navigate('/frontinus');
+
     }
 
 
