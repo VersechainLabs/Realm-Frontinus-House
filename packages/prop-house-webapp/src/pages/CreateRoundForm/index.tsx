@@ -68,8 +68,8 @@ const CreateRound: React.FC<{}> = () => {
   const handleSubmit = async (e:any) => {
     //该方法阻止表单的提交
     e.preventDefault();
-    const round = await client.current.createAuction(state);
-    console.log(round);
+    // const round = await client.current.createAuction(state);
+    // console.log(round);
   }
 
 
