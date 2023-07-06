@@ -26,6 +26,7 @@ import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/r
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
+import CreateRoundForm from './pages/CreateRoundForm';
 
 const { chains, provider } = configureChains(
   [mainnet],
@@ -91,6 +92,7 @@ function App() {
                     }
                   />
                   <Route path="/create-round" element={<CreateRound />} />
+                  <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
                   <Route path="/:house" element={<House />} />

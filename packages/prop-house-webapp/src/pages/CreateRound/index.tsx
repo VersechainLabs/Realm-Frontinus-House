@@ -31,12 +31,7 @@ const CreateRound: React.FC<{}> = () => {
             <Button
               text="Create timed round"
               bgColor={ButtonColor.Purple}
-              onClick={() =>
-                window.open(
-                  'https://www.addressform.io/f/58195583-4a62-4770-b3ed-667ddbd05c81',
-                  '_blank',
-                )
-              }
+              onClick={() => navigate('/create-round-form')}
             />
             <Button
               text="Create infinite round"
