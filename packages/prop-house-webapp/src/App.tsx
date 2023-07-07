@@ -27,6 +27,7 @@ import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
 import CreateRoundForm from './pages/CreateRoundForm';
+import CreateDelegateForm from './pages/CreateDelegateForm';
 
 const { chains, provider } = configureChains(
   [mainnet],
@@ -94,7 +95,8 @@ function App() {
                     }
                   />
                   <Route path="/create-round" element={<CreateRound />} />
-                  <Route path="/Create-round-form" element={<CreateRoundForm />} />
+                  <Route path="/create-round-form" element={<CreateRoundForm />} />
+                  <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
                   <Route path="/:house" element={<House />} />

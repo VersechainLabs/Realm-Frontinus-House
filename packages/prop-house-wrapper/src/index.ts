@@ -44,6 +44,14 @@ export class PropHouseWrapper {
     }
   }
 
+  async createDelegateAuction(auction: any): Promise<any[]> {
+    try {
+      return (await axios.post(`${this.host}/delegate`, auction )).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getAuction(id: number): Promise<StoredTimedAuction> {
     try {
       const rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}`)).data;
