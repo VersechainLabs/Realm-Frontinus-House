@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuctionsModule } from 'src/auction/auctions.module';
 import { DelegatesModule } from 'src/delegate/delegates.module';
+import { CommentsModule } from 'src/comment/comments.module';
 import { CommunitiesModule } from 'src/community/community.module';
 import configuration from 'src/config/configuration';
 import { InfiniteAuctionModule } from 'src/infinite-auction/infinite-auction.module';
@@ -28,6 +29,7 @@ import config from '../../ormconfig';
     InfiniteAuctionModule,
     TasksModule,
     DelegatesModule,
+    CommentsModule,
     TypeOrmModule.forRoot(config),
   ],
 })
