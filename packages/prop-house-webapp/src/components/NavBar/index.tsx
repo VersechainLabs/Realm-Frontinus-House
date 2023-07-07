@@ -56,7 +56,7 @@ const NavBar = () => {
               </Nav.Link>
               <Nav.Link as="div" className={classes.connectBtnContainer}>
                 <Button
-                    text="Create a round"
+                    text="Create a Round"
                     bgColor={ButtonColor.Purple}
                     onClick={() => navigate('/create-round')}
                     classNames={classes.createRoundBtn}

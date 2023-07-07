@@ -23,17 +23,17 @@ export interface Status {
 const statuses: Status[] = [
   {
     status: RoundStatus.Active,
-    title: 'active',
+    title: 'Active',
     bgColor: classes.pink,
   },
   {
     status: RoundStatus.AllRounds,
-    title: 'allRounds',
+    title: 'All Rounds',
     bgColor: classes.black,
   },
   {
     status: RoundStatus.delegateSelection,
-    title: 'delegateSelection',
+    title: 'Delegate Selection',
     bgColor: classes.black,
   },
 ];
