@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
-import { Repository } from 'typeorm';
+import { FindConditions, Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 import { CreateCommentDto, GetCommentsDto, LatestDto } from './comment.types';
 import { Community } from 'src/community/community.entity';
@@ -30,6 +30,14 @@ export class CommentsService {
     });
   }
 
+//   async findByProposalId(proposalId: number): Promise<Comment[]>  {
+//     return await this.commentsRepository.find({
+//       relations: ['proposal'],
+//       where: { proposalId },
+//     });
+//   }
+
+
   // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
   //   return (
   //     this.auctionsRepository
@@ -43,22 +51,16 @@ export class CommentsService {
   //       .getRawMany()
   //   );
   // }
-  // findAllActive(dto: GetAuctionsDto): Promise<Auction[]> {
-  //   return this.auctionsRepository
-  //     .createQueryBuilder('a')
-  //     .select('a.*')
-  //     .addSelect('SUM(p."numProposals")', 'numProposals')
-  //     .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
-  //     .groupBy('a.id')
-  //     .offset(dto.skip)
-  //     .limit(dto.limit)
-  //     .addSelect(
-  //       'CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime THEN 1 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime THEN 2 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime THEN 3 ELSE 4 END END END',
-  //       'auction_order',
-  //     )
-  //     .orderBy('auction_order', 'ASC')
-  //     .getRawMany();
-  // }
+  async findByProposal(proposalId: number, dto: GetCommentsDto): Promise<Comment[]> {
+    return await this.commentsRepository
+      .createQueryBuilder('a')
+      .select('a.*')
+      .where('a.proposalId = :pId', { pId: proposalId })
+      .offset(dto.skip)
+      .limit(dto.limit)
+      .orderBy('id', dto.order)
+      .getRawMany();
+  }
 
   // findAllActiveForCommunities(dto: GetAuctionsDto): Promise<Auction[]> {
   //   return this.auctionsRepository

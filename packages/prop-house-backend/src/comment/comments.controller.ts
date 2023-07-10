@@ -30,11 +30,24 @@ import {
       return this.commentsService.findAll(); 
     }
   
+
     @Post()
     async create(@Body() createCommentDto: CreateCommentDto): Promise<Comment> {
         return await this.commentsService.createComment(createCommentDto);
     }
   
+
+    @Get('/byProposal/:proposalId')
+    async findByProposal(
+        @Param('proposalId') proposalId: number, 
+        @Body() dto: GetCommentsDto
+        ): Promise<Comment[]> {
+      const comments = await this.commentsService.findByProposal(proposalId, dto);
+      if (!comments)
+        throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+      return comments;
+    }
+
     // // Chao
     // @Post()
     // async createForCommunity(
@@ -103,13 +116,7 @@ import {
     //   return foundProposals;
     // }
   
-    // @Get('allActive/:n')
-    // async findAllActive(@Query() dto: GetAuctionsDto): Promise<Auction[]> {
-    //   const auctions = await this.auctionsService.findAllActive(dto);
-    //   if (!auctions)
-    //     throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
-    //   return auctions;
-    // }
+
   
     // @Get('active/:n')
     // async findAllActiveForCommunities(

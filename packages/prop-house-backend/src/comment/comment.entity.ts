@@ -39,6 +39,10 @@ export class Comment {
   @Field(() => Proposal)
   proposal: Proposal;
 
+  @Column({})
+//   @RelationId((comment: Comment) => comment.proposal)
+  proposalId: number;
+
   @Column()
   @Field(() => Date)
   createdDate: Date;

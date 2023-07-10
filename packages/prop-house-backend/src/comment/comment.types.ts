@@ -45,9 +45,11 @@ export class GetCommentsDto {
   @IsEnum(Order)
   order?: Order;
 
-  @IsOptional()
-  @IsArray()
-  addresses?: string[];
+    // When find comments, should always with proposalId:
+//   @IsInt()
+//   @Min(1)
+//   @Transform(({ value }) => Number(value))
+//   proposalId: number;
 }
 
 export class LatestDto {
