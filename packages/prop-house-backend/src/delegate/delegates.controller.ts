@@ -25,7 +25,7 @@ import {
       private readonly proposalService: ProposalsService,
     ) {}
   
-    @Get()
+    @Get('/list')
     getAll(): Promise<Delegate[]> {
       return this.delegatesService.findAll(); 
     }
