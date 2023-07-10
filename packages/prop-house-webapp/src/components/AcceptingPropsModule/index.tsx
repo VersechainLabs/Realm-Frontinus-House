@@ -32,40 +32,27 @@ const AcceptingPropsModule: React.FC<{
       <div className={classes.bulletList}>
         <div className={classes.bulletItem}>
           <hr className={classes.bullet} />
-          <p>{t('anyoneCanSubmit')}.</p>
-        </div>
-
-        <div className={classes.bulletItem}>
-          <hr className={classes.bullet} />
           <p>
-            {t('ownersOfThe')} <b>{community.name}</b> {t('tokenWillVote')}.
+            Any Realm Holder can submit an application to become a delegate. Other Realm Holders
+            will vote on the best application. The top 20 applicants will become delegates
           </p>
         </div>
 
         <div className={classes.bulletItem}>
           <hr className={classes.bullet} />
-          <p>
-            {isInfAuction(auction) ? (
-              'Proposals that meet quorum will get funded.'
-            ) : (
-              <>
-                {' '}
-                {t('theTop')} <b>{auction.numWinners}</b>{' '}
-                {auction.numWinners === 1 ? 'proposal' : 'proposals'} {t('willGetFunded')}{' '}
-                <b>
-                  {auction.fundingAmount} {auction.currencyType}{' '}
-                </b>
-                {t('each')}.
-              </>
-            )}
-          </p>
+          <p></p>
+        </div>
+
+        <div className={classes.bulletItem}>
+          <hr className={classes.bullet} />
+          <p>{isInfAuction(auction) ? 'Proposals that meet quorum will get funded.' : <></>}</p>
         </div>
       </div>
 
       {isProposingWindow &&
         (account ? (
           <Button
-            text={t('createYourProposal')}
+            text={t('Become a Delegate')}
             bgColor={ButtonColor.Green}
             onClick={() => {
               dispatch(clearProposal());
@@ -80,7 +67,7 @@ const AcceptingPropsModule: React.FC<{
 
   return (
     <RoundModuleCard
-      title={t('acceptingProposals')}
+      title={t('Accepting Application')}
       subtitle={
         <>
           Until{' '}
