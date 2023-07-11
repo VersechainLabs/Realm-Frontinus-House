@@ -8,6 +8,11 @@ import {nameToSlug} from "../../utils/communitySlugs";
 import { TimedAuction } from '@nouns/prop-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 const CreateDelegateForm: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
     const client = useRef(new PropHouseWrapper(host));
@@ -110,7 +115,11 @@ const CreateDelegateForm: React.FC<{}> = () => {
                       <div className={classes.desc}>
                           When does the delegation round start? (exact date and time in UTC)*
                       </div>
-
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker label="Basic date time picker" />
+                          </DemoContainer>
+                      </LocalizationProvider>
                       <input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>
                   </div>
 
