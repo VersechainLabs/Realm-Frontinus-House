@@ -21,6 +21,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
         description: "",
         title: "",
         startTime: new Date("") ,
+        endTime: new Date("") ,
         proposalEndTime: new Date("") ,
         votingEndTime:  new Date("") ,
         num: 0,
@@ -46,6 +47,10 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }
     const saveFormVote = (value:string) => {
         state.votingEndTime = new Date(value);
+        console.log(state);
+    }
+    const saveFormEnd = (value:string) => {
+        state.endTime = new Date(value);
         console.log(state);
     }
 
@@ -103,10 +108,18 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          When does the round proposing period start? (exact date and time in UTC)*
+                          When does the delegation round start? (exact date and time in UTC)*
                       </div>
 
                       <input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>
+                  </div>
+
+                  <div className={classes.labelMargin}>
+                      <div className={classes.desc}>
+                          When does the delegation round end? (exact date and time in UTC)*
+                      </div>
+
+                      <input onChange={event => saveFormEnd(event.target.value)} name={'startTime'} className={classes.input} type="text"/>
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
