@@ -30,7 +30,7 @@ import {
       return this.delegatesService.findAll(); 
     }
   
-    @Post()
+    @Post('/create')
     async create(@Body() createDelegateDto: CreateDelegateDto): Promise<Delegate> {
       const delegate = new Delegate();
       delegate.title = createDelegateDto.title;

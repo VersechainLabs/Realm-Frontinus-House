@@ -31,7 +31,7 @@ import {
     }
   
 
-    @Post()
+    @Post('/create')
     async create(@Body() createCommentDto: CreateCommentDto): Promise<Comment> {
         return await this.commentsService.createComment(createCommentDto);
     }

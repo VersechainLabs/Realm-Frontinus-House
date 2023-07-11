@@ -48,7 +48,7 @@ export class AuctionsController {
   // }
 
   // Chao
-  @Post()
+  @Post('/create')
   async createForCommunity(
     // @Param('communityId', ParseIntPipe) communityId: number,
     @Body() createAuctionDto: CreateAuctionDto): Promise<Auction> 
