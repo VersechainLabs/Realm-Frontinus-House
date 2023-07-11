@@ -46,7 +46,7 @@ export class PropHouseWrapper {
 
   async createDelegateAuction(auction: any): Promise<any[]> {
     try {
-      return (await axios.post(`${this.host}/delegate`, auction )).data;
+      return (await axios.post(`${this.host}/delegates`, auction )).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
