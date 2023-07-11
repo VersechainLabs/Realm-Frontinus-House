@@ -1,4 +1,4 @@
-import { DeltaStatic } from 'quill';
+import { DeltaStatic, Quill } from 'quill';
 import React, { useEffect } from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
@@ -12,6 +12,9 @@ type QuillEditorProps = {
   onChange: (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => void;
   title: string | undefined;
   loading: boolean;
+
+  // 用于在上层操作 quill 的内容，通常是提交之后将 quill 的内容清空时使用
+  onQuillInit?: (quill: Quill) => void;
 }
 
 export default function QuillEditor(props: QuillEditorProps) {
@@ -55,6 +58,10 @@ export default function QuillEditor(props: QuillEditorProps) {
       return;
     }
 
+    if (props.onQuillInit) {
+      props.onQuillInit(quill);
+    }
+
     quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
       if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
@@ -92,3 +99,5 @@ export default function QuillEditor(props: QuillEditorProps) {
     </Form>
   );
 }
+
+export const EMPTY_DELTA = { ops: [] } as unknown as DeltaStatic;

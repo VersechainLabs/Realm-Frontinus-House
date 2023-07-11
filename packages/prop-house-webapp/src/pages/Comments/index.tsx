@@ -1,11 +1,9 @@
 import { Container, ListGroup, ListGroupItem } from 'react-bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
-import Button, { ButtonColor } from '../../components/Button';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppSelector } from '../../hooks';
-import QuillEditor from '../../components/QuillEditor';
-import { DeltaStatic } from 'quill';
 import { useParams } from 'react-router-dom';
+import CreateCommentWidget from '../../components/CreateCommentWidget';
 
 const Comments = () => {
   const params = useParams();
@@ -25,19 +23,19 @@ const Comments = () => {
     getCommentList();
   }, []);
 
+  const onCommentCreated = (newComment: CommentModal) => {
+    setCommentList(commentList.concat(newComment));
+  };
+
   return (<>
     <Container>
-      <Button text='Test Button'
-              onClick={() => {
-              }}
-              bgColor={ButtonColor.Purple}
-      />
-
-      <div style={{ marginTop: 50 }}>
-        {/*<CreateCommentWidget proposalId={1} />*/}
+      <div style={{ marginTop: 20 }}>
       </div>
 
-      <CreateCommentWidget proposalId={Number(proposalId)} />
+      <CreateCommentWidget
+        proposalId={Number(proposalId)}
+        onCommentCreated={onCommentCreated}
+      />
 
       {commentList.length > 0 &&
         <ListGroup>
@@ -73,38 +71,5 @@ export type CommentModal = {
   content: string;
   visible: boolean;
   owner: string;
-  createdData: string;
-}
-
-// CreateCommentModal
-type CreateCommentWidgetProps = {
-  proposalId: number;
-}
-
-export function CreateCommentWidget(props: CreateCommentWidgetProps) {
-  const [content, setContent] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
-    if (plainText.trim().length === 0) {
-      setContent('');
-    } else {
-      setContent(JSON.stringify(deltaContent.ops));
-    }
-  };
-
-  const submit = () => {
-    console.log(content);
-    setLoading(!loading);
-  };
-
-  return (<>
-    <QuillEditor
-      widgetKey={'Comment-' + props.proposalId}
-      onChange={handleChange}
-      title='Create Comment'
-      loading={loading}
-    />
-    <Button text={'submit'} bgColor={ButtonColor.Purple} onClick={submit} />
-  </>);
+  createdDate: string;
 }

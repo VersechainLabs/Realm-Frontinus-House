@@ -458,4 +458,17 @@ export class PropHouseWrapper {
       throw e.response.data.message;
     }
   }
+
+  async createComment(proposalId: number, content: string, owner: string): Promise<CommentModal> {
+    try {
+      return (await axios.post(`${this.host}/comments/create`, {
+          'proposalId': proposalId,
+          'content': content,
+          'owner': owner,
+        })
+      ).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
 }
