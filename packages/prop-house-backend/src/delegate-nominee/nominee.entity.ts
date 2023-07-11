@@ -1,6 +1,6 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Community } from 'src/community/community.entity';
-import { Nominee } from 'src/delegate-nominee/nominee.entity';
+import { Delegate } from 'src/delegate/delegate.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
   Entity,
@@ -17,10 +17,10 @@ import {
 
 @Entity()
 @ObjectType()
-export class Delegate {
+export class Nominee {
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
-    description: 'All delegate are issued a unique ID number',
+    description: 'All nominees are issued a unique ID number',
   })
   id: number;
 
@@ -29,38 +29,35 @@ export class Delegate {
 
   @Column()
   @Field(() => String)
+  address: string;
+
+//   @Column()
+//   @Field(() => String)
+//   signedData: string;
+
+  @Column()
+  @Field(() => String)
   title: string;
+
+  @Column()
+  @Field(() => String)
+  tldr: string;
 
   @Column({ nullable: true })
   @Field(() => String)
   description: string;
 
-  @Column()
-  @Field(() => Date, {
-    description: 'After the Start Time users may submit proposals',
-  })
-  startTime: Date;
+  @ManyToOne(() => Delegate)
+  @JoinColumn()
+  @Field(() => Delegate)
+  delegate: Delegate;
 
-  
-  @Column()
-  @Field(() => Date, {
-    description: 'Users may submit proposals up until Proposal End Time',
-  })
-  proposalEndTime: Date;
+  @Column({})
+  delegateId: number;
 
-  @Column()
-  @Field(() => Date, {
-    description:
-      'Between Proposal End Time and Voting End Time, users may submit votes for proposals',
-  })
-  votingEndTime: Date;
-
-  @Column()
-  @Field(() => Date, {
-    description:
-      'Between Voting End Time and End Time, delegaters vote for users',
-  })
-  endTime: Date;
+  @Column({ type: 'integer', default: 0 })
+  @Field(() => Int)
+  delegatorCount: number;
 
   @Column()
   @Field(() => Date)
@@ -69,6 +66,10 @@ export class Delegate {
   @Column({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;
+
+  @Column({ nullable: true })
+  @Field(() => Date)
+  deletedAt: Date;
 
   @BeforeInsert()
   setCreatedDate() {
@@ -79,16 +80,6 @@ export class Delegate {
   setUpdatedDate() {
     this.lastUpdatedDate = new Date();
   }
-
-  // May cause issue to delegate?
-  // @OneToMany(() => Nominee, (nominee) => nominee.delegate)
-  // @JoinColumn()
-  // nominees: Nominee[];
-
-
-
-//   public isAcceptingProposals = (): boolean =>
-//     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
 
 // @InputType()
