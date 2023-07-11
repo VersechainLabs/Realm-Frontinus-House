@@ -451,9 +451,15 @@ export class PropHouseWrapper {
     }
   }
 
-  async getCommentList(proposalId: number, page: number): Promise<CommentModal[]> {
+  async getCommentList(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
     try {
-      return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`)).data;
+      return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`, {
+        params: {
+          'skip': skip,
+          'limit': limit,
+          'order': order,
+        },
+      })).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
