@@ -38,19 +38,7 @@ export class CommentsService {
 //   }
 
 
-  // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
-  //   return (
-  //     this.auctionsRepository
-  //       .createQueryBuilder('a')
-  //       .select('a.*')
-  //       .where('a.community.id = :id', { id })
-  //       // This select adds a new property, reflected in AuctionWithProposalCount
-  //       .addSelect('SUM(p."numProposals")', 'numProposals')
-  //       .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
-  //       .groupBy('a.id')
-  //       .getRawMany()
-  //   );
-  // }
+
   async findByProposal(proposalId: number, dto: GetCommentsDto): Promise<Comment[]> {
     return await this.commentsRepository
       .createQueryBuilder('a')
@@ -61,6 +49,7 @@ export class CommentsService {
       .orderBy('id', dto.order)
       .getRawMany();
   }
+
 
   // findAllActiveForCommunities(dto: GetAuctionsDto): Promise<Auction[]> {
   //   return this.auctionsRepository

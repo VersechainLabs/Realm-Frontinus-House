@@ -16,6 +16,7 @@ import {
   import { ProposalsService } from 'src/proposal/proposals.service';
   import { Proposal } from 'src/proposal/proposal.entity';
   import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
+  import { Order } from 'src/utils/dto-types';
   
   @Controller('comments')
   export class CommentsController {
@@ -39,9 +40,16 @@ import {
 
     @Get('/byProposal/:proposalId')
     async findByProposal(
-        @Param('proposalId') proposalId: number, 
-        @Body() dto: GetCommentsDto
-        ): Promise<Comment[]> {
+      @Param('proposalId') proposalId: number, 
+      @Query('limit') limit: number, 
+      @Query('skip') skip: number, 
+      @Query('order') order: Order,         
+      @Body() dto: GetCommentsDto
+    ) {
+      dto.limit = limit;
+      dto.skip = skip;
+      dto.order = order;
+
       const comments = await this.commentsService.findByProposal(proposalId, dto);
       if (!comments)
         throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
@@ -152,4 +160,3 @@ import {
     //   return Number(numVotes);
     // }
   }
-  
