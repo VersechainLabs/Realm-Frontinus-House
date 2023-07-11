@@ -1,7 +1,7 @@
 .ql-container {
   border: none;
   font-size: 16px !important;
-  color: var(--brand-black);
+  color: var(--text-color);
   margin-bottom: 1.75rem;
   white-space: pre-line;
   border-bottom-left-radius: 12px;
@@ -10,7 +10,7 @@
   padding: 1rem 0.75rem;
   margin-bottom: 0rem;
   min-height: 20em !important;
-  background: white;
+  background: var(--container-bg);
 }
 
 .ql-toolbar {
