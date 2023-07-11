@@ -29,6 +29,8 @@ import {
 import { multiVoteSignature } from './utils/multiVoteSignature';
 import { multiVotePayload } from './utils/multiVotePayload';
 import { Signer } from 'ethers';
+// @ts-ignore
+import { CommentModal } from 'prop-house-webapp/src/pages/Comments';
 
 export class PropHouseWrapper {
   constructor(
@@ -444,6 +446,14 @@ export class PropHouseWrapper {
   async getCommunityWithName(name: string): Promise<CommunityWithAuctions> {
     try {
       return (await axios.get(`${this.host}/communities/name/${name}`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async getCommentList(proposalId: number, page: number): Promise<CommentModal[]> {
+    try {
+      return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
