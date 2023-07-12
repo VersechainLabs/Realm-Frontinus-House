@@ -12,6 +12,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Popup from '../../components/Popup';
+import dayjs from "dayjs";
 
 const CreateRound: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
@@ -25,9 +26,9 @@ const CreateRound: React.FC<{}> = () => {
     const state  = {
         description: "",
         title: "",
-        startTime: new Date("") ,
-        proposalEndTime: new Date("") ,
-        votingEndTime:  new Date("") ,
+        startTime: new Date(),
+        proposalEndTime: new Date(),
+        votingEndTime:  new Date(),
         numWinners: 0,
         currencyType: "",
         fundingAmount: 0,
@@ -50,33 +51,15 @@ const CreateRound: React.FC<{}> = () => {
         console.log(state);
     }
     const saveFormStart = (value:any) => {
-        state.startTime = timestampToTime(new Date(value).getTime());
-        // console.log(value.$d);
-        // console.log(new Date(state.startTime));
+        state.startTime = new Date(value);
     }
-
-    // 时间格式化
-    const timestampToTime = (chinaStandard:any) => {
-        // var chinaStandard=Mon Jul 19 2021 11:11:55 GMT+0800 (中国标准时间);
-        const date = new Date(chinaStandard);
-            const y = date.getFullYear();
-            const m = date.getMonth() + 1 < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth() + 1;
-            const d = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
-            const h = date.getHours();
-            const minute = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
-            const second = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
-            return  y + '-' + m + '-' + d+' '+h+':'+minute+ ':' + second;
-    }
-
 
     const saveFormProposal = (value:any) => {
         // state.proposalEndTime = Date.parse(value);
-        state.proposalEndTime = timestampToTime(new Date(value).getTime());
-        console.log(state);
+        state.proposalEndTime = new Date(value);
     }
     const saveFormVote = (value:any) => {
-        state.votingEndTime = timestampToTime(new Date(value).getTime());
-        console.log(state);
+        state.votingEndTime = new Date(value);
     }
     const saveFormType = (value:string) => {
         state.currencyType = value;
