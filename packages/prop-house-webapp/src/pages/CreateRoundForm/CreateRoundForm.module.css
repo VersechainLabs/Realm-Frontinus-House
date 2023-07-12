@@ -25,6 +25,9 @@
   color:#F5EEE6;
   margin-bottom: 10px;
 }
+.MuiInputBase-input {
+    color: red;
+}
 .input {
     display: block;
     width: 100%;
@@ -70,4 +73,9 @@
     margin-bottom: 10px;
 }
 
-
+.labelMargin input {
+    color: #F5EEE6;
+}
+.labelMargin svg {
+    color: #F5EEE6;
+}
