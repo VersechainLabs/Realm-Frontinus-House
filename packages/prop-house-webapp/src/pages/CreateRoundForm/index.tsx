@@ -22,7 +22,6 @@ const CreateRound: React.FC<{}> = () => {
         client.current = new PropHouseWrapper(host, signer);
     }, [signer, host]);
     const navigate = useNavigate();
-
     const state  = {
         description: "",
         title: "",
@@ -37,9 +36,12 @@ const CreateRound: React.FC<{}> = () => {
         communityId: 1,
         balanceBlockTag: 0,
     }
+    const [flag, setFlag] = useState(false)
+
 
     const openPopup:{flag:boolean} = {
         flag: false
+
     };
 
     const saveFormTitle = (value:string) => {
@@ -79,7 +81,7 @@ const CreateRound: React.FC<{}> = () => {
     const handleSubmit = async (e:any) => {
         //该方法阻止表单的提交
         e.preventDefault();
-
+        //
         const round = await client.current.createAuction(new TimedAuction(
             true,
             state.title,
@@ -93,13 +95,21 @@ const CreateRound: React.FC<{}> = () => {
             state.communityId,
             state.balanceBlockTag,
             state.description,
-        ));
-        console.log(round);
-        openPopup.flag = true;
-        navigate('/frontinus');
+        )).then((res)=>{
+            console.log(res);
+        }).catch((e)=>{
+            console.log(e);
+        });
+        setFlag(true);
 
+        // navigate('/frontinus');
+        console.log(flag);
     }
 
+    const close = ()=> {
+        setFlag(false);
+        navigate('/frontinus');
+    };
 
   return (
       <div  className={classes.blackBg}>
@@ -188,10 +198,15 @@ const CreateRound: React.FC<{}> = () => {
                       Submit
                   </button>
                   </form>
+                  {flag &&
+                  <Popup
+
+                      trigger={flag}
+                      onClose={close}
+                  />}
+
               </Row>
-              {/*<Popup*/}
-              {/*    trigger={openPopup.flag}*/}
-              {/*/>*/}
+
           </Container>
       </div>
 
