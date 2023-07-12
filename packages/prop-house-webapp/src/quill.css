@@ -9,7 +9,6 @@
   border: 1px rgba(0, 0, 0, 0.1) solid;
   padding: 1rem 0.75rem;
   margin-bottom: 0rem;
-  min-height: 20em !important;
   background: var(--container-bg);
 }
 
@@ -26,7 +25,6 @@
 .ql-editor {
   font-size: 16px !important;
   padding: 0 !important;
-  min-height: 20em !important;
   font-weight: 500;
 }
 .ql-editor.ql-blank::before {
@@ -47,9 +45,10 @@
 .editPropContainer .hideBorderBox {
   background: white;
 }
-.quill {
-  margin-top: -20px;
-}
+
+/*.quill {*/
+/*  margin-top: -20px;*/
+/*}*/
 
 .ReactModal__Overlay--after-open {
   position: fixed;

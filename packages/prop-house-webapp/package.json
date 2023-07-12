@@ -10,6 +10,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/react-fontawesome": "^0.1.17",
+    "@mui/lab": "^5.0.0-alpha.135",
     "@mui/material": "^5.13.7",
     "@mui/x-date-pickers": "^6.9.2",
     "@nouns/prop-house-wrapper": "1.0.0",

@@ -451,9 +451,42 @@ export class PropHouseWrapper {
     }
   }
 
-  async getCommentList(proposalId: number, page: number): Promise<CommentModal[]> {
+  async getCommentList(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
     try {
-      return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`)).data;
+      return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`, {
+        params: {
+          'skip': skip,
+          'limit': limit,
+          'order': order,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async createComment(proposalId: number, content: string, owner: string): Promise<CommentModal | undefined> {
+    if (!this.signer) return undefined;
+    try {
+      let payload = {
+        'proposalId': proposalId,
+        'content': content,
+        'owner': owner,
+      };
+      const signMessage = JSON.stringify(payload);
+      const signResult = await this.signer.signMessage(signMessage);
+
+      return (await axios.post(`${this.host}/comments/create`, {
+          'proposalId': proposalId,
+          'content': content,
+          'owner': owner,
+          'signedData': {
+            'message': signMessage,
+            'signature': signResult,
+            'signer': owner,
+          },
+        })
+      ).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
