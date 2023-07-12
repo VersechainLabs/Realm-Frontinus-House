@@ -17,8 +17,6 @@ import {
   import { Proposal } from 'src/proposal/proposal.entity';
   import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
   import { Order } from 'src/utils/dto-types';
-import { verifySignedPayload } from 'src/utils/verifySignedPayload';
-import { ECDSASignedPayloadValidationPipe } from 'src/entities/ecdsa-signed.pipe';
   
   @Controller('comments')
   export class CommentsController {
@@ -35,17 +33,7 @@ import { ECDSASignedPayloadValidationPipe } from 'src/entities/ecdsa-signed.pipe
   
 
     @Post('/create')
-    async create(@Body(ECDSASignedPayloadValidationPipe) createCommentDto: CreateCommentDto): Promise<Comment> {
-
-      // console.log("createCommentDto: ", createCommentDto);
-      // const signedPayload = JSON.parse(
-      //   Buffer.from(createCommentDto.signedData.message, 'base64').toString(),
-      // );
-      
-      // const voteFromPayload = verifySignedPayload(createVoteDto, foundProposal);
-      
-      // console.log("message: ", createCommentDto.signedData.message);
-
+    async create(@Body() createCommentDto: CreateCommentDto): Promise<Comment> {
         return await this.commentsService.createComment(createCommentDto);
     }
   
