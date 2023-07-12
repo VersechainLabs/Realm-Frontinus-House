@@ -4,11 +4,11 @@ import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppSelector } from '../../hooks';
 import { useParams } from 'react-router-dom';
 import CreateCommentWidget from '../../components/CreateCommentWidget';
-import { List, ListItem } from '@mui/material';
+import { Avatar, List, ListItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import QuillViewer from '../../components/QuillViewer';
 import EthAddress from '../../components/EthAddress';
-import { useAccount } from 'wagmi';
+import AddressAvatar from '../../components/AddressAvatar';
 
 const Comments = () => {
   const params = useParams();
@@ -106,9 +106,9 @@ export function CommentListItem(props: CommentListItemProps) {
 
   return (
     <ListItem key={`comment-${comment.id}`}>
-      {/*<Jazzicon diameter={20} seed={jsNumberForAddress(props.comment.owner)} />*/}
+      <Avatar sx={{ width: 40, height: 40 }}><AddressAvatar size={30} address={comment.owner} /></Avatar>
       <div>
-        <EthAddress address={props.comment.owner} addAvatar />
+        <EthAddress address={props.comment.owner} />
       </div>
       <QuillViewer content={props.comment.content} />
     </ListItem>
@@ -125,3 +125,4 @@ export type CommentModal = {
   owner: string;
   createdDate: string;
 }
+
