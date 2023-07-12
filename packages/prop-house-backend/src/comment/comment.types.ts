@@ -9,13 +9,14 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { SignedEntity } from 'src/entities/signed';
 
-export class CreateCommentDto {
+export class CreateCommentDto extends SignedEntity {
   @IsString()
   content: string;
 
-  @IsString()
-  owner: string;
+  // @IsString()
+  // owner: string;
 
   @IsNumber()
   @IsPositive()
