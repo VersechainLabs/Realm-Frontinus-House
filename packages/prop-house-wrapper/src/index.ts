@@ -40,7 +40,7 @@ export class PropHouseWrapper {
 
   async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
     try {
-      return (await axios.post(`${this.host}/auctions`, auction )).data;
+      return (await axios.post(`${this.host}/auctions/create`, auction )).data;
     } catch (e: any) {
       throw e.response.data.message;
     }

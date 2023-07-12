@@ -7,6 +7,11 @@ import { useSigner } from 'wagmi';
 import {nameToSlug} from "../../utils/communitySlugs";
 import { TimedAuction } from '@nouns/prop-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import Popup from '../../components/Popup';
 
 const CreateRound: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
@@ -32,6 +37,10 @@ const CreateRound: React.FC<{}> = () => {
         balanceBlockTag: 0,
     }
 
+    const openPopup:{flag:boolean} = {
+        flag: false
+    };
+
     const saveFormTitle = (value:string) => {
         state.title = value;
         console.log(state);
@@ -40,17 +49,33 @@ const CreateRound: React.FC<{}> = () => {
         state.description = value;
         console.log(state);
     }
-    const saveFormStart = (value:string) => {
-        state.startTime = new Date(value);
-        console.log(state);
+    const saveFormStart = (value:any) => {
+        state.startTime = timestampToTime(new Date(value).getTime());
+        // console.log(value.$d);
+        // console.log(new Date(state.startTime));
     }
-    const saveFormProposal = (value:string) => {
+
+    // 时间格式化
+    const timestampToTime = (chinaStandard:any) => {
+        // var chinaStandard=Mon Jul 19 2021 11:11:55 GMT+0800 (中国标准时间);
+        const date = new Date(chinaStandard);
+            const y = date.getFullYear();
+            const m = date.getMonth() + 1 < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth() + 1;
+            const d = date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate();
+            const h = date.getHours();
+            const minute = date.getMinutes() < 10 ? ('0' + date.getMinutes()) : date.getMinutes();
+            const second = date.getSeconds() < 10 ? ('0' + date.getSeconds()) : date.getSeconds();
+            return  y + '-' + m + '-' + d+' '+h+':'+minute+ ':' + second;
+    }
+
+
+    const saveFormProposal = (value:any) => {
         // state.proposalEndTime = Date.parse(value);
-        state.proposalEndTime = new Date(value);
+        state.proposalEndTime = timestampToTime(new Date(value).getTime());
         console.log(state);
     }
-    const saveFormVote = (value:string) => {
-        state.votingEndTime = new Date(value);
+    const saveFormVote = (value:any) => {
+        state.votingEndTime = timestampToTime(new Date(value).getTime());
         console.log(state);
     }
     const saveFormType = (value:string) => {
@@ -87,6 +112,7 @@ const CreateRound: React.FC<{}> = () => {
             state.description,
         ));
         console.log(round);
+        openPopup.flag = true;
         navigate('/frontinus');
 
     }
@@ -123,21 +149,36 @@ const CreateRound: React.FC<{}> = () => {
                           When does the round proposing period start? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>
+                      {/*<input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>*/}
+
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormStart(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
+
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
                           When does the round voting period start? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormProposal(event.target.value)} name={'proposalEndTime'} className={classes.input} type="text"/>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
                           When does the round voting period end? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormVote(event.target.value)} name={'votingEndTime'} className={classes.input} type="text"/>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormVote(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
@@ -165,6 +206,9 @@ const CreateRound: React.FC<{}> = () => {
                   </button>
                   </form>
               </Row>
+              {/*<Popup*/}
+              {/*    trigger={openPopup.flag}*/}
+              {/*/>*/}
           </Container>
       </div>
 
