@@ -35,12 +35,15 @@ export class Delegate {
   @Field(() => String)
   description: string;
 
+  @Column({ type: 'integer', default: 0 })
+  @Field(() => Int)
+  nomineeCount: number;
+
   @Column()
   @Field(() => Date, {
     description: 'After the Start Time users may submit proposals',
   })
   startTime: Date;
-
   
   @Column()
   @Field(() => Date, {
