@@ -17,6 +17,7 @@ import {
   import { Proposal } from 'src/proposal/proposal.entity';
   import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
   import { Order } from 'src/utils/dto-types';
+import { ECDSAPersonalSignedPayloadValidationPipe } from '../entities/ecdsa-personal-signed.pipe';
   
   @Controller('comments')
   export class CommentsController {
@@ -33,7 +34,7 @@ import {
   
 
     @Post('/create')
-    async create(@Body() createCommentDto: CreateCommentDto): Promise<Comment> {
+    async create(@Body(ECDSAPersonalSignedPayloadValidationPipe) createCommentDto: CreateCommentDto): Promise<Comment> {
         return await this.commentsService.createComment(createCommentDto);
     }
   

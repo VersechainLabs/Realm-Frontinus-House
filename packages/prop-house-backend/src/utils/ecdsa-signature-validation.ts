@@ -1,5 +1,6 @@
 import { verifyTypedData } from '@ethersproject/wallet';
-import { SignedEntity } from 'src/entities/signed';
+import { SignedDataPayload, SignedEntity } from 'src/entities/signed';
+import { verifyMessage } from '@ethersproject/wallet/src.ts';
 
 /**
  * Verify the validity of an EOA signature
@@ -35,6 +36,28 @@ export const verifyAccountSignature = (
     return {
       isValidAccountSig: false,
       accountSigError: `Incorrect EOA signer. Actual: ${actualSigner}. Expected: ${value.address}.`,
+    };
+  }
+  return {
+    isValidAccountSig: true,
+  };
+};
+
+export const verifyPersonalMessageSignature = (signDataPayload: SignedDataPayload) => {
+  let actualSigner: string | undefined;
+  try {
+    actualSigner = verifyMessage(signDataPayload.message, signDataPayload.signature);
+  } catch (error) {
+    return {
+      isValidAccountSig: false,
+      accountSigError: `EOA signature invalid. Error: ${error}`,
+    };
+  }
+
+  if (actualSigner.toLowerCase() !== signDataPayload.signer.toLowerCase()) {
+    return {
+      isValidAccountSig: false,
+      accountSigError: `Incorrect EOA signer. Actual: ${actualSigner}. Expected: ${signDataPayload.signer}.`,
     };
   }
   return {
