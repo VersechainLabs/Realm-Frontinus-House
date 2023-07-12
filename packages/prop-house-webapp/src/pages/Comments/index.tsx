@@ -1,4 +1,4 @@
-import { Container, ListGroupItem } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppSelector } from '../../hooks';
@@ -7,6 +7,8 @@ import CreateCommentWidget from '../../components/CreateCommentWidget';
 import { List, ListItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import QuillViewer from '../../components/QuillViewer';
+import EthAddress from '../../components/EthAddress';
+import { useAccount } from 'wagmi';
 
 const Comments = () => {
   const params = useParams();
@@ -104,6 +106,10 @@ export function CommentListItem(props: CommentListItemProps) {
 
   return (
     <ListItem key={`comment-${comment.id}`}>
+      {/*<Jazzicon diameter={20} seed={jsNumberForAddress(props.comment.owner)} />*/}
+      <div>
+        <EthAddress address={props.comment.owner} addAvatar />
+      </div>
       <QuillViewer content={props.comment.content} />
     </ListItem>
   );
