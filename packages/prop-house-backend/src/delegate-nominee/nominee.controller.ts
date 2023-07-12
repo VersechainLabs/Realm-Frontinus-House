@@ -32,6 +32,17 @@ import {
       return this.nomineeService.findAll(); 
     }
   
+    @Get('/byDelegate/:delegateId')
+    async findByDelegate(
+      @Param('delegateId') delegateId: number,        
+      @Body() dto: GetNomineesDto
+    ) {
+      const nominees = await this.nomineeService.findByDelegate(delegateId, dto);
+      if (!nominees)
+        throw new HttpException('Nominees not found', HttpStatus.NOT_FOUND);
+      return nominees;
+    }
+
     @Post('/create')
     async create(@Body() createNomineeDto: CreateNomineeDto): Promise<Nominee> {
         console.log("create nominee:", createNomineeDto.delegateId);

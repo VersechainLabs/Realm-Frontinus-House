@@ -53,26 +53,16 @@ export class NomineeService {
     return await this.nomineeRepository.save(newNominee);
   }
 
-  // findAllActiveForCommunities(dto: GetAuctionsDto): Promise<Auction[]> {
-  //   return this.auctionsRepository
-  //     .createQueryBuilder('a')
-  //     .select('a.*')
-  //     .addSelect('SUM(p."numProposals")', 'numProposals')
-  //     .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
-  //     .leftJoin('a.community', 'c')
-  //     .groupBy('a.id, c.contractAddress')
-  //     .offset(dto.skip)
-  //     .limit(dto.limit)
-  //     .addSelect(
-  //       'CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 1 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 2 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 3 ELSE CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 4 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 5 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 6 ELSE 7 END END END END END END',
-  //       'auction_order',
-  //     )
-  //     .setParameter('addresses', dto.addresses)
-  //     .orderBy('auction_order', 'ASC')
-  //     .addOrderBy('a.votingEndTime', 'DESC')
-  //     .getRawMany();
-  // }
-
+  async findByDelegate(delegateId: number, dto: GetNomineesDto): Promise<Nominee[]> {
+    return await this.nomineeRepository
+      .createQueryBuilder('a')
+      .select('a.*')
+      .where('a.delegateId = :deId', { deId: delegateId })
+      .offset(dto.skip)
+      .limit(dto.limit)
+      .orderBy('id', dto.order)
+      .getRawMany();
+  }
   // latestNumProps(dto: LatestDto): Promise<number> {
   //   const timestamp = new Date(dto.timestamp); // Convert Unix timestamp (ms) to Date object
   //   return this.auctionsRepository
