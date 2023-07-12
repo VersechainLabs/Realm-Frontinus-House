@@ -32,10 +32,10 @@ const AcceptingPropsModule: React.FC<{
       <div className={classes.bulletList}>
         <div className={classes.bulletItem}>
           <hr className={classes.bullet} />
-          <p>
+          <div className={classes.customParagraph}>
             Any Realm Holder can submit an application to become a delegate. Other Realm Holders
-            will vote on the best application. The top 20 applicants will become delegates
-          </p>
+            will vote on the best application. The top 20 applicants will become delegates.
+          </div>
         </div>
 
         <div className={classes.bulletItem}>
