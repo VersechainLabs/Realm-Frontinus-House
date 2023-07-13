@@ -16,6 +16,7 @@
 .cardImage img {
   width: 100px;
   padding-bottom: 12px;
+  border-radius: 50px;
 }
 .message {
   font-size: 28px;
