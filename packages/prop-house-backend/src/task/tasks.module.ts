@@ -10,11 +10,12 @@ import { VotesService } from 'src/vote/votes.service';
 import { Vote } from 'src/vote/vote.entity';
 import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
 import { InfiniteAuction } from 'src/infinite-auction/infinite-auction.entity';
+import { Community } from 'src/community/community.entity';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Proposal, Vote, Auction, InfiniteAuction]),
+    TypeOrmModule.forFeature([Proposal, Vote, Auction, InfiniteAuction, Community]),
   ],
   providers: [
     ProposalsService,

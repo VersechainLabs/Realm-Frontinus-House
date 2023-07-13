@@ -4,6 +4,8 @@ import { proposalCountSubquery } from 'src/utils';
 import { Repository } from 'typeorm';
 import { InfiniteAuction } from './infinite-auction.entity';
 import { GetInfiniteAuctionsDto } from './infinite-auction.types';
+import { Auction } from 'src/auction/auction.entity';
+import { Community } from 'src/community/community.entity';
 
 export type InfiniteAuctionWithProposalCount = InfiniteAuction & {
   numProposals: number;
@@ -12,9 +14,10 @@ export type InfiniteAuctionWithProposalCount = InfiniteAuction & {
 @Injectable()
 export class InfiniteAuctionService {
   constructor(
-    @InjectRepository(InfiniteAuction)
-    private infiniteAuctionsRepository: Repository<InfiniteAuction>,
-  ) {}
+    @InjectRepository(InfiniteAuction) private infiniteAuctionsRepository: Repository<InfiniteAuction>,
+    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
+    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    ) {}
 
   findAll(dto: GetInfiniteAuctionsDto): Promise<InfiniteAuction[]> {
     return this.infiniteAuctionsRepository.find({

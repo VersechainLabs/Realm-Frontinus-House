@@ -1,0 +1,16 @@
+.quill-viewer .ql-container {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 0.875em;
+    height: 100%;
+    margin: 0;
+    position: relative;
+}
+
+.quill-viewer .ql-container.ql-snow {
+    border: 0;
+    font-size: 0.875em;
+}
+
+.quill-viewer .ql-container .ql-editor {
+    padding: 0;
+}

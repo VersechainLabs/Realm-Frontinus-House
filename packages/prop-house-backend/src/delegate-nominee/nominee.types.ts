@@ -10,34 +10,25 @@ import {
   Min,
 } from 'class-validator';
 
-export class CreateAuctionDto {
+export class CreateNomineeDto {
   @IsString()
-  @IsOptional()
-  startTime: Date;
+  address: string;
 
-  @IsString()
-  proposalEndTime: Date;
-
-  @IsString()
-  votingEndTime: Date;
+//   @IsString()
+//   signedData: string;
 
   @IsString()
   title: string;
 
-  @IsNumber()
-  @IsPositive()
-  fundingAmount: number;
-
-  @IsNumber()
-  @IsPositive()
-  numWinners: number;
+  @IsString()
+  tldr: string;
 
   @IsString()
-  currencyType: string;
+  description: string;
 
   @IsNumber()
   @IsPositive()
-  communityId: number;
+  delegateId: number;
 }
 
 export enum Order {
@@ -45,7 +36,7 @@ export enum Order {
   DESC = 'DESC',
 }
 
-export class GetAuctionsDto {
+export class GetNomineesDto {
   @IsOptional()
   @IsInt()
   @Min(1)
@@ -77,5 +68,5 @@ export class LatestDto {
   @IsInt()
   @Min(1)
   @Transform(({ value }) => Number(value))
-  auctionId: number;
+  delegateId: number;
 }

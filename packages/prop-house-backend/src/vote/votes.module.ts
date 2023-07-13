@@ -9,10 +9,11 @@ import { ProposalsService } from 'src/proposal/proposals.service';
 import { Vote } from './vote.entity';
 import { VotesController } from './votes.controller';
 import { VotesService } from './votes.service';
+import { Community } from 'src/community/community.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Vote, Proposal, Auction, InfiniteAuction]),
+    TypeOrmModule.forFeature([Vote, Proposal, Auction, InfiniteAuction, Community]),
   ],
   controllers: [VotesController],
   providers: [

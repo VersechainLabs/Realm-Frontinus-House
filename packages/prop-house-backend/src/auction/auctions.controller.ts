@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -18,6 +19,7 @@ import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity
 
 @Controller('auctions')
 export class AuctionsController {
+  [x: string]: any;
   constructor(
     private readonly auctionsService: AuctionsService,
     private readonly proposalService: ProposalsService,
@@ -25,20 +27,35 @@ export class AuctionsController {
 
   @Get()
   getVotes(): Promise<Auction[]> {
-    return this.auctionsService.findAll();
+    return this.auctionsService.findAll(); 
   }
 
-  @Post()
-  async create(@Body() createAuctionDto: CreateAuctionDto): Promise<Auction> {
-    const auction = new Auction();
-    auction.startTime = createAuctionDto.startTime
-      ? ParseDate(createAuctionDto.startTime)
-      : new Date();
-    auction.fundingAmount = createAuctionDto.fundingAmount;
-    auction.proposalEndTime = ParseDate(createAuctionDto.proposalEndTime);
-    auction.votingEndTime = ParseDate(createAuctionDto.votingEndTime);
-    auction.title = createAuctionDto.title;
-    return this.auctionsService.store(auction);
+
+  // @Post()
+  // async create(@Body() createAuctionDto: CreateAuctionDto): Promise<Auction> {
+  //   const auction = new Auction();
+  //   auction.startTime = createAuctionDto.startTime
+  //     ? ParseDate(createAuctionDto.startTime)
+  //     : new Date();
+  //   auction.fundingAmount = createAuctionDto.fundingAmount;
+  //   auction.proposalEndTime = ParseDate(createAuctionDto.proposalEndTime);
+  //   auction.votingEndTime = ParseDate(createAuctionDto.votingEndTime);
+  //   auction.title = createAuctionDto.title;
+  //   auction.numWinners = createAuctionDto.numWinners;
+  //   auction.currencyType = createAuctionDto.currencyType;
+  //   // auction.communityId = createAuctionDto.communityId;
+  //   return this.auctionsService.store(auction);
+  // }
+
+  // Chao
+  @Post('/create')
+  async createForCommunity(
+    // @Param('communityId', ParseIntPipe) communityId: number,
+    @Body() createAuctionDto: CreateAuctionDto): Promise<Auction> 
+  {
+    const newAuction = await this.auctionsService.createAuctionByCommunity(createAuctionDto);
+
+    return newAuction;
   }
 
   @Get(':id')

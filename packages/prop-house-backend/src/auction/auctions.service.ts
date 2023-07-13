@@ -1,17 +1,19 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
 import { Auction } from './auction.entity';
-import { GetAuctionsDto, LatestDto } from './auction.types';
+import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
+import { Community } from 'src/community/community.entity';
+// import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
 
 export type AuctionWithProposalCount = Auction & { numProposals: number };
 
 @Injectable()
 export class AuctionsService {
   constructor(
-    @InjectRepository(Auction)
-    private auctionsRepository: Repository<Auction>,
+    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
+    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
   ) {}
 
   findAll(): Promise<Auction[]> {
@@ -163,5 +165,26 @@ export class AuctionsService {
 
   async store(proposal: Auction): Promise<Auction> {
     return await this.auctionsRepository.save(proposal, { reload: true });
+  }
+
+  // Chao
+  async createAuctionByCommunity(
+    // communityId: number, 
+    createAcutionDetails: CreateAuctionDto
+  ) {
+    // console.log("createAcutionDetails.communityId:" + createAcutionDetails.communityId);
+    const community = await this.communitiesRepository.findOne(createAcutionDetails.communityId);
+
+    if (!community) {
+      throw new HttpException(
+        'Community not found. Cannot create auction',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const newAuction = this.auctionsRepository.create({...createAcutionDetails, community});
+    const savedAuction = await this.auctionsRepository.save(newAuction);
+    
+    return savedAuction;
   }
 }
