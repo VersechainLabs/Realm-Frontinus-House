@@ -1,4 +1,4 @@
-import { PipeTransform, Injectable } from '@nestjs/common';
+import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { SignatureState } from 'src/types/signature';
 import { verifyAccountSignature, verifyPersonalMessageSignature } from 'src/utils';
 import { SignedEntity } from './signed';
@@ -13,7 +13,9 @@ export class ECDSAPersonalSignedPayloadValidationPipe implements PipeTransform {
       value.signedData,
     );
     if (!isValidAccountSig) {
-      throw new Error(accountSigError);
+      // Chao - show error msg instead of "500 internal server error"
+      throw new BadRequestException(accountSigError);
+      // throw new Error(accountSigError);
     }
     return {
       ...value,
