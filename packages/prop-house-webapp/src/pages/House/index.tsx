@@ -8,6 +8,7 @@ import { setActiveCommunity } from '../../state/slices/propHouse';
 import { slugToName } from '../../utils/communitySlugs';
 import { Col, Container, Row } from 'react-bootstrap';
 import RoundCard from '../../components/RoundCard';
+import DelegateCard from '../../components/DelegateCard';
 import HouseUtilityBar from '../../components/HouseUtilityBar';
 import { AuctionStatus, auctionStatus } from '../../utils/auctionStatus';
 import { StoredAuctionBase } from '@nouns/prop-house-wrapper/dist/builders';
@@ -45,6 +46,11 @@ const House = () => {
   const [loadingRounds, setLoadingRounds] = useState(false);
   const [failedLoadingRounds, setFailedLoadingRounds] = useState(false);
   const { t } = useTranslation();
+
+  const [delegates, setDelegates] = useState<StoredAuctionBase[]>([]);
+  const [delegatesOnDisplay, setDelegatesOnDisplay] = useState<StoredAuctionBase[]>([]);
+  const [loadingDelegates, setLoadingDelegates] = useState(false);
+  const [failedLoadingDelegates, setFailedLoadingDelegates] = useState(false);
 
   const [numberOfRoundsPerStatus, setNumberOfRoundsPerStatus] = useState<number[]>([]);
 
@@ -106,6 +112,47 @@ const House = () => {
     fetchRounds();
   }, [community]);
 
+  // fetch delegate
+  useEffect(() => {
+    if (!community) return;
+
+    const fetchDelegate = async () => {
+      try {
+        setLoadingDelegates(true);
+        const delegates = await client.current.getDelegateForCommunity();
+
+        setDelegates(delegates);
+        setDelegatesOnDisplay(delegates);
+
+
+
+        // // Number of rounds under a certain status type in a House
+        // setNumberOfRoundsPerStatus([
+        //   // number of active rounds (proposing & voting)
+        //   rounds.filter(
+        //       r =>
+        //           auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
+        //           auctionStatus(r) === AuctionStatus.AuctionVoting,
+        //   ).length,
+        //   rounds.length,
+        // ]);
+        //
+        // // if there are no active rounds, default filter by all rounds
+        // rounds.filter(
+        //     r =>
+        //         auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
+        //         auctionStatus(r) === AuctionStatus.AuctionVoting,
+        // ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
+
+        setLoadingDelegates(false);
+      } catch (e) {
+        setLoadingDelegates(false);
+        setFailedLoadingDelegates(true);
+      }
+    };
+    fetchDelegate();
+  }, [community]);
+
   useEffect(() => {
     rounds &&
       // check if searching via input
@@ -132,6 +179,10 @@ const House = () => {
               );
             }),
           ));
+
+      console.log('rounds',rounds)
+      console.log('roundsOnDisplay',roundsOnDisplay)
+
   }, [input, currentRoundStatus, rounds]);
 
   return (
@@ -170,7 +221,8 @@ const House = () => {
             </div>
 
             <div className={classes.houseContainer}>
-              <Container>
+              {(currentRoundStatus != RoundStatus.delegateSelection) &&  <Container>
+
                 <Row>
                   {loadingRounds ? (
                     <LoadingIndicator />
@@ -190,7 +242,31 @@ const House = () => {
                     <NoSearchResults />
                   )}
                 </Row>
-              </Container>
+              </Container>}
+
+              {(currentRoundStatus == RoundStatus.delegateSelection) &&  <Container>
+
+                <Row>
+                  {loadingDelegates ? (
+                      <LoadingIndicator />
+                  ) : !loadingDelegates && failedLoadingDelegates ? (
+                      <ErrorMessageCard message={t('noDelegateAvailable')} />
+                  ) : delegatesOnDisplay.length > 0 ? (
+                      delegatesOnDisplay.map((round, index) => (
+                          <Row key={index}>
+                            <DelegateCard round={round} />
+                          </Row>
+                      ))
+                  ) : input === '' ? (
+                      <Col>
+                        <ErrorMessageCard message={t('noDelegateAvailable')} />
+                      </Col>
+                  ) : (
+                      <NoSearchResults />
+                  )}
+                </Row>
+              </Container>}
+
             </div>
           </>
         )

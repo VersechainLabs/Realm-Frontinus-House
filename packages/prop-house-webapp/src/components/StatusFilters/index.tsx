@@ -8,10 +8,10 @@ import classes from './StatusFilters.module.css';
 export enum RoundStatus {
   Active,
   AllRounds,
+  delegateSelection,
   Proposing,
   Voting,
   Ended,
-  delegateSelection,
 }
 
 export interface Status {

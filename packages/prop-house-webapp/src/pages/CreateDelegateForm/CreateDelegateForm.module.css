@@ -70,4 +70,10 @@
     margin-bottom: 10px;
 }
 
+.labelMargin input {
+    color: #F5EEE6;
+}
+.labelMargin svg {
+    color: #F5EEE6;
+}
 

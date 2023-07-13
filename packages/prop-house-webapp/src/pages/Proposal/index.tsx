@@ -6,11 +6,7 @@ import NotFound from '../../components/NotFound';
 import { useEffect, useRef, useState } from 'react';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useDispatch } from 'react-redux';
-import {
-  setActiveCommunity,
-  setActiveProposal,
-  setActiveRound,
-} from '../../state/slices/propHouse';
+import { setActiveCommunity, setActiveProposal, setActiveRound } from '../../state/slices/propHouse';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import { StoredProposalWithVotes } from '@nouns/prop-house-wrapper/dist/builders';
@@ -20,6 +16,7 @@ import { cardServiceUrl, CardType } from '../../utils/cardServiceUrl';
 import OpenGraphElements from '../../components/OpenGraphElements';
 import RenderedProposalFields from '../../components/RenderedProposalFields';
 import { useSigner } from 'wagmi';
+import Comments from '../../components/Comments';
 
 const Proposal = () => {
   const params = useParams();
@@ -112,6 +109,13 @@ const Proposal = () => {
           <NotFound />
         ) : (
           <LoadingIndicator />
+        )}
+        {proposal && (
+          <div>
+            <div style={{ height: 30 }}></div>
+            <h2>Comments</h2>
+            <Comments proposalId={proposal.id} />
+          </div>
         )}
       </Container>
     </>
