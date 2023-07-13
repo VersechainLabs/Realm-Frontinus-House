@@ -2,13 +2,13 @@ import { Container } from 'react-bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppSelector } from '../../hooks';
-import { useParams } from 'react-router-dom';
 import CreateCommentWidget from '../CreateCommentWidget';
 import { Avatar, List, ListItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import QuillViewer from '../QuillViewer';
 import EthAddress from '../EthAddress';
 import AddressAvatar from '../AddressAvatar';
+import { serverDateToString } from '../../utils/detailedTime';
 
 type CommentsProps = {
   proposalId: number;
@@ -107,12 +107,35 @@ export function CommentListItem(props: CommentListItemProps) {
   const avatarSize = 40;
 
   return (
-    <ListItem key={`comment-${comment.id}`}>
-      <Avatar sx={{ width: avatarSize, height: avatarSize }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
-      <div>
-        <EthAddress address={props.comment.owner} />
+    <ListItem key={`comment-${comment.id}`} alignItems='flex-start'>
+      <Avatar sx={{
+        width: avatarSize, height: avatarSize,
+        margin: '8px',
+      }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: 1,
+        marginBottom: '10px',
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          marginBottom: '8px',
+        }}>
+          <EthAddress address={props.comment.owner} />
+
+          <div style={{
+            fontSize: '13px',
+            marginLeft: '12px',
+          }}>
+            {serverDateToString(comment.createdDate)}
+          </div>
+        </div>
+        <QuillViewer content={props.comment.content} />
+
       </div>
-      <QuillViewer content={props.comment.content} />
+
     </ListItem>
   );
 }

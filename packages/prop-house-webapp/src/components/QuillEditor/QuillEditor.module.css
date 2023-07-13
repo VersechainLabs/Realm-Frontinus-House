@@ -4,7 +4,7 @@
 .inputLabel {
   font-size: 18px;
   font-weight: 700;
-  color: var(--brand-black-transparent);
+  color: var(--text-color);
 }
 .inputGroup {
   margin-bottom: 2rem;
