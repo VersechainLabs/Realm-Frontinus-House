@@ -3,18 +3,17 @@ import './Popup.css';
 
 interface PopupProps {
   trigger: boolean;
-  children: React.ReactNode;
   onClose: () => void;
 }
 
 const Popup: React.FC<PopupProps> = (props: PopupProps) => {
-  const { trigger, children, onClose } = props;
+  const { trigger, onClose } = props;
 
-  return trigger ? (
-    <div className="popup">
+  return (
+    <div className="popup" >
       <div className="popup-inner">
         <div className="text">
-          {children}Thank you for creating a round!
+          Thank you for creating a round!
           <br />
           It will be posted as soon as the Admin approves it.
         </div>
@@ -29,7 +28,7 @@ const Popup: React.FC<PopupProps> = (props: PopupProps) => {
         </div>
       </div>
     </div>
-  ) : null;
+  );
 };
 
 export default Popup;

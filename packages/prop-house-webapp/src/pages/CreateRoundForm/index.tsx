@@ -7,6 +7,12 @@ import { useSigner } from 'wagmi';
 import {nameToSlug} from "../../utils/communitySlugs";
 import { TimedAuction } from '@nouns/prop-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import Popup from '../../components/Popup';
+import dayjs from "dayjs";
 
 const CreateRound: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
@@ -16,13 +22,12 @@ const CreateRound: React.FC<{}> = () => {
         client.current = new PropHouseWrapper(host, signer);
     }, [signer, host]);
     const navigate = useNavigate();
-
     const state  = {
         description: "",
         title: "",
-        startTime: new Date("") ,
-        proposalEndTime: new Date("") ,
-        votingEndTime:  new Date("") ,
+        startTime: new Date(),
+        proposalEndTime: new Date(),
+        votingEndTime:  new Date(),
         numWinners: 0,
         currencyType: "",
         fundingAmount: 0,
@@ -31,6 +36,13 @@ const CreateRound: React.FC<{}> = () => {
         communityId: 1,
         balanceBlockTag: 0,
     }
+    const [flag, setFlag] = useState(false)
+
+
+    const openPopup:{flag:boolean} = {
+        flag: false
+
+    };
 
     const saveFormTitle = (value:string) => {
         state.title = value;
@@ -40,18 +52,16 @@ const CreateRound: React.FC<{}> = () => {
         state.description = value;
         console.log(state);
     }
-    const saveFormStart = (value:string) => {
+    const saveFormStart = (value:any) => {
         state.startTime = new Date(value);
-        console.log(state);
     }
-    const saveFormProposal = (value:string) => {
+
+    const saveFormProposal = (value:any) => {
         // state.proposalEndTime = Date.parse(value);
         state.proposalEndTime = new Date(value);
-        console.log(state);
     }
-    const saveFormVote = (value:string) => {
+    const saveFormVote = (value:any) => {
         state.votingEndTime = new Date(value);
-        console.log(state);
     }
     const saveFormType = (value:string) => {
         state.currencyType = value;
@@ -71,7 +81,7 @@ const CreateRound: React.FC<{}> = () => {
     const handleSubmit = async (e:any) => {
         //该方法阻止表单的提交
         e.preventDefault();
-
+        //
         const round = await client.current.createAuction(new TimedAuction(
             true,
             state.title,
@@ -85,12 +95,21 @@ const CreateRound: React.FC<{}> = () => {
             state.communityId,
             state.balanceBlockTag,
             state.description,
-        ));
-        console.log(round);
-        navigate('/frontinus');
+        )).then((res)=>{
+            console.log(res);
+        }).catch((e)=>{
+            console.log(e);
+        });
+        setFlag(true);
 
+        // navigate('/frontinus');
+        console.log(flag);
     }
 
+    const close = ()=> {
+        setFlag(false);
+        navigate('/frontinus');
+    };
 
   return (
       <div  className={classes.blackBg}>
@@ -123,21 +142,36 @@ const CreateRound: React.FC<{}> = () => {
                           When does the round proposing period start? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>
+                      {/*<input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>*/}
+
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormStart(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
+
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
                           When does the round voting period start? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormProposal(event.target.value)} name={'proposalEndTime'} className={classes.input} type="text"/>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
                           When does the round voting period end? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormVote(event.target.value)} name={'votingEndTime'} className={classes.input} type="text"/>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormVote(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
@@ -164,7 +198,15 @@ const CreateRound: React.FC<{}> = () => {
                       Submit
                   </button>
                   </form>
+                  {flag &&
+                  <Popup
+
+                      trigger={flag}
+                      onClose={close}
+                  />}
+
               </Row>
+
           </Container>
       </div>
 

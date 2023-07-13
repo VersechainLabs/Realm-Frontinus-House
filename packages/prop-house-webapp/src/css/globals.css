@@ -17,10 +17,12 @@
 }
 
 body {
-  background-color: rgb(250, 250, 250);
+  background-color: #212529;
+  color: var(--text-color);
 }
 p {
   margin-bottom: 0 !important;
+  color: #F5EEE6;
 }
 .tooltip-inner {
   min-width: min-content;
@@ -87,6 +89,10 @@ p {
   --bg-light: #1A1A1B;
   --bg-med: #fcfcfc;
   --bg-dark: #1A1A1B;
+
+  --bg-color: #212529;
+  --container-bg: #272728;
+  --text-color: #F5EEE6;
 
   --border-light: rgba(0, 0, 0, 0.04);
   --border-med: rgba(0, 0, 0, 0.1);
@@ -294,6 +300,7 @@ p {
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 16px !important;
+  color: #F5EEE6;
   line-height: 21px !important;
   letter-spacing: 0.02em !important;
   margin-bottom: 0 !important;

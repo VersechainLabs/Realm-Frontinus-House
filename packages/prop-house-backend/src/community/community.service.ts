@@ -7,12 +7,13 @@ import { BigNumberish } from '@ethersproject/bignumber';
 import config from 'src/config/configuration';
 import { getVotingPower } from 'prop-house-communities';
 import { ExtendedCommunity } from './community.types';
+import { Auction } from 'src/auction/auction.entity';
 
 @Injectable()
 export class CommunitiesService {
   constructor(
-    @InjectRepository(Community)
-    private communitiesRepository: Repository<Community>,
+    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
   findAll(): Promise<Community[]> {
