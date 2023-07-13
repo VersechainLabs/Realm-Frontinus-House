@@ -28,7 +28,7 @@ import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
-import Comments from './pages/Comments';
+import CommentsPage from './pages/CommentsPage';
 
 const { chains, provider } = configureChains(
   [mainnet],
@@ -103,7 +103,7 @@ function App() {
                   <Route path="/:house" element={<House />} />
                   <Route path="/:house/:title" element={<Round />} />
                   <Route path="/:house/:title/:id" element={<Proposal />} />
-                  <Route path="/comment/:proposalId" element={<Comments />} />
+                  <Route path="/comment/:proposalId" element={<CommentsPage />} />
 
                   <Route path="*" element={<NotFound />} />
                 </Routes>

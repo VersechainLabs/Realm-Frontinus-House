@@ -3,16 +3,19 @@ import React, { useEffect, useRef, useState } from 'react';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppSelector } from '../../hooks';
 import { useParams } from 'react-router-dom';
-import CreateCommentWidget from '../../components/CreateCommentWidget';
-import { List, ListItem } from '@mui/material';
+import CreateCommentWidget from '../CreateCommentWidget';
+import { Avatar, List, ListItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import QuillViewer from '../../components/QuillViewer';
-import EthAddress from '../../components/EthAddress';
-import { useAccount } from 'wagmi';
+import QuillViewer from '../QuillViewer';
+import EthAddress from '../EthAddress';
+import AddressAvatar from '../AddressAvatar';
 
-const Comments = () => {
-  const params = useParams();
-  const { proposalId } = params;
+type CommentsProps = {
+  proposalId: number;
+}
+
+export default function Comments(props: CommentsProps) {
+  const { proposalId } = props;
 
   const [commentList, setCommentList] = useState<CommentModal[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
@@ -93,8 +96,6 @@ const Comments = () => {
   </>);
 };
 
-export default Comments;
-
 /// CommentListItem
 
 type CommentListItemProps = {
@@ -103,12 +104,13 @@ type CommentListItemProps = {
 
 export function CommentListItem(props: CommentListItemProps) {
   const { comment } = props;
+  const avatarSize = 40;
 
   return (
     <ListItem key={`comment-${comment.id}`}>
-      {/*<Jazzicon diameter={20} seed={jsNumberForAddress(props.comment.owner)} />*/}
+      <Avatar sx={{ width: avatarSize, height: avatarSize }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
       <div>
-        <EthAddress address={props.comment.owner} addAvatar />
+        <EthAddress address={props.comment.owner} />
       </div>
       <QuillViewer content={props.comment.content} />
     </ListItem>
@@ -125,3 +127,4 @@ export type CommentModal = {
   owner: string;
   createdDate: string;
 }
+

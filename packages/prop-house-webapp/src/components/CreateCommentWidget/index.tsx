@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DeltaStatic, Quill } from 'quill';
 import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
 import Button, { ButtonColor } from '../Button';
-import { CommentModal } from '../../pages/Comments';
+import { CommentModal } from '../Comments';
 import { useAppSelector } from '../../hooks';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAccount, useSigner } from 'wagmi';
