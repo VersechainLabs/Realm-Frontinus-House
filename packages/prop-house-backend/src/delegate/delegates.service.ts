@@ -26,6 +26,9 @@ export class DelegatesService {
       where: {
         visible: true,
       },
+      order: {
+        id: "DESC"
+      }
     });
   }
 
