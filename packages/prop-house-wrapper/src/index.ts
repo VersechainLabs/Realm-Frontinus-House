@@ -29,6 +29,8 @@ import {
 import { multiVoteSignature } from './utils/multiVoteSignature';
 import { multiVotePayload } from './utils/multiVotePayload';
 import { Signer } from 'ethers';
+// @ts-ignore
+import { CommentModal } from 'prop-house-webapp/src/pages/Comments';
 
 export class PropHouseWrapper {
   constructor(
@@ -38,7 +40,15 @@ export class PropHouseWrapper {
 
   async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
     try {
-      return (await axios.post(`${this.host}/auctions`, auction)).data;
+      return (await axios.post(`${this.host}/auctions/create`, auction )).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async createDelegateAuction(auction: any): Promise<any[]> {
+    try {
+      return (await axios.post(`${this.host}/delegates`, auction )).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -436,6 +446,47 @@ export class PropHouseWrapper {
   async getCommunityWithName(name: string): Promise<CommunityWithAuctions> {
     try {
       return (await axios.get(`${this.host}/communities/name/${name}`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async getCommentList(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
+    try {
+      return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`, {
+        params: {
+          'skip': skip,
+          'limit': limit,
+          'order': order,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async createComment(proposalId: number, content: string, owner: string): Promise<CommentModal | undefined> {
+    if (!this.signer) return undefined;
+    try {
+      let payload = {
+        'proposalId': proposalId,
+        'content': content,
+        'owner': owner,
+      };
+      const signMessage = JSON.stringify(payload);
+      const signResult = await this.signer.signMessage(signMessage);
+
+      return (await axios.post(`${this.host}/comments/create`, {
+          'proposalId': proposalId,
+          'content': content,
+          'owner': owner,
+          'signedData': {
+            'message': signMessage,
+            'signature': signResult,
+            'signer': owner,
+          },
+        })
+      ).data;
     } catch (e: any) {
       throw e.response.data.message;
     }

@@ -2,25 +2,16 @@ import classes from './CreateRound.module.css';
 import { Col, Container, Row } from 'react-bootstrap';
 import Card, { CardBgColor, CardBorderRadius } from '../../components/Card';
 import Button, { ButtonColor } from '../../components/Button';
+import { Link, useNavigate } from 'react-router-dom';
 
 const CreateRound: React.FC<{}> = () => {
+  const navigate = useNavigate();
   return (
     <Container>
       <Row>
         <Col md={{ span: 8, offset: 2 }} className={classes.container}>
           <h1>Creating a round</h1>
-          <Card
-            bgColor={CardBgColor.White}
-            borderRadius={CardBorderRadius.ten}
-            classNames={classes.card}
-          >
-            <h2>The Prop House protocol is coming soon™️!</h2>
-            <p>
-              We are working hard to turn Prop House into a protocol. Until then, creating new
-              rounds is a bit manual. Please bear with us and learn how to set up your round or
-              house below.
-            </p>
-          </Card>
+
           <div className={classes.step}>
             <h2>Fill out the form</h2>
             <p>
@@ -31,12 +22,7 @@ const CreateRound: React.FC<{}> = () => {
             <Button
               text="Create timed round"
               bgColor={ButtonColor.Purple}
-              onClick={() =>
-                window.open(
-                  'https://www.addressform.io/f/58195583-4a62-4770-b3ed-667ddbd05c81',
-                  '_blank',
-                )
-              }
+              onClick={() => navigate('/create-round-form')}
             />
           </div>
           <div className={classes.step}>

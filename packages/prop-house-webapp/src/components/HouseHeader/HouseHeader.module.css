@@ -62,11 +62,11 @@
 .itemData {
   font-weight: bold;
   margin-right: 0.25rem;
+  color: #F5EEE6;
 }
 
 .communityDescriptionRow p {
   font-size: large;
-  color: var(--brand-gray);
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -76,7 +76,6 @@
   color: #F5EEE6;
 }
 .communityDescriptionRow a {
-  color: var(--brand-pink) !important;
   text-decoration: underline;
   font-weight: 600;
   color: #F5EEE6;

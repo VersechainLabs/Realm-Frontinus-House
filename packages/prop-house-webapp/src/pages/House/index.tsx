@@ -57,7 +57,7 @@ const House = () => {
     const fetchCommunity = async () => {
       try {
         setLoadingCommunity(true);
-        const community = await client.current.getCommunityWithName(slugToName(slug));
+        const community = await client.current.getCommunityWithId(1);
         dispatch(setActiveCommunity(community));
         setLoadingCommunity(false);
       } catch (e) {
