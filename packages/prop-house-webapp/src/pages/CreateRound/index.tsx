@@ -24,6 +24,11 @@ const CreateRound: React.FC<{}> = () => {
               bgColor={ButtonColor.Purple}
               onClick={() => navigate('/create-round-form')}
             />
+            <Button
+              text="Create delegate"
+              bgColor={ButtonColor.Purple}
+              onClick={() => navigate('/create-delegate-form')}
+            />
           </div>
           <div className={classes.step}>
             <h2>Questions?</h2>

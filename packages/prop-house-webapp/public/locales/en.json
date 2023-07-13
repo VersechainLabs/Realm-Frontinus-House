@@ -128,6 +128,7 @@
   "faq21title": "More questions?",
   "faq21answer": "See you in <a href=\"https://discord.gg/SKPzM8GHts\" target=\"_blank\">discord!</a>",
   "noRoundsAvailable": "No rounds available",
+  "noDelegateAvailable": "No delegates available",
   "noHousesFound": "No houses found",
   "fundingRoundStartingSoon": "Funding round starting soon",
   "errorModalTitle": "Failed to submit votes",

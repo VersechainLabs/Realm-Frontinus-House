@@ -29,8 +29,6 @@ const CreateDelegateForm: React.FC<{}> = () => {
         endTime: new Date("") ,
         proposalEndTime: new Date("") ,
         votingEndTime:  new Date("") ,
-        num: 0,
-        ownerInfo: '',
     }
 
     const saveFormTitle = (value:string) => {
@@ -41,30 +39,21 @@ const CreateDelegateForm: React.FC<{}> = () => {
         state.description = value;
         console.log(state);
     }
-    const saveFormStart = (value:string) => {
+    const saveFormStart = (value:any) => {
         state.startTime = new Date(value);
         console.log(state);
     }
-    const saveFormProposal = (value:string) => {
+    const saveFormProposal = (value:any) => {
         // state.proposalEndTime = Date.parse(value);
         state.proposalEndTime = new Date(value);
         console.log(state);
     }
-    const saveFormVote = (value:string) => {
+    const saveFormVote = (value:any) => {
         state.votingEndTime = new Date(value);
         console.log(state);
     }
-    const saveFormEnd = (value:string) => {
+    const saveFormEnd = (value:any) => {
         state.endTime = new Date(value);
-        console.log(state);
-    }
-
-    const saveFormNum = (value:string) => {
-        state.num = parseInt(value);
-        console.log(state);
-    }
-    const saveFormOwner = (value:string) => {
-        state.ownerInfo = value;
         console.log(state);
     }
 
@@ -78,7 +67,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
             state
         );
         console.log(round);
-        // navigate('/frontinus');
+        navigate('/frontinus');
 
     }
 
@@ -117,10 +106,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
                       </div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker label="Basic date time picker" />
+                              <DateTimePicker onChange={(newValue) => saveFormStart(newValue)} className={classes.input} />
                           </DemoContainer>
                       </LocalizationProvider>
-                      <input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>
                   </div>
 
                   <div className={classes.labelMargin}>
@@ -128,33 +116,35 @@ const CreateDelegateForm: React.FC<{}> = () => {
                           When does the delegation round end? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormEnd(event.target.value)} name={'startTime'} className={classes.input} type="text"/>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormEnd(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
                           When does the round voting period start? (exact date and time in UTC)*
                       </div>
 
-                      <input onChange={event => saveFormProposal(event.target.value)} name={'proposalEndTime'} className={classes.input} type="text"/>
-                  </div>
 
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
+                  </div>
 
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          How many delegates are to be selected in this round?*
+                          When does the round voting period end? (exact date and time in UTC)*
                       </div>
-
-                      <input onChange={event => saveFormNum(event.target.value)} name={'votingEndTime'} className={classes.input} type="text"/>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormVote(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
                   </div>
-
-                 <div className={classes.labelMargin}>
-                      <div className={classes.desc}>
-                          Who is voting on this round? (Respond with NFT/ERC20 contract address or specific wallet addresses)*
-                      </div>
-
-                      <input onChange={event => saveFormOwner(event.target.value)} name={'votingEndTime'} className={classes.input} type="text"/>
-                  </div>
-
 
                   <button className={classes.button}>
                       Submit

@@ -48,7 +48,7 @@ export class PropHouseWrapper {
 
   async createDelegateAuction(auction: any): Promise<any[]> {
     try {
-      return (await axios.post(`${this.host}/delegates`, auction )).data;
+      return (await axios.post(`${this.host}/delegates/create`, auction )).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -99,6 +99,23 @@ export class PropHouseWrapper {
           : [];
 
       return timed.concat(infinite);
+    } catch (e: any) {
+      throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
+    }
+  }
+
+  async getDelegateForCommunity(): Promise<StoredAuctionBase[]> {
+    try {
+      const [rawTimedAuctions] = await Promise.allSettled([
+        axios.get(`${this.host}/delegates/list/`)
+      ]);
+
+      const timed =
+        rawTimedAuctions.status === 'fulfilled'
+          ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
+          : [];
+
+      return timed;
     } catch (e: any) {
       throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
     }
