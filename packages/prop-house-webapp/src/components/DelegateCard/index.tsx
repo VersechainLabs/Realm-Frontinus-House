@@ -133,7 +133,7 @@ const DelegateCard: React.FC<{
 
             <div className={clsx(classes.section, classes.propSection)}>
               <p className={classes.title}> {t('proposalsCap')}</p>
-              <p className={classes.info}>{round.numProposals}</p>
+              <p className={classes.info}>{round.nomineeCount}</p>
             </div>
           </div>
         </Card>
