@@ -27,6 +27,7 @@ export default function Comments(props: CommentsProps) {
 
   useEffect(() => {
     loadNextPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadNextPage = (skip: number) => {
@@ -62,23 +63,29 @@ export default function Comments(props: CommentsProps) {
   };
 
   const itemList = [] as JSX.Element[];
-  commentList.forEach((comment) => {
-    itemList.push(CommentListItem({ comment: comment }));
-  });
-  itemList.push(
-    <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
-      <LoadingButton
-        loading={showTailLoading}
-        onClick={() => loadNextPage(commentList.length)}
-        sx={{
-          display: 'flex',
-          textTransform: 'none',
-        }}
-      >
-        {showTailLoading ? 'Loading...' : 'Load More'}
-      </LoadingButton>
-    </ListItem>,
-  );
+  if (commentList.length === 0) {
+    itemList.push(
+      <ListItem>No comment yet</ListItem>,
+    );
+  } else {
+    commentList.forEach((comment) => {
+      itemList.push(CommentListItem({ comment: comment }));
+    });
+    itemList.push(
+      <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
+        <LoadingButton
+          loading={showTailLoading}
+          onClick={() => loadNextPage(commentList.length)}
+          sx={{
+            display: 'flex',
+            textTransform: 'none',
+          }}
+        >
+          {showTailLoading ? 'Loading...' : 'Load More'}
+        </LoadingButton>
+      </ListItem>,
+    );
+  }
 
   return (<>
     <Container>

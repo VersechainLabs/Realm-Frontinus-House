@@ -1,8 +1,6 @@
 import { DeltaStatic } from 'quill';
 import ReactQuill from 'react-quill';
 import './QuillViewer.module.css';
-import classes from './QuillViewer.module.css';
-
 
 type QuillViewerProps = {
   content: string;
@@ -14,7 +12,7 @@ export default function QuillViewer(props: QuillViewerProps) {
   } catch (e) {
     delta = [{ 'insert': props.content }] as unknown as DeltaStatic;
   }
-  return <ReactQuill className={'quill-viewer' } value={delta} readOnly={true} modules={modules} />;
+  return <ReactQuill className={'quill-viewer'} value={delta} readOnly={true} modules={modules} />;
 }
 
 const modules = {
