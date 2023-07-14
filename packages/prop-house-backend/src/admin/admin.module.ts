@@ -8,21 +8,24 @@ import { Proposal } from 'src/proposal/proposal.entity';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { Admin } from './admin.entity';
 import { Auction } from 'src/auction/auction.entity';
+import { AuctionsService } from 'src/auction/auctions.service';
 import { Delegate } from 'src/delegate/delegate.entity';
 import { AdminService } from './admin.service';
+import { AdminsController } from './admin.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Admin]),
+    TypeOrmModule.forFeature([Admin,Proposal,InfiniteAuction,Auction,Community]),
   ],
-//   controllers: [CommentsController],
+  controllers: [AdminsController],
   providers: [
     AdminService,
+    AuctionsService,
     // // DelegatesService,
-    // ProposalsService,
+    ProposalsService,
     // // DelegatesResolver,
-    // CommunitiesService,
-    // InfiniteAuctionService,
+    CommunitiesService,
+    InfiniteAuctionService,
   ],
   exports: [TypeOrmModule],
 })
