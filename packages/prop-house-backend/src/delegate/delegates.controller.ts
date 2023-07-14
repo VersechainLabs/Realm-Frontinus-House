@@ -16,6 +16,8 @@ import {
   import { ProposalsService } from 'src/proposal/proposals.service';
   import { Proposal } from 'src/proposal/proposal.entity';
   import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
+  import { AdminService } from 'src/admin/admin.service';
+  import { Admin } from 'src/admin/admin.entity';
   
   @Controller('delegates')
   export class DelegatesController {
@@ -23,13 +25,28 @@ import {
     constructor(
       private readonly delegatesService: DelegatesService,
       private readonly proposalService: ProposalsService,
+      private readonly adminService: AdminService,
     ) {}
   
+    // @Get('/list')
+    // getAll(): Promise<Delegate[]> {
+    //   return this.delegatesService.findAll(); 
+    // }
     @Get('/list')
-    getAll(): Promise<Delegate[]> {
+    async getAll(@Body() dto: GetDelegatesDto): Promise<Delegate[]> {
+      const adminList = await this.adminService.findAll();
+
+      const isAdmin = adminList.find((v) => v.address === dto.address);
+      
+      if (!isAdmin)
+      throw new HttpException(
+        'Need admin access!',
+        HttpStatus.BAD_REQUEST,
+      );
+
       return this.delegatesService.findAll(); 
     }
-  
+
     @Post('/create')
     async create(@Body() createDelegateDto: CreateDelegateDto): Promise<Delegate> {
       const delegate = new Delegate();

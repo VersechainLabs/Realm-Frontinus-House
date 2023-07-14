@@ -6,6 +6,7 @@ import { DelegatesModule } from 'src/delegate/delegates.module';
 import { CommentsModule } from 'src/comment/comments.module';
 import { CommunitiesModule } from 'src/community/community.module';
 import { NomineeModule } from 'src/delegate-nominee/nominee.module';
+import { AdminModule } from 'src/admin/admin.module';
 
 import configuration from 'src/config/configuration';
 import { InfiniteAuctionModule } from 'src/infinite-auction/infinite-auction.module';
@@ -33,6 +34,7 @@ import config from '../../ormconfig';
     TasksModule,
     DelegatesModule,
     CommentsModule,
+    AdminModule,
     TypeOrmModule.forRoot(config),
   ],
 })

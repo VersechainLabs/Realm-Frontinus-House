@@ -1,4 +1,6 @@
 import { Transform } from 'class-transformer';
+import { IsEthereumAddress } from 'class-validator';
+
 import {
   IsArray,
   IsEnum,
@@ -8,6 +10,7 @@ import {
   IsPositive,
   IsString,
   Min,
+  isEthereumAddress,
 } from 'class-validator';
 
 export class CreateDelegateDto {
@@ -41,6 +44,9 @@ export enum Order {
 }
 
 export class GetDelegatesDto {
+  @IsEthereumAddress()
+  address: string;
+
   @IsOptional()
   @IsInt()
   @Min(1)
