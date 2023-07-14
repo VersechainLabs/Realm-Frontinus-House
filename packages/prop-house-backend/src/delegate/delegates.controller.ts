@@ -28,21 +28,18 @@ import {
       private readonly adminService: AdminService,
     ) {}
   
-    // @Get('/list')
-    // getAll(): Promise<Delegate[]> {
-    //   return this.delegatesService.findAll(); 
-    // }
+
     @Get('/list')
     async getAll(@Body() dto: GetDelegatesDto): Promise<Delegate[]> {
-      const adminList = await this.adminService.findAll();
+      // const adminList = await this.adminService.findAll();
 
-      const isAdmin = adminList.find((v) => v.address === dto.address);
+      // const isAdmin = adminList.find((v) => v.address === dto.address);
       
-      if (!isAdmin)
-      throw new HttpException(
-        'Need admin access!',
-        HttpStatus.BAD_REQUEST,
-      );
+      // if (!isAdmin)
+      // throw new HttpException(
+      //   'Need admin access!',
+      //   HttpStatus.BAD_REQUEST,
+      // );
 
       return this.delegatesService.findAll(); 
     }
@@ -60,25 +57,17 @@ import {
       delegate.endTime = ParseDate(createDelegateDto.endTime);
       return this.delegatesService.store(delegate);
     }
+
   
-    // // Chao
-    // @Post()
-    // async createForCommunity(
-    //   // @Param('communityId', ParseIntPipe) communityId: number,
-    //   @Body() createDelegateDto: createDelegateDto): Promise<Auction> 
-    // {
-    //   const newAuction = await this.auctionsService.createAuctionByCommunity(createDelegateDto);
-  
-    //   return newAuction;
-    // }
-  
-    // @Get(':id')
-    // async findOne(@Param('id') id: number): Promise<Auction> {
-    //   const foundAuction = await this.auctionsService.findOne(id);
-    //   if (!foundAuction)
-    //     throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
-    //   return foundAuction;
-    // }
+    @Get(':id')
+    async findOne(@Param('id') id: number): Promise<Delegate> {
+      const foundDelegate = await this.delegatesService.findOne(id);
+
+      if (!foundDelegate)
+        throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
+        
+      return foundDelegate;
+    }
   
     // @Get('/forCommunity/:id')
     // async findAllForCommunity(

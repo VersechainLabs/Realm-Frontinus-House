@@ -32,6 +32,20 @@ export class DelegatesService {
     });
   }
 
+  findOne(id: number): Promise<Delegate> {
+    return this.delegatesRepository.findOne(id, {
+      // relations: ['proposals'],
+      // loadRelationIds: {
+      //   relations: ['community'],
+      // },
+      where: { visible: true },
+    });
+  }
+  
+  async store(proposal: Delegate): Promise<Delegate> {
+    return await this.delegatesRepository.save(proposal, { reload: true });
+  }
+
   // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
   //   return (
   //     this.auctionsRepository
@@ -167,10 +181,6 @@ export class DelegatesService {
   // async remove(id: number): Promise<void> {
   //   await this.auctionsRepository.delete(id);
   // }
-
-  async store(proposal: Delegate): Promise<Delegate> {
-    return await this.delegatesRepository.save(proposal, { reload: true });
-  }
 
   // // Chao
   // async createAuctionByCommunity(
