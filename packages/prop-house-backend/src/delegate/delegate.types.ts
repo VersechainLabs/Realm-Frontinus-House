@@ -14,6 +14,9 @@ import {
 } from 'class-validator';
 
 export class CreateDelegateDto {
+  // @IsEthereumAddress()
+  // address: string;
+
   @IsString()
   @IsOptional()
   startTime: Date;
@@ -44,9 +47,6 @@ export enum Order {
 }
 
 export class GetDelegatesDto {
-  @IsEthereumAddress()
-  address: string;
-
   @IsOptional()
   @IsInt()
   @Min(1)
