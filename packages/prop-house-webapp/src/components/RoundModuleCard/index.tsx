@@ -35,7 +35,7 @@ const RoundModuleCard: React.FC<{
             )}
           >
             {type === 'proposing' ? (
-              <BulbIcon />
+              <img src={'/lamp-icon.png'} style={{ width: '36px', height: '36px' }} />
             ) : type === 'winner' ? (
               <FiAward />
             ) : type === 'stale' ? (
