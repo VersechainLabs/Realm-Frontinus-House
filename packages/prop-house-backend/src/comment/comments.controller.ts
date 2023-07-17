@@ -49,7 +49,7 @@ import { ECDSAPersonalSignedPayloadValidationPipe } from '../entities/ecdsa-pers
     ) {
       dto.limit = limit;
       dto.skip = skip;
-      dto.order = Order[order.toUpperCase()] ;
+      dto.order = Order[order.toUpperCase()]; // support lowercase "asc" | "desc"
 
       const comments = await this.commentsService.findByProposal(proposalId, dto);
       if (!comments)
