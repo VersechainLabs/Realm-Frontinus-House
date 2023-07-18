@@ -6,27 +6,27 @@ import { InfiniteAuction } from 'src/infinite-auction/infinite-auction.entity';
 import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
 import { Proposal } from 'src/proposal/proposal.entity';
 import { ProposalsService } from 'src/proposal/proposals.service';
-import { Delegate } from './delegate.entity';
+import { Admin } from './admin.entity';
 import { Auction } from 'src/auction/auction.entity';
-// import { AuctionsResolver } from './auction.resolver';
-import { DelegatesController } from './delegates.controller';
-import { DelegatesService } from './delegates.service';
-import { AdminService } from 'src/admin/admin.service';
-import { Admin } from 'src/admin/admin.entity';
+import { AuctionsService } from 'src/auction/auctions.service';
+import { Delegate } from 'src/delegate/delegate.entity';
+import { AdminService } from './admin.service';
+import { AdminsController } from './admin.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Delegate, Proposal, Community, InfiniteAuction, Auction, Admin]),
+    TypeOrmModule.forFeature([Admin,Proposal,InfiniteAuction,Auction,Community]),
   ],
-  controllers: [DelegatesController],
+  controllers: [AdminsController],
   providers: [
-    DelegatesService,
-    ProposalsService,
     AdminService,
-    // DelegatesResolver,
+    AuctionsService,
+    // // DelegatesService,
+    ProposalsService,
+    // // DelegatesResolver,
     CommunitiesService,
     InfiniteAuctionService,
   ],
   exports: [TypeOrmModule],
 })
-export class DelegatesModule {}
+export class AdminModule {}

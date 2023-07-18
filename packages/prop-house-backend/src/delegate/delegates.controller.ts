@@ -16,6 +16,8 @@ import {
   import { ProposalsService } from 'src/proposal/proposals.service';
   import { Proposal } from 'src/proposal/proposal.entity';
   import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
+  import { AdminService } from 'src/admin/admin.service';
+  import { Admin } from 'src/admin/admin.entity';
   
   @Controller('delegates')
   export class DelegatesController {
@@ -23,13 +25,25 @@ import {
     constructor(
       private readonly delegatesService: DelegatesService,
       private readonly proposalService: ProposalsService,
+      private readonly adminService: AdminService,
     ) {}
   
+
     @Get('/list')
-    getAll(): Promise<Delegate[]> {
+    async getAll(@Body() dto: GetDelegatesDto): Promise<Delegate[]> {
+      // const adminList = await this.adminService.findAll();
+
+      // const isAdmin = adminList.find((v) => v.address === dto.address);
+      
+      // if (!isAdmin)
+      // throw new HttpException(
+      //   'Need admin access!',
+      //   HttpStatus.BAD_REQUEST,
+      // );
+
       return this.delegatesService.findAll(); 
     }
-  
+
     @Post('/create')
     async create(@Body() createDelegateDto: CreateDelegateDto): Promise<Delegate> {
       const delegate = new Delegate();
@@ -43,25 +57,17 @@ import {
       delegate.endTime = ParseDate(createDelegateDto.endTime);
       return this.delegatesService.store(delegate);
     }
+
   
-    // // Chao
-    // @Post()
-    // async createForCommunity(
-    //   // @Param('communityId', ParseIntPipe) communityId: number,
-    //   @Body() createDelegateDto: createDelegateDto): Promise<Auction> 
-    // {
-    //   const newAuction = await this.auctionsService.createAuctionByCommunity(createDelegateDto);
-  
-    //   return newAuction;
-    // }
-  
-    // @Get(':id')
-    // async findOne(@Param('id') id: number): Promise<Auction> {
-    //   const foundAuction = await this.auctionsService.findOne(id);
-    //   if (!foundAuction)
-    //     throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
-    //   return foundAuction;
-    // }
+    @Get(':id')
+    async findOne(@Param('id') id: number): Promise<Delegate> {
+      const foundDelegate = await this.delegatesService.findOne(id);
+
+      if (!foundDelegate)
+        throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
+        
+      return foundDelegate;
+    }
   
     // @Get('/forCommunity/:id')
     // async findAllForCommunity(
