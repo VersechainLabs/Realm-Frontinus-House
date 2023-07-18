@@ -22,23 +22,36 @@ import Proposal from './pages/Proposal';
 import { createClient, mainnet, configureChains, WagmiConfig } from 'wagmi';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
-import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { connectorsForWallets, getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
 import CommentsPage from './pages/CommentsPage';
+import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
 
 const { chains, provider } = configureChains(
   [mainnet],
   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
 );
 
-const { connectors } = getDefaultWallets({
-  appName: 'Frontinus House',
-  chains,
-});
+// const { connectors } = getDefaultWallets({
+//   appName: 'Frontinus House',
+//   chains,
+// });
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      injectedWallet({ chains }),
+      rainbowWallet({ chains }),
+      metaMaskWallet({ chains }),
+    ],
+  },
+]);
+
 
 const wagmiClient = createClient({
   autoConnect: true,

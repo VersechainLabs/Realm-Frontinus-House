@@ -15,6 +15,7 @@ import VotesDisplay from '../VotesDisplay';
 import { useAppSelector } from '../../hooks';
 import { nameToSlug } from '../../utils/communitySlugs';
 import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   InfRoundFilterType,
   setActiveProposal,
@@ -66,20 +67,20 @@ const ProposalCard: React.FC<{
     };
     getImg();
   }, [proposal]);
-
+  const navigate = useNavigate();
   return (
     <>
       <div
         onClick={e => {
           if (!community || !round) return;
 
-          if (cmdPlusClicked(e)) {
-            openInNewTab(`${nameToSlug(round.title)}/${proposal.id}`);
-            return;
-          }
-
-          dispatch(setModalActive(true));
-          dispatch(setActiveProposal(proposal));
+          // if (cmdPlusClicked(e)) {
+          //   openInNewTab(`${nameToSlug(round.title)}/${proposal.id}`);
+          //   return;
+          // }
+          navigate(`/proposal/${proposal.id}`)
+          // dispatch(setModalActive(true));
+          // dispatch(setActiveProposal(proposal));
         }}
       >
         <Card

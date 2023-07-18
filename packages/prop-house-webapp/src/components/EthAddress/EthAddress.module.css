@@ -1,8 +1,8 @@
 .ethAddress a {
   cursor: pointer;
-  color: inherit;
   text-decoration: none;
-  color: #666666 !important;
+  color: var(--text-color);
+  font-weight: bold;
   margin: 0 !important;
   display: flex;
   align-items: center;

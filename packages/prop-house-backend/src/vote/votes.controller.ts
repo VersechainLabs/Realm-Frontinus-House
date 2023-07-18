@@ -17,15 +17,23 @@ import { SignedPayloadValidationPipe } from 'src/entities/signed.pipe';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { SignatureState } from 'src/types/signature';
 import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
+import { getVotingPower } from 'prop-house-communities';
+import { ethers } from 'ethers';
+import config from '../config/configuration';
 
 @Controller('votes')
 export class VotesController {
+
+  private readonly provider = new ethers.providers.JsonRpcProvider(config().Web3RpcUrl);
+
   constructor(
     private readonly votesService: VotesService,
     private readonly proposalService: ProposalsService,
     private readonly auctionService: AuctionsService,
     private readonly infiniteAuctionService: InfiniteAuctionService,
-  ) {}
+  ) {
+    this.provider.ready;
+  }
 
   @Get()
   getVotes(): Promise<Vote[]> {
@@ -35,6 +43,27 @@ export class VotesController {
   @Get('findWithOpts')
   getVotesWithOpts(@Query() dto: GetVoteDto): Promise<Vote[]> {
     return this.votesService.findAllWithOpts(dto);
+  }
+
+  @Get('votingPower')
+  async getVotingPower(@Query('address') address: string, @Query('proposalId') proposalId: number) {
+    // Waiting for provider ready.
+    await this.provider.ready;
+
+    const foundProposal = await this.proposalService.findOne(
+      proposalId,
+    );
+    const foundProposalAuction = await (foundProposal.parentType === 'auction'
+        ? this.auctionService
+        : this.infiniteAuctionService
+    ).findOneWithCommunity(foundProposal.auctionId);
+
+    return getVotingPower(
+      address,
+      foundProposalAuction.community.contractAddress,
+      this.provider,
+      foundProposalAuction.balanceBlockTag,
+    );
   }
 
   @Get(':id')

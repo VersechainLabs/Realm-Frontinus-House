@@ -1,8 +1,6 @@
 .ql-container {
-  border: none;
   font-size: 16px !important;
   color: var(--text-color);
-  margin-bottom: 1.75rem;
   white-space: pre-line;
   border-bottom-left-radius: 12px;
   border-bottom-right-radius: 12px;
@@ -10,6 +8,20 @@
   padding: 1rem 0.75rem;
   margin-bottom: 0rem;
   background: var(--container-bg);
+}
+
+.quill-viewer .ql-container {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 0.875em;
+  height: 100%;
+  margin: 0;
+  position: relative;
+  border-radius: 12px;
+}
+
+.quill-editor .ql-container {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
 }
 
 .ql-toolbar {
@@ -22,6 +34,7 @@
   top: 0;
   z-index: 9;
 }
+
 .ql-editor {
   font-size: 16px !important;
   padding: 0 !important;
