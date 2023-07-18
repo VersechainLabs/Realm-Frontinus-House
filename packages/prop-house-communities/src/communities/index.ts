@@ -1,16 +1,18 @@
 import {
-  nouns,
-  lilNouns,
-  onchainMonkey,
   balanceOfErc20,
   balanceOfErc721,
   balanceOfErc721Multiple,
   erc1155,
+  fixedVotes,
+  lilNouns,
+  nouns,
+  onchainMonkey,
   oneHundredVotes,
   perWalletVoteErc20,
-  fixedVotes,
+  snapshotMultiple,
 } from '../strategies';
 import { CaseInsensitiveMap } from '../types/CaseInsensitiveMap';
+import { StrategyType } from '../strategies/snapshotMultiple';
 
 /**
  * Contract addresses for communities that require custom voting strategy.
@@ -120,5 +122,26 @@ export const communities = new CaseInsensitiveMap(
     '0x3abF2A4f8452cCC2CF7b4C1e4663147600646f66': balanceOfErc20(18),
     // Infinite Retro Round
     '0x5EBFd1CAC809F947164F558a606c29e685c754d3': balanceOfErc721(1),
+    // ENS
+    '0x57f1887a8bf19b14fc0df6fd9b2acc9af147ea85': balanceOfErc721(100),
+
+    // These strategies from : https://snapshot.org/#/council.bibliotheca.eth/proposal/0x755fc15017bc4a061e385c3fe4cd65b9e39496ba028577b4828c3a3f8dc4b71f
+    '0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d': snapshotMultiple([
+      {
+        address: '0x17963290db8c30552d0cfa2a6453ff20a28c31a2',
+        strategyType: StrategyType.ContractCall,
+        multiplier: 1,
+      },
+      {
+        address: '0xcdfe3d7ebfa793675426f150e928cd395469ca53',
+        strategyType: StrategyType.ContractCall,
+        multiplier: 1,
+      },
+      {
+        address: '0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d',
+        strategyType: StrategyType.Erc721,
+        multiplier: 1,
+      },
+    ]),
   }),
 );

@@ -1,3 +1,5 @@
+import * as process from 'process';
+
 export interface DbConfig {
   port: number;
   host: string;
@@ -14,6 +16,7 @@ export interface Config {
   database: DbConfig;
   env: string;
   JSONRPC: string;
+  Web3RpcUrl: string;
   file: FileConfig;
 }
 
@@ -27,6 +30,7 @@ const config = (): Config => ({
   },
   env: process.env.NODE_ENV ?? 'development',
   JSONRPC: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_PROJECT_ID}`,
+  Web3RpcUrl: process.env.WEB3_RPC_URL,
   file: {
     basePath: process.env.FILE_BASE_PATH ?? '/data'
   }
