@@ -12,6 +12,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import ScrollButton from '../ScrollButton/ScrollButton';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import ProposalEditor from '../ProposalEditor';
+import DelegateEditor from '../DelegateEditor';
 import { patchProposal } from '../../state/slices/editor';
 import validFileType from '../../utils/validFileType';
 import getDuplicateFileMessage from '../../utils/getDuplicateFileMessage';

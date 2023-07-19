@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
-import { FormDataType, FundReqDataType } from '../ProposalEditor';
+import { FormDataType, FundReqDataType } from '../DelegateEditor';
 import inputHasImage from '../../utils/inputHasImage';
 import { useSigner } from 'wagmi';
 import InputFormGroup from '../InputFormGroup';

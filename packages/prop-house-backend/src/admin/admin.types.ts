@@ -1,44 +1,19 @@
 import { Transform } from 'class-transformer';
-import { IsEthereumAddress } from 'class-validator';
-
 import {
   IsArray,
   IsEnum,
+  IsEthereumAddress,
   IsInt,
   IsNumber,
   IsOptional,
   IsPositive,
   IsString,
   Min,
-  isEthereumAddress,
 } from 'class-validator';
 
-export class CreateDelegateDto {
-  // @IsEthereumAddress()
-  // address: string;
-
-  @IsString()
-  @IsOptional()
-  startTime: Date;
-
-  @IsString()
-  proposalEndTime: Date;
-
-  @IsString()
-  votingEndTime: Date;
-
-  @IsString()
-  endTime: Date;
-
-  @IsString()
-  title: string;
-
-  @IsString()
-  description: string;
-
-//   @IsNumber()
-//   @IsPositive()
-//   communityId: number;
+export class CreateAdminDto {
+  @IsEthereumAddress()
+  address: string;
 }
 
 export enum Order {
@@ -46,7 +21,7 @@ export enum Order {
   DESC = 'DESC',
 }
 
-export class GetDelegatesDto {
+export class GetAdminDto {
   @IsOptional()
   @IsInt()
   @Min(1)
@@ -64,9 +39,11 @@ export class GetDelegatesDto {
   @IsEnum(Order)
   order?: Order;
 
-  @IsOptional()
-  @IsArray()
-  addresses?: string[];
+    // When find comments, should always with proposalId:
+//   @IsInt()
+//   @Min(1)
+//   @Transform(({ value }) => Number(value))
+//   proposalId: number;
 }
 
 export class LatestDto {

@@ -1,39 +1,58 @@
+/* Form Styles */
 .form {
   margin-top: 3rem;
 }
+
 .inputLabel {
   font-size: 18px;
   font-weight: 700;
-  color: var(--brand-black-transparent);
+  color: #f5eee6;
 }
+
 .inputGroup {
   margin-bottom: 2rem;
 }
+
+/*p {*/
+/*  margin-top: 4rem;*/
+/*  width: 600px;*/
+/*  height: 37px;*/
+/*  font-size: 28px;*/
+/*  font-weight: bold;*/
+/*  color: #f5eee6;*/
+/*}*/
+
 .inputSection {
   margin: 3rem 0rem;
 }
+
 .inputInfo {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
+
 .inputChars {
   font-size: 14px;
-  color: var(--brand-gray);
+  color: #676b6d;
 }
+
 .inputError {
   color: red;
   font-weight: 600;
   padding: 0.5rem 0rem;
   margin-bottom: 0rem;
 }
+
 .infRoundSectionsContainer {
   display: flex;
 }
+
 .infRoundTitleSection {
   width: 100%;
   padding-right: 3rem;
 }
+
 .fundReqFormGroup {
   max-width: 8rem;
 }
@@ -41,50 +60,60 @@
 .input {
   border: none;
   font-size: 20px;
-  color: var(--brand-black);
-  margin-bottom: 1.75rem;
-  white-space: pre-line;
+  background-color: #272728;
   margin-bottom: 0rem;
-  border-radius: 12px;
-  border: 1px solid #ccc !important;
+  white-space: pre-line;
+  border-radius: 4px;
   padding: 0.75rem !important;
   font-size: 16px !important;
 }
+
 .input:focus {
   box-shadow: none;
   border: 1px rgba(0, 0, 0, 0.1) solid;
 }
+
 .input::placeholder {
-  color: var(--brand-gray-transparent) !important;
+  color: #676b6d;
   font-size: 16px !important;
   font-style: italic;
+  padding-left: 0.5rem;
 }
+
 .input:focus::-webkit-input-placeholder {
   opacity: 0 !important;
 }
+
 .descriptionLabel {
   margin-bottom: 0;
 }
+
 .descriptionInput {
   height: 15rem;
 }
+
 .quillArea {
   width: 100%;
 }
+
 :global(.editPropContainer) .inputGroup,
 :global(.editPropContainer) .inputSection:first-child {
   margin-top: 0 !important;
 }
 
+/* Responsive Styles */
 @media (max-width: 767px) {
   .infRoundSectionsContainer {
     display: flex;
     flex-direction: column;
   }
+
   .infRoundTitleSection {
     padding-right: 0rem;
   }
 }
+
+/* Loading Overlay */
 .loadingOverlay {
   position: fixed;
   top: 0;

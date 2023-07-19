@@ -2,17 +2,20 @@ import { Container } from 'react-bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { useAppSelector } from '../../hooks';
-import { useParams } from 'react-router-dom';
-import CreateCommentWidget from '../../components/CreateCommentWidget';
-import { List, ListItem } from '@mui/material';
+import CreateCommentWidget from '../CreateCommentWidget';
+import { Avatar, List, ListItem } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
-import QuillViewer from '../../components/QuillViewer';
-import EthAddress from '../../components/EthAddress';
-import { useAccount } from 'wagmi';
+import QuillViewer from '../QuillViewer';
+import EthAddress from '../EthAddress';
+import AddressAvatar from '../AddressAvatar';
+import { serverDateToString } from '../../utils/detailedTime';
 
-const Comments = () => {
-  const params = useParams();
-  const { proposalId } = params;
+type CommentsProps = {
+  proposalId: number;
+}
+
+export default function Comments(props: CommentsProps) {
+  const { proposalId } = props;
 
   const [commentList, setCommentList] = useState<CommentModal[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
@@ -24,6 +27,7 @@ const Comments = () => {
 
   useEffect(() => {
     loadNextPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadNextPage = (skip: number) => {
@@ -59,23 +63,29 @@ const Comments = () => {
   };
 
   const itemList = [] as JSX.Element[];
-  commentList.forEach((comment) => {
-    itemList.push(CommentListItem({ comment: comment }));
-  });
-  itemList.push(
-    <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
-      <LoadingButton
-        loading={showTailLoading}
-        onClick={() => loadNextPage(commentList.length)}
-        sx={{
-          display: 'flex',
-          textTransform: 'none',
-        }}
-      >
-        {showTailLoading ? 'Loading...' : 'Load More'}
-      </LoadingButton>
-    </ListItem>,
-  );
+  if (commentList.length === 0) {
+    itemList.push(
+      <ListItem>No comment yet</ListItem>,
+    );
+  } else {
+    commentList.forEach((comment) => {
+      itemList.push(CommentListItem({ comment: comment }));
+    });
+    itemList.push(
+      <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
+        <LoadingButton
+          loading={showTailLoading}
+          onClick={() => loadNextPage(commentList.length)}
+          sx={{
+            display: 'flex',
+            textTransform: 'none',
+          }}
+        >
+          {showTailLoading ? 'Loading...' : 'Load More'}
+        </LoadingButton>
+      </ListItem>,
+    );
+  }
 
   return (<>
     <Container>
@@ -93,8 +103,6 @@ const Comments = () => {
   </>);
 };
 
-export default Comments;
-
 /// CommentListItem
 
 type CommentListItemProps = {
@@ -103,14 +111,38 @@ type CommentListItemProps = {
 
 export function CommentListItem(props: CommentListItemProps) {
   const { comment } = props;
+  const avatarSize = 40;
 
   return (
-    <ListItem key={`comment-${comment.id}`}>
-      {/*<Jazzicon diameter={20} seed={jsNumberForAddress(props.comment.owner)} />*/}
-      <div>
-        <EthAddress address={props.comment.owner} addAvatar />
+    <ListItem key={`comment-${comment.id}`} alignItems='flex-start'>
+      <Avatar sx={{
+        width: avatarSize, height: avatarSize,
+        margin: '8px',
+      }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        flexGrow: 1,
+        marginBottom: '10px',
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'baseline',
+          marginBottom: '8px',
+        }}>
+          <EthAddress address={props.comment.owner} />
+
+          <div style={{
+            fontSize: '13px',
+            marginLeft: '12px',
+          }}>
+            {serverDateToString(comment.createdDate)}
+          </div>
+        </div>
+        <QuillViewer content={props.comment.content} />
+
       </div>
-      <QuillViewer content={props.comment.content} />
+
     </ListItem>
   );
 }
@@ -125,3 +157,4 @@ export type CommentModal = {
   owner: string;
   createdDate: string;
 }
+

@@ -30,7 +30,7 @@ import { multiVoteSignature } from './utils/multiVoteSignature';
 import { multiVotePayload } from './utils/multiVotePayload';
 import { Signer } from 'ethers';
 // @ts-ignore
-import { CommentModal } from 'prop-house-webapp/src/pages/Comments';
+import { CommentModal } from '../../prop-house-webapp/src/components/Comments';
 
 export class PropHouseWrapper {
   constructor(
