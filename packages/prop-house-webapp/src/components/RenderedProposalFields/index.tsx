@@ -8,6 +8,7 @@ import sanitizeHtml from 'sanitize-html';
 import { useTranslation } from 'react-i18next';
 import { StoredAuctionBase, StoredProposal } from '@nouns/prop-house-wrapper/dist/builders';
 import { BiAward } from 'react-icons/bi';
+import clsx from "clsx";
 
 export interface RenderedProposalProps {
   proposal: StoredProposal;
@@ -31,6 +32,8 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             <div className={classes.backBtnContainer}>{backButton && backButton}</div>
             <div className={classes.headerBottomContainer}>
               <div>
+                <h1>{fields.title}</h1>
+
                 {proposal.address && proposal.id && (
                   <div className={classes.subinfo}>
                     <div className={classes.propBy}>
@@ -39,10 +42,11 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                       <div className={classes.submittedBy}>
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
+                      <span>{' • '} {proposal.createdDate}</span>
                     </div>
                   </div>
                 )}
-                <h1>{fields.title}</h1>
+
               </div>
               {proposal.reqAmount && round && (
                 <div className={classes.fundReq}>
@@ -55,11 +59,11 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
 
           <span className={classes.proposalBody}>
             {fields.tldr && (
-              <>
+              <div className={classes.tldr}>
                 <hr></hr>
-                <h2>{t('tldr')}</h2>
-                <ReactMarkdown className={classes.markdown} children={fields.tldr}></ReactMarkdown>
-              </>
+                <h2 >{t('tldr')}</h2>
+                <ReactMarkdown className={`${classes.markdown} ${classes.tldrContent}`} children={fields.tldr}></ReactMarkdown>
+              </div>
             )}
 
             <h2>{t('description')}</h2>

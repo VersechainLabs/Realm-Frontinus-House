@@ -61,6 +61,7 @@ p {
   --brand-yellow-transparent: rgba(203, 167, 39, 0.78);
   --brand-yellow-semi-transparent: rgba(203, 167, 39, 0.3);
   --brand-yellow-hint: rgba(203, 167, 39, 0.1);
+  --brand-proposql-yellow: rgba(208, 160, 89, 1);
 
   /* Green */
   --brand-green: #50ba9a;
@@ -343,3 +344,98 @@ p {
 .proposalCopy {
   padding: 0 !important;
 }
+
+
+.ql-container{
+  border-bottom-left-radius:unset !important;
+  border-bottom-right-radius:unset !important;
+}
+
+
+
+#toolbar{
+  border-top-left-radius:unset !important;
+  border-top-right-radius:unset !important;
+}
+
+#custom-button{
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 5px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 32px;
+  padding: 0px 16px;
+  border-radius: 8px;
+  border: 1px solid #D0A059;
+  background: #D0A059;
+  font-weight: 700;
+
+  color: var(--bg-dark);
+
+}
+
+
+.ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button{
+  margin-right: 15px;
+}
+
+/*#toolbar svg path{*/
+/*  stroke:white !important;*/
+/*}*/
+
+/*#toolbar svg line{*/
+/*  stroke:white !important;*/
+/*}*/
+
+
+.ql-toolbar{
+  background:var(--bg-dark) !important;
+  border: 1px solid var(--container-bg) !important;
+}
+
+.container{
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.ql-snow .ql-stroke{
+  stroke:white !important;
+}
+
+.ql-snow .ql-picker{
+  color:white !important;
+}
+
+.ql-snow .ql-tooltip{
+  z-index: 10 !important;
+}
+
+
+.ql-snow.ql-toolbar button:hover .ql-stroke{
+  stroke:#06c !important;
+}
+
+.ql-snow .ql-picker-options{
+  background-color: var(--bg-dark) !important;
+}
+
+
+.ql-snow.ql-toolbar button.ql-active .ql-stroke{
+  stroke:#06c !important;
+}
+
+.quill-viewer .ql-container{
+  background: unset !important;
+}
+
+
+/*.ql-snow.ql-toolbar button:hover,.ql-snow.ql-toolbar button:hover .ql-stroke{*/
+/*  stroke:#06c !important;*/
+/*}*/
+
+
