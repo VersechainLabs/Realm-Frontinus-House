@@ -13,6 +13,7 @@ import LoadingIndicator from './components/LoadingIndicator';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import NotFound from './components/NotFound';
 import Round from './pages/Round';
+import DelegateDetails from './pages/DelegateDetails';
 import bgColorForPage from './utils/bgColorForPage';
 import clsx from 'clsx';
 import OpenGraphHouseCard from './components/OpenGraphHouseCard';
@@ -100,6 +101,7 @@ function App() {
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
+                  <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   <Route path="/:house" element={<House />} />
                   <Route path="/:house/:title" element={<Round />} />
                   <Route path="/:house/:title/:id" element={<Proposal />} />

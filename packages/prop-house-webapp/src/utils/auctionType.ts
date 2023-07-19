@@ -6,9 +6,9 @@ import {
 } from '@nouns/prop-house-wrapper/dist/builders';
 
 export const isInfAuction = (
-  auction: StoredAuctionBase | AuctionBase,
+  auction: StoredAuctionBase | AuctionBase | any,
 ): auction is StoredInfiniteAuction => 'quorum' in auction;
 
 export const isTimedAuction = (
-  auction: StoredAuctionBase | AuctionBase,
+  auction: StoredAuctionBase | AuctionBase | any,
 ): auction is StoredTimedAuction => !('quorum' in auction);
