@@ -64,7 +64,7 @@ import {
       const foundDelegation = await this.delegationService.findOne(id);
 
       if (!foundDelegation)
-        throw new HttpException('Delegatioin not found', HttpStatus.NOT_FOUND);
+        throw new HttpException('Delegation not found', HttpStatus.NOT_FOUND);
         
       return foundDelegation;
     }
