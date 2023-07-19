@@ -36,6 +36,7 @@
     border: 1px solid #ccc !important;
     padding: 0.75rem !important;
     font-size: 16px !important;
+    background: #272728;
   }
   .nominateText{
     font-size: 28px;
@@ -49,11 +50,13 @@
   .input:focus {
     box-shadow: none;
     border: 1px rgba(0, 0, 0, 0.1) solid;
+    background: #272728;
   }
   .input::placeholder {
     color: var(--brand-gray-transparent) !important;
     font-size: 16px !important;
     font-style: italic;
+    background: #272728;
   }
   .input:focus::-webkit-input-placeholder {
     opacity: 0 !important;
