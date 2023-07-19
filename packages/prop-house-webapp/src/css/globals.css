@@ -431,6 +431,12 @@ p {
 
 .quill-viewer .ql-container{
   background: unset !important;
+  padding-left: unset !important;
+  padding-top: 8px !important;
+  padding-bottom: 24px !important;
+  border-bottom: 1px solid #272728 !important;
+  font-size: 16px !important;
+  color: #F5EEE6 !important;
 }
 
 
