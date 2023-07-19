@@ -24,7 +24,7 @@ export default function Comments(props: CommentsProps) {
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new PropHouseWrapper(host));
-  const [filter, setFilter] = useState('old');
+  const [showLoadMore, setShowLoadMore] = useState(true);
 
 
   useEffect(() => {
@@ -33,6 +33,7 @@ export default function Comments(props: CommentsProps) {
   }, []);
 
   const loadNextPage = (skip: number) => {
+
     if (showTailLoading || showFullLoading) {
       return;
     }
@@ -50,6 +51,10 @@ export default function Comments(props: CommentsProps) {
           list = res;
         } else {
           list = commentList.concat(res);
+        }
+
+        if (list.length<=0){
+          setShowLoadMore(false);
         }
 
         setCommentList(list);
@@ -74,7 +79,7 @@ export default function Comments(props: CommentsProps) {
       itemList.push(CommentListItem({ comment: comment }));
     });
     itemList.push(
-      <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
+        <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
         <LoadingButton
           loading={showTailLoading}
           onClick={() => loadNextPage(commentList.length)}
