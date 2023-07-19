@@ -24,6 +24,7 @@ export default function Comments(props: CommentsProps) {
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new PropHouseWrapper(host));
+  const [filter, setFilter] = useState('old');
 
 
   useEffect(() => {
@@ -98,9 +99,9 @@ export default function Comments(props: CommentsProps) {
         onCommentCreated={onCommentCreated}
       />
 
-      <div>
+      <div className={classes.listBar}>
         <div className={classes.listTitle}>Comments</div>
-
+        {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
 
       <List>{itemList}</List>
