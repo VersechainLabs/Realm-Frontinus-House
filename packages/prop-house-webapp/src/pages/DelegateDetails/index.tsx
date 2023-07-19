@@ -119,7 +119,7 @@ const DelegateDetails = () => {
         setLoadingProps(true);
 
         // const proposals = await client.current.getNominessByDelegate(round.id);
-        const proposals = await client.current.getNominessByDelegate(1);
+        const proposals = await client.current.getNominessByDelegate(parseInt( id ));
         dispatch(setActiveProposals(proposals));
 
         // set initial state for props (sorted in timed round / filtered in inf round)
