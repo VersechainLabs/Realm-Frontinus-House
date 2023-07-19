@@ -64,6 +64,13 @@ export class VotesController {
       this.provider,
       foundProposalAuction.balanceBlockTag,
     );
+    // Sample:
+    // return getVotingPower(
+    //   address,
+    //   '0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d',
+    //   this.provider,
+    //   17665090,
+    // );
   }
 
   @Get(':id')
