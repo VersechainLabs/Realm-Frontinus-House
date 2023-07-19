@@ -50,13 +50,13 @@ const DelegateEditor: React.FC<{
   setDuplicateFile: Dispatch<SetStateAction<{ error: boolean; name: string }>>;
   remainingBal?: number;
 
-  buttonText: string;
-  buttonColor: string;
-  onButtonClick: () => void;
-
-  additionalButtonText: string;
-  additionalButtonColor: string;
-  additionalButtonOnClick: () => void;
+  // buttonText: string;
+  // buttonColor: string;
+  // onButtonClick: () => void;
+  //
+  // additionalButtonText: string;
+  // additionalButtonColor: string;
+  // additionalButtonOnClick: () => void;
 }> = props => {
   const {
     fields,
@@ -73,12 +73,12 @@ const DelegateEditor: React.FC<{
     setDuplicateFile,
     onFileDrop,
     remainingBal,
-    buttonText,
-    buttonColor,
-    onButtonClick,
-    additionalButtonText,
-    additionalButtonColor,
-    additionalButtonOnClick,
+    // buttonText,
+    // buttonColor,
+    // onButtonClick,
+    // additionalButtonText,
+    // additionalButtonColor,
+    // additionalButtonOnClick,
   } = props;
 
   const data = useAppSelector(state => state.editor.proposal);
@@ -257,16 +257,16 @@ const DelegateEditor: React.FC<{
         <button
           type="button"
           className={`${classes.submitButton} customButton`}
-          style={{ backgroundColor: buttonColor }}
-          onClick={onButtonClick}
+          // style={{ backgroundColor: buttonColor }}
+          // onClick={onButtonClick}
         >
           {'Submit'}
         </button>
         <button
           type="button"
           className={`${classes.additionalButton} customButton`}
-          style={{ backgroundColor: additionalButtonColor }}
-          onClick={additionalButtonOnClick}
+          // style={{ backgroundColor: additionalButtonColor }}
+          // onClick={additionalButtonOnClick}
         >
           {'Preview'}
         </button>
