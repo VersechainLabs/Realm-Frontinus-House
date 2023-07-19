@@ -1,6 +1,6 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Community } from 'src/community/community.entity';
-import { Delegate } from 'src/delegate/delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
   Entity,
@@ -20,7 +20,7 @@ import {
 export class Admin {
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
-    description: 'All nominees are issued a unique ID number',
+    description: 'All applications are issued a unique ID number',
   })
   id: number;
 

@@ -10,55 +10,46 @@ import {
     Query,
   } from '@nestjs/common';
   import { ParseDate } from 'src/utils/date';
-  import { Delegate } from 'src/delegate/delegate.entity';
-  import { Nominee } from './nominee.entity';
-  import { CreateNomineeDto, GetNomineesDto, LatestDto } from './nominee.types';
-  import { DelegatesService} from 'src/delegate/delegates.service';
-  import { NomineeService} from './nominee.service';
+  import { Delegation } from 'src/delegation/delegation.entity';
+  import { Application } from './application.entity';
+  import { CreateApplicationDto, GetApplicationDto, LatestDto } from './application.types';
+  import { DelegationService} from 'src/delegation/delegation.service';
+  import { ApplicationService} from './application.service';
   import { ProposalsService } from 'src/proposal/proposals.service';
   import { Proposal } from 'src/proposal/proposal.entity';
   import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
   
-  @Controller('nominees')
-  export class NomineeController {
+  @Controller('applications')
+  export class ApplicationController {
     [x: string]: any;
     constructor(
-      private readonly nomineeService: NomineeService,
-      private readonly delegatesService: DelegatesService,
+      private readonly applicationService: ApplicationService,
+      private readonly delegationService: DelegationService,
     ) {}
   
     @Get('/list')
-    getAll(): Promise<Nominee[]> {
-      return this.nomineeService.findAll(); 
+    getAll(): Promise<Application[]> {
+      return this.applicationService.findAll(); 
     }
   
-    @Get('/byDelegate/:delegateId')
-    async findByDelegate(
-      @Param('delegateId') delegateId: number,        
-      @Body() dto: GetNomineesDto
+    @Get('/byDelegation/:delegationId')
+    async findByDelegation(
+      @Param('delegationId') delegationId: number,        
+      @Body() dto: GetApplicationDto
     ) {
-      const nominees = await this.nomineeService.findByDelegate(delegateId, dto);
-      if (!nominees)
-        throw new HttpException('Nominees not found', HttpStatus.NOT_FOUND);
-      return nominees;
+      const applictions = await this.applicationService.findByDelegation(delegationId, dto);
+      if (!applictions)
+        throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
+      return applictions;
     }
 
     @Post('/create')
-    async create(@Body() createNomineeDto: CreateNomineeDto): Promise<Nominee> {
-        console.log("create nominee:", createNomineeDto.delegateId);
+    async create(@Body() dto: CreateApplicationDto): Promise<Application> {
+        console.log("create appliction:", dto.delegationId);
 
-        return await this.nomineeService.createNomineeByDelegate(createNomineeDto);
+        return await this.applicationService.createApplicationByDelegation(dto);
 
-//       const nominee = new Nominee();
-// return nominee;      
-//       nominee.address = createNomineeDto.address;
-//       nominee.signedData = createNomineeDto.signedData;
-//       nominee.title = createNomineeDto.title;
-//       nominee.tldr = createNomineeDto.tldr;
-//       nominee.description = createNomineeDto.description;
-//       nominee.delegateId = createNomineeDto.delegateId;
 
-    //   return this.nomineeService.store(nominee);
     }
   
     // // Chao

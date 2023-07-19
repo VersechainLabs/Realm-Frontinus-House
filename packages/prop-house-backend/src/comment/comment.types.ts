@@ -61,5 +61,5 @@ export class LatestDto {
   @IsInt()
   @Min(1)
   @Transform(({ value }) => Number(value))
-  delegateId: number;
+  delegationId: number;
 }

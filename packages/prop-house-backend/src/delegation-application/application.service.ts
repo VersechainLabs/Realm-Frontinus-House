@@ -2,100 +2,63 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
-import { Delegate } from './delegate.entity';
-import { CreateDelegateDto, GetDelegatesDto, LatestDto } from './delegate.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
-// import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
+import { Delegation } from 'src/delegation/delegation.entity';
+import { Application } from './application.entity';
+import { CreateApplicationDto, GetApplicationDto, LatestDto } from './application.types';
 
-export type AuctionWithProposalCount = Delegate & { numProposals: number };
+export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
 @Injectable()
-export class DelegatesService {
+export class ApplicationService {
   constructor(
-    @InjectRepository(Delegate) private delegatesRepository: Repository<Delegate>,
-    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    @InjectRepository(Application) private applicationRepository: Repository<Application>,
+    @InjectRepository(Delegation) private delegationRepository: Repository<Delegation>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
-  ) {}
+    ) {}
 
-  findAll(): Promise<Delegate[]> {
-    return this.delegatesRepository.find({
+  findAll(): Promise<Application[]> {
+    return this.applicationRepository.find({
       // loadRelationIds: {
       //   relations: ['proposals.auction', 'community'],
       // },
       where: {
         visible: true,
       },
-      order: {
-        id: "DESC"
-      }
     });
   }
 
-  findOne(id: number): Promise<Delegate> {
-    return this.delegatesRepository.findOne(id, {
-      // relations: ['proposals'],
-      // loadRelationIds: {
-      //   relations: ['community'],
-      // },
-      where: { visible: true },
-    });
+  // Chao
+  async createApplicationByDelegation(
+    // communityId: number, 
+    dto: CreateApplicationDto
+  ) {
+    const delegation = await this.delegationRepository.findOne(dto.delegationId);
+    console.log("delegation", delegation);
+
+    if (!delegation) {
+      throw new HttpException(
+        'Delegation not found. Cannot create application',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    console.log("dto:", dto);
+
+    const newApplicaiton = this.applicationRepository.create({...dto, delegation});
+    return await this.applicationRepository.save(newApplicaiton);
   }
-  
-  async store(proposal: Delegate): Promise<Delegate> {
-    return await this.delegatesRepository.save(proposal, { reload: true });
+
+  async findByDelegation(delegationId: number, dto: GetApplicationDto): Promise<Application[]> {
+    return await this.applicationRepository
+      .createQueryBuilder('a')
+      .select('a.*')
+      .where('a.delegationId = :deId', { deId: delegationId })
+      .offset(dto.skip)
+      .limit(dto.limit)
+      .orderBy('id', dto.order)
+      .getRawMany();
   }
-
-  // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
-  //   return (
-  //     this.auctionsRepository
-  //       .createQueryBuilder('a')
-  //       .select('a.*')
-  //       .where('a.community.id = :id', { id })
-  //       // This select adds a new property, reflected in AuctionWithProposalCount
-  //       .addSelect('SUM(p."numProposals")', 'numProposals')
-  //       .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
-  //       .groupBy('a.id')
-  //       .getRawMany()
-  //   );
-  // }
-  // findAllActive(dto: GetAuctionsDto): Promise<Auction[]> {
-  //   return this.auctionsRepository
-  //     .createQueryBuilder('a')
-  //     .select('a.*')
-  //     .addSelect('SUM(p."numProposals")', 'numProposals')
-  //     .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
-  //     .groupBy('a.id')
-  //     .offset(dto.skip)
-  //     .limit(dto.limit)
-  //     .addSelect(
-  //       'CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime THEN 1 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime THEN 2 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime THEN 3 ELSE 4 END END END',
-  //       'auction_order',
-  //     )
-  //     .orderBy('auction_order', 'ASC')
-  //     .getRawMany();
-  // }
-
-  // findAllActiveForCommunities(dto: GetAuctionsDto): Promise<Auction[]> {
-  //   return this.auctionsRepository
-  //     .createQueryBuilder('a')
-  //     .select('a.*')
-  //     .addSelect('SUM(p."numProposals")', 'numProposals')
-  //     .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
-  //     .leftJoin('a.community', 'c')
-  //     .groupBy('a.id, c.contractAddress')
-  //     .offset(dto.skip)
-  //     .limit(dto.limit)
-  //     .addSelect(
-  //       'CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 1 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 2 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 3 ELSE CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 4 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 5 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 6 ELSE 7 END END END END END END',
-  //       'auction_order',
-  //     )
-  //     .setParameter('addresses', dto.addresses)
-  //     .orderBy('auction_order', 'ASC')
-  //     .addOrderBy('a.votingEndTime', 'DESC')
-  //     .getRawMany();
-  // }
-
   // latestNumProps(dto: LatestDto): Promise<number> {
   //   const timestamp = new Date(dto.timestamp); // Convert Unix timestamp (ms) to Date object
   //   return this.auctionsRepository
@@ -181,6 +144,10 @@ export class DelegatesService {
   // async remove(id: number): Promise<void> {
   //   await this.auctionsRepository.delete(id);
   // }
+
+  async store(value: Application): Promise<Application> {
+    return await this.applicationRepository.save(value, { reload: true });
+  }
 
   // // Chao
   // async createAuctionByCommunity(

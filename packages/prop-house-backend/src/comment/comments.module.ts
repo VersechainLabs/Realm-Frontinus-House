@@ -8,21 +8,19 @@ import { Proposal } from 'src/proposal/proposal.entity';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { Comment } from './comment.entity';
 import { Auction } from 'src/auction/auction.entity';
-import { Delegate } from 'src/delegate/delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
 // import { AuctionsResolver } from './auction.resolver';
 import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Comment, Delegate, Proposal, Community, InfiniteAuction, Auction]),
+    TypeOrmModule.forFeature([Comment, Delegation, Proposal, Community, InfiniteAuction, Auction]),
   ],
   controllers: [CommentsController],
   providers: [
     CommentsService,
-    // DelegatesService,
     ProposalsService,
-    // DelegatesResolver,
     CommunitiesService,
     InfiniteAuctionService,
   ],

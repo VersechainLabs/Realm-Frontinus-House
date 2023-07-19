@@ -19,7 +19,7 @@ import {
 export class Comment {
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
-    description: 'All delegate are issued a unique ID number',
+    description: 'All comments are issued a unique ID number',
   })
   id: number;
 
