@@ -1,5 +1,5 @@
 .backToAuction {
-  color: var(--brand-black-transparent);
+  /*color: var(--brand-black-transparent);*/
   cursor: pointer;
   display: flex;
   gap: 5px;
