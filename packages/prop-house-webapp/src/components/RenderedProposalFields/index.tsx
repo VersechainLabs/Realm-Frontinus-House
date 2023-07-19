@@ -43,7 +43,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                       <div className={classes.submittedBy}>
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
-                      <span>{' • '} {serverDateToString(proposal.createdDate)}</span>
+                      <span>{' • '} {proposal.createdDate}</span>
                     </div>
                   </div>
                 )}
