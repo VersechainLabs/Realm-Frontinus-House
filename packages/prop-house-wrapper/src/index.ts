@@ -48,7 +48,7 @@ export class PropHouseWrapper {
 
   async createDelegateAuction(auction: any): Promise<any[]> {
     try {
-      return (await axios.post(`${this.host}/delegates/create`, auction )).data;
+      return (await axios.post(`${this.host}/delegations/create`, auction )).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -107,7 +107,7 @@ export class PropHouseWrapper {
   async getDelegateForCommunity(): Promise<StoredAuctionBase[]> {
     try {
       const [rawTimedAuctions] = await Promise.allSettled([
-        axios.get(`${this.host}/delegates/list/`)
+        axios.get(`${this.host} /delegations/list/`)
       ]);
 
       const timed =
@@ -218,6 +218,19 @@ export class PropHouseWrapper {
     }
   }
 
+  async getDelegateDetails(
+    id: number,
+  ): Promise<StoredAuctionBase> {
+    try {
+      const rawTimedAuction = (
+        await axios.get(`${this.host} /delegations/${id}`)
+      ).data;
+      return StoredTimedAuction.FromResponse(rawTimedAuction);
+    } catch (e: any ) {
+      throw e.response.data.message;
+    }
+  }
+
   async getProposals(limit = 20, skip = 0, order: 'ASC' | 'DESC' = 'DESC') {
     try {
       const { data } = await axios.get(`${this.host}/proposals`, {
@@ -244,6 +257,14 @@ export class PropHouseWrapper {
   async getAuctionProposals(auctionId: number) {
     try {
       return (await axios.get(`${this.host}/auctions/${auctionId}/proposals`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async getNominessByDelegate(auctionId: number) {
+    try {
+      return (await axios.get(`${this.host}/applications/byDelegation/${auctionId}`)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }

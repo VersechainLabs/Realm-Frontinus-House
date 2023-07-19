@@ -9,6 +9,7 @@ import QuillViewer from '../QuillViewer';
 import EthAddress from '../EthAddress';
 import AddressAvatar from '../AddressAvatar';
 import { serverDateToString } from '../../utils/detailedTime';
+import classes from './Comments.module.css';
 
 type CommentsProps = {
   proposalId: number;
@@ -97,6 +98,11 @@ export default function Comments(props: CommentsProps) {
         onCommentCreated={onCommentCreated}
       />
 
+      <div>
+        <div className={classes.listTitle}>Comments</div>
+
+      </div>
+
       <List>{itemList}</List>
 
     </Container>
@@ -114,10 +120,10 @@ export function CommentListItem(props: CommentListItemProps) {
   const avatarSize = 40;
 
   return (
-    <ListItem key={`comment-${comment.id}`} alignItems='flex-start'>
+    <ListItem key={`comment-${comment.id}`} alignItems='flex-start' className={classes.listItem}>
       <Avatar sx={{
         width: avatarSize, height: avatarSize,
-        margin: '8px',
+        marginRight: '16px',
       }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
       <div style={{
         display: 'flex',
@@ -132,14 +138,15 @@ export function CommentListItem(props: CommentListItemProps) {
         }}>
           <EthAddress address={props.comment.owner} />
 
-          <div style={{
-            fontSize: '13px',
-            marginLeft: '12px',
-          }}>
-            {serverDateToString(comment.createdDate)}
+          <div className={classes.date}>
+            <span style={{
+              marginRight: '6px',
+            }}>{' • '} </span> {serverDateToString(comment.createdDate)}
           </div>
         </div>
-        <QuillViewer content={props.comment.content} />
+        <div className={classes.quillContent}>
+          <QuillViewer content={props.comment.content}/>
+        </div>
 
       </div>
 

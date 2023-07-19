@@ -10,58 +10,64 @@ import {
     Query,
   } from '@nestjs/common';
   import { ParseDate } from 'src/utils/date';
-  import { Delegate } from './delegate.entity';
-  import { CreateDelegateDto, GetDelegatesDto, LatestDto } from './delegate.types';
-  import { DelegatesService} from './delegates.service';
+  import { Delegation } from './delegation.entity';
+  import { CreateDelegationDto, GetDelegationDto, LatestDto } from './delegation.types';
+  import { DelegationService} from './delegation.service';
   import { ProposalsService } from 'src/proposal/proposals.service';
   import { Proposal } from 'src/proposal/proposal.entity';
   import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
+  import { AdminService } from 'src/admin/admin.service';
+  import { Admin } from 'src/admin/admin.entity';
   
-  @Controller('delegates')
-  export class DelegatesController {
+  @Controller('delegations')
+  export class DelegationController {
     [x: string]: any;
     constructor(
-      private readonly delegatesService: DelegatesService,
+      private readonly delegationService: DelegationService,
       private readonly proposalService: ProposalsService,
+      private readonly adminService: AdminService,
     ) {}
   
+
     @Get('/list')
-    getAll(): Promise<Delegate[]> {
-      return this.delegatesService.findAll(); 
+    async getAll(@Body() dto: GetDelegationDto): Promise<Delegation[]> {
+      // const adminList = await this.adminService.findAll();
+
+      // const isAdmin = adminList.find((v) => v.address === dto.address);
+      
+      // if (!isAdmin)
+      // throw new HttpException(
+      //   'Need admin access!',
+      //   HttpStatus.BAD_REQUEST,
+      // );
+
+      return this.delegationService.findAll(); 
     }
-  
+
     @Post('/create')
-    async create(@Body() createDelegateDto: CreateDelegateDto): Promise<Delegate> {
-      const delegate = new Delegate();
-      delegate.title = createDelegateDto.title;
-      delegate.description = createDelegateDto.description;
-      delegate.startTime = createDelegateDto.startTime
-        ? ParseDate(createDelegateDto.startTime)
+    async create(@Body() createDelegationDto: CreateDelegationDto): Promise<Delegation> {
+      const delegation = new Delegation();
+      delegation.title = createDelegationDto.title;
+      delegation.description = createDelegationDto.description;
+      delegation.startTime = createDelegationDto.startTime
+        ? ParseDate(createDelegationDto.startTime)
         : new Date();
-      delegate.proposalEndTime = ParseDate(createDelegateDto.proposalEndTime);
-      delegate.votingEndTime = ParseDate(createDelegateDto.votingEndTime);
-      delegate.endTime = ParseDate(createDelegateDto.endTime);
-      return this.delegatesService.store(delegate);
+      delegation.proposalEndTime = ParseDate(createDelegationDto.proposalEndTime);
+      delegation.votingEndTime = ParseDate(createDelegationDto.votingEndTime);
+      delegation.endTime = ParseDate(createDelegationDto.endTime);
+      return this.delegationService.store(delegation);
     }
+
   
-    // // Chao
-    // @Post()
-    // async createForCommunity(
-    //   // @Param('communityId', ParseIntPipe) communityId: number,
-    //   @Body() createDelegateDto: createDelegateDto): Promise<Auction> 
-    // {
-    //   const newAuction = await this.auctionsService.createAuctionByCommunity(createDelegateDto);
-  
-    //   return newAuction;
-    // }
-  
-    // @Get(':id')
-    // async findOne(@Param('id') id: number): Promise<Auction> {
-    //   const foundAuction = await this.auctionsService.findOne(id);
-    //   if (!foundAuction)
-    //     throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
-    //   return foundAuction;
-    // }
+    @Get(':id')
+    async findOne(@Param('id') id: number): Promise<Delegation> {
+      const foundDelegation = await this.delegationService.findOne(id);
+
+      if (!foundDelegation)
+        throw new HttpException('Delegation not found', HttpStatus.NOT_FOUND);
+        
+      return foundDelegation;
+    }
   
     // @Get('/forCommunity/:id')
     // async findAllForCommunity(

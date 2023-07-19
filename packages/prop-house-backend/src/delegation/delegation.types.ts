@@ -1,4 +1,6 @@
 import { Transform } from 'class-transformer';
+import { IsEthereumAddress } from 'class-validator';
+
 import {
   IsArray,
   IsEnum,
@@ -8,27 +10,35 @@ import {
   IsPositive,
   IsString,
   Min,
+  isEthereumAddress,
 } from 'class-validator';
 
-export class CreateNomineeDto {
-  @IsString()
-  address: string;
+export class CreateDelegationDto {
+  // @IsEthereumAddress()
+  // address: string;
 
-//   @IsString()
-//   signedData: string;
+  @IsString()
+  @IsOptional()
+  startTime: Date;
+
+  @IsString()
+  proposalEndTime: Date;
+
+  @IsString()
+  votingEndTime: Date;
+
+  @IsString()
+  endTime: Date;
 
   @IsString()
   title: string;
 
   @IsString()
-  tldr: string;
-
-  @IsString()
   description: string;
 
-  @IsNumber()
-  @IsPositive()
-  delegateId: number;
+//   @IsNumber()
+//   @IsPositive()
+//   communityId: number;
 }
 
 export enum Order {
@@ -36,7 +46,7 @@ export enum Order {
   DESC = 'DESC',
 }
 
-export class GetNomineesDto {
+export class GetDelegationDto {
   @IsOptional()
   @IsInt()
   @Min(1)
@@ -68,5 +78,5 @@ export class LatestDto {
   @IsInt()
   @Min(1)
   @Transform(({ value }) => Number(value))
-  delegateId: number;
+  delegationId: number;
 }

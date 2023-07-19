@@ -3,7 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
 import { Delegate } from './delegate.entity';
-import { CreateDelegateDto, GetDelegatesDto, LatestDto } from './delegate.types';
+import { Delegation } from 'src/delegation/delegation.entity';
+import { CreateDelegateDto, GetDelegateDto, LatestDto } from './delegate.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 // import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
@@ -11,25 +12,37 @@ import { Auction } from 'src/auction/auction.entity';
 export type AuctionWithProposalCount = Delegate & { numProposals: number };
 
 @Injectable()
-export class DelegatesService {
+export class DelegateService {
   constructor(
-    @InjectRepository(Delegate) private delegatesRepository: Repository<Delegate>,
+    @InjectRepository(Delegate) private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Delegation) private delegationRepository: Repository<Delegation>,
     @InjectRepository(Community) private communitiesRepository: Repository<Community>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
   findAll(): Promise<Delegate[]> {
-    return this.delegatesRepository.find({
+    return this.delegateRepository.find({
       // loadRelationIds: {
       //   relations: ['proposals.auction', 'community'],
       // },
-      where: {
-        visible: true,
-      },
       order: {
         id: "DESC"
       }
     });
+  }
+
+  findOne(id: number): Promise<Delegate> {
+    return this.delegateRepository.findOne(id, {
+      // relations: ['proposals'],
+      // loadRelationIds: {
+      //   relations: ['community'],
+      // },
+    //   where: { visible: true },
+    });
+  }
+  
+  async store(proposal: Delegate): Promise<Delegate> {
+    return await this.delegateRepository.save(proposal, { reload: true });
   }
 
   // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
@@ -167,10 +180,6 @@ export class DelegatesService {
   // async remove(id: number): Promise<void> {
   //   await this.auctionsRepository.delete(id);
   // }
-
-  async store(proposal: Delegate): Promise<Delegate> {
-    return await this.delegatesRepository.save(proposal, { reload: true });
-  }
 
   // // Chao
   // async createAuctionByCommunity(

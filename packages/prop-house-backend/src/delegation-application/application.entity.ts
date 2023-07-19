@@ -1,6 +1,6 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Community } from 'src/community/community.entity';
-import { Delegate } from 'src/delegate/delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
   Entity,
@@ -17,10 +17,10 @@ import {
 
 @Entity()
 @ObjectType()
-export class Nominee {
+export class Application {
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
-    description: 'All nominees are issued a unique ID number',
+    description: 'All applications are issued a unique ID number',
   })
   id: number;
 
@@ -47,13 +47,13 @@ export class Nominee {
   @Field(() => String)
   description: string;
 
-  @ManyToOne(() => Delegate)
+  @ManyToOne(() => Delegation)
   @JoinColumn()
-  @Field(() => Delegate)
-  delegate: Delegate;
+  @Field(() => Delegation)
+  delegation: Delegation;
 
   @Column({})
-  delegateId: number;
+  delegationId: number;
 
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
