@@ -9,10 +9,6 @@ import { verifyContractSignature } from 'src/utils';
 import { Vote } from 'src/vote/vote.entity';
 import { providers } from 'ethers';
 import { CreateVoteDto } from 'src/vote/vote.types';
-import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
-import { InfiniteAuction } from 'src/infinite-auction/infinite-auction.entity';
-import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
-import { AuctionBase } from 'src/auction/auction-base.type';
 
 @Injectable()
 export class EIP1271SignatureValidationTaskService {
@@ -26,9 +22,9 @@ export class EIP1271SignatureValidationTaskService {
   constructor(
     private readonly _votesService: VotesService,
     private readonly _auctionsService: AuctionsService,
-    private readonly _infAuctionsService: InfiniteAuctionService,
     private readonly _proposalService: ProposalsService,
-  ) {}
+  ) {
+  }
 
   @Interval(EIP1271SignatureValidationTaskService._EVERY_15_MINUTES)
   async validatePendingSignatures() {
@@ -59,42 +55,20 @@ export class EIP1271SignatureValidationTaskService {
 
         const proposal = await this._proposalService.findOne(vote.proposalId);
 
-        if (proposal.parentType === 'auction') {
-          // if timed aucution, mark the signature as invalid if the auction vote period has elapsed
-          const timedAuction = await this._auctionsService.findOne(
-            vote.auctionId,
-          );
+        // if timed aucution, mark the signature as invalid if the auction vote period has elapsed
+        const timedAuction = await this._auctionsService.findOne(
+          vote.auctionId,
+        );
 
-          if (timedAuction && new Date() > timedAuction.votingEndTime) {
-            await this._votesService.store({
-              ...vote,
-              signatureState: SignatureState.FAILED_VALIDATION,
-            });
-            this._logger.log(
-              `Contract signature submitted too late (${vote.address}). Marking as invalid...`,
-            );
-            continue;
-          }
-        } else {
-          // if inf aucution, mark the signature as invalid if the proposal vote period has passed
-          const infAuction = await this._infAuctionsService.findOne(
-            vote.auctionId,
+        if (timedAuction && new Date() > timedAuction.votingEndTime) {
+          await this._votesService.store({
+            ...vote,
+            signatureState: SignatureState.FAILED_VALIDATION,
+          });
+          this._logger.log(
+            `Contract signature submitted too late (${vote.address}). Marking as invalid...`,
           );
-
-          const isActiveProp = await this.isActiveInfRoundProposal(
-            proposal as InfiniteAuctionProposal,
-            infAuction,
-          );
-          if (!isActiveProp) {
-            await this._votesService.store({
-              ...vote,
-              signatureState: SignatureState.FAILED_VALIDATION,
-            });
-            this._logger.log(
-              `Contract signature submitted too late (${vote.address}). Marking as invalid...`,
-            );
-            continue;
-          }
+          continue;
         }
 
         // Mark the signature as invalid if the voter does not have enough votes remaining
@@ -186,20 +160,5 @@ export class EIP1271SignatureValidationTaskService {
     ).reduce((agg, current) => Number(agg) + Number(current.weight), 0);
 
     return aggVoteWeightSubmitted + voteFromPayload.weight <= votingPower;
-  }
-
-  /**
-   * Determines if inf round proposal is active and can be voted on.
-   */
-  private async isActiveInfRoundProposal(
-    proposal: InfiniteAuctionProposal,
-    infRound: InfiniteAuction,
-  ) {
-    const createdDate = new Date(proposal.createdDate);
-    const votingPeriodEnd = new Date(
-      createdDate.getTime() + infRound.votingPeriod * 1000,
-    );
-
-    return votingPeriodEnd > new Date() && proposal.voteCount < infRound.quorum;
   }
 }
