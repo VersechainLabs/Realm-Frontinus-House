@@ -113,7 +113,7 @@ const Proposal = () => {
         {proposal && (
           <div>
             <div style={{ height: 30 }}></div>
-            <h2>Comments</h2>
+            {/*<h2>Comments</h2>*/}
             <Comments proposalId={proposal.id} />
           </div>
         )}
