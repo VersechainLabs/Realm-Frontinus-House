@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuctionsModule } from 'src/auction/auctions.module';
-import { DelegatesModule } from 'src/delegate/delegates.module';
+import { DelegationModule } from 'src/delegation/delegation.module';
 import { CommentsModule } from 'src/comment/comments.module';
 import { CommunitiesModule } from 'src/community/community.module';
-import { NomineeModule } from 'src/delegate-nominee/nominee.module';
+import { ApplicationModule } from 'src/delegation-application/application.module';
 import { AdminModule } from 'src/admin/admin.module';
 
 import configuration from 'src/config/configuration';
@@ -29,10 +29,10 @@ import config from '../../ormconfig';
     AuctionsModule,
     ProposalsModule,
     CommunitiesModule,
-    NomineeModule,
+    ApplicationModule,
     InfiniteAuctionModule,
     TasksModule,
-    DelegatesModule,
+    DelegationModule,
     CommentsModule,
     AdminModule,
     TypeOrmModule.forRoot(config),

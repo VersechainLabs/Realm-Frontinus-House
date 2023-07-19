@@ -1,6 +1,6 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Community } from 'src/community/community.entity';
-import { Nominee } from 'src/delegate-nominee/nominee.entity';
+import { Application } from 'src/delegation-application/application.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
   Entity,
@@ -17,10 +17,10 @@ import {
 
 @Entity()
 @ObjectType()
-export class Delegate {
+export class Delegation {
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
-    description: 'All delegate are issued a unique ID number',
+    description: 'All delegation are issued a unique ID number',
   })
   id: number;
 
@@ -37,7 +37,7 @@ export class Delegate {
 
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
-  nomineeCount: number;
+  applicationCount: number;
 
   @Column()
   @Field(() => Date, {
@@ -82,12 +82,6 @@ export class Delegate {
   setUpdatedDate() {
     this.lastUpdatedDate = new Date();
   }
-
-  // May cause issue to delegate?
-  // @OneToMany(() => Nominee, (nominee) => nominee.delegate)
-  // @JoinColumn()
-  // nominees: Nominee[];
-
 
 
 //   public isAcceptingProposals = (): boolean =>

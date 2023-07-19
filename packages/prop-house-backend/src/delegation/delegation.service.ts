@@ -2,67 +2,100 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
+import { Delegation } from './delegation.entity';
+import { CreateDelegationDto, GetDelegationDto, LatestDto } from './delegation.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
-import { Delegate } from 'src/delegate/delegate.entity';
-import { Nominee } from './nominee.entity';
-import { CreateNomineeDto, GetNomineesDto, LatestDto } from './nominee.types';
+// import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
 
-export type AuctionWithProposalCount = Delegate & { numProposals: number };
+export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
 @Injectable()
-export class NomineeService {
+export class DelegationService {
   constructor(
-    @InjectRepository(Nominee) private nomineeRepository: Repository<Nominee>,
-    @InjectRepository(Delegate) private delegatesRepository: Repository<Delegate>,
+    @InjectRepository(Delegation) private delegationRepository: Repository<Delegation>,
+    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
-    ) {}
+  ) {}
 
-  findAll(): Promise<Nominee[]> {
-    return this.nomineeRepository.find({
+  findAll(): Promise<Delegation[]> {
+    return this.delegationRepository.find({
       // loadRelationIds: {
       //   relations: ['proposals.auction', 'community'],
       // },
       where: {
         visible: true,
       },
+      order: {
+        id: "DESC"
+      }
     });
   }
 
-  // Chao
-  async createNomineeByDelegate(
-    // communityId: number, 
-    dto: CreateNomineeDto
-  ) {
-    console.log("createNomineeByDelegate.delegateId:" + dto.delegateId);
-    const delegate = await this.delegatesRepository.findOne(dto.delegateId);
-    console.log("delegate", delegate);
-
-    if (!delegate) {
-      throw new HttpException(
-        'Delegate not found. Cannot create nominee',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-    console.log("dto:", dto);
-
-    // return new Nominee;
-
-    const newNominee = this.nomineeRepository.create({...dto, delegate});
-    // const newNominee = this.nomineeRepository.create({...dto});
-    return await this.nomineeRepository.save(newNominee);
+  findOne(id: number): Promise<Delegation> {
+    return this.delegationRepository.findOne(id, {
+      // relations: ['proposals'],
+      // loadRelationIds: {
+      //   relations: ['community'],
+      // },
+      where: { visible: true },
+    });
+  }
+  
+  async store(proposal: Delegation): Promise<Delegation> {
+    return await this.delegationRepository.save(proposal, { reload: true });
   }
 
-  async findByDelegate(delegateId: number, dto: GetNomineesDto): Promise<Nominee[]> {
-    return await this.nomineeRepository
-      .createQueryBuilder('a')
-      .select('a.*')
-      .where('a.delegateId = :deId', { deId: delegateId })
-      .offset(dto.skip)
-      .limit(dto.limit)
-      .orderBy('id', dto.order)
-      .getRawMany();
-  }
+  // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
+  //   return (
+  //     this.auctionsRepository
+  //       .createQueryBuilder('a')
+  //       .select('a.*')
+  //       .where('a.community.id = :id', { id })
+  //       // This select adds a new property, reflected in AuctionWithProposalCount
+  //       .addSelect('SUM(p."numProposals")', 'numProposals')
+  //       .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
+  //       .groupBy('a.id')
+  //       .getRawMany()
+  //   );
+  // }
+  // findAllActive(dto: GetAuctionsDto): Promise<Auction[]> {
+  //   return this.auctionsRepository
+  //     .createQueryBuilder('a')
+  //     .select('a.*')
+  //     .addSelect('SUM(p."numProposals")', 'numProposals')
+  //     .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
+  //     .groupBy('a.id')
+  //     .offset(dto.skip)
+  //     .limit(dto.limit)
+  //     .addSelect(
+  //       'CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime THEN 1 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime THEN 2 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime THEN 3 ELSE 4 END END END',
+  //       'auction_order',
+  //     )
+  //     .orderBy('auction_order', 'ASC')
+  //     .getRawMany();
+  // }
+
+  // findAllActiveForCommunities(dto: GetAuctionsDto): Promise<Auction[]> {
+  //   return this.auctionsRepository
+  //     .createQueryBuilder('a')
+  //     .select('a.*')
+  //     .addSelect('SUM(p."numProposals")', 'numProposals')
+  //     .leftJoin(proposalCountSubquery, 'p', 'p."auctionId" = a.id')
+  //     .leftJoin('a.community', 'c')
+  //     .groupBy('a.id, c.contractAddress')
+  //     .offset(dto.skip)
+  //     .limit(dto.limit)
+  //     .addSelect(
+  //       'CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 1 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 2 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime AND LOWER(c.contractAddress) IN (:...addresses) THEN 3 ELSE CASE WHEN CURRENT_TIMESTAMP > a.proposalEndTime AND CURRENT_TIMESTAMP < a.votingEndTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 4 ELSE CASE WHEN CURRENT_TIMESTAMP > a.startTime AND CURRENT_TIMESTAMP < a.proposalEndTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 5 ELSE CASE WHEN CURRENT_TIMESTAMP < a.startTime AND LOWER(c.contractAddress) NOT IN (:...addresses) THEN 6 ELSE 7 END END END END END END',
+  //       'auction_order',
+  //     )
+  //     .setParameter('addresses', dto.addresses)
+  //     .orderBy('auction_order', 'ASC')
+  //     .addOrderBy('a.votingEndTime', 'DESC')
+  //     .getRawMany();
+  // }
+
   // latestNumProps(dto: LatestDto): Promise<number> {
   //   const timestamp = new Date(dto.timestamp); // Convert Unix timestamp (ms) to Date object
   //   return this.auctionsRepository
@@ -148,10 +181,6 @@ export class NomineeService {
   // async remove(id: number): Promise<void> {
   //   await this.auctionsRepository.delete(id);
   // }
-
-  async store(value: Nominee): Promise<Nominee> {
-    return await this.nomineeRepository.save(value, { reload: true });
-  }
 
   // // Chao
   // async createAuctionByCommunity(

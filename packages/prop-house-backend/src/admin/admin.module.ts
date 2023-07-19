@@ -9,7 +9,7 @@ import { ProposalsService } from 'src/proposal/proposals.service';
 import { Admin } from './admin.entity';
 import { Auction } from 'src/auction/auction.entity';
 import { AuctionsService } from 'src/auction/auctions.service';
-import { Delegate } from 'src/delegate/delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
 import { AdminService } from './admin.service';
 import { AdminsController } from './admin.controller';
 
@@ -21,9 +21,7 @@ import { AdminsController } from './admin.controller';
   providers: [
     AdminService,
     AuctionsService,
-    // // DelegatesService,
     ProposalsService,
-    // // DelegatesResolver,
     CommunitiesService,
     InfiniteAuctionService,
   ],

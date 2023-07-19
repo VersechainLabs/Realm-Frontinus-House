@@ -4,13 +4,12 @@ import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
-import { Delegate } from 'src/delegate/delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
 import { Admin } from './admin.entity';
 import { CreateAdminDto } from './admin.types';
 import { Proposal } from 'src/proposal/proposal.entity';
-// import { CreateNomineeDto, GetNomineesDto, LatestDto } from './nominee.types';
 
-export type AuctionWithProposalCount = Delegate & { numProposals: number };
+export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
 @Injectable()
 export class AdminService {
