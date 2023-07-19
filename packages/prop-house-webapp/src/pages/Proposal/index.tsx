@@ -114,7 +114,7 @@ const Proposal = () => {
           <div>
             <div style={{ height: 30 }}></div>
             {/*<h2>Comments</h2>*/}
-            <Comments proposalId={Number(id)} />
+            <Comments proposalId={proposal.id} />
           </div>
         )}
       </Container>
