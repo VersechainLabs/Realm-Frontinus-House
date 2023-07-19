@@ -1,29 +1,42 @@
 .sidebarContainerCard {
-  background: var(--bg-dark);
-  border: 1px solid var(--border-light);
-  height: auto;
+  background: #0f0f0f;
+  border: 1px solid #2c2c2d;
+  width: 336px;
+  height: 292px;
   display: flex;
   flex-direction: column;
   justify-content: space-between !important;
+  padding: 16px;
 }
 
 .sidebarContainerCard button {
-  width: 100%;
-  border-radius: 50px;
+  width: 296px;
+  height: 32px;
+  border-radius: 8px;
+  border-color: #d0a059;
+  padding: 0px, 16px, 2px, 16px;
+  gap: 12px;
   margin-top: 18px;
 }
 
 .subtitle {
-  margin-bottom: 0;
+  margin-bottom: 16px;
   font-size: 14px;
-  color: var(--brand-gray);
+  font-family: Inconsolata;
+  font-weight: 400;
+  line-height: 14.69px;
+  color: #a3a3a4;
 }
 
 .sideCardHeader {
+  width: 296px;
+  height: 78px;
+  border-bottom: 1px solid #2c2c2d;
   font-weight: 700;
   display: flex;
   gap: 16px;
   align-items: center;
+  
 }
 .sideCardHeader svg {
   width: 24px;
@@ -31,24 +44,23 @@
 }
 
 .title {
-  font-size: 18px;
-  margin-bottom: 0;
+  font-size: 14px;
+  margin-bottom: 8px; 
+  color: #f5eee6;
+  font-family: EB Garamond;
+  font-weight: 700;
+  line-height: 23.49px;
 }
 
 .icon {
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   border-radius: 99px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.greenIcon {
-  background: var(--brand-green-hint);
-  border: 1px solid var(--brand-green-semi-transparent);
-}
-.greenIcon svg {
-  color: var(--brand-green);
+  background-size: cover; 
+  background-position: center; 
 }
 
 .purpleIcon {
@@ -72,7 +84,9 @@
 
 .sideCardBody {
   font-size: 14px;
-  margin-bottom: 0;
+  color: #f5eee6;
+  margin-bottom: 8px;
+  margin-top: -16px;
 }
 
 @media (max-width: 1200px) {

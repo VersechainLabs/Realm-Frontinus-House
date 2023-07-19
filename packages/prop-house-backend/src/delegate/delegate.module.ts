@@ -7,23 +7,28 @@ import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.se
 import { Proposal } from 'src/proposal/proposal.entity';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { Delegate } from './delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
+import { DelegationService } from 'src/delegation/delegation.service';
 import { Auction } from 'src/auction/auction.entity';
 // import { AuctionsResolver } from './auction.resolver';
-import { DelegatesController } from './delegates.controller';
-import { DelegatesService } from './delegates.service';
+import { DelegateController } from './delegate.controller';
+import { DelegateService } from './delegate.service';
+import { AdminService } from 'src/admin/admin.service';
+import { Admin } from 'src/admin/admin.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Delegate, Proposal, Community, InfiniteAuction, Auction]),
+    TypeOrmModule.forFeature([Delegate, Delegation, Proposal, Community, InfiniteAuction, Auction, Admin]),
   ],
-  controllers: [DelegatesController],
+  controllers: [DelegateController],
   providers: [
-    DelegatesService,
+    DelegateService,
+    DelegationService,
     ProposalsService,
-    // DelegatesResolver,
+    AdminService,
     CommunitiesService,
     InfiniteAuctionService,
   ],
   exports: [TypeOrmModule],
 })
-export class DelegatesModule {}
+export class DelegateModule {}

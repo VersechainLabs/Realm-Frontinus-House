@@ -74,6 +74,48 @@
     color: #F5EEE6;
 }
 .labelMargin svg {
-    color: #F5EEE6;
+    color: #D0A059;
+}
+
+.dateMain {
+    width: 60%;
+}
+.flexDiv {
+    display: flex;
+
+}
+.xian {
+    width: 4px;
+    background: #272728;
+    margin-left: 6px;
+}
+.xian1 {
+    height: 21px;
+}
+.xian2 {
+    height: 90px;
+}
+.xian3 {
+    height: 90px;
+}
+.xian4 {
+    height: 21px;
+}
+.qiu {
+    height: 16px;
+    width: 16px;
+    border-radius: 8px;
+    background: #D0A059;
+}
+.qiuDesc {
+    color:  #D0A059;
+    height: 16px;
+    line-height: 16px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+.paddingTop {
+    padding-top: 42px;
+    padding-left: 40px;
 }
 

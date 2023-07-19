@@ -17,11 +17,16 @@
 }
 
 .bulletList {
-  color: var(--brand-gray);
+  color: #a3a3a4;
+  width: 293px;
+  height: 105px;
   display: flex;
+  line-height: 21px;
+  font-size: 14px;
   flex-direction: column;
   gap: 4px;
   padding-top: 8px;
+  margin-left: -36px;
 }
 
 .bulletList b {

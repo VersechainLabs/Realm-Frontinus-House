@@ -13,6 +13,7 @@ import LoadingIndicator from './components/LoadingIndicator';
 import ProtectedRoute from './components/ProtectedRoute/ProtectedRoute';
 import NotFound from './components/NotFound';
 import Round from './pages/Round';
+import DelegateDetails from './pages/DelegateDetails';
 import bgColorForPage from './utils/bgColorForPage';
 import clsx from 'clsx';
 import OpenGraphHouseCard from './components/OpenGraphHouseCard';
@@ -22,23 +23,36 @@ import Proposal from './pages/Proposal';
 import { createClient, mainnet, configureChains, WagmiConfig } from 'wagmi';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
-import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { connectorsForWallets, getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
 import CommentsPage from './pages/CommentsPage';
+import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
 
 const { chains, provider } = configureChains(
   [mainnet],
   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
 );
 
-const { connectors } = getDefaultWallets({
-  appName: 'Frontinus House',
-  chains,
-});
+// const { connectors } = getDefaultWallets({
+//   appName: 'Frontinus House',
+//   chains,
+// });
+
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      injectedWallet({ chains }),
+      rainbowWallet({ chains }),
+      metaMaskWallet({ chains }),
+    ],
+  },
+]);
+
 
 const wagmiClient = createClient({
   autoConnect: true,
@@ -100,6 +114,7 @@ function App() {
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
+                  <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   <Route path="/:house" element={<House />} />
                   <Route path="/:house/:title" element={<Round />} />
                   <Route path="/:house/:title/:id" element={<Proposal />} />

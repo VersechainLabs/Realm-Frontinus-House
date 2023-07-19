@@ -1,0 +1,34 @@
+.propCards {
+  display: flex;
+  padding-top: 16px;
+}
+
+.roundContainer {
+  background: #0F0F0F !important;
+}
+
+@media (max-width: 767px) {
+  .cardsContainer {
+    max-width: none;
+    margin-top: 40px;
+  }
+  .propCards {
+    padding-top: 0px;
+  }
+
+  .stickyContainer .container {
+    max-width: none !important;
+  }
+}
+
+.stickyContainer {
+  /*background: white;*/
+  /*top: 0;*/
+  position: sticky !important;
+  z-index: 1;
+  padding-top: 12px;
+  border-bottom: 1px solid var(--border-light);
+}
+.loader {
+  width: 100%;
+}

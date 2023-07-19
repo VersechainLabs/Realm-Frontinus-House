@@ -4,6 +4,7 @@ import Button, { ButtonColor } from '../../components/Button';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import ProposalEditor from '../../components/ProposalEditor';
+import DelegateEditor from '../../components/DelegateEditor';
 import Preview from '../Preview';
 import { clearProposal, patchProposal } from '../../state/slices/editor';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -196,28 +197,6 @@ const Create: React.FC<{}> = () => {
 
             <div className="gradientBg">
               <NavBar />
-              <Container>
-                <h1 className={classes.title}>Creating your proposal for</h1>
-
-                <h1 className={classes.proposalTitle}>
-                  <span className={classes.boldLabel}>{activeAuction.title}</span> in the{' '}
-                  <span className={classes.boldLabel}>{activeCommunity.name}</span> house
-                </h1>
-
-                {isTimedAuction(activeAuction) && (
-                  <span className={classes.fundingCopy}>
-                    <span className={classes.boldLabel}>{activeAuction.numWinners}</span> winners
-                    will be selected to receive{' '}
-                    <span className={classes.boldLabel}>
-                      {' '}
-                      <FundingAmount
-                        amount={activeAuction.fundingAmount}
-                        currencyType={activeAuction.currencyType}
-                      />
-                    </span>
-                  </span>
-                )}
-              </Container>
             </div>
 
             <Container>
@@ -226,7 +205,7 @@ const Create: React.FC<{}> = () => {
                   {showPreview ? (
                     <Preview roundCurrency={activeAuction.currencyType} />
                   ) : (
-                    <ProposalEditor
+                    <DelegateEditor
                       onDataChange={onDataChange}
                       showImageUploadModal={showImageUploadModal}
                       setShowImageUploadModal={setShowImageUploadModal}
@@ -245,7 +224,7 @@ const Create: React.FC<{}> = () => {
                 </Col>
               </Row>
 
-              <Row>
+              {/* <Row>
                 <Col xl={12} className={classes.btnContainer}>
                   <Button
                     text={showPreview ? t('backToEditor') : t('preview')}
@@ -275,7 +254,7 @@ const Create: React.FC<{}> = () => {
                       />
                     ))}
                 </Col>
-              </Row>
+              </Row> */}
             </Container>
           </DragAndDrop>
         </>

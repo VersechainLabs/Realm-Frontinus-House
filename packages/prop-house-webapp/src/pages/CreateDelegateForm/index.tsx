@@ -99,7 +99,10 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                       <textarea rows={4} onChange={event => saveFormDesc(event.target.value)} name={'description'} className={classes.input} />
                   </div>
+                      <div className={classes.flexDiv}>
 
+
+                          <div className={classes.dateMain}>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
                           When does the delegation round start? (exact date and time in UTC)*
@@ -145,7 +148,58 @@ const CreateDelegateForm: React.FC<{}> = () => {
                           </DemoContainer>
                       </LocalizationProvider>
                   </div>
+                          </div>
+                          <div className={classes.paddingTop}>
+                              <div className={classes.xian+' '+classes.xian1}>
 
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Start time for proposal submissions
+                                  </div>
+                              </div>
+
+                              <div className={classes.xian+' '+classes.xian2}>
+
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Voting Start Time
+                                  </div>
+                              </div>
+                              <div className={classes.xian+' '+classes.xian3}>
+
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Voting End Time
+                                  </div>
+                              </div>
+                              <div className={classes.xian+' '+classes.xian3}>
+
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Delegation End Time
+                                  </div>
+                              </div>
+                              <div className={classes.xian+' '+classes.xian4}>
+
+                              </div>
+                          </div>
+                      </div>
                   <button className={classes.button}>
                       Submit
                   </button>
