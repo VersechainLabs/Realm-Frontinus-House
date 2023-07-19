@@ -218,6 +218,19 @@ export class PropHouseWrapper {
     }
   }
 
+  async getDelegateDetails(
+    id: number,
+  ): Promise<StoredAuctionBase> {
+    try {
+      const rawTimedAuction = (
+        await axios.get(`${this.host}/delegates/${id}`)
+      ).data;
+      return StoredTimedAuction.FromResponse(rawTimedAuction);
+    } catch (e: any ) {
+      throw e.response.data.message;
+    }
+  }
+
   async getProposals(limit = 20, skip = 0, order: 'ASC' | 'DESC' = 'DESC') {
     try {
       const { data } = await axios.get(`${this.host}/proposals`, {
@@ -244,6 +257,14 @@ export class PropHouseWrapper {
   async getAuctionProposals(auctionId: number) {
     try {
       return (await axios.get(`${this.host}/auctions/${auctionId}/proposals`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async getNominessByDelegate(auctionId: number) {
+    try {
+      return (await axios.get(`${this.host}/nominees/byDelegate/${auctionId}`)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
