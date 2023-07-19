@@ -16,7 +16,6 @@ import { VotesService } from './votes.service';
 import { SignedPayloadValidationPipe } from 'src/entities/signed.pipe';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { SignatureState } from 'src/types/signature';
-import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
 import { getVotingPower } from 'prop-house-communities';
 import { ethers } from 'ethers';
 import config from '../config/configuration';
@@ -30,7 +29,6 @@ export class VotesController {
     private readonly votesService: VotesService,
     private readonly proposalService: ProposalsService,
     private readonly auctionService: AuctionsService,
-    private readonly infiniteAuctionService: InfiniteAuctionService,
   ) {
     this.provider.ready;
   }
@@ -53,10 +51,7 @@ export class VotesController {
     const foundProposal = await this.proposalService.findOne(
       proposalId,
     );
-    const foundProposalAuction = await (foundProposal.parentType === 'auction'
-        ? this.auctionService
-        : this.infiniteAuctionService
-    ).findOneWithCommunity(foundProposal.auctionId);
+    const foundProposalAuction = await this.auctionService.findOneWithCommunity(foundProposal.auctionId);
 
     return getVotingPower(
       address,
@@ -140,10 +135,8 @@ export class VotesController {
       );
 
     // Verify that prop being voted on matches community address of signed vote
-    const foundProposalAuction = await (foundProposal.parentType === 'auction'
-      ? this.auctionService
-      : this.infiniteAuctionService
-    ).findOneWithCommunity(foundProposal.auctionId);
+    const foundProposalAuction = await this.auctionService
+    .findOneWithCommunity(foundProposal.auctionId);
     if (
       voteFromPayload.communityAddress !==
       foundProposalAuction.community.contractAddress
@@ -153,22 +146,6 @@ export class VotesController {
         HttpStatus.BAD_REQUEST,
       );
 
-    // verify that inf-auction proposals are within their round's voting period
-    if (
-      foundProposal.parentType === 'infinite-auction' &&
-      'votingPeriod' in foundProposalAuction
-    ) {
-      const expirationTimeMs =
-        foundProposal.createdDate.getTime() +
-        foundProposalAuction.votingPeriod * 1000;
-      const isActive = expirationTimeMs > Date.now();
-
-      if (!isActive)
-        throw new HttpException(
-          'Votes are being casted outisde of round voting period',
-          HttpStatus.BAD_REQUEST,
-        );
-    }
 
     // Verify that signer has voting power
     const votingPower = await this.votesService.getVotingPower(

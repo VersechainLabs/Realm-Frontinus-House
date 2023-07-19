@@ -1,25 +1,12 @@
-import {
-    Body,
-    Controller,
-    Get,
-    HttpException,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
-    Post,
-    Query,
-  } from '@nestjs/common';
-  import { ParseDate } from 'src/utils/date';
-  import { Comment } from './comment.entity';
-  import { CreateCommentDto, GetCommentsDto, LatestDto } from './comment.types';
-  import { CommentsService} from './comments.service';
-  import { ProposalsService } from 'src/proposal/proposals.service';
-  import { Proposal } from 'src/proposal/proposal.entity';
-  import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
-  import { Order } from 'src/utils/dto-types';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Comment } from './comment.entity';
+import { CreateCommentDto, GetCommentsDto } from './comment.types';
+import { CommentsService } from './comments.service';
+import { ProposalsService } from 'src/proposal/proposals.service';
+import { Order } from 'src/utils/dto-types';
 import { ECDSAPersonalSignedPayloadValidationPipe } from '../entities/ecdsa-personal-signed.pipe';
-  
-  @Controller('comments')
+
+@Controller('comments')
   export class CommentsController {
     [x: string]: any;
     constructor(

@@ -1,25 +1,12 @@
-import {
-    Body,
-    Controller,
-    Get,
-    HttpException,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
-    Post,
-    Query,
-  } from '@nestjs/common';
-  import { ParseDate } from 'src/utils/date';
-  import { Delegation } from './delegation.entity';
-  import { CreateDelegationDto, GetDelegationDto, LatestDto } from './delegation.types';
-  import { DelegationService} from './delegation.service';
-  import { ProposalsService } from 'src/proposal/proposals.service';
-  import { Proposal } from 'src/proposal/proposal.entity';
-  import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
-  import { AdminService } from 'src/admin/admin.service';
-  import { Admin } from 'src/admin/admin.entity';
-  
-  @Controller('delegations')
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { ParseDate } from 'src/utils/date';
+import { Delegation } from './delegation.entity';
+import { CreateDelegationDto, GetDelegationDto } from './delegation.types';
+import { DelegationService } from './delegation.service';
+import { ProposalsService } from 'src/proposal/proposals.service';
+import { AdminService } from 'src/admin/admin.service';
+
+@Controller('delegations')
   export class DelegationController {
     [x: string]: any;
     constructor(
