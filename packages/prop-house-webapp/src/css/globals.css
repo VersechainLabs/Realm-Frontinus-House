@@ -85,6 +85,7 @@ p {
   --brand-gray-transparent: rgba(102, 102, 102, 0.6);
   --brand-gray-semi-transparent: rgba(102, 102, 102, 0.25);
   --brand-gray-hint: rgba(102, 102, 102, 0.1);
+  --brand-gray-border:#2C2C2D;
 
   /* Utils */
   --bg-light: #1A1A1B;

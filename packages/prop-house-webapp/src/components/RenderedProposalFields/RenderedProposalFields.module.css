@@ -33,7 +33,10 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--brand-gray-border);
 }
+
 .fundReq {
   font-weight: 900;
   color: var(--brand-black-transparent);

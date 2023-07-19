@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { StoredAuctionBase, StoredProposal } from '@nouns/prop-house-wrapper/dist/builders';
 import { BiAward } from 'react-icons/bi';
 import clsx from "clsx";
+import { serverDateToString } from '../../utils/detailedTime';
+
 
 export interface RenderedProposalProps {
   proposal: StoredProposal;
@@ -26,7 +28,6 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
 
   return (
     <>
-      <Row>
         <Col xl={12} className="proposalCopy">
           <div className={classes.headerContainer}>
             <div className={classes.backBtnContainer}>{backButton && backButton}</div>
@@ -42,7 +43,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                       <div className={classes.submittedBy}>
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
-                      <span>{' • '} {proposal.createdDate}</span>
+                      <span>{' • '} {serverDateToString(proposal.createdDate)}</span>
                     </div>
                   </div>
                 )}
@@ -89,7 +90,6 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             </Markdown>
           </span>
         </Col>
-      </Row>
     </>
   );
 };
