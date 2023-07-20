@@ -53,6 +53,21 @@
   padding-right: 3rem;
 }
 
+.description {
+  margin-bottom: -2rem;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f5eee6;
+}
+
+.propEditor {
+  display: block;
+}
+
+.propEditor .ql-container .ql-editor {
+  min-height: 400px!important;
+}
+
 .fundReqFormGroup {
   max-width: 8rem;
 }
