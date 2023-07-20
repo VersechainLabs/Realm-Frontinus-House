@@ -14,8 +14,8 @@ import { CommunitiesService } from './community.service';
 export class CommunityResolver {
   constructor(
     private communityService: CommunitiesService,
-    private auctionsService: AuctionsService
-    ) {}
+    private auctionsService: AuctionsService,
+  ) {}
 
   @Query((returns) => Community)
   async community(@Args('id', { type: () => Int }) id: number) {
@@ -36,7 +36,7 @@ export class CommunityResolver {
   async auctions(@Parent() community: Community) {
     return this.auctionsService.findWhere(0, 9999, {
       //@ts-ignore
-      community: community.id
-    })
+      community: community.id,
+    });
   }
 }

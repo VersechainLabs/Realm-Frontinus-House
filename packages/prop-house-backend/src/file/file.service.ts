@@ -1,6 +1,13 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { existsSync, mkdirSync, readFileSync, stat, statSync, writeFileSync } from 'fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  stat,
+  statSync,
+  writeFileSync,
+} from 'fs';
 import config from 'src/config/configuration';
 import { IpfsService } from 'src/ipfs/ipfs.service';
 import { Repository } from 'typeorm';
@@ -20,19 +27,19 @@ export class FileService {
    * should be stored.
    */
   private _diskBasePath() {
-    return config().file.basePath
+    return config().file.basePath;
   }
 
   /**
    * Test if the destination directory for the given filename
    * exists. If not, attempt to create it.
-   * 
+   *
    * See diskFileDirectory for information on path structure
    * @param filename Filename intending to store
    * @returns undefined or the first path that is created
    */
   private _ensureDiskDirectoryExists(filename) {
-    return mkdirSync(this.diskFileDirectory(filename), {recursive: true})
+    return mkdirSync(this.diskFileDirectory(filename), { recursive: true });
   }
 
   /**
@@ -42,13 +49,13 @@ export class FileService {
    * that the primary application of this module will be hashed
    * filenames, an even distribution should occur and keep from
    * having too many files in one single directory.
-   * 
+   *
    * @param filename Filename intending to store
    * @returns A string representing the directory that the file
    * should be written into.
    */
   public diskFileDirectory(filename) {
-    return [this._diskBasePath(), filename.slice(0, 4)].join('/')
+    return [this._diskBasePath(), filename.slice(0, 4)].join('/');
   }
 
   /**
@@ -56,15 +63,14 @@ export class FileService {
    * filename. This function attempts to protect against
    * basic path traversal but filenames should be reasonably
    * sanitized coming in.
-   * 
+   *
    * @param filename Filename intending to store
    * @returns Path that the file should be written to
    */
   public diskFilePath(filename) {
     // protect against directory traversal
-    filename = filename.replace("..", "") 
-    return [this.diskFileDirectory(filename), filename].join('/')
-
+    filename = filename.replace('..', '');
+    return [this.diskFileDirectory(filename), filename].join('/');
   }
 
   /**
@@ -79,30 +85,30 @@ export class FileService {
    * Attempt to write a file buffer to disk with the provided
    * filename.
    * @param buffer Buffer to write to disk
-   * @param filename File name for the buffer, should not 
+   * @param filename File name for the buffer, should not
    * include any paths
    */
   async writeFileToDisk(buffer: Buffer, filename: string) {
-    const base = config().file.basePath
-    this._ensureDiskDirectoryExists(filename)
-    writeFileSync(this.diskFilePath(filename), buffer)
+    const base = config().file.basePath;
+    this._ensureDiskDirectoryExists(filename);
+    writeFileSync(this.diskFilePath(filename), buffer);
   }
 
   /**
    * Attempt to read a file from disk with the provided
    * filename. The path to the file is derived from its
    * name and serivce configuration.
-   * 
+   *
    * @param filename Filename of the file to read, should
    * not include any paths
    * @returns Returns a buffer with file contents if found
    */
   async readFileFromDisk(filename: string) {
-    const fileExists = existsSync(this.diskFilePath(filename))
-    if(!fileExists) {
-      throw new HttpException("No file with that hash", 404)
+    const fileExists = existsSync(this.diskFilePath(filename));
+    if (!fileExists) {
+      throw new HttpException('No file with that hash', 404);
     }
-    return readFileSync(this.diskFilePath(filename))
+    return readFileSync(this.diskFilePath(filename));
   }
 
   async findAll(): Promise<File[]> {

@@ -30,16 +30,12 @@ export class ProposalsController {
   ) {}
 
   @Get()
-  getProposals(
-    @Query() dto: GetProposalsDto,
-  ): Promise<(Proposal)[]> {
+  getProposals(@Query() dto: GetProposalsDto): Promise<Proposal[]> {
     return this.proposalsService.findAll(dto);
   }
 
   @Get(':id')
-  async findOne(
-    @Param('id') id: number,
-  ): Promise<Proposal> {
+  async findOne(@Param('id') id: number): Promise<Proposal> {
     const foundProposal = await this.proposalsService.findOne(id);
     if (!foundProposal)
       throw new HttpException('Proposal not found', HttpStatus.NOT_FOUND);
@@ -148,7 +144,9 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     createProposalDto: CreateProposalDto,
   ): Promise<Proposal> {
-    const foundAuction = await this.auctionsService.findOne(createProposalDto.parentAuctionId);
+    const foundAuction = await this.auctionsService.findOne(
+      createProposalDto.parentAuctionId,
+    );
     if (!foundAuction)
       throw new HttpException(
         'No auction with that ID exists',
@@ -179,7 +177,7 @@ export class ProposalsController {
         HttpStatus.BAD_REQUEST,
       );
 
-    const proposal = new Proposal()
+    const proposal = new Proposal();
     proposal.address = createProposalDto.address;
     proposal.signatureState = createProposalDto.signatureState;
     proposal.what = createProposalDto.what;

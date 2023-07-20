@@ -14,8 +14,8 @@ export class CreateApplicationDto {
   @IsString()
   address: string;
 
-//   @IsString()
-//   signedData: string;
+  //   @IsString()
+  //   signedData: string;
 
   @IsString()
   title: string;

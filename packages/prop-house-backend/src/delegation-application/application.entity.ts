@@ -31,9 +31,9 @@ export class Application {
   @Field(() => String)
   address: string;
 
-//   @Column()
-//   @Field(() => String)
-//   signedData: string;
+  //   @Column()
+  //   @Field(() => String)
+  //   signedData: string;
 
   @Column()
   @Field(() => String)

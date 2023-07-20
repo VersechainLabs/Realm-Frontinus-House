@@ -13,7 +13,7 @@ export const verifyAccountSignature = (
   let actualSigner: string | undefined;
 
   // parse reqAmount to support decimal values when signing an uint256 type
-  let payload = JSON.parse(message);
+  const payload = JSON.parse(message);
   if (payload.hasOwnProperty('reqAmount'))
     payload.reqAmount = payload.reqAmount.toString();
 
@@ -42,10 +42,15 @@ export const verifyAccountSignature = (
   };
 };
 
-export const verifyPersonalMessageSignature = (signDataPayload: SignedDataPayload) => {
+export const verifyPersonalMessageSignature = (
+  signDataPayload: SignedDataPayload,
+) => {
   let actualSigner: string | undefined;
   try {
-    actualSigner = verifyMessage(signDataPayload.message, signDataPayload.signature);
+    actualSigner = verifyMessage(
+      signDataPayload.message,
+      signDataPayload.signature,
+    );
   } catch (error) {
     return {
       isValidAccountSig: false,

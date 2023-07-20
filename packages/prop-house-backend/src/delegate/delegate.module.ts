@@ -16,7 +16,14 @@ import { Admin } from 'src/admin/admin.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Delegate, Delegation, Proposal, Community, Auction, Admin]),
+    TypeOrmModule.forFeature([
+      Delegate,
+      Delegation,
+      Proposal,
+      Community,
+      Auction,
+      Admin,
+    ]),
   ],
   controllers: [DelegateController],
   providers: [

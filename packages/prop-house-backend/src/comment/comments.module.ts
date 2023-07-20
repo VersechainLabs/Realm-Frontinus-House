@@ -13,14 +13,16 @@ import { CommentsService } from './comments.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Comment, Delegation, Proposal, Community, Auction]),
+    TypeOrmModule.forFeature([
+      Comment,
+      Delegation,
+      Proposal,
+      Community,
+      Auction,
+    ]),
   ],
   controllers: [CommentsController],
-  providers: [
-    CommentsService,
-    ProposalsService,
-    CommunitiesService,
-  ],
+  providers: [CommentsService, ProposalsService, CommunitiesService],
   exports: [TypeOrmModule],
 })
 export class CommentsModule {}
