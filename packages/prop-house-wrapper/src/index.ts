@@ -107,7 +107,7 @@ export class PropHouseWrapper {
   async getDelegateForCommunity(): Promise<StoredAuctionBase[]> {
     try {
       const [rawTimedAuctions] = await Promise.allSettled([
-        axios.get(`${this.host} /delegations/list/`)
+        axios.get(`${this.host}/delegations/list/`)
       ]);
 
       const timed =
@@ -223,7 +223,7 @@ export class PropHouseWrapper {
   ): Promise<StoredAuctionBase> {
     try {
       const rawTimedAuction = (
-        await axios.get(`${this.host} /delegations/${id}`)
+        await axios.get(`${this.host}/delegations/${id}`)
       ).data;
       return StoredTimedAuction.FromResponse(rawTimedAuction);
     } catch (e: any ) {

@@ -210,16 +210,16 @@ const ProposalEditor: React.FC<{
   return (
     <>
       <ProposalInputs
-        quill={quill}
-        Quill={Quill}
-        quillRef={quillRef}
+        // quill={quill}
+        // Quill={Quill}
+        // quillRef={quillRef}
         onDataChange={onDataChange}
-        onFileDrop={onFileDrop}
+        // onFileDrop={onFileDrop}
         formData={formData}
-        descriptionData={descriptionData}
+        // descriptionData={descriptionData}
         fundReqData={fundReqData}
-        editorBlurred={editorBlurred}
-        setEditorBlurred={setEditorBlurred}
+        // editorBlurred={editorBlurred}
+        // setEditorBlurred={setEditorBlurred}
       />
 
       {showImageUploadModal && (

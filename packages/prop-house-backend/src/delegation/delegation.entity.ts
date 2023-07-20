@@ -35,6 +35,11 @@ export class Delegation {
   @Field(() => String)
   description: string;
 
+  @OneToMany(() => Application, (application) => application.delegation)
+  @JoinColumn()
+  @Field(() => [Application])
+  applications: Application[];
+
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   applicationCount: number;

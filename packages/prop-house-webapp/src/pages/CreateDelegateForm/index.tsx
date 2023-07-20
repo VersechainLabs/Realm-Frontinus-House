@@ -116,17 +116,6 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          When does the delegation round end? (exact date and time in UTC)*
-                      </div>
-
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker onChange={(newValue) => saveFormEnd(newValue)} className={classes.input} />
-                          </DemoContainer>
-                      </LocalizationProvider>
-                  </div>
-                  <div className={classes.labelMargin}>
-                      <div className={classes.desc}>
                           When does the round voting period start? (exact date and time in UTC)*
                       </div>
 
@@ -137,14 +126,27 @@ const CreateDelegateForm: React.FC<{}> = () => {
                           </DemoContainer>
                       </LocalizationProvider>
                   </div>
-
                   <div className={classes.labelMargin}>
+
                       <div className={classes.desc}>
                           When does the round voting period end? (exact date and time in UTC)*
                       </div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer components={['DateTimePicker']}>
                               <DateTimePicker onChange={(newValue) => saveFormVote(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
+                  </div>
+
+                  <div className={classes.labelMargin}>
+
+                      <div className={classes.desc}>
+                          When does the delegation round end? (exact date and time in UTC)*
+                      </div>
+
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormEnd(newValue)} className={classes.input} />
                           </DemoContainer>
                       </LocalizationProvider>
                   </div>

@@ -1,5 +1,5 @@
 import classes from './ProposalInputs.module.css';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
 import { useAppSelector } from '../../hooks';
 import 'react-quill/dist/quill.snow.css';
@@ -10,47 +10,35 @@ import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../DelegateEditor';
 import inputHasImage from '../../utils/inputHasImage';
-import { useSigner } from 'wagmi';
+import {useAccount, useSigner} from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
 import buildIpfsPath from '../../utils/buildIpfsPath';
 import LoadingIndicator from '../LoadingIndicator';
+import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
+import {DeltaStatic, Quill} from "quill";
 
 const ProposalInputs: React.FC<{
-  quill: any;
-  Quill: any;
-  quillRef: any;
   formData: FormDataType[];
-  descriptionData: any;
   fundReqData: FundReqDataType;
   onDataChange: (data: Partial<ProposalFields>) => void;
-  onFileDrop: any;
-  editorBlurred: boolean;
-  setEditorBlurred: (blurred: boolean) => void;
 }> = props => {
   const {
-    quill,
-    Quill,
-    quillRef,
     formData,
     fundReqData,
-    descriptionData,
     onDataChange,
-    editorBlurred,
-    setEditorBlurred,
-    onFileDrop,
   } = props;
 
-  const { data: signer } = useSigner();
-
-  const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  // const { data: signer } = useSigner();
+  //
+  // const host = useAppSelector(state => state.configuration.backendHost);
+  // const client = useRef(new PropHouseWrapper(host));
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
 
-  useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
-  }, [signer, host]);
+  // useEffect(() => {
+  //   client.current = new PropHouseWrapper(host, signer);
+  // }, [signer, host]);
 
   const titleAndTldrInputs = (data: any, isTitleSection: boolean = false) => (
     <InputFormGroup
@@ -86,48 +74,97 @@ const ProposalInputs: React.FC<{
     />
   );
 
-  const [loading, setLoading] = useState<boolean>(false);
 
-  const uploadImageToServer = async (file: File) => {
-    // upload the image to the server
-    const res = await client.current.postFile(file, file.name);
 
-    // insert the image into the editor
-    quill.setSelection(quill.getLength(), 0);
-    quill.insertEmbed(
-      quill.getSelection()!.index,
-      'image',
-      buildIpfsPath(res.data.ipfsHash),
-      Quill.sources.USER,
-    );
 
-    // insert a newline after the image
-    quill.insertText(quill.getSelection()!.index + 1, '\n\n', Quill.sources.USER);
+
+
+
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [quill, setQuill] = useState<Quill | undefined>(undefined);
+
+  const { address: account } = useAccount();
+  const { data: signer } = useSigner();
+  const host = useAppSelector(state => state.configuration.backendHost);
+  const client = useRef(new PropHouseWrapper(host, signer));
+
+  useEffect(() => {
+    client.current = new PropHouseWrapper(host, signer);
+  }, [signer, host]);
+
+  const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
+    if (plainText.trim().length === 0) {
+      setContent('');
+    } else {
+      setContent(JSON.stringify(deltaContent.ops));
+    }
   };
 
-  // handle images being pasted into the editor by uploading them to the server and inserting the new image url into the editor
-  const onPaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
-    // if the user pastes text, don't do anything
-    if (!event.clipboardData.files.length) return;
+  const submit = async () => {
 
-    // get the files that were pasted
-    const pastedFiles = Array.from(event.clipboardData.files);
-
-    // prevents the original, encoded image from being pasted
-    event.preventDefault();
+    console.log(content);
+    if (content.length === 0 || !account) {
+      return;
+    }
 
     setLoading(true);
 
-    const imagePromises = pastedFiles
-      // filter out non-image files
-      .filter(file => file.type.startsWith('image'))
-      // upload the image to the server
-      .map(uploadImageToServer);
-
-    await Promise.all(imagePromises);
+    // const commentCreateResponse = await client.current.createComment('1', content, account!);
+    // if (commentCreateResponse) {
+    //   // props.onCommentCreated(commentCreateResponse);
+    //   if (quill) {
+    //     quill.setContents(EMPTY_DELTA);
+    //   }
+    // }
 
     setLoading(false);
   };
+
+
+
+  // const [loading, setLoading] = useState<boolean>(false);
+  //
+  // const uploadImageToServer = async (file: File) => {
+  //   // upload the image to the server
+  //   const res = await client.current.postFile(file, file.name);
+  //
+  //   // insert the image into the editor
+  //   quill.setSelection(quill.getLength(), 0);
+  //   quill.insertEmbed(
+  //     quill.getSelection()!.index,
+  //     'image',
+  //     buildIpfsPath(res.data.ipfsHash),
+  //     Quill.sources.USER,
+  //   );
+  //
+  //   // insert a newline after the image
+  //   quill.insertText(quill.getSelection()!.index + 1, '\n\n', Quill.sources.USER);
+  // };
+  //
+  // // handle images being pasted into the editor by uploading them to the server and inserting the new image url into the editor
+  // const onPaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
+  //   // if the user pastes text, don't do anything
+  //   if (!event.clipboardData.files.length) return;
+  //
+  //   // get the files that were pasted
+  //   const pastedFiles = Array.from(event.clipboardData.files);
+  //
+  //   // prevents the original, encoded image from being pasted
+  //   event.preventDefault();
+  //
+  //   setLoading(true);
+  //
+  //   const imagePromises = pastedFiles
+  //     // filter out non-image files
+  //     .filter(file => file.type.startsWith('image'))
+  //     // upload the image to the server
+  //     .map(uploadImageToServer);
+  //
+  //   await Promise.all(imagePromises);
+  //
+  //   setLoading(false);
+  // };
 
   return (
     <>
@@ -173,40 +210,52 @@ const ProposalInputs: React.FC<{
 
             {/** DESCRIPTION */}
 
-            <InputFormGroup
-              titleLabel={descriptionData.title}
-              content={
-                <>
-                  {/* 
-                    When scrolling past the window height the sticky Card header activates, but the header has rounded borders so you still see the borders coming up from the Card body. `hideBorderBox` is a sticky, empty div with a fixed height that hides these borders. 
-                  */}
-                  <div className="hideBorderBox"></div>
-                  <div
-                    ref={quillRef}
-                    onDrop={onFileDrop}
-                    onPaste={onPaste}
-                    placeholder={descriptionData.placeholder}
-                    onBlur={() => {
-                      setEditorBlurred(true);
-                    }}
-                  />
-                  {loading && (
-                    <div className={classes.loadingOverlay}>
-                      <LoadingIndicator />
-                    </div>
-                  )}
 
-                  {editorBlurred &&
-                    quill &&
-                    !inputHasImage(descriptionData.fieldValue) &&
-                    validateInput(descriptionData.minCount, quill.getText().length - 1) && (
-                      <p className={classes.inputError}>{descriptionData.error}</p>
-                    )}
-                </>
-              }
-              charsLabel={quill && quill.getText().length - 1}
-            />
+
+            {/*<InputFormGroup*/}
+            {/*  titleLabel={descriptionData.title}*/}
+            {/*  content={*/}
+            {/*    <>*/}
+            {/*      /!* */}
+            {/*        When scrolling past the window height the sticky Card header activates, but the header has rounded borders so you still see the borders coming up from the Card body. `hideBorderBox` is a sticky, empty div with a fixed height that hides these borders. */}
+            {/*      *!/*/}
+            {/*      <div className="hideBorderBox"></div>*/}
+            {/*      <div*/}
+            {/*        ref={quillRef}*/}
+            {/*        onDrop={onFileDrop}*/}
+            {/*        onPaste={onPaste}*/}
+            {/*        placeholder={descriptionData.placeholder}*/}
+            {/*        onBlur={() => {*/}
+            {/*          setEditorBlurred(true);*/}
+            {/*        }}*/}
+            {/*      />*/}
+            {/*      {loading && (*/}
+            {/*        <div className={classes.loadingOverlay}>*/}
+            {/*          <LoadingIndicator />*/}
+            {/*        </div>*/}
+            {/*      )}*/}
+
+            {/*      {editorBlurred &&*/}
+            {/*        quill &&*/}
+            {/*        !inputHasImage(descriptionData.fieldValue) &&*/}
+            {/*        validateInput(descriptionData.minCount, quill.getText().length - 1) && (*/}
+            {/*          <p className={classes.inputError}>{descriptionData.error}</p>*/}
+            {/*        )}*/}
+            {/*    </>*/}
+            {/*  }*/}
+            {/*  charsLabel={quill && quill.getText().length - 1}*/}
+            {/*/>*/}
           </Form>
+          <QuillEditor
+              widgetKey={'Comment-proposalId'}
+              minHeightStr={'400px'}
+              onChange={handleChange}
+              title='Create Comment'
+              loading={loading}
+              onQuillInit={(q) => setQuill(q)}
+              btnText='Submit'
+              onButtonClick={submit}
+          />
         </Col>
       </Row>
     </>

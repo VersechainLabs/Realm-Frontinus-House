@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/css/globals.css';
-import { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import Create from './pages/Create';
@@ -23,7 +23,13 @@ import Proposal from './pages/Proposal';
 import { createClient, mainnet, configureChains, WagmiConfig } from 'wagmi';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
-import { connectorsForWallets, getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import {
+  AvatarComponent,
+  connectorsForWallets,
+  getDefaultWallets,
+  lightTheme,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
@@ -31,6 +37,9 @@ import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
 import CommentsPage from './pages/CommentsPage';
 import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
+import AddressAvatar from './components/AddressAvatar';
+import classes from './components/AddressAvatar/AddressAvatar.module.css';
+import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 
 const { chains, provider } = configureChains(
   [mainnet],
@@ -78,6 +87,23 @@ function App() {
   const noNavPath =
     location.pathname === '/' || location.pathname === '/faq' || location.pathname === '/create';
 
+  const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
+    return (
+      <div style={{ display: 'flex' }}>
+        {ensImage ? (
+          <img
+            style={{ height: size, width: size }}
+            className={clsx(!ensImage && classes.glasses)}
+            src={ensImage!}
+            alt='avatar'
+          />
+        ) : (
+          <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
+        )
+        }
+      </div>
+    );
+  };
   return (
     <>
       <WagmiConfig client={wagmiClient}>
@@ -93,6 +119,7 @@ function App() {
             theme={lightTheme({
               accentColor: 'var(--brand-purple)',
             })}
+            avatar={CustomAvatar}
           >
             <Suspense fallback={<LoadingIndicator />}>
               <div className={clsx(bgColorForPage(location.pathname), 'wrapper')}>

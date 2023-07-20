@@ -33,8 +33,19 @@ const AcceptingPropsModule: React.FC<{
         <div className={classes.bulletItem}>
           <hr className={classes.bullet} />
           <div className={classes.customParagraph}>
-            Any Realm Holder can submit an application to become a delegate. Other Realm Holders
-            will vote on the best application. The top 20 applicants will become delegates.
+            <li>
+              Anyone can submit aproposal to get funded.
+            </li>
+            <li>
+              Owners of the Frontinus token will vote on the best proposals.
+            </li>
+            <li>
+              The top 1 proposal will get funded 1
+            </li>
+
+            <li>
+              1 each
+            </li>
           </div>
         </div>
 
@@ -52,7 +63,7 @@ const AcceptingPropsModule: React.FC<{
       {isProposingWindow &&
         (account ? (
           <Button
-            text={t('Become a Delegate')}
+            text={t('Create your proposal')}
             bgColor={ButtonColor.Green}
             onClick={() => {
               dispatch(clearProposal());
@@ -67,7 +78,7 @@ const AcceptingPropsModule: React.FC<{
 
   return (
     <RoundModuleCard
-      title={t('Accepting Application')}
+      title={t('acceptingProposals')}
       subtitle={
         <>
           Until{' '}
