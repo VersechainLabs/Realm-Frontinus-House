@@ -26,34 +26,64 @@ const DelegateAcceptingPropsModule: React.FC<{
   const { address: account } = useAccount();
   const { t } = useTranslation();
 
-  const content = (
-    <>
-      <b>{t('howBecomeDelegate')} :</b>
-      <div className={classes.bulletList}>
-        <div className={classes.bulletItem}>
-          <hr className={classes.bullet} />
-          <p>{t('delegateDesc')}.</p>
-        </div>
+  // const content = (
+  //   <>
+  //     <b>{t('howBecomeDelegate')} :</b>
+  //     <div className={classes.bulletList}>
+  //       <div className={classes.bulletItem}>
+  //         <hr className={classes.bullet} />
+  //         <p>{t('delegateDesc')}.</p>
+  //       </div>
+  //
+  //     </div>
+  //
+  //     {isProposingWindow &&
+  //       (account ? (
+  //         <Button
+  //           text={t('becomeDelegate')}
+  //           bgColor={ButtonColor.Green}
+  //           onClick={() => {
+  //             dispatch(clearProposal());
+  //             navigate('/create', { state: { auction, community, proposals } });
+  //           }}
+  //         />
+  //       ) : (
+  //         <ConnectButton color={ButtonColor.Pink} />
+  //       ))}
+  //   </>
+  // );
 
-      </div>
+    const content = (
+        <>
+            <b>{t('howBecomeDelegate')}:</b>
+            <div className={classes.bulletList}>
+                <div className={classes.bulletItem}>
+                    <hr className={classes.bullet} />
+                    <div className={classes.customParagraph}>
+                        <p>{t('delegateDesc')}.</p>
+                    </div>
+                </div>
 
-      {isProposingWindow &&
-        (account ? (
-          <Button
-            text={t('becomeDelegate')}
-            bgColor={ButtonColor.Green}
-            onClick={() => {
-              dispatch(clearProposal());
-              navigate('/create', { state: { auction, community, proposals } });
-            }}
-          />
-        ) : (
-          <ConnectButton color={ButtonColor.Pink} />
-        ))}
-    </>
-  );
+            </div>
 
-  return (
+            {isProposingWindow &&
+            (account ? (
+                <Button
+                    text={t('becomeDelegate')}
+                    bgColor={ButtonColor.Green}
+                    onClick={() => {
+                        dispatch(clearProposal());
+                        navigate('/create', { state: { auction, community, proposals } });
+                    }}
+                />
+            ) : (
+                <ConnectButton color={ButtonColor.Pink} />
+            ))}
+        </>
+    );
+
+
+    return (
     <RoundModuleCard
       title={t('acceptingApplications')}
       subtitle={
