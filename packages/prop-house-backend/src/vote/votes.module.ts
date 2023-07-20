@@ -8,16 +8,16 @@ import { Vote } from './vote.entity';
 import { VotesController } from './votes.controller';
 import { VotesService } from './votes.service';
 import { Community } from 'src/community/community.entity';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Vote, Proposal, Auction, Community]),
-  ],
+  imports: [TypeOrmModule.forFeature([Vote, Proposal, Auction, Community])],
   controllers: [VotesController],
   providers: [
     VotesService,
     ProposalsService,
     AuctionsService,
+    BlockchainService,
   ],
   exports: [TypeOrmModule],
 })
