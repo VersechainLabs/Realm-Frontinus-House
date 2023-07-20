@@ -40,28 +40,18 @@ import {
 
     @Get('/list')
     async getAll(@Body() dto: GetDelegationDto): Promise<Delegation[]> {
-      // const adminList = await this.adminService.findAll();
-
-      // const isAdmin = adminList.find((v) => v.address === dto.address);
-      
-      // if (!isAdmin)
-      // throw new HttpException(
-      //   'Need admin access!',
-      //   HttpStatus.BAD_REQUEST,
-      // );
-      
       return this.delegationService.findAll(); 
     }
 
     @Post('/create')
     async create(@Body() createDelegationDto: CreateDelegationDto): Promise<Delegation> {
 
-      if (await this.adminService.isAdmin(createDelegationDto.address) !== true) {
-        throw new HttpException(
-          'Need admin access!',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
+      // if (await this.adminService.isAdmin(createDelegationDto.address) !== true) {
+      //   throw new HttpException(
+      //     'Need admin access!',
+      //     HttpStatus.BAD_REQUEST,
+      //   );
+      // }
 
       const delegation = new Delegation();
       delegation.title = createDelegationDto.title;
