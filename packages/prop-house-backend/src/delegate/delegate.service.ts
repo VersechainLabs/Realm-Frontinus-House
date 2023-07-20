@@ -14,9 +14,12 @@ export type AuctionWithProposalCount = Delegate & { numProposals: number };
 @Injectable()
 export class DelegateService {
   constructor(
-    @InjectRepository(Delegate) private delegateRepository: Repository<Delegate>,
-    @InjectRepository(Delegation) private delegationRepository: Repository<Delegation>,
-    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Delegation)
+    private delegationRepository: Repository<Delegation>,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
@@ -26,8 +29,8 @@ export class DelegateService {
       //   relations: ['proposals.auction', 'community'],
       // },
       order: {
-        id: "DESC"
-      }
+        id: 'DESC',
+      },
     });
   }
 
@@ -37,10 +40,10 @@ export class DelegateService {
       // loadRelationIds: {
       //   relations: ['community'],
       // },
-    //   where: { visible: true },
+      //   where: { visible: true },
     });
   }
-  
+
   async store(proposal: Delegate): Promise<Delegate> {
     return await this.delegateRepository.save(proposal, { reload: true });
   }
@@ -183,7 +186,7 @@ export class DelegateService {
 
   // // Chao
   // async createAuctionByCommunity(
-  //   // communityId: number, 
+  //   // communityId: number,
   //   createAcutionDetails: CreateAuctionDto
   // ) {
   //   // console.log("createAcutionDetails.communityId:" + createAcutionDetails.communityId);
@@ -198,7 +201,7 @@ export class DelegateService {
 
   //   const newAuction = this.auctionsRepository.create({...createAcutionDetails, community});
   //   const savedAuction = await this.auctionsRepository.save(newAuction);
-    
+
   //   return savedAuction;
   // }
 }

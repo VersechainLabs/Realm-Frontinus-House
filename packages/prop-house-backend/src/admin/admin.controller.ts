@@ -5,23 +5,20 @@ import { ProposalsService } from 'src/proposal/proposals.service';
 import { CreateAdminDto } from './admin.types';
 
 @Controller('admins')
-  export class AdminsController {
-    [x: string]: any;
-    constructor(
-      private readonly adminService: AdminService,
-      private readonly proposalService: ProposalsService,
-    ) {}
-  
-    @Get('/list')
-    getAll(): Promise<Admin[]> {
-      return this.adminService.findAll(); 
-    }
-  
+export class AdminsController {
+  [x: string]: any;
+  constructor(
+    private readonly adminService: AdminService,
+    private readonly proposalService: ProposalsService,
+  ) {}
 
-    @Post('/create')
-    async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
-        return await this.adminService.createAdmin(createAdminDto);
-    }
-  
-
+  @Get('/list')
+  getAll(): Promise<Admin[]> {
+    return this.adminService.findAll();
   }
+
+  @Post('/create')
+  async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
+    return await this.adminService.createAdmin(createAdminDto);
+  }
+}

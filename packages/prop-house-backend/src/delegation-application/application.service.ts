@@ -6,17 +6,23 @@ import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
 import { Application } from './application.entity';
-import { CreateApplicationDto, GetApplicationDto, LatestDto } from './application.types';
+import {
+  CreateApplicationDto,
+  GetApplicationDto,
+  LatestDto,
+} from './application.types';
 
 export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
 @Injectable()
 export class ApplicationService {
   constructor(
-    @InjectRepository(Application) private applicationRepository: Repository<Application>,
-    @InjectRepository(Delegation) private delegationRepository: Repository<Delegation>,
+    @InjectRepository(Application)
+    private applicationRepository: Repository<Application>,
+    @InjectRepository(Delegation)
+    private delegationRepository: Repository<Delegation>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
-    ) {}
+  ) {}
 
   findAll(): Promise<Application[]> {
     return this.applicationRepository.find({
@@ -31,11 +37,13 @@ export class ApplicationService {
 
   // Chao
   async createApplicationByDelegation(
-    // communityId: number, 
-    dto: CreateApplicationDto
+    // communityId: number,
+    dto: CreateApplicationDto,
   ) {
-    const delegation = await this.delegationRepository.findOne(dto.delegationId);
-    console.log("delegation", delegation);
+    const delegation = await this.delegationRepository.findOne(
+      dto.delegationId,
+    );
+    console.log('delegation', delegation);
 
     if (!delegation) {
       throw new HttpException(
@@ -43,13 +51,19 @@ export class ApplicationService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    console.log("dto:", dto);
+    console.log('dto:', dto);
 
-    const newApplicaiton = this.applicationRepository.create({...dto, delegation});
+    const newApplicaiton = this.applicationRepository.create({
+      ...dto,
+      delegation,
+    });
     return await this.applicationRepository.save(newApplicaiton);
   }
 
-  async findByDelegation(delegationId: number, dto: GetApplicationDto): Promise<Application[]> {
+  async findByDelegation(
+    delegationId: number,
+    dto: GetApplicationDto,
+  ): Promise<Application[]> {
     return await this.applicationRepository
       .createQueryBuilder('a')
       .select('a.*')
@@ -151,7 +165,7 @@ export class ApplicationService {
 
   // // Chao
   // async createAuctionByCommunity(
-  //   // communityId: number, 
+  //   // communityId: number,
   //   createAcutionDetails: CreateAuctionDto
   // ) {
   //   // console.log("createAcutionDetails.communityId:" + createAcutionDetails.communityId);
@@ -166,7 +180,7 @@ export class ApplicationService {
 
   //   const newAuction = this.auctionsRepository.create({...createAcutionDetails, community});
   //   const savedAuction = await this.auctionsRepository.save(newAuction);
-    
+
   //   return savedAuction;
   // }
 }

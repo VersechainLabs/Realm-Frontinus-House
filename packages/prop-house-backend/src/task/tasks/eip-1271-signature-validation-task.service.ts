@@ -23,8 +23,7 @@ export class EIP1271SignatureValidationTaskService {
     private readonly _votesService: VotesService,
     private readonly _auctionsService: AuctionsService,
     private readonly _proposalService: ProposalsService,
-  ) {
-  }
+  ) {}
 
   @Interval(EIP1271SignatureValidationTaskService._EVERY_15_MINUTES)
   async validatePendingSignatures() {

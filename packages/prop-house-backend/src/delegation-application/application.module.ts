@@ -14,7 +14,13 @@ import { Auction } from 'src/auction/auction.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Delegation, Proposal, Community, Application, Auction]),
+    TypeOrmModule.forFeature([
+      Delegation,
+      Proposal,
+      Community,
+      Application,
+      Auction,
+    ]),
   ],
   controllers: [ApplicationController],
   providers: [
