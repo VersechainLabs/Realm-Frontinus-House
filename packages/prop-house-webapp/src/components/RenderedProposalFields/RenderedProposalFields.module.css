@@ -109,6 +109,7 @@ hr {
   color: var(--brand-gray);
 }
 
+
 @media (max-width: 577px) {
   .backBtnContainer {
     padding-bottom: 25px;

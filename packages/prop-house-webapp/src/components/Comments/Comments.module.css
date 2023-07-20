@@ -1,7 +1,9 @@
 .listTitle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 24px;
 }
 
 .listItem{
@@ -21,3 +23,18 @@
 }
 
 
+.listBar{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+
+.listFilter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:var(--brand-proposql-yellow);
+    font-size: 16px;
+    font-weight: 700;
+}

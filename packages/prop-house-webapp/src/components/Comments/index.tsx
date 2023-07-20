@@ -24,14 +24,16 @@ export default function Comments(props: CommentsProps) {
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new PropHouseWrapper(host));
+  const [showLoadMore, setShowLoadMore] = useState(true);
 
 
   useEffect(() => {
     loadNextPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [proposalId]);
 
   const loadNextPage = (skip: number) => {
+
     if (showTailLoading || showFullLoading) {
       return;
     }
@@ -49,6 +51,10 @@ export default function Comments(props: CommentsProps) {
           list = res;
         } else {
           list = commentList.concat(res);
+        }
+
+        if (list.length<=0){
+          setShowLoadMore(false);
         }
 
         setCommentList(list);
@@ -73,7 +79,7 @@ export default function Comments(props: CommentsProps) {
       itemList.push(CommentListItem({ comment: comment }));
     });
     itemList.push(
-      <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
+        <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
         <LoadingButton
           loading={showTailLoading}
           onClick={() => loadNextPage(commentList.length)}
@@ -98,9 +104,9 @@ export default function Comments(props: CommentsProps) {
         onCommentCreated={onCommentCreated}
       />
 
-      <div>
+      <div className={classes.listBar}>
         <div className={classes.listTitle}>Comments</div>
-
+        {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
 
       <List>{itemList}</List>
