@@ -37,6 +37,11 @@ import { CreateAdminDto } from './admin.types';
     async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
         return await this.adminService.createAdmin(createAdminDto);
     }
-  
-
+    
+    @Post('/:id/delete')
+    async delete(@Param('id') id: number): Promise<boolean> {
+      await this.adminService.remove(id);
+      return true;
+    }
+    
   }

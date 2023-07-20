@@ -14,8 +14,8 @@ import {
 } from 'class-validator';
 
 export class CreateDelegationDto {
-  // @IsEthereumAddress()
-  // address: string;
+  @IsEthereumAddress()
+  address: string;
 
   @IsString()
   @IsOptional()
