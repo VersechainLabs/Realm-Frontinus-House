@@ -11,7 +11,7 @@ import {
   } from '@nestjs/common';
   import { ParseDate } from 'src/utils/date';
   import { Delegation } from './delegation.entity';
-  import { CreateDelegationDto, GetDelegationDto, LatestDto } from './delegation.types';
+  import { CreateDelegationDto, DelegationState, GetDelegationDto, LatestDto } from './delegation.types';
   import { DelegationService} from './delegation.service';
   import { ProposalsService } from 'src/proposal/proposals.service';
   import { Proposal } from 'src/proposal/proposal.entity';
@@ -28,6 +28,15 @@ import {
       private readonly adminService: AdminService,
     ) {}
   
+    @Get('/:id/state')
+    async getState(@Param('id') id: number): Promise<DelegationState> {
+
+      let testDate: Date = new Date("2023-01-30 00:00:04.000000");  
+
+      // testDate is Optional:
+      return this.delegationService.getState(id, testDate); 
+    }
+
 
     @Get('/list')
     async getAll(@Body() dto: GetDelegationDto): Promise<Delegation[]> {
@@ -69,6 +78,12 @@ import {
       return foundDelegation;
     }
   
+    @Post('/:id/delete')
+    async delete(@Param('id') id: number): Promise<boolean> {
+      await this.delegationService.remove(id);
+      return true;
+    }
+
     // @Get('/forCommunity/:id')
     // async findAllForCommunity(
     //   @Param('id') id: number,
