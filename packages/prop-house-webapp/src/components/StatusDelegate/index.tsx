@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import classes from './StatusPill.module.css';
+import classes from './StatusDelegate.module.css';
 import {DelegateVoteStatus } from '../../utils/auctionStatus';
 
 
