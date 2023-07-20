@@ -121,7 +121,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                       </div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker onChange={(newValue) => saveFormVote(newValue)} className={classes.input} />
+                              <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
                           </DemoContainer>
                       </LocalizationProvider>
                   </div>
@@ -134,7 +134,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker onChange={(newValue) => saveFormEnd(newValue)} className={classes.input} />
+                              <DateTimePicker onChange={(newValue) => saveFormVote(newValue)  } className={classes.input} />
                           </DemoContainer>
                       </LocalizationProvider>
                   </div>
@@ -146,7 +146,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                                       <DemoContainer components={['DateTimePicker']}>
-                                          <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
+                                          <DateTimePicker onChange={(newValue) => saveFormEnd(newValue)} className={classes.input} />
                                       </DemoContainer>
                                   </LocalizationProvider>
                               </div>
