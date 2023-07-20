@@ -248,6 +248,7 @@ const ProposalInputs: React.FC<{
           </Form>
           <QuillEditor
               widgetKey={'Comment-proposalId'}
+              minHeightStr={'400px'}
               onChange={handleChange}
               title='Create Comment'
               loading={loading}
