@@ -78,15 +78,15 @@ const CreateDelegateForm: React.FC<{}> = () => {
               <Row>
                   <form onSubmit={handleSubmit}>
                   <div className={classes.title}>
-                      Delegate Selection Creation
+                      Delegation Round Creation
                   </div>
                   <div className={classes.desc}>
-                      Use this form to create a new delegate selection round. Please visit our Discord if you have any questions: https://discord.gg/uQnjZhZPfu.
+                      Use this form to create a new delegation round. Please visit our Discord if you have any questions: <a href="https://discord.gg/uQnjZhZPfu" target="_blank" className={classes.alink}>https://discord.gg/uQnjZhZPfu</a>.
                   </div>
 
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          What is the selection round name? (Please use only standard letters, no special characters such as dashes or question marks)*
+                          What is the delegation round name? (Please use only standard letters, no special characters such as dashes or question marks)*
                       </div>
 
                       <input onChange={event => saveFormTitle(event.target.value)} name={'title'} className={classes.input} type="text"/>
@@ -94,7 +94,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          What is the description of this round of delegate selection? (Please use a markdown editor to format your description) *
+                          What is the description of this round of delegation? (Please use a markdown editor to format your description) *
                       </div>
 
                       <textarea rows={4} onChange={event => saveFormDesc(event.target.value)} name={'description'} className={classes.input} />
@@ -105,7 +105,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                           <div className={classes.dateMain}>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
-                          When does the delegation round start? (exact date and time in UTC)*
+                          When does the delegation round start accepting applications? (exact date and time in UTC)*
                       </div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer components={['DateTimePicker']}>
@@ -129,7 +129,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                   <div className={classes.labelMargin}>
 
                       <div className={classes.desc}>
-                          When does the round voting period end? (exact date and time in UTC)*
+                          When can community members start granting voting power to delegate applicants? (exact date and time in UTC)*
                       </div>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoContainer components={['DateTimePicker']}>
@@ -141,7 +141,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                   <div className={classes.labelMargin}>
 
                       <div className={classes.desc}>
-                          When does the delegation round end? (exact date and time in UTC)*
+                          When is the last day community members can grant voting power to delegate applicants? (exact date and time in UTC)*
                       </div>
 
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -160,7 +160,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                                   </div>
                                   <div className={classes.qiuDesc}>
-                                      Start time for proposal submissions
+                                      Time to start accepting applicants
                                   </div>
                               </div>
 
@@ -172,7 +172,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                                   </div>
                                   <div className={classes.qiuDesc}>
-                                      Voting Start Time
+                                      Time to select delegates
                                   </div>
                               </div>
                               <div className={classes.xian+' '+classes.xian3}>
@@ -183,7 +183,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                                   </div>
                                   <div className={classes.qiuDesc}>
-                                      Voting End Time
+                                      Time to end selection period
                                   </div>
                               </div>
                               <div className={classes.xian+' '+classes.xian3}>
