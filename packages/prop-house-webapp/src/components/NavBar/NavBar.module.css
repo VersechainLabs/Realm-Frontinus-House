@@ -43,12 +43,13 @@
 }
 
 .link {
+  color: #D6D3D1!important;
   font-weight: 600;
 }
 
 .link:hover {
   text-decoration: none;
-  color: var(--brand-black);
+  color: #D6D3D1!important;
 }
 
 .buttonGroup {
