@@ -115,18 +115,6 @@ const CreateDelegateForm: React.FC<{}> = () => {
                   </div>
 
                   <div className={classes.labelMargin}>
-                      <div className={classes.desc}>
-                          When does the round voting period start? (exact date and time in UTC)*
-                      </div>
-
-
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
-                          </DemoContainer>
-                      </LocalizationProvider>
-                  </div>
-                  <div className={classes.labelMargin}>
 
                       <div className={classes.desc}>
                           When can community members start granting voting power to delegate applicants? (exact date and time in UTC)*
@@ -150,6 +138,20 @@ const CreateDelegateForm: React.FC<{}> = () => {
                           </DemoContainer>
                       </LocalizationProvider>
                   </div>
+                              <div className={classes.labelMargin}>
+                                  <div className={classes.desc}>
+                                      When does the delegation round end? (exact date and time in UTC)*
+                                  </div>
+
+
+                                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                      <DemoContainer components={['DateTimePicker']}>
+                                          <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
+                                      </DemoContainer>
+                                  </LocalizationProvider>
+                              </div>
+
+
                           </div>
                           <div className={classes.paddingTop}>
                               <div className={classes.xian+' '+classes.xian1}>
