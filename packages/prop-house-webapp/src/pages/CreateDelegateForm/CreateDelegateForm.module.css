@@ -25,6 +25,11 @@
   color:#F5EEE6;
   margin-bottom: 10px;
 }
+
+.alink{
+    color: #0d6efd !important;
+}
+
 .input {
     display: block;
     width: 100%;
