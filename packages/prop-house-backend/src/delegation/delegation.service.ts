@@ -49,7 +49,7 @@ export class DelegationService {
 
 
   async remove(id: number): Promise<void> {
-    await this.auctionsRepository.delete(id);
+    await this.delegationRepository.delete(id);
   }
   
   async getState(id: number, currentTime?: Date): Promise<DelegationState> {
