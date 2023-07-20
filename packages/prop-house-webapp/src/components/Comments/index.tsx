@@ -9,6 +9,7 @@ import QuillViewer from '../QuillViewer';
 import EthAddress from '../EthAddress';
 import AddressAvatar from '../AddressAvatar';
 import { serverDateToString } from '../../utils/detailedTime';
+import classes from './Comments.module.css';
 
 type CommentsProps = {
   proposalId: number;
@@ -23,14 +24,16 @@ export default function Comments(props: CommentsProps) {
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new PropHouseWrapper(host));
+  const [showLoadMore, setShowLoadMore] = useState(true);
 
 
   useEffect(() => {
     loadNextPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [proposalId]);
 
   const loadNextPage = (skip: number) => {
+
     if (showTailLoading || showFullLoading) {
       return;
     }
@@ -48,6 +51,10 @@ export default function Comments(props: CommentsProps) {
           list = res;
         } else {
           list = commentList.concat(res);
+        }
+
+        if (list.length<=0){
+          setShowLoadMore(false);
         }
 
         setCommentList(list);
@@ -72,7 +79,7 @@ export default function Comments(props: CommentsProps) {
       itemList.push(CommentListItem({ comment: comment }));
     });
     itemList.push(
-      <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
+        <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
         <LoadingButton
           loading={showTailLoading}
           onClick={() => loadNextPage(commentList.length)}
@@ -97,6 +104,11 @@ export default function Comments(props: CommentsProps) {
         onCommentCreated={onCommentCreated}
       />
 
+      <div className={classes.listBar}>
+        <div className={classes.listTitle}>Comments</div>
+        {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
+      </div>
+
       <List>{itemList}</List>
 
     </Container>
@@ -114,10 +126,10 @@ export function CommentListItem(props: CommentListItemProps) {
   const avatarSize = 40;
 
   return (
-    <ListItem key={`comment-${comment.id}`} alignItems='flex-start'>
+    <ListItem key={`comment-${comment.id}`} alignItems='flex-start' className={classes.listItem}>
       <Avatar sx={{
         width: avatarSize, height: avatarSize,
-        margin: '8px',
+        marginRight: '16px',
       }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
       <div style={{
         display: 'flex',
@@ -132,14 +144,15 @@ export function CommentListItem(props: CommentListItemProps) {
         }}>
           <EthAddress address={props.comment.owner} />
 
-          <div style={{
-            fontSize: '13px',
-            marginLeft: '12px',
-          }}>
-            {serverDateToString(comment.createdDate)}
+          <div className={classes.date}>
+            <span style={{
+              marginRight: '6px',
+            }}>{' • '} </span> {serverDateToString(comment.createdDate)}
           </div>
         </div>
-        <QuillViewer content={props.comment.content} />
+        <div className={classes.quillContent}>
+          <QuillViewer content={props.comment.content}/>
+        </div>
 
       </div>
 

@@ -33,6 +33,8 @@ const Proposal = () => {
   const round = useAppSelector(state => state.propHouse.activeRound);
   const backendHost = useAppSelector(state => state.configuration.backendHost);
   const backendClient = useRef(new PropHouseWrapper(backendHost, signer));
+  const [loading,setLoading] = useState(false);
+
 
   const handleBackClick = () => {
     if (!community || !round) return;
@@ -113,8 +115,8 @@ const Proposal = () => {
         {proposal && (
           <div>
             <div style={{ height: 30 }}></div>
-            <h2>Comments</h2>
-            <Comments proposalId={proposal.id} />
+            {/*<h2>Comments</h2>*/}
+            <Comments proposalId={Number(id)} />
           </div>
         )}
       </Container>

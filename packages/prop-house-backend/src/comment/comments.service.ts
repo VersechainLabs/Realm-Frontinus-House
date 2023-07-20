@@ -14,9 +14,11 @@ import { Proposal } from 'src/proposal/proposal.entity';
 export class CommentsService {
   constructor(
     @InjectRepository(Comment) private commentsRepository: Repository<Comment>,
-    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
-    @InjectRepository(Proposal) private proposalsRepository: Repository<Proposal>,
+    @InjectRepository(Proposal)
+    private proposalsRepository: Repository<Proposal>,
   ) {}
 
   findAll(): Promise<Comment[]> {
@@ -30,16 +32,17 @@ export class CommentsService {
     });
   }
 
-//   async findByProposalId(proposalId: number): Promise<Comment[]>  {
-//     return await this.commentsRepository.find({
-//       relations: ['proposal'],
-//       where: { proposalId },
-//     });
-//   }
+  //   async findByProposalId(proposalId: number): Promise<Comment[]>  {
+  //     return await this.commentsRepository.find({
+  //       relations: ['proposal'],
+  //       where: { proposalId },
+  //     });
+  //   }
 
-
-
-  async findByProposal(proposalId: number, dto: GetCommentsDto): Promise<Comment[]> {
+  async findByProposal(
+    proposalId: number,
+    dto: GetCommentsDto,
+  ): Promise<Comment[]> {
     return await this.commentsRepository
       .createQueryBuilder('a')
       .select('a.*')
@@ -49,7 +52,6 @@ export class CommentsService {
       .orderBy('id', dto.order)
       .getRawMany();
   }
-
 
   // findAllActiveForCommunities(dto: GetAuctionsDto): Promise<Auction[]> {
   //   return this.auctionsRepository
@@ -163,7 +165,7 @@ export class CommentsService {
 
   // // Chao
   // async createAuctionByCommunity(
-  //   // communityId: number, 
+  //   // communityId: number,
   //   createAcutionDetails: CreateAuctionDto
   // ) {
   //   // console.log("createAcutionDetails.communityId:" + createAcutionDetails.communityId);
@@ -178,17 +180,19 @@ export class CommentsService {
 
   //   const newAuction = this.auctionsRepository.create({...createAcutionDetails, community});
   //   const savedAuction = await this.auctionsRepository.save(newAuction);
-    
+
   //   return savedAuction;
   // }
 
   // Chao
   async createComment(
-    // communityId: number, 
-    createCommentDetails: CreateCommentDto
+    // communityId: number,
+    createCommentDetails: CreateCommentDto,
   ) {
     // console.log("createCommentDetails.proposalId:" + createCommentDetails.proposalId);
-    const proposal = await this.proposalsRepository.findOne(createCommentDetails.proposalId);
+    const proposal = await this.proposalsRepository.findOne(
+      createCommentDetails.proposalId,
+    );
 
     if (!proposal) {
       throw new HttpException(
@@ -197,7 +201,10 @@ export class CommentsService {
       );
     }
 
-    const newRecord = this.commentsRepository.create({...createCommentDetails, proposal});
+    const newRecord = this.commentsRepository.create({
+      ...createCommentDetails,
+      proposal,
+    });
     return await this.commentsRepository.save(newRecord);
-  }  
+  }
 }

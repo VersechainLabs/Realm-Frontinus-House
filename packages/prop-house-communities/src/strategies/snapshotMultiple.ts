@@ -42,13 +42,25 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
 
 const getErc721Balance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: Provider): Promise<BigNumber> => {
   const contract = new Contract(strategyAddress, BalanceOfABI, provider);
-  const balance = await contract.balanceOf(userAddress, { blockTag: parseBlockTag(blockTag) });
+  let config;
+  if (blockTag === 0) {
+    config = {};
+  } else {
+    config = { blockTag: parseBlockTag(blockTag) };
+  }
+  const balance = await contract.balanceOf(userAddress, config);
   return new BigNumber(balance.toString());
 };
 
 const getContractCallBalance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: Provider): Promise<BigNumber> => {
   const contract = new Contract(strategyAddress, ContractCallABI, provider);
-  const balance = await contract.getNumberRealms(userAddress, { blockTag: parseBlockTag(blockTag) });
+  let config;
+  if (blockTag === 0) {
+    config = {};
+  } else {
+    config = { blockTag: parseBlockTag(blockTag) };
+  }
+  const balance = await contract.getNumberRealms(userAddress, config);
   return new BigNumber(balance.toString());
 };
 

@@ -1,7 +1,9 @@
 import classes from './ProposalInputs.module.css';
-import { useEffect, useRef, useState } from 'react';
+import './ProposalInputs.css';
+import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
-import { useAppSelector } from '../../hooks';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {useLocation, useNavigate} from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import '../../quill.css';
 import clsx from 'clsx';
@@ -9,48 +11,29 @@ import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../DelegateEditor';
-import inputHasImage from '../../utils/inputHasImage';
-import { useSigner } from 'wagmi';
+import {useAccount, useSigner} from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
-import buildIpfsPath from '../../utils/buildIpfsPath';
-import LoadingIndicator from '../LoadingIndicator';
+import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
+import {DeltaStatic, Quill} from "quill";
+import {InfiniteAuctionProposal, Proposal} from "@nouns/prop-house-wrapper/dist/builders";
+import {appendProposal} from "../../state/slices/propHouse";
+import {clearProposal} from "../../state/slices/editor";
+import ProposalSuccessModal from "../ProposalSuccessModal";
+import {buildRoundPath} from "../../utils/buildRoundPath";
 
 const ProposalInputs: React.FC<{
-  quill: any;
-  Quill: any;
-  quillRef: any;
   formData: FormDataType[];
-  descriptionData: any;
   fundReqData: FundReqDataType;
   onDataChange: (data: Partial<ProposalFields>) => void;
-  onFileDrop: any;
-  editorBlurred: boolean;
-  setEditorBlurred: (blurred: boolean) => void;
 }> = props => {
   const {
-    quill,
-    Quill,
-    quillRef,
     formData,
     fundReqData,
-    descriptionData,
     onDataChange,
-    editorBlurred,
-    setEditorBlurred,
-    onFileDrop,
   } = props;
-
-  const { data: signer } = useSigner();
-
-  const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
-
-  useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
-  }, [signer, host]);
 
   const titleAndTldrInputs = (data: any, isTitleSection: boolean = false) => (
     <InputFormGroup
@@ -86,48 +69,56 @@ const ProposalInputs: React.FC<{
     />
   );
 
-  const [loading, setLoading] = useState<boolean>(false);
 
-  const uploadImageToServer = async (file: File) => {
-    // upload the image to the server
-    const res = await client.current.postFile(file, file.name);
+  const navigate = useNavigate();
+    const location = useLocation();
+    const activeAuction = location.state.auction;
+  const activeCommunity = location.state.community;
+  const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
+  const [propId, setPropId] = useState<null | number>(null);
+  const [content, setContent] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [quill, setQuill] = useState<Quill | undefined>(undefined);
+  const dispatch = useAppDispatch();
+  const { address: account } = useAccount();
+  const { data: signer } = useSigner();
+  const host = useAppSelector(state => state.configuration.backendHost);
+  const client = useRef(new PropHouseWrapper(host, signer));
 
-    // insert the image into the editor
-    quill.setSelection(quill.getLength(), 0);
-    quill.insertEmbed(
-      quill.getSelection()!.index,
-      'image',
-      buildIpfsPath(res.data.ipfsHash),
-      Quill.sources.USER,
-    );
+  useEffect(() => {
+    client.current = new PropHouseWrapper(host, signer);
+  }, [signer, host]);
 
-    // insert a newline after the image
-    quill.insertText(quill.getSelection()!.index + 1, '\n\n', Quill.sources.USER);
+  const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
+    if (plainText.trim().length === 0) {
+      setContent('');
+    } else {
+      setContent(htmlContent);
+    }
   };
 
-  // handle images being pasted into the editor by uploading them to the server and inserting the new image url into the editor
-  const onPaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
-    // if the user pastes text, don't do anything
-    if (!event.clipboardData.files.length) return;
+  const submit = async () => {
 
-    // get the files that were pasted
-    const pastedFiles = Array.from(event.clipboardData.files);
-
-    // prevents the original, encoded image from being pasted
-    event.preventDefault();
+    console.log(content,formData);
+    if (content.length === 0 || !account) {
+      return;
+    }
 
     setLoading(true);
 
-    const imagePromises = pastedFiles
-      // filter out non-image files
-      .filter(file => file.type.startsWith('image'))
-      // upload the image to the server
-      .map(uploadImageToServer);
+    let newProp: Proposal | InfiniteAuctionProposal;
 
-    await Promise.all(imagePromises);
+    newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
+    const proposal = await client.current.createProposal(newProp);
 
+    setPropId(proposal.id);
+    dispatch(appendProposal({ proposal }));
+    dispatch(clearProposal());
+    // setShowProposalSuccessModal(true);
+    navigate(buildRoundPath(activeCommunity, activeAuction), { replace: false });
     setLoading(false);
   };
+
 
   return (
     <>
@@ -172,43 +163,33 @@ const ProposalInputs: React.FC<{
             {titleAndTldrInputs(formData[1])}
 
             {/** DESCRIPTION */}
-
-            <InputFormGroup
-              titleLabel={descriptionData.title}
-              content={
-                <>
-                  {/* 
-                    When scrolling past the window height the sticky Card header activates, but the header has rounded borders so you still see the borders coming up from the Card body. `hideBorderBox` is a sticky, empty div with a fixed height that hides these borders. 
-                  */}
-                  <div className="hideBorderBox"></div>
-                  <div
-                    ref={quillRef}
-                    onDrop={onFileDrop}
-                    onPaste={onPaste}
-                    placeholder={descriptionData.placeholder}
-                    onBlur={() => {
-                      setEditorBlurred(true);
-                    }}
-                  />
-                  {loading && (
-                    <div className={classes.loadingOverlay}>
-                      <LoadingIndicator />
-                    </div>
-                  )}
-
-                  {editorBlurred &&
-                    quill &&
-                    !inputHasImage(descriptionData.fieldValue) &&
-                    validateInput(descriptionData.minCount, quill.getText().length - 1) && (
-                      <p className={classes.inputError}>{descriptionData.error}</p>
-                    )}
-                </>
-              }
-              charsLabel={quill && quill.getText().length - 1}
-            />
           </Form>
+          <div className={"propEditor"}>
+            <div className={classes.description}>
+              Description
+            </div>
+            <QuillEditor
+                widgetKey={'Comment-proposalId'}
+                minHeightStr={'400px'}
+                onChange={handleChange}
+                title='Create Comment'
+                loading={loading}
+                onQuillInit={(q) => setQuill(q)}
+                btnText='Submit'
+                onButtonClick={submit}
+            />
+          </div>
+
         </Col>
       </Row>
+      {/*{showProposalSuccessModal && propId && (*/}
+      {/*    <ProposalSuccessModal*/}
+      {/*        setShowProposalSuccessModal={setShowProposalSuccessModal}*/}
+      {/*        proposalId={propId}*/}
+      {/*        house={activeCommunity}*/}
+      {/*        round={activeAuction}*/}
+      {/*    />*/}
+      {/*)}*/}
     </>
   );
 };

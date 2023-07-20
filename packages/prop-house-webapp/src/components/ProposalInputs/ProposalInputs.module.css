@@ -13,14 +13,14 @@
   margin-bottom: 2rem;
 }
 
-p {
-  margin-top: 4rem;
-  width: 600px;
-  height: 37px;
-  font-size: 28px;
-  font-weight: bold;
-  color: #f5eee6;
-}
+/*p {*/
+/*  margin-top: 4rem;*/
+/*  width: 600px;*/
+/*  height: 37px;*/
+/*  font-size: 28px;*/
+/*  font-weight: bold;*/
+/*  color: #f5eee6;*/
+/*}*/
 
 .inputSection {
   margin: 3rem 0rem;
@@ -53,6 +53,21 @@ p {
   padding-right: 3rem;
 }
 
+.description {
+  margin-bottom: -2rem;
+  font-size: 18px;
+  font-weight: 700;
+  color: #f5eee6;
+}
+
+.propEditor {
+  display: block;
+}
+
+.propEditor .ql-container .ql-editor {
+  min-height: 400px!important;
+}
+
 .fundReqFormGroup {
   max-width: 8rem;
 }
@@ -66,11 +81,14 @@ p {
   border-radius: 4px;
   padding: 0.75rem !important;
   font-size: 16px !important;
+  color: #F5EEE6;
 }
 
 .input:focus {
   box-shadow: none;
   border: 1px rgba(0, 0, 0, 0.1) solid;
+  background: #272728;
+  color: #F5EEE6;
 }
 
 .input::placeholder {

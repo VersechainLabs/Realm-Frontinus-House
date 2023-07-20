@@ -15,7 +15,6 @@ import {
   import { DelegationService} from './delegation.service';
   import { ProposalsService } from 'src/proposal/proposals.service';
   import { Proposal } from 'src/proposal/proposal.entity';
-  import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
   import { AdminService } from 'src/admin/admin.service';
   import { Admin } from 'src/admin/admin.entity';
   
@@ -173,4 +172,3 @@ import {
     //   return Number(numVotes);
     // }
   }
-  

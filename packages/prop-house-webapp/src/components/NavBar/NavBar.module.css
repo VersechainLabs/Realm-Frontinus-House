@@ -43,12 +43,13 @@
 }
 
 .link {
+  color: #D6D3D1!important;
   font-weight: 600;
 }
 
 .link:hover {
   text-decoration: none;
-  color: var(--brand-black);
+  color: #D6D3D1!important;
 }
 
 .buttonGroup {
@@ -81,7 +82,7 @@
   padding: 0px 16px;
   gap: 12px;
 
-  width: 176px;
+  width: 220px;
 
   border: 1px solid #D0A059!important;
   border-radius: 8px;

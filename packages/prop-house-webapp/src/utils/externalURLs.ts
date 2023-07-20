@@ -7,10 +7,10 @@ export enum ExternalURL {
 export const externalURL = (externalURL: ExternalURL) => {
   switch (externalURL) {
     case ExternalURL.discord:
-      return 'https://discord.com/invite/SKPzM8GHts';
+      return 'https://discord.gg/uQnjZhZPfu';
     case ExternalURL.twitter:
-      return 'https://twitter.com/nounsprophouse';
+      return 'https://twitter.com/LootRealms';
     case ExternalURL.github:
-      return 'https://github.com/Prop-House';
+      return 'https://github.com/BibliothecaDAO';
   }
 };

@@ -37,6 +37,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
   };
 
   const submit = async () => {
+
     console.log(content);
     if (content.length === 0 || !account) {
       return;
@@ -61,17 +62,20 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       onChange={handleChange}
       title='Create Comment'
       loading={loading}
+      minHeightStr={'0'}
       onQuillInit={(q) => setQuill(q)}
+      btnText='Submit'
+      onButtonClick={submit}
     />
-    {account ? (
-      <Button text={'submit'} bgColor={ButtonColor.Purple} onClick={submit} />
-    ) : (
-      <ConnectButton
-        classNames={classes.actionBtn}
-        color={ButtonColor.Pink}
-        text='submit'
-      />)
-    }
+    {/*{account ? (*/}
+    {/*  <Button text={'submit'} bgColor={ButtonColor.Purple} onClick={submit} />*/}
+    {/*) : (*/}
+    {/*  <ConnectButton*/}
+    {/*    classNames={classes.actionBtn}*/}
+    {/*    color={ButtonColor.Pink}*/}
+    {/*    text='submit'*/}
+    {/*  />)*/}
+    {/*}*/}
 
   </>);
 }

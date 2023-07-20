@@ -1,0 +1,40 @@
+.listTitle{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.listItem{
+    padding-left: unset !important;
+    padding-right: unset !important;
+}
+
+.date{
+    font-size: 16px;
+    margin-left: 8px;
+    color: #676B6D;
+    font-weight: 700;
+}
+
+.quill-viewer .ql-container{
+    background: unset !important;
+}
+
+
+.listBar{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+
+.listFilter{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:var(--brand-proposql-yellow);
+    font-size: 16px;
+    font-weight: 700;
+}

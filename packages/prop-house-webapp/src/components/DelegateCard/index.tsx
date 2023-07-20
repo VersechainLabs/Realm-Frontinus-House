@@ -28,6 +28,7 @@ import Markdown from 'markdown-to-jsx';
 import sanitizeHtml from 'sanitize-html';
 import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
 import { countDecimals } from '../../utils/countDecimals';
+import StatusDelegate from "../StatusDelegate";
 
 const DelegateCard: React.FC<{
   round: any;
@@ -64,14 +65,14 @@ const DelegateCard: React.FC<{
           bgColor={CardBgColor.White}
           borderRadius={CardBorderRadius.twenty}
           classNames={clsx(
-              delegateStatus(round) === DelegateVoteStatus.AuctionEnded && classes.roundEnded,
+              delegateStatus(round) === DelegateVoteStatus.DelegateEnd && classes.roundEnded,
             classes.roundCard,
           )}
         >
           <div className={classes.textContainer}>
             <div className={classes.titleContainer}>
               <div className={classes.authorContainer}>{round.title}</div>
-              <StatusPill status={auctionStatus(round)} />
+              <StatusDelegate status={delegateStatus(round)} />
             </div>
 
             {/* support both markdown & html in round's description.  */}
@@ -93,7 +94,7 @@ const DelegateCard: React.FC<{
 
           <div className={classes.roundInfo}>
             <div className={clsx(classes.section, classes.funding)}>
-              <p className={classes.title}>Delegate Period</p>
+              <p className={classes.title}>Delegation Period</p>
               <p className={classes.info}>
                 <span className="">
                   {dayjs(round.startTime).tz().format('MMM D,YYYY')}
@@ -132,7 +133,7 @@ const DelegateCard: React.FC<{
             <div className={clsx(classes.divider, classes.propSection)}></div>
 
             <div className={clsx(classes.section, classes.propSection)}>
-              <p className={classes.title}> {t('proposalsCap')}</p>
+              <p className={classes.title}>Applications</p>
               <p className={classes.info}>{round.nomineeCount}</p>
             </div>
           </div>

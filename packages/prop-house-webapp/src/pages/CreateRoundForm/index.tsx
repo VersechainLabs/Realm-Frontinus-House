@@ -120,7 +120,7 @@ const CreateRound: React.FC<{}> = () => {
                       Round creation
                   </div>
                   <div className={classes.desc}>
-                      Use this form to create a new round. Please visit our Discord if you have any questions: https://discord.com/invite/SKPzM8GHts.
+                      Use this form to create a new round. Please visit our Discord if you have any questions: https://discord.gg/uQnjZhZPfu.
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
@@ -137,42 +137,87 @@ const CreateRound: React.FC<{}> = () => {
                       <textarea rows={5} onChange={event => saveFormDesc(event.target.value)} name={'description'} className={classes.input} >
                       </textarea>
                   </div>
-                  <div className={classes.labelMargin}>
-                      <div className={classes.desc}>
-                          When does the round proposing period start? (exact date and time in UTC)*
+                      <div className={classes.flexDiv}>
+
+
+                      <div className={classes.dateMain}>
+                          <div className={classes.labelMargin}>
+                              <div className={classes.desc}>
+                                  When does the round proposing period start? (exact date and time in UTC)*
+                              </div>
+
+                              {/*<input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>*/}
+
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                  <DemoContainer components={['DateTimePicker']}>
+                                      <DateTimePicker onChange={(newValue) => saveFormStart(newValue)} className={classes.input} />
+                                  </DemoContainer>
+                              </LocalizationProvider>
+
+                          </div>
+                          <div className={classes.labelMargin}>
+                              <div className={classes.desc}>
+                                  When does the round voting period start? (exact date and time in UTC)*
+                              </div>
+
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                  <DemoContainer components={['DateTimePicker']}>
+                                      <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
+                                  </DemoContainer>
+                              </LocalizationProvider>
+                          </div>
+                          <div className={classes.labelMargin}>
+                              <div className={classes.desc}>
+                                  When does the round voting period end? (exact date and time in UTC)*
+                              </div>
+
+                              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                  <DemoContainer components={['DateTimePicker']}>
+                                      <DateTimePicker onChange={(newValue) => saveFormVote(newValue)} className={classes.input} />
+                                  </DemoContainer>
+                              </LocalizationProvider>
+                          </div>
                       </div>
+                    <div className={classes.paddingTop}>
+                        <div className={classes.xian+' '+classes.xian1}>
 
-                      {/*<input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>*/}
+                        </div>
+                        <div className={classes.flexDiv}>
+                            <div className={classes.qiu}>
 
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker onChange={(newValue) => saveFormStart(newValue)} className={classes.input} />
-                          </DemoContainer>
-                      </LocalizationProvider>
+                            </div>
+                            <div className={classes.qiuDesc}>
+                                Start time for proposal submissions
+                            </div>
+                        </div>
 
-                  </div>
-                  <div className={classes.labelMargin}>
-                      <div className={classes.desc}>
-                          When does the round voting period start? (exact date and time in UTC)*
+                        <div className={classes.xian+' '+classes.xian2}>
+
+                        </div>
+                        <div className={classes.flexDiv}>
+                            <div className={classes.qiu}>
+
+                            </div>
+                            <div className={classes.qiuDesc}>
+                                Voting Start Time
+                            </div>
+                        </div>
+                        <div className={classes.xian+' '+classes.xian3}>
+
+                        </div>
+                        <div className={classes.flexDiv}>
+                            <div className={classes.qiu}>
+
+                            </div>
+                            <div className={classes.qiuDesc}>
+                                Voting End Time
+                            </div>
+                        </div>
+                        <div className={classes.xian+' '+classes.xian4}>
+
+                        </div>
+                    </div>
                       </div>
-
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
-                          </DemoContainer>
-                      </LocalizationProvider>
-                  </div>
-                  <div className={classes.labelMargin}>
-                      <div className={classes.desc}>
-                          When does the round voting period end? (exact date and time in UTC)*
-                      </div>
-
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoContainer components={['DateTimePicker']}>
-                              <DateTimePicker onChange={(newValue) => saveFormVote(newValue)} className={classes.input} />
-                          </DemoContainer>
-                      </LocalizationProvider>
-                  </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>
                           How many winners are there?*

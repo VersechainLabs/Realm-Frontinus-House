@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { InfiniteAuction } from 'src/infinite-auction/infinite-auction.entity';
-import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
 import { Repository } from 'typeorm';
-import { InfiniteAuctionProposal } from './infauction-proposal.entity';
 import { Proposal } from './proposal.entity';
 import { GetProposalsDto } from './proposal.types';
 
@@ -11,8 +8,7 @@ import { GetProposalsDto } from './proposal.types';
 export class ProposalsService {
   constructor(
     @InjectRepository(Proposal)
-    private proposalsRepository: Repository<Proposal | InfiniteAuctionProposal>,
-    private infiniteAuctionService: InfiniteAuctionService,
+    private proposalsRepository: Repository<Proposal>,
   ) {}
 
   findAll(dto: GetProposalsDto) {
@@ -42,11 +38,6 @@ export class ProposalsService {
       where: { visible: true },
     });
 
-    if (proposal.parentType === 'infinite-auction') {
-      proposal.auction = await this.infiniteAuctionService.findOne(
-        proposal.auctionId,
-      );
-    }
     proposal.auctionId = proposal.auction.id;
     return proposal;
   }
@@ -72,7 +63,7 @@ export class ProposalsService {
     this.proposalsRepository.save(foundProposal);
   }
 
-  async store(proposal: Proposal | InfiniteAuctionProposal) {
+  async store(proposal: Proposal) {
     return await this.proposalsRepository.save(proposal);
   }
 

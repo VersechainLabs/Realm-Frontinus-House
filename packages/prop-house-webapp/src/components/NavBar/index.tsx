@@ -48,17 +48,17 @@ const NavBar = () => {
 
               <Nav.Link as="div" className={classes.connectBtnContainer}>
                 <Button
-                  text="Delegate Selection"
+                  text="Create a Delegation Round"
                   bgColor={ButtonColor.Purple}
-                  onClick={() => navigate('/create-round')}
+                  onClick={() => navigate('/create-delegate-form')}
                   classNames={classes.createRoundBtn}
                 />
               </Nav.Link>
               <Nav.Link as="div" className={classes.connectBtnContainer}>
                 <Button
-                    text="Create a Round"
+                    text="Create a Proposal Round"
                     bgColor={ButtonColor.Purple}
-                    onClick={() => navigate('/create-round')}
+                    onClick={() => navigate('/create-round-form')}
                     classNames={classes.createRoundBtn}
                 />
               </Nav.Link>

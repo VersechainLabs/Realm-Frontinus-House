@@ -10,10 +10,11 @@ export enum AuctionStatus {
 }
 
 export enum DelegateVoteStatus {
-  AuctionNotStarted,
-  AuctionNominating,
-  AuctionVoting,
-  AuctionEnded,
+  DelegateNotStarted,
+  DelegateAccepting,
+  DelegateDelegating,
+  DelegateGranted,
+  DelegateEnd
 }
 
 /**
@@ -73,7 +74,9 @@ export const deadlineTime = (auction: any) =>
 
 
 export const delegateStatus = (auction: any): DelegateVoteStatus => {
+
   const _now = dayjs();
+
   const _auctionStartTime = dayjs(auction.startTime);
   const _auctionEndTime = dayjs(auction.endTime);
 
@@ -84,15 +87,17 @@ export const delegateStatus = (auction: any): DelegateVoteStatus => {
 
   switch (true) {
     case _now.isBefore(_auctionStartTime):
-      return DelegateVoteStatus.AuctionNotStarted;
+      return DelegateVoteStatus.DelegateNotStarted;
     case _now.isAfter(_auctionStartTime) && _now.isBefore(_proposalEndTime):
-      return DelegateVoteStatus.AuctionNominating;
+      return DelegateVoteStatus.DelegateAccepting;
     case _now.isAfter(_proposalEndTime) && _now.isBefore(_votingEndTime):
-      return DelegateVoteStatus.AuctionVoting;
+      return DelegateVoteStatus.DelegateDelegating;
+    case _now.isAfter(_votingEndTime) && _now.isBefore(_auctionEndTime):
+      return DelegateVoteStatus.DelegateGranted;
     case _now.isAfter(_auctionEndTime):
-      return DelegateVoteStatus.AuctionEnded;
+      return DelegateVoteStatus.DelegateEnd;
     default:
-      return DelegateVoteStatus.AuctionEnded;
+      return DelegateVoteStatus.DelegateEnd;
   }
 };
 
@@ -102,20 +107,22 @@ export const delegateStatus = (auction: any): DelegateVoteStatus => {
  */
 export const delegateDeadlineCopy = (auction: any) => {
   const status = delegateStatus(auction);
-  return status === DelegateVoteStatus.AuctionNotStarted
-      ? 'Round starts'
-      : status === DelegateVoteStatus.AuctionNominating
-          ? 'Prop deadline'
-          : status === DelegateVoteStatus.AuctionVoting
-              ? 'Voting ends'
-              : status === DelegateVoteStatus.AuctionEnded
-                  ? 'Round ended'
-                  : '';
+  return status === DelegateVoteStatus.DelegateNotStarted
+      ? 'Delegation starts'
+      : status === DelegateVoteStatus.DelegateAccepting
+          ? 'Last date to accept applicant'
+              : status === DelegateVoteStatus.DelegateDelegating
+                  ? 'Dealdline to select a delegate'
+                : status === DelegateVoteStatus.DelegateGranted
+                    ? 'Delegation ended'
+                    : status === DelegateVoteStatus.DelegateEnd
+                        ? 'Delegation ended'
+                        : '';
 };
 
 export const delegateDeadlineTime = (auction: any) =>
-    delegateStatus(auction) === DelegateVoteStatus.AuctionNotStarted
+    delegateStatus(auction) === DelegateVoteStatus.DelegateNotStarted
         ? auction.startTime
-        : delegateStatus(auction) === DelegateVoteStatus.AuctionNominating
+        : delegateStatus(auction) === DelegateVoteStatus.DelegateDelegating
         ? auction.proposalEndTime
         : auction.votingEndTime;
