@@ -9,6 +9,7 @@ import { EIP1271SignatureValidationTaskService } from './tasks';
 import { VotesService } from 'src/vote/votes.service';
 import { Vote } from 'src/vote/vote.entity';
 import { Community } from 'src/community/community.entity';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { Community } from 'src/community/community.entity';
     VotesService,
     AuctionsService,
     EIP1271SignatureValidationTaskService,
+    BlockchainService,
   ],
 })
 export class TasksModule {}
