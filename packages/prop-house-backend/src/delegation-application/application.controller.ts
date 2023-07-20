@@ -1,25 +1,10 @@
-import {
-    Body,
-    Controller,
-    Get,
-    HttpException,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
-    Post,
-    Query,
-  } from '@nestjs/common';
-  import { ParseDate } from 'src/utils/date';
-  import { Delegation } from 'src/delegation/delegation.entity';
-  import { Application } from './application.entity';
-  import { CreateApplicationDto, GetApplicationDto, LatestDto } from './application.types';
-  import { DelegationService} from 'src/delegation/delegation.service';
-  import { ApplicationService} from './application.service';
-  import { ProposalsService } from 'src/proposal/proposals.service';
-  import { Proposal } from 'src/proposal/proposal.entity';
-  import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
-  
-  @Controller('applications')
+import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
+import { Application } from './application.entity';
+import { CreateApplicationDto, GetApplicationDto } from './application.types';
+import { DelegationService } from 'src/delegation/delegation.service';
+import { ApplicationService } from './application.service';
+
+@Controller('applications')
   export class ApplicationController {
     [x: string]: any;
     constructor(

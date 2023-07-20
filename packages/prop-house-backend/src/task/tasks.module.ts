@@ -8,18 +8,15 @@ import { ProposalsService } from 'src/proposal/proposals.service';
 import { EIP1271SignatureValidationTaskService } from './tasks';
 import { VotesService } from 'src/vote/votes.service';
 import { Vote } from 'src/vote/vote.entity';
-import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
-import { InfiniteAuction } from 'src/infinite-auction/infinite-auction.entity';
 import { Community } from 'src/community/community.entity';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Proposal, Vote, Auction, InfiniteAuction, Community]),
+    TypeOrmModule.forFeature([Proposal, Vote, Auction, Community]),
   ],
   providers: [
     ProposalsService,
-    InfiniteAuctionService,
     VotesService,
     AuctionsService,
     EIP1271SignatureValidationTaskService,

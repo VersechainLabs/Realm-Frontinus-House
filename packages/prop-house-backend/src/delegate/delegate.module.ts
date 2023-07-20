@@ -2,8 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Community } from 'src/community/community.entity';
 import { CommunitiesService } from 'src/community/community.service';
-import { InfiniteAuction } from 'src/infinite-auction/infinite-auction.entity';
-import { InfiniteAuctionService } from 'src/infinite-auction/infinite-auction.service';
 import { Proposal } from 'src/proposal/proposal.entity';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { Delegate } from './delegate.entity';
@@ -18,7 +16,7 @@ import { Admin } from 'src/admin/admin.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Delegate, Delegation, Proposal, Community, InfiniteAuction, Auction, Admin]),
+    TypeOrmModule.forFeature([Delegate, Delegation, Proposal, Community, Auction, Admin]),
   ],
   controllers: [DelegateController],
   providers: [
@@ -27,7 +25,6 @@ import { Admin } from 'src/admin/admin.entity';
     ProposalsService,
     AdminService,
     CommunitiesService,
-    InfiniteAuctionService,
   ],
   exports: [TypeOrmModule],
 })

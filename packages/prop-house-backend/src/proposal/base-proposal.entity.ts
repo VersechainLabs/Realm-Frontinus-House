@@ -86,6 +86,7 @@ export abstract class BaseProposal extends SignedEntity {
   })
   reqAmount: number;
 
+  // @Deprecated. Previously used to distinguish whether it was an infinite auction, the infinite auction has now been removed, so this value would always be "auction".
   @Column({ default: 'auction' as ProposalParent })
   @Field(() => String)
   parentType: ProposalParent;
