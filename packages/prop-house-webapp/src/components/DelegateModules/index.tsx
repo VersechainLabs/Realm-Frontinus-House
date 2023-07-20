@@ -41,11 +41,11 @@ const DelegateModules: React.FC<{
   const [userProposals, setUserProposals] = useState<StoredProposalWithVotes[]>();
 
   // auction statuses
-  const auctionNotStarted = delegateStatus(auction) === DelegateVoteStatus.AuctionNotStarted;
-  const isProposingWindow = delegateStatus(auction) === DelegateVoteStatus.AuctionNominating;
-  const isVotingWindow = delegateStatus(auction) === DelegateVoteStatus.AuctionVoting;
+  const auctionNotStarted = delegateStatus(auction) === DelegateVoteStatus.DelegateNotStarted;
+  const isProposingWindow = delegateStatus(auction) === DelegateVoteStatus.DelegateAccepting;
+  const isVotingWindow = delegateStatus(auction) === DelegateVoteStatus.DelegateDelegating;
   const isRoundOver =
-    delegateStatus(auction) === DelegateVoteStatus.AuctionEnded ||
+    delegateStatus(auction) === DelegateVoteStatus.DelegateEnd ||
     (isInfAuction(auction) && infRoundBalance(proposals, auction) === 0);
 
   const getVoteTotal = () => proposals.reduce((total, prop) => (total = total + prop.voteCount), 0);
