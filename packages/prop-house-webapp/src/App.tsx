@@ -123,12 +123,11 @@ function App() {
           >
             <Suspense fallback={<LoadingIndicator />}>
               <div className={clsx(bgColorForPage(location.pathname), 'wrapper')}>
-                {/*{!noNavPath && <NavBar />}*/}
-                { <NavBar />}
+                {!noNavPath && <NavBar />}
 
                 <Routes>
                   <Route path="/rounds" element={<StatusRoundCards />} />
-                  <Route path="/" element={<House />} />
+                  <Route path="/" element={<Home />} />
                   <Route
                     path="/create"
                     element={
