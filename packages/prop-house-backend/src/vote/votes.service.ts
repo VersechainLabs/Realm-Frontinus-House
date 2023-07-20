@@ -111,10 +111,7 @@ export class VotesService {
     );
   }
 
-  async createNewVote(
-    createVoteDto: CreateVoteDto,
-    proposal: Proposal ,
-  ) {
+  async createNewVote(createVoteDto: CreateVoteDto, proposal: Proposal) {
     // Create vote for proposal
     const vote = new Vote({
       address: createVoteDto.address,

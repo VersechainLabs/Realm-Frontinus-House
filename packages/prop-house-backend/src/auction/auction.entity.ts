@@ -2,14 +2,14 @@ import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Community } from 'src/community/community.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
   ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
   RelationId,
 } from 'typeorm';
 import { AuctionBase } from './auction-base.type';
@@ -84,14 +84,6 @@ export class Auction implements AuctionBase {
   @Field(() => Community)
   community: Community;
 
-  // Chao
-  // @RelationId((auction: Auction) => auction.community)
-  // @ManyToOne(() => Community, (community) => community.auctions)
-  // @Column({ default: 1 })
-  // @Field(() => Int)
-  // communityId: number;
-  // End
-  
   @Column()
   @Field(() => Date)
   createdDate: Date;

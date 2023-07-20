@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { Auction } from './auction.entity';
 import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
 import { Community } from 'src/community/community.entity';
-// import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
 export type AuctionWithProposalCount = Auction & { numProposals: number };
 
@@ -13,7 +13,9 @@ export type AuctionWithProposalCount = Auction & { numProposals: number };
 export class AuctionsService {
   constructor(
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
-    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
+    private readonly blockchainService: BlockchainService,
   ) {}
 
   findAll(): Promise<Auction[]> {
@@ -40,6 +42,7 @@ export class AuctionsService {
         .getRawMany()
     );
   }
+
   findAllActive(dto: GetAuctionsDto): Promise<Auction[]> {
     return this.auctionsRepository
       .createQueryBuilder('a')
@@ -168,12 +171,10 @@ export class AuctionsService {
   }
 
   // Chao
-  async createAuctionByCommunity(
-    // communityId: number, 
-    createAcutionDetails: CreateAuctionDto
-  ) {
-    // console.log("createAcutionDetails.communityId:" + createAcutionDetails.communityId);
-    const community = await this.communitiesRepository.findOne(createAcutionDetails.communityId);
+  async createAuctionByCommunity(createAuctionDetails: CreateAuctionDto) {
+    const community = await this.communitiesRepository.findOne(
+      createAuctionDetails.communityId,
+    );
 
     if (!community) {
       throw new HttpException(
@@ -182,9 +183,12 @@ export class AuctionsService {
       );
     }
 
-    const newAuction = this.auctionsRepository.create({...createAcutionDetails, community});
-    const savedAuction = await this.auctionsRepository.save(newAuction);
-    
-    return savedAuction;
+    const newAuction = this.auctionsRepository.create({
+      ...createAuctionDetails,
+      community,
+    });
+    newAuction.balanceBlockTag =
+      await this.blockchainService.getCurrentBlockNum();
+    return await this.auctionsRepository.save(newAuction);
   }
 }
