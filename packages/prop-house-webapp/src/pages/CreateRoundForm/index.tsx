@@ -120,7 +120,7 @@ const CreateRound: React.FC<{}> = () => {
                       Round creation
                   </div>
                   <div className={classes.desc}>
-                      Use this form to create a new round. Please visit our Discord if you have any questions: https://discord.com/invite/SKPzM8GHts.
+                      Use this form to create a new round. Please visit our Discord if you have any questions: https://discord.gg/uQnjZhZPfu.
                   </div>
                   <div className={classes.labelMargin}>
                       <div className={classes.desc}>

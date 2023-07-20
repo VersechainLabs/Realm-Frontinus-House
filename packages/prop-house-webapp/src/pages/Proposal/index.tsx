@@ -33,6 +33,8 @@ const Proposal = () => {
   const round = useAppSelector(state => state.propHouse.activeRound);
   const backendHost = useAppSelector(state => state.configuration.backendHost);
   const backendClient = useRef(new PropHouseWrapper(backendHost, signer));
+  const [loading,setLoading] = useState(false);
+
 
   const handleBackClick = () => {
     if (!community || !round) return;
