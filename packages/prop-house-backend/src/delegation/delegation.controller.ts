@@ -31,7 +31,10 @@ import {
     @Get('/:id/state')
     async getState(@Param('id') id: number): Promise<DelegationState> {
 
-      return this.delegationService.getState(id); 
+      let testDate: Date = new Date("2023-01-30 00:00:04.000000");  
+
+      // testDate is Optional:
+      return this.delegationService.getState(id, testDate); 
     }
 
 
