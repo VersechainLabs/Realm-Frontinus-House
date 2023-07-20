@@ -223,54 +223,32 @@ const DelegateEditor: React.FC<{
 
   return (
     <>
-      <div className={classes.nominateText}>Nominate yourself to become a delegate</div>
+      <div className={classes.nominateText}>Creating your proposal for</div>
       <ProposalInputs
-        quill={quill}
-        Quill={Quill}
-        quillRef={quillRef}
         onDataChange={onDataChange}
-        onFileDrop={onFileDrop}
         formData={formData}
-        descriptionData={descriptionData}
         fundReqData={fundReqData}
-        editorBlurred={editorBlurred}
-        setEditorBlurred={setEditorBlurred}
       />
 
-      {showImageUploadModal && (
-        <ImageUploadModal
-          files={files}
-          setFiles={setFiles}
-          onFileDrop={onFileDrop}
-          quill={quill}
-          Quill={Quill}
-          invalidFileError={invalidFileError}
-          setInvalidFileError={setInvalidFileError}
-          invalidFileMessage={invalidFileMessage}
-          setInvalidFileMessage={setInvalidFileMessage}
-          duplicateFile={duplicateFile}
-          setDuplicateFile={setDuplicateFile}
-          setShowImageUploadModal={setShowImageUploadModal}
-        />
-      )}
-      <div className={classes.buttonContainer}>
-        <button
-          type="button"
-          className={`${classes.submitButton} customButton`}
-          // style={{ backgroundColor: buttonColor }}
-          // onClick={onButtonClick}
-        >
-          {'Submit'}
-        </button>
-        <button
-          type="button"
-          className={`${classes.additionalButton} customButton`}
-          // style={{ backgroundColor: additionalButtonColor }}
-          // onClick={additionalButtonOnClick}
-        >
-          {'Preview'}
-        </button>
-      </div>
+
+      {/*<div className={classes.buttonContainer}>*/}
+      {/*  <button*/}
+      {/*    type="button"*/}
+      {/*    className={`${classes.submitButton} customButton`}*/}
+      {/*    // style={{ backgroundColor: buttonColor }}*/}
+      {/*    // onClick={onButtonClick}*/}
+      {/*  >*/}
+      {/*    {'Submit'}*/}
+      {/*  </button>*/}
+      {/*  <button*/}
+      {/*    type="button"*/}
+      {/*    className={`${classes.additionalButton} customButton`}*/}
+      {/*    // style={{ backgroundColor: additionalButtonColor }}*/}
+      {/*    // onClick={additionalButtonOnClick}*/}
+      {/*  >*/}
+      {/*    {'Preview'}*/}
+      {/*  </button>*/}
+      {/*</div>*/}
     </>
   );
 };

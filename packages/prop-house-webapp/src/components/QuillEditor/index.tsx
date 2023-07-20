@@ -109,7 +109,7 @@ export default function QuillEditor(props: QuillEditorProps) {
             <div id="toolbar">
 
               <select className="ql-size">
-                <option selected></option>
+                <option ></option>
                 <option value="large"></option>
                 <option value="huge"></option>
               </select>
