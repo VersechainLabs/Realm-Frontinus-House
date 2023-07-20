@@ -3,9 +3,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
 import { Delegation } from './delegation.entity';
-import { CreateDelegationDto, GetDelegationDto, LatestDto } from './delegation.types';
+import { CreateDelegationDto, DelegationState, GetDelegationDto, LatestDto } from './delegation.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
+
 // import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
 
 export type AuctionWithProposalCount = Delegation & { numProposals: number };
@@ -44,6 +45,37 @@ export class DelegationService {
   
   async store(proposal: Delegation): Promise<Delegation> {
     return await this.delegationRepository.save(proposal, { reload: true });
+  }
+
+
+  async remove(id: number): Promise<void> {
+    await this.auctionsRepository.delete(id);
+  }
+  
+  async getState(id: number, currentTime?: Date): Promise<DelegationState> {
+    const delegation = this.delegationRepository.findOne(id, {
+      where: { visible: true },
+    });
+
+    if (currentTime === undefined) {
+      currentTime = new Date;
+    }
+
+    if (currentTime < (await delegation).startTime) {
+      return DelegationState.NOT_START;
+    } 
+    else if (currentTime < (await delegation).proposalEndTime) {
+      return DelegationState.APPLYING;
+    }
+    else if (currentTime < (await delegation).votingEndTime) {
+      return DelegationState.DELEGATING;
+    }
+    else if (currentTime < (await delegation).endTime) {
+      return DelegationState.ACTIVE;
+    }
+    else {
+      return DelegationState.EXPIRED;
+    }
   }
 
   // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
@@ -178,9 +210,6 @@ export class DelegationService {
   //   });
   // }
 
-  // async remove(id: number): Promise<void> {
-  //   await this.auctionsRepository.delete(id);
-  // }
 
   // // Chao
   // async createAuctionByCommunity(

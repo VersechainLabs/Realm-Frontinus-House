@@ -46,6 +46,15 @@ export enum Order {
   DESC = 'DESC',
 }
 
+
+export enum DelegationState {
+  NOT_START = 'not start',
+  APPLYING = 'applying',
+  DELEGATING = 'delegating',
+  ACTIVE = 'delegation active',
+  EXPIRED = 'delegation expired',
+}
+
 export class GetDelegationDto {
   @IsOptional()
   @IsInt()
