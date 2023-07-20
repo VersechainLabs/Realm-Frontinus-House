@@ -34,7 +34,7 @@ export class DelegationService {
 
   findOne(id: number): Promise<Delegation> {
     return this.delegationRepository.findOne(id, {
-      // relations: ['proposals'],
+      relations: ['applications'],
       // loadRelationIds: {
       //   relations: ['community'],
       // },
