@@ -14,6 +14,7 @@ type QuillEditorProps = {
   onChange: (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => void;
   title: string | undefined;
   loading: boolean;
+  minHeightStr:string
 
   // 用于在上层操作 quill 的内容，通常是提交之后将 quill 的内容清空时使用
   onQuillInit?: (quill: Quill) => void;
@@ -105,7 +106,7 @@ export default function QuillEditor(props: QuillEditorProps) {
           {/*  <Form.Label className={classes.iwnputChars}>{quill && quill.getText().length - 1}</Form.Label>*/}
           {/*</div>*/}
           <>
-            <div ref={quillRef} />
+            <div  style={{minHeight:(props.minHeightStr)}} ref={quillRef} />
             <div id="toolbar">
 
               <select className="ql-size">

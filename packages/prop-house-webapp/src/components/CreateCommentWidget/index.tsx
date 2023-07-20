@@ -62,6 +62,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       onChange={handleChange}
       title='Create Comment'
       loading={loading}
+      minHeightStr={'0'}
       onQuillInit={(q) => setQuill(q)}
       btnText='Submit'
       onButtonClick={submit}
