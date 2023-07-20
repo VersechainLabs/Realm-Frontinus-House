@@ -9,19 +9,18 @@ import { Auction } from 'src/auction/auction.entity';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { AdminService } from './admin.service';
 import { AdminsController } from './admin.controller';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Admin, Proposal, Auction, Community]),
-  ],
+  imports: [TypeOrmModule.forFeature([Admin, Proposal, Auction, Community])],
   controllers: [AdminsController],
   providers: [
     AdminService,
     AuctionsService,
     ProposalsService,
     CommunitiesService,
+    BlockchainService,
   ],
   exports: [TypeOrmModule],
 })
-export class AdminModule {
-}
+export class AdminModule {}
