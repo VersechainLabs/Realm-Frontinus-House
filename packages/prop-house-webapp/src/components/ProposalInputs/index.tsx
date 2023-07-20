@@ -1,7 +1,8 @@
 import classes from './ProposalInputs.module.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
-import { useAppSelector } from '../../hooks';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import { useLocation } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import '../../quill.css';
 import clsx from 'clsx';
@@ -16,6 +17,11 @@ import buildIpfsPath from '../../utils/buildIpfsPath';
 import LoadingIndicator from '../LoadingIndicator';
 import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
 import {DeltaStatic, Quill} from "quill";
+import {InfiniteAuctionProposal, Proposal} from "@nouns/prop-house-wrapper/dist/builders";
+import {isInfAuction} from "../../utils/auctionType";
+import {appendProposal} from "../../state/slices/propHouse";
+import {clearProposal} from "../../state/slices/editor";
+import ProposalSuccessModal from "../ProposalSuccessModal";
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
@@ -28,17 +34,8 @@ const ProposalInputs: React.FC<{
     onDataChange,
   } = props;
 
-  // const { data: signer } = useSigner();
-  //
-  // const host = useAppSelector(state => state.configuration.backendHost);
-  // const client = useRef(new PropHouseWrapper(host));
-
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
-
-  // useEffect(() => {
-  //   client.current = new PropHouseWrapper(host, signer);
-  // }, [signer, host]);
 
   const titleAndTldrInputs = (data: any, isTitleSection: boolean = false) => (
     <InputFormGroup
@@ -76,14 +73,15 @@ const ProposalInputs: React.FC<{
 
 
 
-
-
-
-
+    const location = useLocation();
+    const activeAuction = location.state.auction;
+  const activeCommunity = location.state.community;
+  const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
+  const [propId, setPropId] = useState<null | number>(null);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
-
+  const dispatch = useAppDispatch();
   const { address: account } = useAccount();
   const { data: signer } = useSigner();
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -97,74 +95,35 @@ const ProposalInputs: React.FC<{
     if (plainText.trim().length === 0) {
       setContent('');
     } else {
-      setContent(JSON.stringify(deltaContent.ops));
+      setContent(htmlContent);
     }
   };
 
   const submit = async () => {
 
-    console.log(content);
+    console.log(content,formData);
     if (content.length === 0 || !account) {
       return;
     }
 
     setLoading(true);
 
-    // const commentCreateResponse = await client.current.createComment('1', content, account!);
-    // if (commentCreateResponse) {
-    //   // props.onCommentCreated(commentCreateResponse);
-    //   if (quill) {
-    //     quill.setContents(EMPTY_DELTA);
-    //   }
-    // }
+    let newProp: Proposal | InfiniteAuctionProposal;
+
+    newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
+    const proposal = await client.current.createProposal(newProp);
+
+    setPropId(proposal.id);
+    dispatch(appendProposal({ proposal }));
+    dispatch(clearProposal());
+    setShowProposalSuccessModal(true);
 
     setLoading(false);
   };
 
 
 
-  // const [loading, setLoading] = useState<boolean>(false);
-  //
-  // const uploadImageToServer = async (file: File) => {
-  //   // upload the image to the server
-  //   const res = await client.current.postFile(file, file.name);
-  //
-  //   // insert the image into the editor
-  //   quill.setSelection(quill.getLength(), 0);
-  //   quill.insertEmbed(
-  //     quill.getSelection()!.index,
-  //     'image',
-  //     buildIpfsPath(res.data.ipfsHash),
-  //     Quill.sources.USER,
-  //   );
-  //
-  //   // insert a newline after the image
-  //   quill.insertText(quill.getSelection()!.index + 1, '\n\n', Quill.sources.USER);
-  // };
-  //
-  // // handle images being pasted into the editor by uploading them to the server and inserting the new image url into the editor
-  // const onPaste = async (event: React.ClipboardEvent<HTMLDivElement>) => {
-  //   // if the user pastes text, don't do anything
-  //   if (!event.clipboardData.files.length) return;
-  //
-  //   // get the files that were pasted
-  //   const pastedFiles = Array.from(event.clipboardData.files);
-  //
-  //   // prevents the original, encoded image from being pasted
-  //   event.preventDefault();
-  //
-  //   setLoading(true);
-  //
-  //   const imagePromises = pastedFiles
-  //     // filter out non-image files
-  //     .filter(file => file.type.startsWith('image'))
-  //     // upload the image to the server
-  //     .map(uploadImageToServer);
-  //
-  //   await Promise.all(imagePromises);
-  //
-  //   setLoading(false);
-  // };
+
 
   return (
     <>
@@ -209,42 +168,6 @@ const ProposalInputs: React.FC<{
             {titleAndTldrInputs(formData[1])}
 
             {/** DESCRIPTION */}
-
-
-
-            {/*<InputFormGroup*/}
-            {/*  titleLabel={descriptionData.title}*/}
-            {/*  content={*/}
-            {/*    <>*/}
-            {/*      /!* */}
-            {/*        When scrolling past the window height the sticky Card header activates, but the header has rounded borders so you still see the borders coming up from the Card body. `hideBorderBox` is a sticky, empty div with a fixed height that hides these borders. */}
-            {/*      *!/*/}
-            {/*      <div className="hideBorderBox"></div>*/}
-            {/*      <div*/}
-            {/*        ref={quillRef}*/}
-            {/*        onDrop={onFileDrop}*/}
-            {/*        onPaste={onPaste}*/}
-            {/*        placeholder={descriptionData.placeholder}*/}
-            {/*        onBlur={() => {*/}
-            {/*          setEditorBlurred(true);*/}
-            {/*        }}*/}
-            {/*      />*/}
-            {/*      {loading && (*/}
-            {/*        <div className={classes.loadingOverlay}>*/}
-            {/*          <LoadingIndicator />*/}
-            {/*        </div>*/}
-            {/*      )}*/}
-
-            {/*      {editorBlurred &&*/}
-            {/*        quill &&*/}
-            {/*        !inputHasImage(descriptionData.fieldValue) &&*/}
-            {/*        validateInput(descriptionData.minCount, quill.getText().length - 1) && (*/}
-            {/*          <p className={classes.inputError}>{descriptionData.error}</p>*/}
-            {/*        )}*/}
-            {/*    </>*/}
-            {/*  }*/}
-            {/*  charsLabel={quill && quill.getText().length - 1}*/}
-            {/*/>*/}
           </Form>
           <QuillEditor
               widgetKey={'Comment-proposalId'}
@@ -258,6 +181,14 @@ const ProposalInputs: React.FC<{
           />
         </Col>
       </Row>
+      {showProposalSuccessModal && propId && (
+          <ProposalSuccessModal
+              setShowProposalSuccessModal={setShowProposalSuccessModal}
+              proposalId={propId}
+              house={activeCommunity}
+              round={activeAuction}
+          />
+      )}
     </>
   );
 };
