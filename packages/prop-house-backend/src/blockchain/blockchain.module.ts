@@ -6,5 +6,4 @@ import { BlockchainService } from './blockchain.service';
   imports: [ConfigModule.forRoot()],
   providers: [BlockchainService],
 })
-export class BlockchainModule {
-}
+export class BlockchainModule {}
