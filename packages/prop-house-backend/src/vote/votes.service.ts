@@ -7,17 +7,21 @@ import {
   Repository,
 } from 'typeorm';
 import { Vote } from './vote.entity';
-import { CreateVoteDto, GetVoteDto } from './vote.types';
+import { CreateVoteDto, DelegatedVoteDto, GetVoteDto } from './vote.types';
 import { Proposal } from 'src/proposal/proposal.entity';
 import { ethers } from 'ethers';
 import config from 'src/config/configuration';
 import { getVotingPower } from 'prop-house-communities';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
 @Injectable()
 export class VotesService {
+  private readonly communityAddress = config().communityAddress;
+
   constructor(
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
+    private readonly blockchainService: BlockchainService,
   ) {}
 
   async findAll(opts?: FindManyOptions<Vote>): Promise<Vote[]> {
@@ -64,13 +68,9 @@ export class VotesService {
     return this.votesRepository.findOne(id);
   }
 
-  findBy(
-    blockHeight: number,
-    proposalId: number,
-    address: string,
-  ): Promise<Vote> {
+  findBy(auctionId: number, address: string): Promise<Vote> {
     return this.votesRepository.findOne({
-      where: { address, blockHeight, proposalId },
+      where: { address, auctionId },
     });
   }
 
@@ -80,6 +80,10 @@ export class VotesService {
 
   async store(vote: DeepPartial<Vote>) {
     return this.votesRepository.save(vote);
+  }
+
+  async storeMany(voteList: DeepPartial<Vote>[]) {
+    return this.votesRepository.save(voteList);
   }
 
   async findByAddress(address: string, conditions?: FindConditions<Vote>) {
@@ -99,15 +103,13 @@ export class VotesService {
   }
 
   async getVotingPower(
-    dto: Pick<CreateVoteDto, 'address' | 'communityAddress'>,
-    balanceblockTag: number,
+    address: string,
+    balanceBlockTag: number,
   ): Promise<number> {
-    const provider = new ethers.providers.JsonRpcProvider(config().JSONRPC);
-    return await getVotingPower(
-      dto.address,
-      dto.communityAddress,
-      provider,
-      balanceblockTag,
+    return this.blockchainService.getVotingPower(
+      address,
+      this.communityAddress,
+      balanceBlockTag,
     );
   }
 
@@ -131,5 +133,27 @@ export class VotesService {
     await this.store(vote);
 
     return vote;
+  }
+
+  async createNewVoteList(voteDtoList: DelegatedVoteDto[], proposal: Proposal) {
+    const voteList = [];
+    for (const createVoteDto of voteDtoList) {
+      voteList.push(
+        new Vote({
+          address: createVoteDto.address,
+          direction: createVoteDto.direction,
+          signedData: createVoteDto.signedData,
+          signatureState: createVoteDto.signatureState,
+          proposalId: createVoteDto.proposalId,
+          auctionId: proposal.auctionId,
+          weight: createVoteDto.votingPower,
+          blockHeight: createVoteDto.blockHeight,
+          domainSeparator: createVoteDto.domainSeparator,
+          messageTypes: createVoteDto.messageTypes,
+          delegateId: createVoteDto.delegateId,
+          proposal,
+        }),
+      );
+    }
   }
 }

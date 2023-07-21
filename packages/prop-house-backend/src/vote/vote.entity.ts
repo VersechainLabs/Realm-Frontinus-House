@@ -3,13 +3,14 @@ import { SignedEntity } from 'src/entities/signed';
 import { BaseProposal } from 'src/proposal/base-proposal.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
-  Entity,
+  BeforeInsert,
   Column,
-  PrimaryGeneratedColumn,
+  Entity,
   JoinColumn,
   ManyToOne,
-  BeforeInsert,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Delegate } from '../delegate/delegate.entity';
 
 @Entity()
 @ObjectType()
@@ -45,6 +46,15 @@ export class Vote extends SignedEntity {
   @Column({ default: null })
   @Field(() => Int)
   blockHeight: number;
+
+  // If this vote is cast due to a delegate relationship, then the delegate relationship will be recorded in this value.
+  @Column({ default: null })
+  @Field(() => Int)
+  delegateId?: number;
+
+  @ManyToOne(() => Delegate, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'delegateId' })
+  delegate: Delegate | null;
 
   @BeforeInsert()
   setCreatedDate() {

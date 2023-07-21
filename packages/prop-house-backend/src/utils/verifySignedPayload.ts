@@ -5,8 +5,9 @@ import { CreateVoteDto } from 'src/vote/vote.types';
 /**
  * Verifies that signed vote matches CreateVoteDto
  * @returns decoded vote jsonb from signed payload
+ * deprecated in Frontinus house because we only support vote for one proposal.
  */
-export const verifySignedPayload = (
+export const verifySignedPayloadForMultipleVotes = (
   createVoteDto: CreateVoteDto,
   proposal: Proposal,
 ) => {
@@ -36,4 +37,15 @@ export const verifySignedPayload = (
     );
 
   return voteFromPayload;
+};
+
+export const verifySignPayloadForVote = (
+  createVoteDto: CreateVoteDto,
+  proposal: Proposal,
+) => {
+  return createVoteDto;
+  // TODO: validate signature
+  // const signedPayload = JSON.parse(
+  //   Buffer.from(createVoteDto.signedData.message, 'base64').toString(),
+  // );
 };
