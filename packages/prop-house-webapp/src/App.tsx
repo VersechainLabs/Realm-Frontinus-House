@@ -123,11 +123,12 @@ function App() {
           >
             <Suspense fallback={<LoadingIndicator />}>
               <div className={clsx(bgColorForPage(location.pathname), 'wrapper')}>
-                {!noNavPath && <NavBar />}
+                {/*{!noNavPath && <NavBar />}*/}
+                {<NavBar />}
 
                 <Routes>
                   <Route path="/rounds" element={<StatusRoundCards />} />
-                  <Route path="/" element={<Home />} />
+                  <Route path="/" element={<House />} />
                   <Route
                     path="/create"
                     element={
@@ -142,9 +143,9 @@ function App() {
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
-                  <Route path="/:house" element={<House />} />
-                  <Route path="/:house/:title" element={<Round />} />
-                  <Route path="/:house/:title/:id" element={<Proposal />} />
+                  {/*<Route path="/:house" element={<House />} />*/}
+                  <Route path="/:title" element={<Round />} />
+                  <Route path="/:title/:id" element={<Proposal />} />
                   <Route path="/comment/:proposalId" element={<CommentsPage />} />
 
                   <Route path="*" element={<NotFound />} />
