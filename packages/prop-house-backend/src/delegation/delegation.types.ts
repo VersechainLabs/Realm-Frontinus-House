@@ -36,16 +36,15 @@ export class CreateDelegationDto {
   @IsString()
   description: string;
 
-//   @IsNumber()
-//   @IsPositive()
-//   communityId: number;
+  //   @IsNumber()
+  //   @IsPositive()
+  //   communityId: number;
 }
 
 export enum Order {
   ASC = 'ASC',
   DESC = 'DESC',
 }
-
 
 export enum DelegationState {
   NOT_START = 'not start',

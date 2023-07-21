@@ -49,7 +49,7 @@ export class Delegation {
     description: 'After the Start Time users may submit proposals',
   })
   startTime: Date;
-  
+
   @Column()
   @Field(() => Date, {
     description: 'Users may submit proposals up until Proposal End Time',
@@ -88,9 +88,8 @@ export class Delegation {
     this.lastUpdatedDate = new Date();
   }
 
-
-//   public isAcceptingProposals = (): boolean =>
-//     new Date() > this.startTime && new Date() <= this.proposalEndTime;
+  //   public isAcceptingProposals = (): boolean =>
+  //     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
 
 // @InputType()

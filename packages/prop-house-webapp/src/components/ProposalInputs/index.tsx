@@ -1,8 +1,9 @@
 import classes from './ProposalInputs.module.css';
+import './ProposalInputs.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
 import {useAppDispatch, useAppSelector} from '../../hooks';
-import { useLocation } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import '../../quill.css';
 import clsx from 'clsx';
@@ -10,18 +11,15 @@ import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../DelegateEditor';
-import inputHasImage from '../../utils/inputHasImage';
 import {useAccount, useSigner} from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
-import buildIpfsPath from '../../utils/buildIpfsPath';
-import LoadingIndicator from '../LoadingIndicator';
 import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
 import {DeltaStatic, Quill} from "quill";
 import {InfiniteAuctionProposal, Proposal} from "@nouns/prop-house-wrapper/dist/builders";
-import {isInfAuction} from "../../utils/auctionType";
 import {appendProposal} from "../../state/slices/propHouse";
 import {clearProposal} from "../../state/slices/editor";
 import ProposalSuccessModal from "../ProposalSuccessModal";
+import {buildRoundPath} from "../../utils/buildRoundPath";
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
@@ -72,7 +70,7 @@ const ProposalInputs: React.FC<{
   );
 
 
-
+  const navigate = useNavigate();
     const location = useLocation();
     const activeAuction = location.state.auction;
   const activeCommunity = location.state.community;
@@ -116,13 +114,10 @@ const ProposalInputs: React.FC<{
     setPropId(proposal.id);
     dispatch(appendProposal({ proposal }));
     dispatch(clearProposal());
-    setShowProposalSuccessModal(true);
-
+    // setShowProposalSuccessModal(true);
+    navigate(buildRoundPath(activeCommunity, activeAuction), { replace: false });
     setLoading(false);
   };
-
-
-
 
 
   return (
@@ -169,26 +164,32 @@ const ProposalInputs: React.FC<{
 
             {/** DESCRIPTION */}
           </Form>
-          <QuillEditor
-              widgetKey={'Comment-proposalId'}
-              minHeightStr={'400px'}
-              onChange={handleChange}
-              title='Create Comment'
-              loading={loading}
-              onQuillInit={(q) => setQuill(q)}
-              btnText='Submit'
-              onButtonClick={submit}
-          />
+          <div className={"propEditor"}>
+            <div className={classes.description}>
+              Description
+            </div>
+            <QuillEditor
+                widgetKey={'Comment-proposalId'}
+                minHeightStr={'400px'}
+                onChange={handleChange}
+                title='Create Comment'
+                loading={loading}
+                onQuillInit={(q) => setQuill(q)}
+                btnText='Submit'
+                onButtonClick={submit}
+            />
+          </div>
+
         </Col>
       </Row>
-      {showProposalSuccessModal && propId && (
-          <ProposalSuccessModal
-              setShowProposalSuccessModal={setShowProposalSuccessModal}
-              proposalId={propId}
-              house={activeCommunity}
-              round={activeAuction}
-          />
-      )}
+      {/*{showProposalSuccessModal && propId && (*/}
+      {/*    <ProposalSuccessModal*/}
+      {/*        setShowProposalSuccessModal={setShowProposalSuccessModal}*/}
+      {/*        proposalId={propId}*/}
+      {/*        house={activeCommunity}*/}
+      {/*        round={activeAuction}*/}
+      {/*    />*/}
+      {/*)}*/}
     </>
   );
 };

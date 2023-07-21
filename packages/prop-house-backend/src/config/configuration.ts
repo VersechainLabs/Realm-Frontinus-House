@@ -32,8 +32,8 @@ const config = (): Config => ({
   JSONRPC: `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_PROJECT_ID}`,
   Web3RpcUrl: process.env.WEB3_RPC_URL,
   file: {
-    basePath: process.env.FILE_BASE_PATH ?? '/data'
-  }
+    basePath: process.env.FILE_BASE_PATH ?? '/data',
+  },
 });
 
 export const subgraphApiUri =

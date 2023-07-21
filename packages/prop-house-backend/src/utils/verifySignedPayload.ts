@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import { CreateVoteDto } from 'src/vote/vote.types';
 
@@ -9,7 +8,7 @@ import { CreateVoteDto } from 'src/vote/vote.types';
  */
 export const verifySignedPayload = (
   createVoteDto: CreateVoteDto,
-  proposal: Proposal | InfiniteAuctionProposal,
+  proposal: Proposal,
 ) => {
   // Get corresponding vote from signed payload (bulk voting payloads may have multiple votes)
   const signedPayload = JSON.parse(

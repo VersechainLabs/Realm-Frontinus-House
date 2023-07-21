@@ -3,7 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
 import { Delegation } from './delegation.entity';
-import { CreateDelegationDto, DelegationState, GetDelegationDto, LatestDto } from './delegation.types';
+import {
+  CreateDelegationDto,
+  DelegationState,
+  GetDelegationDto,
+  LatestDto,
+} from './delegation.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 
@@ -14,8 +19,10 @@ export type AuctionWithProposalCount = Delegation & { numProposals: number };
 @Injectable()
 export class DelegationService {
   constructor(
-    @InjectRepository(Delegation) private delegationRepository: Repository<Delegation>,
-    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    @InjectRepository(Delegation)
+    private delegationRepository: Repository<Delegation>,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
@@ -28,8 +35,8 @@ export class DelegationService {
         visible: true,
       },
       order: {
-        id: "DESC"
-      }
+        id: 'DESC',
+      },
     });
   }
 
@@ -42,38 +49,33 @@ export class DelegationService {
       where: { visible: true },
     });
   }
-  
+
   async store(proposal: Delegation): Promise<Delegation> {
     return await this.delegationRepository.save(proposal, { reload: true });
   }
 
-
   async remove(id: number): Promise<void> {
     await this.delegationRepository.delete(id);
   }
-  
+
   async getState(id: number, currentTime?: Date): Promise<DelegationState> {
     const delegation = this.delegationRepository.findOne(id, {
       where: { visible: true },
     });
 
     if (currentTime === undefined) {
-      currentTime = new Date;
+      currentTime = new Date();
     }
 
     if (currentTime < (await delegation).startTime) {
       return DelegationState.NOT_START;
-    } 
-    else if (currentTime < (await delegation).proposalEndTime) {
+    } else if (currentTime < (await delegation).proposalEndTime) {
       return DelegationState.APPLYING;
-    }
-    else if (currentTime < (await delegation).votingEndTime) {
+    } else if (currentTime < (await delegation).votingEndTime) {
       return DelegationState.DELEGATING;
-    }
-    else if (currentTime < (await delegation).endTime) {
+    } else if (currentTime < (await delegation).endTime) {
       return DelegationState.ACTIVE;
-    }
-    else {
+    } else {
       return DelegationState.EXPIRED;
     }
   }
@@ -210,10 +212,9 @@ export class DelegationService {
   //   });
   // }
 
-
   // // Chao
   // async createAuctionByCommunity(
-  //   // communityId: number, 
+  //   // communityId: number,
   //   createAcutionDetails: CreateAuctionDto
   // ) {
   //   // console.log("createAcutionDetails.communityId:" + createAcutionDetails.communityId);
@@ -228,7 +229,7 @@ export class DelegationService {
 
   //   const newAuction = this.auctionsRepository.create({...createAcutionDetails, community});
   //   const savedAuction = await this.auctionsRepository.save(newAuction);
-    
+
   //   return savedAuction;
   // }
 }

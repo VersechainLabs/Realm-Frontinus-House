@@ -5,17 +5,14 @@ import {
   HttpException,
   HttpStatus,
   Param,
-  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
-import { ParseDate } from 'src/utils/date';
 import { Auction } from './auction.entity';
 import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
 import { AuctionsService, AuctionWithProposalCount } from './auctions.service';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { Proposal } from 'src/proposal/proposal.entity';
-import { InfiniteAuctionProposal } from 'src/proposal/infauction-proposal.entity';
 
 @Controller('auctions')
 export class AuctionsController {
@@ -27,9 +24,8 @@ export class AuctionsController {
 
   @Get()
   getVotes(): Promise<Auction[]> {
-    return this.auctionsService.findAll(); 
+    return this.auctionsService.findAll();
   }
-
 
   // @Post()
   // async create(@Body() createAuctionDto: CreateAuctionDto): Promise<Auction> {
@@ -50,12 +46,11 @@ export class AuctionsController {
   // Chao
   @Post('/create')
   async createForCommunity(
-    // @Param('communityId', ParseIntPipe) communityId: number,
-    @Body() createAuctionDto: CreateAuctionDto): Promise<Auction> 
-  {
-    const newAuction = await this.auctionsService.createAuctionByCommunity(createAuctionDto);
-
-    return newAuction;
+    @Body() createAuctionDto: CreateAuctionDto,
+  ): Promise<Auction> {
+    return await this.auctionsService.createAuctionByCommunity(
+      createAuctionDto,
+    );
   }
 
   @Get(':id')
@@ -92,20 +87,15 @@ export class AuctionsController {
   }
 
   @Get(':id/proposals')
-  async find(
-    @Param('id') id: number,
-  ): Promise<(Proposal | InfiniteAuctionProposal)[]> {
+  async find(@Param('id') id: number): Promise<Proposal[]> {
     const foundProposals = await this.proposalService.findAllWithAuctionId(id);
     if (!foundProposals)
       throw new HttpException('Proposals not found', HttpStatus.NOT_FOUND);
     return foundProposals;
   }
-  l;
 
   @Get(':id/rollUpProposals')
-  async findAll(
-    @Param('id') id: number,
-  ): Promise<(Proposal | InfiniteAuctionProposal)[]> {
+  async findAll(@Param('id') id: number): Promise<Proposal[]> {
     const foundProposals = await this.proposalService.findAllWithAuctionId(id);
     if (!foundProposals)
       throw new HttpException('Proposals not found', HttpStatus.NOT_FOUND);

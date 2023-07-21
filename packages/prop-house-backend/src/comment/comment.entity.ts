@@ -40,7 +40,7 @@ export class Comment {
   proposal: Proposal;
 
   @Column({})
-//   @RelationId((comment: Comment) => comment.proposal)
+  //   @RelationId((comment: Comment) => comment.proposal)
   proposalId: number;
 
   @Column()
@@ -61,8 +61,8 @@ export class Comment {
     this.lastUpdatedDate = new Date();
   }
 
-//   public isAcceptingProposals = (): boolean =>
-//     new Date() > this.startTime && new Date() <= this.proposalEndTime;
+  //   public isAcceptingProposals = (): boolean =>
+  //     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
 
 // @InputType()

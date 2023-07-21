@@ -58,9 +58,8 @@ export class Delegate {
     this.lastUpdatedDate = new Date();
   }
 
-
-//   public isAcceptingProposals = (): boolean =>
-//     new Date() > this.startTime && new Date() <= this.proposalEndTime;
+  //   public isAcceptingProposals = (): boolean =>
+  //     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
 
 // @InputType()

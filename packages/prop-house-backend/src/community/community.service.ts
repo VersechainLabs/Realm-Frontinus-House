@@ -12,7 +12,8 @@ import { Auction } from 'src/auction/auction.entity';
 @Injectable()
 export class CommunitiesService {
   constructor(
-    @InjectRepository(Community) private communitiesRepository: Repository<Community>,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
