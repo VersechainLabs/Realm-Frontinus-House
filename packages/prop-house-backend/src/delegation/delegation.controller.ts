@@ -30,7 +30,7 @@ import {
     @Get('/:id/state')
     async getState(@Param('id') id: number): Promise<DelegationState> {
 
-      let testDate: Date = new Date("2023-01-30 00:00:04.000000");  
+      let testDate: Date = new Date("2023-08-15 00:00:04.000000");  
 
       // testDate is Optional:
       return this.delegationService.getState(id, testDate); 
@@ -43,24 +43,34 @@ import {
     }
 
     @Post('/create')
-    async create(@Body() createDelegationDto: CreateDelegationDto): Promise<Delegation> {
-
-      // if (await this.adminService.isAdmin(createDelegationDto.address) !== true) {
-      //   throw new HttpException(
-      //     'Need admin access!',
-      //     HttpStatus.BAD_REQUEST,
-      //   );
+    async create(@Body() dto: CreateDelegationDto): Promise<Delegation> {
+      // Open this feature later:
+      // if (await this.adminService.isAdmin(dto.address) !== true) {
+        // throw new HttpException(
+        //   'Need admin access!',
+        //   HttpStatus.BAD_REQUEST,
+        // );
       // }
 
+      const startTime =  dto.startTime ? ParseDate(dto.startTime) : new Date();
+
+      if (startTime >= dto.proposalEndTime 
+        || dto.proposalEndTime >= dto.votingEndTime 
+        || dto.votingEndTime >= dto.endTime) {
+          throw new HttpException(
+            'Time order incorrect!',
+            HttpStatus.BAD_REQUEST,
+          );        
+      }
+
+
       const delegation = new Delegation();
-      delegation.title = createDelegationDto.title;
-      delegation.description = createDelegationDto.description;
-      delegation.startTime = createDelegationDto.startTime
-        ? ParseDate(createDelegationDto.startTime)
-        : new Date();
-      delegation.proposalEndTime = ParseDate(createDelegationDto.proposalEndTime);
-      delegation.votingEndTime = ParseDate(createDelegationDto.votingEndTime);
-      delegation.endTime = ParseDate(createDelegationDto.endTime);
+      delegation.title = dto.title;
+      delegation.description = dto.description;
+      delegation.startTime = startTime;
+      delegation.proposalEndTime = ParseDate(dto.proposalEndTime);
+      delegation.votingEndTime = ParseDate(dto.votingEndTime);
+      delegation.endTime = ParseDate(dto.endTime);
       return this.delegationService.store(delegation);
     }
 
