@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Admin } from './admin.entity';
 import { AdminService } from './admin.service';
 import { ProposalsService } from 'src/proposal/proposals.service';
@@ -21,4 +21,10 @@ export class AdminsController {
   async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
     return await this.adminService.createAdmin(createAdminDto);
   }
+
+  @Post('/:id/delete')
+  async delete(@Param('id') id: number): Promise<boolean> {
+    await this.adminService.remove(id);
+    return true;
+  }  
 }
