@@ -1,4 +1,4 @@
-import { PipeTransform, Injectable } from '@nestjs/common';
+import { PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { SignedEntity } from './signed';
 import { providers } from 'ethers';
 import config from 'src/config/configuration';
@@ -13,7 +13,12 @@ export class SignedPayloadValidationPipe implements PipeTransform {
    * Verifies a signed data payload has a valid EOA or EIP-1271 signature for `value.address`
    */
   async transform(value: SignedEntity) {
-    const message = Buffer.from(value.signedData.message, 'base64').toString();
+    let message;
+    try {
+      message = Buffer.from(value.signedData.message, 'base64').toString();
+    } catch (e) {
+      throw new BadRequestException('Failed to valid signature');
+    }
 
     const { isValidAccountSig, accountSigError } = verifyAccountSignature(
       message,

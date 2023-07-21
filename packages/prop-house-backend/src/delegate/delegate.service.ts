@@ -1,10 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
 import { Delegate } from './delegate.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
-import { CreateDelegateDto, GetDelegateDto, LatestDto } from './delegate.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 // import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
@@ -41,6 +39,24 @@ export class DelegateService {
       //   relations: ['community'],
       // },
       //   where: { visible: true },
+    });
+  }
+
+  findByFromAddress(
+    delegationId: number,
+    fromAddress: string,
+  ): Promise<Delegate> {
+    return this.delegateRepository.findOne({
+      where: { delegationId, fromAddress },
+    });
+  }
+
+  getDelegateListByAddress(
+    delegationId: number,
+    toAddress: string,
+  ): Promise<Delegate[]> {
+    return this.delegateRepository.find({
+      where: { delegationId, toAddress },
     });
   }
 
