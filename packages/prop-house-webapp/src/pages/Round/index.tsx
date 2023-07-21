@@ -34,8 +34,14 @@ import { infRoundBalance } from '../../utils/infRoundBalance';
 
 const Round = () => {
   const location = useLocation();
-  const communityName = location.pathname.substring(1).split('/')[0];
-  const roundName = location.pathname.substring(1).split('/')[1];
+
+  // const communityName = location.pathname.substring(1).split('/')[0];
+
+  const communityName = 'frontinus';
+
+  const roundName = location.pathname.substring(1).split('/')[0];
+
+  console.log(roundName);
 
   const dispatch = useAppDispatch();
   const { data: signer } = useSigner();
@@ -114,7 +120,6 @@ const Round = () => {
     const fetchAuctionProposals = async () => {
       try {
         setLoadingProps(true);
-
         const proposals = await client.current.getAuctionProposals(round.id);
         dispatch(setActiveProposals(proposals));
 

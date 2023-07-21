@@ -11,11 +11,11 @@ const NotFound = () => {
       />
       <div className={classes.textContainer}>
         <h1>Invalid URL</h1>
-        <p>
-          Please check that the url follows the format:
-          <br />
-          <code>proposal/:proposal_id</code>
-        </p>
+        {/*<p>*/}
+        {/*  Please check that the url follows the format:*/}
+        {/*  <br />*/}
+        {/*  <code>proposal/:proposal_id</code>*/}
+        {/*</p>*/}
       </div>
     </div>
   );

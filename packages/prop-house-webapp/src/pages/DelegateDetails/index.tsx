@@ -35,7 +35,11 @@ import DelegateUtilityBar from "../../components/DelegateUtilityBar";
 
 const DelegateDetails = () => {
   const location = useLocation();
-  const communityName = location.pathname.substring(1).split('/')[0];
+  // const communityName = location.pathname.substring(1).split('/')[0];
+
+  const communityName = 'frontinus';
+
+
   const id = location.pathname.substring(1).split('/')[1];
 
   const dispatch = useAppDispatch();

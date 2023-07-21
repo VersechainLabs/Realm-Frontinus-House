@@ -51,7 +51,8 @@ const RoundHeader: React.FC<{
         <div
           className={classes.backToAuction}
           onClick={() => {
-            community && navigate(`/${nameToSlug(community.name)}`);
+            // community && navigate(`/${nameToSlug(community.name)}`);
+            community && navigate(`/`);
           }}
         >
           {community && (
