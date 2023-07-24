@@ -16,10 +16,6 @@ import { VotesService } from './votes.service';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { SignatureState } from 'src/types/signature';
 import { BlockchainService } from '../blockchain/blockchain.service';
-import { DelegationService } from '../delegation/delegation.service';
-import { DelegateService } from '../delegate/delegate.service';
-import { Delegate } from '../delegate/delegate.entity';
-import { DelegationState } from '../delegation/delegation.types';
 
 @Controller('votes')
 export class VotesController {
@@ -28,8 +24,6 @@ export class VotesController {
     private readonly proposalService: ProposalsService,
     private readonly auctionService: AuctionsService,
     private readonly blockchainService: BlockchainService,
-    private readonly delegationService: DelegationService,
-    private readonly delegateService: DelegateService,
   ) {}
 
   @Get()
@@ -46,24 +40,40 @@ export class VotesController {
   async getVotingPower(
     @Query('address') address: string,
     @Query('proposalId') proposalId: number,
+    @Query('delegate') delegate: boolean,
   ) {
     const foundProposal = await this.proposalService.findOne(proposalId);
     const foundProposalAuction = await this.auctionService.findOneWithCommunity(
       foundProposal.auctionId,
     );
 
-    return this.blockchainService.getVotingPower(
+    let votingPower = await this.blockchainService.getVotingPower(
       address,
       foundProposalAuction.community.contractAddress,
       foundProposalAuction.balanceBlockTag,
     );
-    // Sample:
-    // return getVotingPower(
-    //   address,
-    //   '0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d',
-    //   this.provider,
-    //   17665090,
-    // );
+
+    if (delegate) {
+      const delegateList = await this.votesService.getDelegateListByAuction(
+        address,
+        foundProposalAuction,
+      );
+
+      const _blockchainService = this.blockchainService;
+      votingPower = await delegateList.reduce(
+        async (prevVotingPower, currentDelegate) => {
+          const currentVotingPower = await _blockchainService.getVotingPower(
+            currentDelegate.fromAddress,
+            foundProposalAuction.community.contractAddress,
+            foundProposalAuction.balanceBlockTag,
+          );
+          return (await prevVotingPower) + currentVotingPower;
+        },
+        Promise.resolve(votingPower),
+      );
+    }
+
+    return votingPower;
   }
 
   @Get(':id')
@@ -131,41 +141,47 @@ export class VotesController {
       foundAuction.id,
       createVoteDto.address,
     );
-    if (sameAuctionVote)
+    if (sameAuctionVote) {
       throw new HttpException(
         `Vote for prop ${foundProposal.id} failed because user has already been voted in this auction`,
         HttpStatus.FORBIDDEN,
       );
+    }
 
-    // Check if user has delegated to other user.
-    const currentDelegationList = await this.delegationService.findByState(
-      DelegationState.ACTIVE,
+    // // Check if user has delegated to other user.
+    // const currentDelegationList = await this.delegationService.findByState(
+    //   DelegationState.ACTIVE,
+    // );
+    // const currentDelegation =
+    //   currentDelegationList.length > 0 ? currentDelegationList[0] : null;
+    // if (currentDelegation) {
+    //   const fromDelegate = await this.delegateService.findByFromAddress(
+    //     currentDelegation.id,
+    //     createVoteDto.address,
+    //   );
+    //   if (fromDelegate) {
+    //     throw new HttpException(
+    //       `Vote for prop ${foundProposal.id} failed because user has already been delegated for other user`,
+    //       HttpStatus.FORBIDDEN,
+    //     );
+    //   }
+    // }
+    //
+    // // Get delegate list for calculate voting power
+    // const delegateList: Delegate[] = [];
+    // if (currentDelegation) {
+    //   delegateList.push(
+    //     ...(await this.delegateService.getDelegateListByAddress(
+    //       currentDelegation.id,
+    //       createVoteDto.address,
+    //     )),
+    //   );
+    // }
+
+    const delegateList = await this.votesService.getDelegateListByAuction(
+      createVoteDto.address,
+      foundAuction,
     );
-    const currentDelegation =
-      currentDelegationList.length > 0 ? currentDelegationList[0] : null;
-    if (currentDelegation) {
-      const fromDelegate = await this.delegateService.findByFromAddress(
-        currentDelegation.id,
-        createVoteDto.address,
-      );
-      if (fromDelegate) {
-        throw new HttpException(
-          `Vote for prop ${foundProposal.id} failed because user has already been delegated for other user`,
-          HttpStatus.FORBIDDEN,
-        );
-      }
-    }
-
-    // Get delegate list for calculate voting power
-    const delegateList: Delegate[] = [];
-    if (currentDelegation) {
-      delegateList.push(
-        ...(await this.delegateService.getDelegateListByAddress(
-          currentDelegation.id,
-          createVoteDto.address,
-        )),
-      );
-    }
 
     const voteList: DelegatedVoteDto[] = [];
     voteList.push({

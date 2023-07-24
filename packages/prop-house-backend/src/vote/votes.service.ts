@@ -9,10 +9,14 @@ import {
 import { Vote } from './vote.entity';
 import { CreateVoteDto, DelegatedVoteDto, GetVoteDto } from './vote.types';
 import { Proposal } from 'src/proposal/proposal.entity';
-import { ethers } from 'ethers';
 import config from 'src/config/configuration';
-import { getVotingPower } from 'prop-house-communities';
 import { BlockchainService } from '../blockchain/blockchain.service';
+import { Auction } from '../auction/auction.entity';
+import { DelegationState } from '../delegation/delegation.types';
+import { DelegationService } from '../delegation/delegation.service';
+import { DelegateService } from '../delegate/delegate.service';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 
 @Injectable()
 export class VotesService {
@@ -22,6 +26,8 @@ export class VotesService {
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
     private readonly blockchainService: BlockchainService,
+    private readonly delegationService: DelegationService,
+    private readonly delegateService: DelegateService,
   ) {}
 
   async findAll(opts?: FindManyOptions<Vote>): Promise<Vote[]> {
@@ -155,5 +161,35 @@ export class VotesService {
         }),
       );
     }
+  }
+
+  async getDelegateListByAuction(address: string, auction: Auction) {
+    // Check if user has delegated to other user.
+    const currentDelegationList = await this.delegationService.findByState(
+      DelegationState.ACTIVE,
+      auction.createdDate,
+    );
+    const currentDelegation =
+      currentDelegationList.length > 0 ? currentDelegationList[0] : null;
+    if (!currentDelegation) {
+      return [];
+    }
+
+    const fromDelegate = await this.delegateService.findByFromAddress(
+      currentDelegation.id,
+      address,
+    );
+    if (fromDelegate) {
+      throw new HttpException(
+        `user has already been delegated for other user`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    // Get delegate list for calculate voting power
+    return await this.delegateService.getDelegateListByAddress(
+      currentDelegation.id,
+      address,
+    );
   }
 }

@@ -10,11 +10,22 @@ import { VotesService } from 'src/vote/votes.service';
 import { Vote } from 'src/vote/vote.entity';
 import { Community } from 'src/community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
+import { DelegationService } from '../delegation/delegation.service';
+import { DelegateService } from '../delegate/delegate.service';
+import { Delegate } from '../delegate/delegate.entity';
+import { Delegation } from '../delegation/delegation.entity';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Proposal, Vote, Auction, Community]),
+    TypeOrmModule.forFeature([
+      Proposal,
+      Vote,
+      Auction,
+      Community,
+      Delegate,
+      Delegation,
+    ]),
   ],
   providers: [
     ProposalsService,
@@ -22,6 +33,8 @@ import { BlockchainService } from '../blockchain/blockchain.service';
     AuctionsService,
     EIP1271SignatureValidationTaskService,
     BlockchainService,
+    DelegationService,
+    DelegateService,
   ],
 })
 export class TasksModule {}
