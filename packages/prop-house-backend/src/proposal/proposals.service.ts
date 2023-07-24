@@ -3,6 +3,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proposal } from './proposal.entity';
 import { GetProposalsDto } from './proposal.types';
+import { BlockchainService } from '../blockchain/blockchain.service';
+import { VotesService } from '../vote/votes.service';
+import { convertVoteListToDelegateVoteList } from '../vote/vote.entity';
 
 @Injectable()
 export class ProposalsService {
@@ -12,24 +15,44 @@ export class ProposalsService {
   ) {}
 
   findAll(dto: GetProposalsDto) {
-    return this.proposalsRepository.find({
-      skip: dto.skip,
-      take: dto.limit,
-      order: {
-        createdDate: dto.order,
-      },
-      loadRelationIds: {
-        relations: ['votes'],
-      },
-      where: { visible: true },
-    });
+    return this.proposalsRepository
+      .find({
+        skip: dto.skip,
+        take: dto.limit,
+        order: {
+          createdDate: dto.order,
+        },
+        loadRelationIds: {
+          relations: ['votes'],
+        },
+        where: { visible: true },
+      })
+      .then((proposalList) => {
+        return proposalList.map(
+          (proposal) =>
+            ({
+              ...proposal,
+              votes: convertVoteListToDelegateVoteList(proposal.votes),
+            } as Proposal),
+        );
+      });
   }
 
   findAllWithAuctionId(auctionId: number) {
-    return this.proposalsRepository.find({
-      relations: ['votes'],
-      where: { visible: true, auctionId: auctionId },
-    });
+    return this.proposalsRepository
+      .find({
+        relations: ['votes'],
+        where: { visible: true, auctionId: auctionId },
+      })
+      .then((proposalList) => {
+        return proposalList.map(
+          (proposal) =>
+            ({
+              ...proposal,
+              votes: convertVoteListToDelegateVoteList(proposal.votes),
+            } as Proposal),
+        );
+      });
   }
 
   async findOne(id: number) {
@@ -39,6 +62,7 @@ export class ProposalsService {
     });
 
     proposal.auctionId = proposal.auction.id;
+    proposal.votes = convertVoteListToDelegateVoteList(proposal.votes);
     return proposal;
   }
 

@@ -5,26 +5,27 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
-  IsString,
   Min,
 } from 'class-validator';
 import { SignedEntity } from 'src/entities/signed';
+import { Delegate } from '../delegate/delegate.entity';
 
 export class CreateVoteDto extends SignedEntity {
   @IsNumber()
+  @IsOptional()
   direction: number;
 
   @IsNumber()
   proposalId: number;
+}
 
-  @IsNumber()
+export class DelegatedVoteDto extends CreateVoteDto {
   weight: number;
-
-  @IsNumber()
+  actualWeight: number;
+  delegateId: number;
+  delegateAddress: string;
+  delegate: Delegate;
   blockHeight: number;
-
-  @IsString()
-  communityAddress: string;
 }
 
 export enum Order {

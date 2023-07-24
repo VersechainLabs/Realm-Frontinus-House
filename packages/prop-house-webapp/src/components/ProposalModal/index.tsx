@@ -167,13 +167,7 @@ const ProposalModal = () => {
             new Vote(
               1,
               a.proposalId,
-              a.votes,
-              community!.contractAddress,
-              SignatureState.PENDING_VALIDATION,
-              blockHeight,
-            ),
-        )
-        .filter(v => v.weight > 0);
+        ));
       const isContract = await _signerIsContract();
 
       await backendClient.current.logVotes(votes, isContract);

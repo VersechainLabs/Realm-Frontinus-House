@@ -46,6 +46,7 @@ export abstract class BaseProposal extends SignedEntity {
   @Field(() => [Vote])
   votes: Vote[];
 
+  // Ignore in database. this value is calculate by votes
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   voteCount: number;

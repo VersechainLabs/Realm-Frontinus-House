@@ -9,11 +9,10 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProposalsService } from 'src/proposal/proposals.service';
-import { verifySignedPayload } from 'src/utils/verifySignedPayload';
-import { Vote } from './vote.entity';
-import { CreateVoteDto, GetVoteDto } from './vote.types';
+import { verifySignPayloadForVote } from 'src/utils/verifySignedPayload';
+import { convertVoteListToDelegateVoteList, Vote } from './vote.entity';
+import { CreateVoteDto, DelegatedVoteDto, GetVoteDto } from './vote.types';
 import { VotesService } from './votes.service';
-import { SignedPayloadValidationPipe } from 'src/entities/signed.pipe';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { SignatureState } from 'src/types/signature';
 import { BlockchainService } from '../blockchain/blockchain.service';
@@ -41,24 +40,40 @@ export class VotesController {
   async getVotingPower(
     @Query('address') address: string,
     @Query('proposalId') proposalId: number,
+    @Query('delegate') delegate: boolean,
   ) {
     const foundProposal = await this.proposalService.findOne(proposalId);
     const foundProposalAuction = await this.auctionService.findOneWithCommunity(
       foundProposal.auctionId,
     );
 
-    return this.blockchainService.getVotingPower(
+    let votingPower = await this.blockchainService.getVotingPower(
       address,
       foundProposalAuction.community.contractAddress,
       foundProposalAuction.balanceBlockTag,
     );
-    // Sample:
-    // return getVotingPower(
-    //   address,
-    //   '0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d',
-    //   this.provider,
-    //   17665090,
-    // );
+
+    if (delegate) {
+      const delegateList = await this.votesService.getDelegateListByAuction(
+        address,
+        foundProposalAuction,
+      );
+
+      const _blockchainService = this.blockchainService;
+      votingPower = await delegateList.reduce(
+        async (prevVotingPower, currentDelegate) => {
+          const currentVotingPower = await _blockchainService.getVotingPower(
+            currentDelegate.fromAddress,
+            foundProposalAuction.community.contractAddress,
+            foundProposalAuction.balanceBlockTag,
+          );
+          return (await prevVotingPower) + currentVotingPower;
+        },
+        Promise.resolve(votingPower),
+      );
+    }
+
+    return votingPower;
   }
 
   @Get(':id')
@@ -101,93 +116,98 @@ export class VotesController {
    */
   @Post()
   async create(
-    @Body(SignedPayloadValidationPipe) createVoteDto: CreateVoteDto,
+    // @Body(SignedPayloadValidationPipe)
+    @Body()
+    createVoteDto: CreateVoteDto,
   ) {
     const foundProposal = await this.proposalService.findOne(
       createVoteDto.proposalId,
     );
-
     // Verify that proposal exist
     if (!foundProposal) {
       throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
     }
 
-    // Verify signed payload against dto
-    const voteFromPayload = verifySignedPayload(createVoteDto, foundProposal);
+    const foundAuction = foundProposal.auction;
 
-    // Protect against casting same vote twice
-    const sameBlockVote = await this.votesService.findBy(
-      voteFromPayload.blockHeight,
-      createVoteDto.proposalId,
+    // Verify signed payload against dto
+    const voteFromPayload = verifySignPayloadForVote(
+      createVoteDto,
+      foundProposal,
+    );
+
+    // Check if user has voted for this round, Protect against casting same vote twice
+    const sameAuctionVote = await this.votesService.findBy(
+      foundAuction.id,
       createVoteDto.address,
     );
-    if (sameBlockVote)
+    if (sameAuctionVote) {
       throw new HttpException(
-        `Vote for prop ${foundProposal.id} has already been casted for block number ${voteFromPayload.blockHeight}`,
+        `Vote for prop ${foundProposal.id} failed because user has already been voted in this auction`,
         HttpStatus.FORBIDDEN,
       );
+    }
 
-    // Verify that prop being voted on matches community address of signed vote
-    const foundProposalAuction = await this.auctionService.findOneWithCommunity(
-      foundProposal.auctionId,
+    const delegateList = await this.votesService.getDelegateListByAuction(
+      createVoteDto.address,
+      foundAuction,
     );
-    if (
-      voteFromPayload.communityAddress !==
-      foundProposalAuction.community.contractAddress
-    )
-      throw new HttpException(
-        'Proposal being voted on does not match community contract address of vote',
-        HttpStatus.BAD_REQUEST,
+
+    const voteList: DelegatedVoteDto[] = [];
+    voteList.push({
+      ...createVoteDto,
+      delegateId: null,
+      delegate: null,
+      blockHeight: foundAuction.balanceBlockTag,
+      weight: await this.votesService.getVotingPower(
+        createVoteDto.address,
+        foundAuction.balanceBlockTag,
+      ),
+    } as DelegatedVoteDto);
+    for (const delegate of delegateList) {
+      const vp = await this.votesService.getVotingPower(
+        delegate.fromAddress,
+        foundAuction.balanceBlockTag,
       );
+      if (vp === 0) {
+        // vp is 0, don't record it.
+        continue;
+      }
+      voteList.push({
+        ...createVoteDto,
+        address: delegate.fromAddress,
+        delegateId: delegate.id,
+        delegateAddress: delegate.toAddress,
+        delegate: delegate,
+        blockHeight: foundAuction.balanceBlockTag,
+        weight: vp,
+        actualWeight: 0, // actual weight is 0 because they are delegated by other.
+      } as DelegatedVoteDto);
+    }
 
     // Verify that signer has voting power
-    const votingPower = await this.votesService.getVotingPower(
-      createVoteDto,
-      foundProposalAuction.balanceBlockTag,
-    );
+    const votingPower = voteList.reduce((acc, vote) => acc + vote.weight, 0);
 
     if (votingPower === 0) {
       throw new HttpException(
         'Signer does not have voting power',
         HttpStatus.BAD_REQUEST,
       );
+    } else {
+      voteList[0].actualWeight = votingPower;
     }
 
-    // Get votes by user for auction
-    const validatedSignerVotes = await this.votesService.findByAddress(
-      createVoteDto.address,
-      {
-        signatureState: SignatureState.VALIDATED,
-      },
+    const voteResultList = await this.votesService.createNewVoteList(
+      voteList,
+      foundProposal,
     );
 
-    const signerVotesForAuction = validatedSignerVotes
-      .filter((vote) => vote.proposal.auctionId === foundProposal.auctionId)
-      .sort((a, b) => (a.createdDate < b.createdDate ? -1 : 1));
-
-    const signerVotesForProp = validatedSignerVotes
-      .filter((vote) => vote.proposalId === foundProposal.id)
-      .sort((a, b) => (a.createdDate < b.createdDate ? -1 : 1));
-
-    const aggVoteWeightSubmitted = (
-      foundProposal.parentType === 'auction'
-        ? signerVotesForAuction
-        : signerVotesForProp
-    ).reduce((agg, current) => Number(agg) + Number(current.weight), 0);
-
-    // Check that user won't exceed voting power by casting vote
-    if (aggVoteWeightSubmitted + voteFromPayload.weight > votingPower) {
-      throw new HttpException(
-        'Signer does not have enough voting power to cast vote',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    await this.votesService.createNewVote(createVoteDto, foundProposal);
-
     // Only increase proposal vote count if the signature has been validated
+    // TODO: don't know what is it
     if (createVoteDto.signatureState === SignatureState.VALIDATED) {
       await this.proposalService.rollupVoteCount(foundProposal.id);
     }
+
+    return convertVoteListToDelegateVoteList(voteResultList);
   }
 }
