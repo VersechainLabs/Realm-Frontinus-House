@@ -5,7 +5,6 @@ import { Auction } from 'src/auction/auction.entity';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { Proposal } from 'src/proposal/proposal.entity';
 import { ProposalsService } from 'src/proposal/proposals.service';
-import { EIP1271SignatureValidationTaskService } from './tasks';
 import { VotesService } from 'src/vote/votes.service';
 import { Vote } from 'src/vote/vote.entity';
 import { Community } from 'src/community/community.entity';
@@ -31,7 +30,6 @@ import { Delegation } from '../delegation/delegation.entity';
     ProposalsService,
     VotesService,
     AuctionsService,
-    EIP1271SignatureValidationTaskService,
     BlockchainService,
     DelegationService,
     DelegateService,

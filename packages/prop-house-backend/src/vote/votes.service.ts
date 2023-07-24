@@ -119,28 +119,6 @@ export class VotesService {
     );
   }
 
-  async createNewVote(createVoteDto: CreateVoteDto, proposal: Proposal) {
-    // Create vote for proposal
-    const vote = new Vote({
-      address: createVoteDto.address,
-      direction: createVoteDto.direction,
-      signedData: createVoteDto.signedData,
-      signatureState: createVoteDto.signatureState,
-      proposalId: createVoteDto.proposalId,
-      auctionId: proposal.auctionId,
-      weight: createVoteDto.weight,
-      blockHeight: createVoteDto.blockHeight,
-      domainSeparator: createVoteDto.domainSeparator,
-      messageTypes: createVoteDto.messageTypes,
-      proposal,
-    });
-
-    // Store the new vote
-    await this.store(vote);
-
-    return vote;
-  }
-
   async createNewVoteList(voteDtoList: DelegatedVoteDto[], proposal: Proposal) {
     const voteList = [];
     for (const createVoteDto of voteDtoList) {
