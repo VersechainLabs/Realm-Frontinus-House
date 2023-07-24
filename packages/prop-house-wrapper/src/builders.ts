@@ -300,10 +300,6 @@ export class Vote extends Signable {
   constructor(
     public readonly direction: Direction,
     public readonly proposalId: number,
-    public readonly weight: number,
-    public readonly communityAddress: string,
-    public readonly signatureState: SignatureState,
-    public readonly blockHeight: number,
   ) {
     super();
   }
@@ -312,9 +308,6 @@ export class Vote extends Signable {
     return {
       direction: this.direction,
       proposalId: this.proposalId,
-      weight: this.weight,
-      communityAddress: this.communityAddress,
-      blockHeight: this.blockHeight,
     };
   }
 }
@@ -323,6 +316,11 @@ export interface StoredVote extends Vote {
   address: string;
   signedData: string;
   id: number;
+
+  weight: number,
+  actualWeight: number,
+  delegateId: number,
+  delegateList: StoredVote[],
 }
 
 export interface StoredVoteWithProposal extends StoredVote {

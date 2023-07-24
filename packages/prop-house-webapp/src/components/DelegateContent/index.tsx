@@ -121,13 +121,8 @@ const DelegateContent: React.FC<{
             new Vote(
               1,
               a.proposalId,
-              a.votes,
-              community!.contractAddress,
-              SignatureState.PENDING_VALIDATION,
-              blockHeight,
             ),
-        )
-        .filter(v => v.weight > 0);
+        );
       const isContract = await _signerIsContract();
 
       await client.current.logVotes(votes, isContract);
