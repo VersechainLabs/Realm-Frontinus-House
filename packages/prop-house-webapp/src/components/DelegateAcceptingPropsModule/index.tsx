@@ -19,7 +19,7 @@ const DelegateAcceptingPropsModule: React.FC<{
 }> = props => {
   const { auction, community } = props;
 
-  const proposals = useAppSelector(state => state.propHouse.activeProposals);
+  const proposals = useAppSelector(state => state.delegate.activeProposals);
   const isProposingWindow = auctionStatus(auction) === AuctionStatus.AuctionAcceptingProps;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,7 +73,7 @@ const DelegateAcceptingPropsModule: React.FC<{
                     bgColor={ButtonColor.Green}
                     onClick={() => {
                         dispatch(clearProposal());
-                        navigate('/create', { state: { auction, community, proposals } });
+                        navigate('/application/create', { state: { auction, community, proposals } });
                     }}
                 />
             ) : (

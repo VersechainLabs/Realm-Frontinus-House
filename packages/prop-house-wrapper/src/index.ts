@@ -286,6 +286,26 @@ export class PropHouseWrapper {
     }
   }
 
+  async createApplication(proposal: Proposal | InfiniteAuctionProposal, isContract = false) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await proposal.signedPayload(
+        this.signer,
+        isContract,
+        proposal instanceof Proposal
+          ? TimedAuctionProposalMessageTypes
+          : InfiniteAuctionProposalMessageTypes,
+      );
+
+      signedPayload.description = signedPayload.what;
+      signedPayload.delegationId = signedPayload.parentAuctionId;
+
+      return (await axios.post(`${this.host}/applications/create`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async updateProposal(updatedProposal: UpdatedProposal, isContract = false) {
     if (!this.signer) return;
     try {
