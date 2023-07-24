@@ -136,12 +136,11 @@ export class VotesService {
           domainSeparator: createVoteDto.domainSeparator,
           messageTypes: createVoteDto.messageTypes,
           delegateId: createVoteDto.delegateId,
-          proposal,
+          delegateAddress: createVoteDto.delegateAddress,
         }),
       );
     }
-    const result = await this.storeMany(voteList);
-    return result;
+    return await this.storeMany(voteList);
   }
 
   async getDelegateListByAuction(address: string, auction: Auction) {

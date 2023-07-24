@@ -23,6 +23,7 @@ export class DelegatedVoteDto extends CreateVoteDto {
   weight: number;
   actualWeight: number;
   delegateId: number;
+  delegateAddress: string;
   delegate: Delegate;
   blockHeight: number;
 }

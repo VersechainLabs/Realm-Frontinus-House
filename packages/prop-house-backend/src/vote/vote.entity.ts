@@ -58,9 +58,15 @@ export class Vote extends SignedEntity {
   @Field(() => Int)
   delegateId?: number;
 
+  @Column({ default: null })
+  @Field(() => String)
+  delegateAddress?: string;
+
   @ManyToOne(() => Delegate, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'delegateId' })
   delegate: Delegate | null;
+
+  delegateList: Vote[];
 
   @BeforeInsert()
   setCreatedDate() {
@@ -80,6 +86,40 @@ export class Vote extends SignedEntity {
       this.domainSeparator = opts.domainSeparator;
       this.messageTypes = opts.messageTypes;
       this.delegateId = opts.delegateId;
+      this.delegateAddress = opts.delegateAddress;
     }
   }
+}
+
+export function convertVoteListToDelegateVoteList(voteList: Vote[]) {
+  const _map = {};
+  voteList.forEach((v) => {
+    _map[v.address] = v;
+    v.delegateList = [];
+  });
+
+  const result = [];
+  voteList.forEach((v) => {
+    if (v.delegateAddress) {
+      if (_map[v.delegateAddress].delegateList) {
+        _map[v.delegateAddress].delegateList.push(v);
+      } else {
+        _map[v.delegateAddress].delegateList = [v];
+      }
+    } else {
+      result.push(v);
+    }
+  });
+
+  result.forEach((v) => {
+    if (v.delegateList && v.delegateList.length > 0) {
+      const selfVote = {
+        ...v,
+      } as Vote;
+      selfVote.delegateList = [];
+      v.delegateList.unshift(selfVote);
+    }
+  });
+
+  return result;
 }

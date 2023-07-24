@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import * as bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ParseBooleanPipe } from './entities/parse-boolean.pipe';
+import { Reflector } from '@nestjs/core/services/reflector.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -17,7 +18,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Prophouse Api')
+    .setTitle('Frounius Api')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

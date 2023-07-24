@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { verifySignPayloadForVote } from 'src/utils/verifySignedPayload';
-import { Vote } from './vote.entity';
+import { convertVoteListToDelegateVoteList, Vote } from './vote.entity';
 import { CreateVoteDto, DelegatedVoteDto, GetVoteDto } from './vote.types';
 import { VotesService } from './votes.service';
 import { AuctionsService } from 'src/auction/auctions.service';
@@ -148,36 +148,6 @@ export class VotesController {
       );
     }
 
-    // // Check if user has delegated to other user.
-    // const currentDelegationList = await this.delegationService.findByState(
-    //   DelegationState.ACTIVE,
-    // );
-    // const currentDelegation =
-    //   currentDelegationList.length > 0 ? currentDelegationList[0] : null;
-    // if (currentDelegation) {
-    //   const fromDelegate = await this.delegateService.findByFromAddress(
-    //     currentDelegation.id,
-    //     createVoteDto.address,
-    //   );
-    //   if (fromDelegate) {
-    //     throw new HttpException(
-    //       `Vote for prop ${foundProposal.id} failed because user has already been delegated for other user`,
-    //       HttpStatus.FORBIDDEN,
-    //     );
-    //   }
-    // }
-    //
-    // // Get delegate list for calculate voting power
-    // const delegateList: Delegate[] = [];
-    // if (currentDelegation) {
-    //   delegateList.push(
-    //     ...(await this.delegateService.getDelegateListByAddress(
-    //       currentDelegation.id,
-    //       createVoteDto.address,
-    //     )),
-    //   );
-    // }
-
     const delegateList = await this.votesService.getDelegateListByAuction(
       createVoteDto.address,
       foundAuction,
@@ -207,6 +177,7 @@ export class VotesController {
         ...createVoteDto,
         address: delegate.fromAddress,
         delegateId: delegate.id,
+        delegateAddress: delegate.toAddress,
         delegate: delegate,
         blockHeight: foundAuction.balanceBlockTag,
         weight: vp,
@@ -237,6 +208,6 @@ export class VotesController {
       await this.proposalService.rollupVoteCount(foundProposal.id);
     }
 
-    return voteResultList;
+    return convertVoteListToDelegateVoteList(voteResultList);
   }
 }
