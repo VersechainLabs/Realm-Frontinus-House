@@ -33,7 +33,7 @@ const Proposal = () => {
   const round = useAppSelector(state => state.propHouse.activeRound);
   const backendHost = useAppSelector(state => state.configuration.backendHost);
   const backendClient = useRef(new PropHouseWrapper(backendHost, signer));
-  const [loading,setLoading] = useState(false);
+  const [loading,setLoading] = useState(true);
 
 
   const handleBackClick = () => {
@@ -56,7 +56,10 @@ const Proposal = () => {
         )) as StoredProposalWithVotes;
         document.title = `${proposal.title}`;
         dispatch(setActiveProposal(proposal));
+        setLoading(false);
+
       } catch (e) {
+        setLoading(false);
         setFailedFetch(true);
       }
     };
@@ -94,7 +97,7 @@ const Proposal = () => {
             imageUrl={cardServiceUrl(CardType.proposal, proposal.id).href}
           />
         )}
-        {proposal ? (
+        {proposal && !loading ? (
           <Container>
             <RenderedProposalFields
               proposal={proposal}
@@ -112,13 +115,27 @@ const Proposal = () => {
         ) : (
           <LoadingIndicator />
         )}
+
+        {/*{proposal && !loading ? (*/}
+        {/*  <div>*/}
+        {/*    <div style={{ height: 30 }}></div>*/}
+        {/*    /!*<h2>Comments</h2>*!/*/}
+        {/*    <Comments proposalId={Number(id)} />*/}
+        {/*  </div>*/}
+        {/*):*/}
+        {/*    (*/}
+        {/*        <LoadingIndicator />*/}
+
+        {/*  )}*/}
+
         {proposal && (
-          <div>
-            <div style={{ height: 30 }}></div>
-            {/*<h2>Comments</h2>*/}
-            <Comments proposalId={Number(id)} />
-          </div>
-        )}
+                <div>
+                  <div style={{ height: 30 }}></div>
+                  {/*<h2>Comments</h2>*/}
+                  <Comments proposalId={Number(id)} />
+                </div>
+            )}
+
       </Container>
     </>
   );

@@ -28,7 +28,8 @@ import { isMobile } from 'web3modal';
 
 const House = () => {
   const location = useLocation();
-  const slug = location.pathname.substring(1, location.pathname.length);
+  // const slug = location.pathname.substring(1, location.pathname.length);
+  const slug = 'frontinus';
 
   const { data: signer } = useSigner();
 
