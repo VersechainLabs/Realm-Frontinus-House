@@ -41,7 +41,6 @@ export class ApplicationController {
 
   @Post('/create')
   async create(@Body() dto: CreateApplicationDto): Promise<Application> {
-    console.log('create appliction:', dto.delegationId);
 
     return await this.applicationService.createApplicationByDelegation(dto);
   }
