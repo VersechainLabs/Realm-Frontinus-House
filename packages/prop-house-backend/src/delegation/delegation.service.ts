@@ -28,9 +28,9 @@ export class DelegationService {
 
   findAll(): Promise<Delegation[]> {
     return this.delegationRepository.find({
-      // loadRelationIds: {
-      //   relations: ['proposals.auction', 'community'],
-      // },
+      loadRelationIds: {
+        relations: ['applications'],
+      },
       where: {
         visible: true,
       },
