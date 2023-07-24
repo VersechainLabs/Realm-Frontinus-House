@@ -13,6 +13,7 @@ import {
 } from '../strategies';
 import { CaseInsensitiveMap } from '../types/CaseInsensitiveMap';
 import { StrategyType } from '../strategies/snapshotMultiple';
+import { mockRandomByBlock } from '../strategies/mockRandomByBlock';
 
 /**
  * Contract addresses for communities that require custom voting strategy.
@@ -143,5 +144,8 @@ export const communities = new CaseInsensitiveMap(
         multiplier: 1,
       },
     ]),
+
+    // Mock strategies.
+    '0x82cE4e52918B83cCf7072594db05Eb186443A62F': mockRandomByBlock(),
   }),
 );
