@@ -22,6 +22,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }, [signer, host]);
     const navigate = useNavigate();
 
+
+
     const state  = {
         description: "",
         title: "",
@@ -33,28 +35,28 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
     const saveFormTitle = (value:string) => {
         state.title = value;
-        console.log(state);
+        // console.log(state);
     }
     const saveFormDesc = (value:string) => {
         state.description = value;
-        console.log(state);
+        // console.log(state);
     }
     const saveFormStart = (value:any) => {
         state.startTime = new Date(value);
-        console.log(state);
+        // console.log(state);
     }
     const saveFormProposal = (value:any) => {
         // state.proposalEndTime = Date.parse(value);
         state.proposalEndTime = new Date(value);
-        console.log(state);
+        // console.log(state);
     }
     const saveFormVote = (value:any) => {
         state.votingEndTime = new Date(value);
-        console.log(state);
+        // console.log(state);
     }
     const saveFormEnd = (value:any) => {
         state.endTime = new Date(value);
-        console.log(state);
+        // console.log(state);
     }
 
 
@@ -63,11 +65,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
         //该方法阻止表单的提交
         e.preventDefault();
 
-        const round = await client.current.createDelegateAuction(
-            state
-        );
-        console.log(round);
-        navigate('/frontinus');
+        client.current.createDelegateAuction(state).then((round:any)=>{
+            navigate('/delegateDetails/'+round.id);
+        });
+
+        // console.log("round detail");
+        // console.log(round.id);
 
     }
 
