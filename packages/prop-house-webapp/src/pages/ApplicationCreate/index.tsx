@@ -195,10 +195,6 @@ const ApplicationCreate: React.FC<{}> = () => {
                     />
                 )}
 
-                <div className="gradientBg">
-                  <NavBar />
-                </div>
-
                 <Container>
                   <Row>
                     <Col xl={12}>

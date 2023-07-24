@@ -33,7 +33,7 @@ const statuses: Status[] = [
   },
   {
     status: RoundStatus.delegateSelection,
-    title: 'Delegate Selection',
+    title: 'Delegation Selection',
     bgColor: classes.black,
   },
 ];
