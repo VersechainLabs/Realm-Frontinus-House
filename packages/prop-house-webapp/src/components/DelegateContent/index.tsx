@@ -62,7 +62,7 @@ const DelegateContent: React.FC<{
   const provider = useProvider();
   const staleProp = isInfAuction(auction) && infRoundFilter === InfRoundFilterType.Stale;
   const warningMessage = isTimedAuction(auction)
-    ? t('submittedProposals')
+    ? t('submittedApplications')
     : infRoundFilter === InfRoundFilterType.Active
     ? 'Active proposals will show up here.'
     : infRoundFilter === InfRoundFilterType.Winners
