@@ -188,43 +188,55 @@ export class VotesController {
       ...createVoteDto,
       delegateId: null,
       delegate: null,
-      votingPower: await this.votesService.getVotingPower(
+      blockHeight: foundAuction.balanceBlockTag,
+      weight: await this.votesService.getVotingPower(
         createVoteDto.address,
         foundAuction.balanceBlockTag,
       ),
     } as DelegatedVoteDto);
     for (const delegate of delegateList) {
+      const vp = await this.votesService.getVotingPower(
+        delegate.fromAddress,
+        foundAuction.balanceBlockTag,
+      );
+      if (vp === 0) {
+        // vp is 0, don't record it.
+        continue;
+      }
       voteList.push({
         ...createVoteDto,
         address: delegate.fromAddress,
         delegateId: delegate.id,
         delegate: delegate,
-        votingPower: await this.votesService.getVotingPower(
-          delegate.fromAddress,
-          foundAuction.balanceBlockTag,
-        ),
+        blockHeight: foundAuction.balanceBlockTag,
+        weight: vp,
+        actualWeight: 0, // actual weight is 0 because they are delegated by other.
       } as DelegatedVoteDto);
     }
 
     // Verify that signer has voting power
-    const votingPower = voteList.reduce(
-      (acc, vote) => acc + vote.votingPower,
-      0,
-    );
+    const votingPower = voteList.reduce((acc, vote) => acc + vote.weight, 0);
 
     if (votingPower === 0) {
       throw new HttpException(
         'Signer does not have voting power',
         HttpStatus.BAD_REQUEST,
       );
+    } else {
+      voteList[0].actualWeight = votingPower;
     }
 
-    await this.votesService.createNewVoteList(voteList, foundProposal);
+    const voteResultList = await this.votesService.createNewVoteList(
+      voteList,
+      foundProposal,
+    );
 
     // Only increase proposal vote count if the signature has been validated
     // TODO: don't know what is it
     if (createVoteDto.signatureState === SignatureState.VALIDATED) {
       await this.proposalService.rollupVoteCount(foundProposal.id);
     }
+
+    return voteResultList;
   }
 }

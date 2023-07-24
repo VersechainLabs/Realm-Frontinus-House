@@ -39,9 +39,15 @@ export class Vote extends SignedEntity {
   @Field(() => Int)
   auctionId: number;
 
-  @Column()
+  // The weight cast by the user is calculated according to the delegate relationship.
+  @Column({ default: 0 })
   @Field(() => Int)
   weight: number;
+
+  // The user actually owns the weight, ignoring the delegate relationship.
+  @Column({ default: 0 })
+  @Field(() => Int)
+  actualWeight: number;
 
   @Column({ default: null })
   @Field(() => Int)
@@ -69,9 +75,11 @@ export class Vote extends SignedEntity {
       this.proposalId = opts.proposalId;
       this.auctionId = opts.auctionId;
       this.weight = opts.weight;
+      this.actualWeight = opts.actualWeight;
       this.blockHeight = opts.blockHeight;
       this.domainSeparator = opts.domainSeparator;
       this.messageTypes = opts.messageTypes;
+      this.delegateId = opts.delegateId;
     }
   }
 }

@@ -7,7 +7,7 @@ import {
   Repository,
 } from 'typeorm';
 import { Vote } from './vote.entity';
-import { CreateVoteDto, DelegatedVoteDto, GetVoteDto } from './vote.types';
+import { DelegatedVoteDto, GetVoteDto } from './vote.types';
 import { Proposal } from 'src/proposal/proposal.entity';
 import config from 'src/config/configuration';
 import { BlockchainService } from '../blockchain/blockchain.service';
@@ -130,7 +130,8 @@ export class VotesService {
           signatureState: createVoteDto.signatureState,
           proposalId: createVoteDto.proposalId,
           auctionId: proposal.auctionId,
-          weight: createVoteDto.votingPower,
+          weight: createVoteDto.weight,
+          actualWeight: createVoteDto.actualWeight,
           blockHeight: createVoteDto.blockHeight,
           domainSeparator: createVoteDto.domainSeparator,
           messageTypes: createVoteDto.messageTypes,
@@ -139,6 +140,8 @@ export class VotesService {
         }),
       );
     }
+    const result = await this.storeMany(voteList);
+    return result;
   }
 
   async getDelegateListByAuction(address: string, auction: Auction) {
