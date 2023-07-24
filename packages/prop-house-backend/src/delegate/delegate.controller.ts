@@ -29,6 +29,11 @@ export class DelegateController {
 
   @Post('/create')
   async create(@Body() dto: CreateDelegateDto): Promise<Delegate> {
+
+    if (await this.delegateService.checkDuplication(dto) === true) {
+      throw new HttpException('Delegate already exists!', HttpStatus.BAD_REQUEST);
+    }
+    
     const delegate = new Delegate();
     delegate.delegationId = dto.delegationId;
     delegate.applicationId = dto.applicationId;
