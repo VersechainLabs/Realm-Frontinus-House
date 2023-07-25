@@ -21,6 +21,14 @@ import {
   UpdateProposalDto,
 } from './proposal.types';
 import { ProposalsService } from './proposals.service';
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiResponse,
+} from '@nestjs/swagger/dist/decorators/api-response.decorator';
+import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
+import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
+import getProposalByIdResponse from 'examples/getProposalById.json';
 
 @Controller('proposals')
 export class ProposalsController {
@@ -35,6 +43,20 @@ export class ProposalsController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Find proposal by ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'Proposal ID' })
+  @ApiOkResponse({
+    description: 'Proposal found and returned successfully',
+    type: Proposal,
+  })
+  @ApiResponse({
+    description: 'example',
+    schema: {
+      type: 'Proposal',
+      example: getProposalByIdResponse,
+    },
+  })
+  @ApiNotFoundResponse({ description: 'Proposal not found' })
   async findOne(@Param('id') id: number): Promise<Proposal> {
     const foundProposal = await this.proposalsService.findOne(id);
     if (!foundProposal)
