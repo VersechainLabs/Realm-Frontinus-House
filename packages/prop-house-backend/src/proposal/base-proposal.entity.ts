@@ -1,18 +1,14 @@
-import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { SignedEntity } from 'src/entities/signed';
-import { SignatureState } from 'src/types/signature';
 import { Vote } from 'src/vote/vote.entity';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
-  ManyToOne,
-  BeforeUpdate,
   BeforeInsert,
-  RelationId,
+  BeforeUpdate,
+  Column,
   DeleteDateColumn,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProposalParent } from './proposal.types';
 
@@ -46,7 +42,6 @@ export abstract class BaseProposal extends SignedEntity {
   @Field(() => [Vote])
   votes: Vote[];
 
-  // Ignore in database. this value is calculate by votes
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   voteCount: number;
@@ -54,7 +49,6 @@ export abstract class BaseProposal extends SignedEntity {
   @BeforeUpdate()
   updateVoteCount() {
     this.voteCount = this.votes.reduce((acc, vote) => {
-      if (vote.signatureState !== SignatureState.VALIDATED) return acc;
       return Number(acc) + Number(vote.weight);
     }, 0);
   }

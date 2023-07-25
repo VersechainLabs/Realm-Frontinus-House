@@ -221,11 +221,7 @@ export class VotesController {
       foundProposal,
     );
 
-    // Only increase proposal vote count if the signature has been validated
-    // TODO: don't know what is it
-    if (createVoteDto.signatureState === SignatureState.VALIDATED) {
-      await this.proposalService.rollupVoteCount(foundProposal.id);
-    }
+    await this.proposalService.rollupVoteCount(foundProposal.id);
 
     return convertVoteListToDelegateVoteList(voteResultList);
   }
