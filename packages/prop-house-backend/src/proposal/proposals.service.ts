@@ -39,7 +39,7 @@ export class ProposalsService {
       where: { visible: true },
     });
 
-    if (!proposal.auction) {
+    if (!proposal || !proposal.auction) {
       return null;
     }
     proposal.auctionId = proposal.auction.id;
