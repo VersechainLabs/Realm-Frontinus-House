@@ -117,6 +117,10 @@ export function convertVoteListToDelegateVoteList(voteList: Vote[]) {
         ...v,
       } as Vote;
       selfVote.delegateList = [];
+      delete selfVote.messageTypes;
+      delete selfVote.signedData;
+      delete selfVote.signatureState;
+      delete selfVote.domainSeparator;
       v.delegateList.unshift(selfVote);
     }
   });

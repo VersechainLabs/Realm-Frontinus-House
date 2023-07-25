@@ -44,11 +44,12 @@ export const verifyAccountSignature = (
 
 export const verifyPersonalMessageSignature = (
   signDataPayload: SignedDataPayload,
+  actualMsg?: string,
 ) => {
   let actualSigner: string | undefined;
   try {
     actualSigner = verifyMessage(
-      signDataPayload.message,
+      actualMsg ?? signDataPayload.message,
       signDataPayload.signature,
     );
   } catch (error) {

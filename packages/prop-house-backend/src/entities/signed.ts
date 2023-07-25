@@ -6,6 +6,7 @@ import { BaseEntity, Column } from 'typeorm';
 import { EIP712MessageType } from 'src/types/eip712MessageType';
 import { TypedDataDomain } from '@ethersproject/abstract-signer';
 import { BytesLike } from '@ethersproject/bytes';
+import { Exclude, instanceToPlain } from 'class-transformer';
 
 @ObjectType()
 export class SignedDataPayload {
@@ -46,18 +47,22 @@ export abstract class SignedEntity extends BaseEntity {
     default: SignatureState.VALIDATED,
   })
   @Field(() => String)
+  @Exclude({ toPlainOnly: true })
   signatureState: SignatureState;
 
   @Column({ type: 'jsonb' })
   @Field(() => SignedDataPayload)
+  @Exclude({ toPlainOnly: true })
   signedData: SignedDataPayload;
 
   @Column({ type: 'jsonb', default: null })
   @Field(() => TypedDataDomainGql)
+  @Exclude({ toPlainOnly: true })
   domainSeparator: TypedDataDomain;
 
   @Column({ type: 'jsonb', default: null })
   @Field(() => String)
+  @Exclude({ toPlainOnly: true })
   messageTypes: EIP712MessageType;
 
   constructor(opts?: Partial<SignedEntity>) {
@@ -67,5 +72,9 @@ export abstract class SignedEntity extends BaseEntity {
       this.signatureState = opts.signatureState;
       this.signedData = opts.signedData;
     }
+  }
+
+  toJSON() {
+    return instanceToPlain(this);
   }
 }

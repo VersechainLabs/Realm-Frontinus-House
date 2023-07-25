@@ -356,7 +356,7 @@ export class PropHouseWrapper {
       const owner = await this.signer.getAddress();
       const signedPayload = {
         signedData: {
-          message: signMessage,
+          message: Buffer.from(signMessage).toString('base64'),
           signature,
           signer: owner,
         },
