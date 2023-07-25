@@ -60,19 +60,6 @@ export class DelegateService {
     });
   }
 
-  async checkDuplication(dto: CreateDelegateDto): Promise<boolean> {
-    const delegate = await this.delegateRepository.findOne({
-      where: {
-        applicationId: dto.applicationId,
-        fromAddress: dto.fromAddress,
-      },
-    });
-
-    if (delegate) return true;
-
-    return false;
-  }
-
   async store(proposal: Delegate): Promise<Delegate> {
     return await this.delegateRepository.save(proposal, { reload: true });
   }
