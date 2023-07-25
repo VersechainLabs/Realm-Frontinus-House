@@ -38,9 +38,21 @@ export class PropHouseWrapper {
     private readonly signer: Signer | Wallet | null | undefined = undefined,
   ) {}
 
-  async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
+  async createAuction(auction: TimedAuction, owner: string): Promise<StoredTimedAuction[]> {
+    if (!this.signer) throw 'Please sign';
     try {
-      return (await axios.post(`${this.host}/auctions/create`, auction )).data;
+      const signMessage = JSON.stringify(auction);
+
+      const signResult = await this.signer.signMessage(signMessage);
+      return (await axios.post(`${this.host}/auctions/create`, {
+        'auction': auction,
+        'owner': owner,
+        'signedData': {
+          'message': signMessage,
+          'signature': signResult,
+          'signer': owner,
+        },
+      } )).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
