@@ -28,6 +28,14 @@ export class DelegatedVoteDto extends CreateVoteDto {
   blockHeight: number;
 }
 
+export class VotingPower {
+  address: string;
+  weight: number;
+  actualWeight: number;
+  blockNum: number;
+  delegateList?: VotingPower[];
+}
+
 export enum Order {
   ASC = 'ASC',
   DESC = 'DESC',

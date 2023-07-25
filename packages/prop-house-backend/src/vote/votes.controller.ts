@@ -11,7 +11,12 @@ import {
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { verifySignPayloadForVote } from 'src/utils/verifySignedPayload';
 import { convertVoteListToDelegateVoteList, Vote } from './vote.entity';
-import { CreateVoteDto, DelegatedVoteDto, GetVoteDto } from './vote.types';
+import {
+  CreateVoteDto,
+  DelegatedVoteDto,
+  GetVoteDto,
+  VotingPower,
+} from './vote.types';
 import { VotesService } from './votes.service';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { SignatureState } from 'src/types/signature';
@@ -54,12 +59,22 @@ export class VotesController {
       foundProposalAuction.balanceBlockTag,
     );
 
+    const result = {
+      address: address,
+      weight: votingPower,
+      actualWeight: votingPower,
+      blockNum: foundProposalAuction.balanceBlockTag,
+    } as VotingPower;
+
     if (delegate) {
       const delegateList = await this.votesService.getDelegateListByAuction(
         address,
         foundProposalAuction,
       );
 
+      if (delegateList.length > 0) {
+        result.delegateList = [];
+      }
       const _blockchainService = this.blockchainService;
       votingPower = await delegateList.reduce(
         async (prevVotingPower, currentDelegate) => {
@@ -68,13 +83,22 @@ export class VotesController {
             foundProposalAuction.community.contractAddress,
             foundProposalAuction.balanceBlockTag,
           );
+
+          result.delegateList.push({
+            address: currentDelegate.fromAddress,
+            weight: 0,
+            actualWeight: currentVotingPower,
+            blockNum: foundProposalAuction.balanceBlockTag,
+          } as VotingPower);
+
           return (await prevVotingPower) + currentVotingPower;
         },
         Promise.resolve(votingPower),
       );
+      result.weight = votingPower;
     }
 
-    return votingPower;
+    return result;
   }
 
   @Get(':id')
@@ -197,11 +221,7 @@ export class VotesController {
       foundProposal,
     );
 
-    // Only increase proposal vote count if the signature has been validated
-    // TODO: don't know what is it
-    if (createVoteDto.signatureState === SignatureState.VALIDATED) {
-      await this.proposalService.rollupVoteCount(foundProposal.id);
-    }
+    await this.proposalService.rollupVoteCount(foundProposal.id);
 
     return convertVoteListToDelegateVoteList(voteResultList);
   }

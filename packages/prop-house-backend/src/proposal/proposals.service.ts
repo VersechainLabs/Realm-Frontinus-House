@@ -39,7 +39,7 @@ export class ProposalsService {
       where: { visible: true },
     });
 
-    if (!proposal.auction) {
+    if (!proposal || !proposal.auction) {
       return null;
     }
     proposal.auctionId = proposal.auction.id;
@@ -69,10 +69,5 @@ export class ProposalsService {
 
   async store(proposal: Proposal) {
     return await this.proposalsRepository.save(proposal);
-  }
-
-  async voteCountById(id: number): Promise<number> {
-    const foundProposal = await this.proposalsRepository.findOneOrFail(id);
-    return foundProposal.voteCount;
   }
 }
