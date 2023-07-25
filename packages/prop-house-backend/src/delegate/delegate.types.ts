@@ -14,11 +14,9 @@ import {
 } from 'class-validator';
 
 export class CreateDelegateDto {
-  // @IsEthereumAddress()
-  // address: string;
-
-  @IsInt()
-  delegationId: number;
+  // @IsInt()
+  // @IsOptional()
+  // delegationId: number;
 
   @IsInt()
   applicationId: number;
@@ -26,8 +24,9 @@ export class CreateDelegateDto {
   @IsString()
   fromAddress: string;
 
-  @IsString()
-  toAddress: string;
+  // @IsString()
+  // @IsOptional()
+  // toAddress: string;
 }
 
 export enum Order {

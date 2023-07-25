@@ -11,6 +11,7 @@ import { Application } from './application.entity';
 import { ApplicationController } from './application.controller';
 import { ApplicationService } from './application.service';
 import { Auction } from 'src/auction/auction.entity';
+import { Delegate } from '../delegate/delegate.entity';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { Auction } from 'src/auction/auction.entity';
       Community,
       Application,
       Auction,
+      Delegate,
     ]),
   ],
   controllers: [ApplicationController],

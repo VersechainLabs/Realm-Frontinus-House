@@ -13,6 +13,8 @@ import { DelegateController } from './delegate.controller';
 import { DelegateService } from './delegate.service';
 import { AdminService } from 'src/admin/admin.service';
 import { Admin } from 'src/admin/admin.entity';
+import { ApplicationService } from '../delegation-application/application.service';
+import { Application } from '../delegation-application/application.entity';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { Admin } from 'src/admin/admin.entity';
       Community,
       Auction,
       Admin,
+      Application,
     ]),
   ],
   controllers: [DelegateController],
@@ -32,6 +35,7 @@ import { Admin } from 'src/admin/admin.entity';
     ProposalsService,
     AdminService,
     CommunitiesService,
+    ApplicationService,
   ],
   exports: [TypeOrmModule],
 })
