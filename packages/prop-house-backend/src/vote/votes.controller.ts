@@ -83,9 +83,15 @@ export class VotesController {
     @Query('delegate') delegate: boolean,
   ): Promise<VotingPower> {
     const foundProposal = await this.proposalService.findOne(proposalId);
+    if (!foundProposal) {
+      throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+    }
     const foundProposalAuction = await this.auctionService.findOneWithCommunity(
       foundProposal.auctionId,
     );
+    if (!foundProposalAuction) {
+      throw new HttpException('No auction with that ID', HttpStatus.NOT_FOUND);
+    }
 
     let votingPower = await this.blockchainService.getVotingPower(
       address,
