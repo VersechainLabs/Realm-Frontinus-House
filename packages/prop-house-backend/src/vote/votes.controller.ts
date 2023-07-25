@@ -16,6 +16,7 @@ import { VotesService } from './votes.service';
 import { AuctionsService } from 'src/auction/auctions.service';
 import { SignatureState } from 'src/types/signature';
 import { BlockchainService } from '../blockchain/blockchain.service';
+import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 
 @Controller('votes')
 export class VotesController {
@@ -116,10 +117,10 @@ export class VotesController {
    */
   @Post()
   async create(
-    // @Body(SignedPayloadValidationPipe)
-    @Body()
-    createVoteDto: CreateVoteDto,
+    @Body(SignedPayloadValidationPipe) createVoteDto: CreateVoteDto,
   ) {
+    verifySignPayloadForVote(createVoteDto);
+
     const foundProposal = await this.proposalService.findOne(
       createVoteDto.proposalId,
     );
@@ -129,12 +130,6 @@ export class VotesController {
     }
 
     const foundAuction = foundProposal.auction;
-
-    // Verify signed payload against dto
-    const voteFromPayload = verifySignPayloadForVote(
-      createVoteDto,
-      foundProposal,
-    );
 
     // Check if user has voted for this round, Protect against casting same vote twice
     const sameAuctionVote = await this.votesService.findBy(
