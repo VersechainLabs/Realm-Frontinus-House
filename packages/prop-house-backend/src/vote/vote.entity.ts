@@ -11,10 +11,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Delegate } from '../delegate/delegate.entity';
+import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
 @Entity()
 @ObjectType()
 export class Vote extends SignedEntity {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   id: number;
@@ -23,49 +25,69 @@ export class Vote extends SignedEntity {
   @Field(() => Int)
   direction: number;
 
+  @ApiProperty({ type: () => Proposal })
   @ManyToOne(() => Proposal, (proposal) => proposal.votes)
   @JoinColumn()
   proposal: BaseProposal; //Proposal | InfiniteAuctionProposal;
 
+  // @ApiProperty()
   @Column()
   @Field(() => Date)
   createdDate?: Date;
 
+  @ApiProperty()
   @Column()
   @Field(() => Int)
   proposalId: number;
 
+  @ApiProperty()
   @Column()
   @Field(() => Int)
   auctionId: number;
 
-  // The weight cast by the user is calculated according to the delegate relationship.
+  @ApiProperty({
+    description:
+      'The weight cast by the user is calculated according to the delegate relationship',
+  })
   @Column({ default: 0 })
   @Field(() => Int)
   weight: number;
 
-  // The user actually owns the weight, ignoring the delegate relationship.
+  @ApiProperty({
+    description:
+      'The user actually owns the weight, ignoring the delegate relationship.',
+  })
   @Column({ default: 0 })
   @Field(() => Int)
   actualWeight: number;
 
+  @ApiProperty()
   @Column({ default: null })
   @Field(() => Int)
   blockHeight: number;
 
-  // If this vote is cast due to a delegate relationship, then the delegate relationship will be recorded in this value.
+  @ApiProperty({
+    description:
+      'If this vote is cast due to a delegate relationship, then the delegate relationship will be recorded in this value.',
+  })
   @Column({ default: null })
   @Field(() => Int)
   delegateId?: number;
 
+  @ApiProperty()
   @Column({ default: null })
   @Field(() => String)
   delegateAddress?: string;
 
+  @ApiProperty()
   @ManyToOne(() => Delegate, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'delegateId' })
   delegate: Delegate | null;
 
+  @ApiProperty({
+    description:
+      'If the current voter receives a delegate from others, it will be placed in this list (including the current voter themselves).',
+  })
   delegateList: Vote[];
 
   @BeforeInsert()

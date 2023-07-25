@@ -4,10 +4,12 @@ import { Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { BaseProposal } from './base-proposal.entity';
 import { instanceToPlain } from 'class-transformer';
 import { convertVoteListToDelegateVoteList } from '../vote/vote.entity';
+import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
 @Entity('proposal')
 @ObjectType()
 export class Proposal extends BaseProposal {
+  @ApiProperty({ type: () => Auction })
   @ManyToOne(() => Auction, (auction) => auction.proposals)
   @JoinColumn()
   @Field(() => Auction)

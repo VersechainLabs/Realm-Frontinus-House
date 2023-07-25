@@ -7,15 +7,22 @@ import { EIP712MessageType } from 'src/types/eip712MessageType';
 import { TypedDataDomain } from '@ethersproject/abstract-signer';
 import { BytesLike } from '@ethersproject/bytes';
 import { Exclude, instanceToPlain } from 'class-transformer';
+import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
 @ObjectType()
 export class SignedDataPayload {
+  @ApiProperty({ description: 'Signature result' })
   @Field(() => String)
   signature: string;
 
+  @ApiProperty({
+    description:
+      'The message to signature. should include params in request for validation',
+  })
   @Field(() => String)
   message: string;
 
+  @ApiProperty({ description: 'Should be same as address' })
   @Field(() => String)
   signer: string;
 }
@@ -36,6 +43,7 @@ class TypedDataDomainGql {
 
 @ObjectType()
 export abstract class SignedEntity extends BaseEntity {
+  @ApiProperty({ description: 'The signer address' })
   @Column()
   @IsEthereumAddress()
   @Field(() => String)
@@ -50,6 +58,7 @@ export abstract class SignedEntity extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   signatureState: SignatureState;
 
+  // @ApiProperty({ description: 'Sign Data' })
   @Column({ type: 'jsonb' })
   @Field(() => SignedDataPayload)
   @Exclude({ toPlainOnly: true })

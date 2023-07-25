@@ -11,9 +11,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ProposalParent } from './proposal.types';
+import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
 @ObjectType()
 export abstract class BaseProposal extends SignedEntity {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   @Field(() => Int)
   id: number;
@@ -21,27 +23,33 @@ export abstract class BaseProposal extends SignedEntity {
   @Column({ default: true })
   visible: boolean;
 
+  @ApiProperty()
   @Column()
   @Field(() => String)
   title: string;
 
+  @ApiProperty()
   @Column({ type: 'text' })
   @Field(() => String)
   what: string;
 
+  @ApiProperty()
   @Column({ type: 'text' })
   @Field(() => String)
   tldr: string;
 
   // AuctionID exists on entities with relations
+  @ApiProperty()
   @Column()
   auctionId: number;
 
+  @ApiProperty({ type: () => Vote, isArray: true })
   @OneToMany(() => Vote, (vote) => vote.proposal)
   @JoinColumn()
   @Field(() => [Vote])
   votes: Vote[];
 
+  @ApiProperty()
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   voteCount: number;
@@ -53,10 +61,12 @@ export abstract class BaseProposal extends SignedEntity {
     }, 0);
   }
 
+  @ApiProperty()
   @Column()
   @Field(() => Date)
   createdDate: Date;
 
+  @ApiProperty()
   @Column({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;

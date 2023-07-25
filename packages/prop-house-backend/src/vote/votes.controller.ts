@@ -22,6 +22,13 @@ import { AuctionsService } from 'src/auction/auctions.service';
 import { SignatureState } from 'src/types/signature';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
+import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
+import {
+  ApiBadRequestResponse,
+  ApiOkResponse,
+  ApiResponse,
+} from '@nestjs/swagger/dist/decorators/api-response.decorator';
+import { ApiQuery } from '@nestjs/swagger/dist/decorators/api-query.decorator';
 
 @Controller('votes')
 export class VotesController {
@@ -43,11 +50,38 @@ export class VotesController {
   }
 
   @Get('votingPower')
+  @ApiOperation({
+    summary:
+      'Get voting power for an address at the block height corresponding to the proposalId',
+  })
+  @ApiOkResponse({
+    type: VotingPower,
+  })
+  @ApiBadRequestResponse({
+    description:
+      'If delegate is true and the current queried address has been delegated to another address, then return an exception.',
+  })
+  @ApiQuery({
+    name: 'address',
+    description: 'Address for which to get the voting power',
+    type: String,
+  })
+  @ApiQuery({
+    name: 'proposalId',
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'delegate',
+    description:
+      'Whether to query based on delegate relationships. If true, it will query the voting power of other addresses delegated to the current address; if the current address delegates to other addresses, an error will be thrown. Otherwise, only query based on the on-chain state.',
+    type: Boolean,
+    required: false,
+  })
   async getVotingPower(
     @Query('address') address: string,
     @Query('proposalId') proposalId: number,
     @Query('delegate') delegate: boolean,
-  ) {
+  ): Promise<VotingPower> {
     const foundProposal = await this.proposalService.findOne(proposalId);
     const foundProposalAuction = await this.auctionService.findOneWithCommunity(
       foundProposal.auctionId,
@@ -140,9 +174,16 @@ export class VotesController {
    * @param createVoteDto
    */
   @Post()
+  @ApiOperation({ summary: 'Create vote' })
+  @ApiResponse({
+    status: 201,
+    description: 'The vote has been successfully created.',
+    type: [Vote],
+  })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
   async create(
     @Body(SignedPayloadValidationPipe) createVoteDto: CreateVoteDto,
-  ) {
+  ): Promise<Vote[]> {
     verifySignPayloadForVote(createVoteDto);
 
     const foundProposal = await this.proposalService.findOne(

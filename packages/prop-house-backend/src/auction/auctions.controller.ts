@@ -13,6 +13,12 @@ import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
 import { AuctionsService, AuctionWithProposalCount } from './auctions.service';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { Proposal } from 'src/proposal/proposal.entity';
+import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
+import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
+import {
+  ApiNotFoundResponse,
+  ApiOkResponse,
+} from '@nestjs/swagger/dist/decorators/api-response.decorator';
 
 @Controller('auctions')
 export class AuctionsController {
@@ -87,6 +93,14 @@ export class AuctionsController {
   }
 
   @Get(':id/proposals')
+  @ApiOperation({ summary: 'Find proposals by Auction ID' })
+  @ApiParam({ name: 'id', type: Number, description: 'Auction ID' })
+  @ApiOkResponse({
+    description: 'Proposals found and returned successfully',
+    type: Proposal,
+    isArray: true,
+  })
+  @ApiNotFoundResponse({ description: 'Proposals not found' })
   async find(@Param('id') id: number): Promise<Proposal[]> {
     const foundProposals = await this.proposalService.findAllWithAuctionId(id);
     if (!foundProposals)
