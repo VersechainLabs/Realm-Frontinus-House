@@ -208,6 +208,7 @@
   word-break: break-word;
 }
 .truncatedTldr p {
+  color: var(--brand-gray);
   margin-bottom: 0;
 }
 .avatarAndPropNumber {
