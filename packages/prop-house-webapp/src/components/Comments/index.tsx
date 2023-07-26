@@ -10,6 +10,7 @@ import EthAddress from '../EthAddress';
 import AddressAvatar from '../AddressAvatar';
 import { serverDateToString } from '../../utils/detailedTime';
 import classes from './Comments.module.css';
+import LoadingIndicator from "../LoadingIndicator";
 
 type CommentsProps = {
   proposalId: number;
@@ -25,7 +26,7 @@ export default function Comments(props: CommentsProps) {
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new PropHouseWrapper(host));
   const [showLoadMore, setShowLoadMore] = useState(true);
-
+  const [loading,setLoading] = useState(true);
 
   useEffect(() => {
     loadNextPage(0);
@@ -62,6 +63,7 @@ export default function Comments(props: CommentsProps) {
     ).finally(() => {
       setShowFullLoading(false);
       setShowTailLoading(false);
+      setLoading(false);
     });
   };
 
@@ -78,20 +80,28 @@ export default function Comments(props: CommentsProps) {
     commentList.forEach((comment) => {
       itemList.push(CommentListItem({ comment: comment }));
     });
-    itemList.push(
-        <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
-        <LoadingButton
-          loading={showTailLoading}
-          onClick={() => loadNextPage(commentList.length)}
-          sx={{
-            display: 'flex',
-            textTransform: 'none',
-          }}
-        >
-          {showTailLoading ? 'Loading...' : 'Load More'}
-        </LoadingButton>
-      </ListItem>,
-    );
+
+    if(  commentList.length % 10 === 0  ){
+      itemList.push(
+          <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
+            <LoadingButton
+                loading={showTailLoading}
+                onClick={() => loadNextPage(commentList.length)}
+                sx={{
+                  display: 'flex',
+                  textTransform: 'none',
+                }}
+            >
+              {showTailLoading ? <LoadingIndicator /> : 'Load More'}
+            </LoadingButton>
+          </ListItem>,
+      );
+    }
+
+
+
+
+
   }
 
   return (<>
@@ -108,8 +118,10 @@ export default function Comments(props: CommentsProps) {
         <div className={classes.listTitle}>Comments</div>
         {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
+      {!loading ? <List>{itemList}</List> :(
+          <LoadingIndicator />
+      )}
 
-      <List>{itemList}</List>
 
     </Container>
   </>);

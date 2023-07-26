@@ -5,6 +5,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import Create from './pages/Create';
+import ApplicationCreate from './pages/ApplicationCreate';
 import House from './pages/House';
 import Footer from './components/Footer';
 import './App.css';
@@ -40,6 +41,12 @@ import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainb
 import AddressAvatar from './components/AddressAvatar';
 import classes from './components/AddressAvatar/AddressAvatar.module.css';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
+import {useAppDispatch, useAppSelector} from "./hooks";
+import {
+  clearClick
+} from './state/slices/alert';
 
 const { chains, provider } = configureChains(
   [mainnet],
@@ -69,11 +76,46 @@ const wagmiClient = createClient({
   provider,
 });
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+    props,
+    ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+
 localStorage.setItem('devEnv', 'development');
 
 function App() {
   const location = useLocation();
   const [noActiveCommunity, setNoActiveCommunity] = useState(false);
+
+  const [open, setOpen] = React.useState(false);
+
+  const alert = useAppSelector(state => state.alert);
+  const alertClick = useAppSelector(state => state.alert.click);
+  const dispatch = useAppDispatch();
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  useEffect(() => {
+
+    if(alertClick){
+      setOpen(true);
+      dispatch(clearClick);
+    }
+
+    setTimeout(() => {
+      setOpen(false);
+    }, 2000);
+
+  }, [alertClick]);
 
   useEffect(() => {
     setNoActiveCommunity(false);
@@ -137,6 +179,10 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
+                  <Route
+                    path="application/create"
+                    element={ <ApplicationCreate /> }
+                  />
                   <Route path="/create-round" element={<CreateRound />} />
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
@@ -156,6 +202,16 @@ function App() {
             </Suspense>
           </RainbowKitProvider>
         )}
+
+        <Snackbar
+            anchorOrigin={{
+              vertical: 'top' ,
+              horizontal:'center'
+            }}
+            open={open} autoHideDuration={2000} onClose={handleClose}>
+          <Alert severity={alert.type}>{alert.message}</Alert>
+         </Snackbar>
+
       </WagmiConfig>
     </>
   );

@@ -5,26 +5,62 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
-  IsString,
   Min,
 } from 'class-validator';
 import { SignedEntity } from 'src/entities/signed';
+import { Delegate } from '../delegate/delegate.entity';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+} from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
 export class CreateVoteDto extends SignedEntity {
+  @ApiProperty({ deprecated: true })
   @IsNumber()
+  @IsOptional()
   direction: number;
 
+  @ApiProperty({ description: 'The proposal ID for vote' })
   @IsNumber()
   proposalId: number;
+}
 
-  @IsNumber()
+export class DelegatedVoteDto extends CreateVoteDto {
+  weight: number;
+  actualWeight: number;
+  delegateId: number;
+  delegateAddress: string;
+  delegate: Delegate;
+  blockHeight: number;
+}
+
+export class VotingPower {
+  @ApiProperty({ description: 'Address for which the voting power is queried' })
+  address: string;
+
+  @ApiProperty({
+    description:
+      'The weight cast by the address is calculated according to the delegate relationship',
+  })
   weight: number;
 
-  @IsNumber()
-  blockHeight: number;
+  @ApiProperty({
+    description:
+      'Actual weight of the address, ignoring the delegate relationship.',
+  })
+  actualWeight: number;
 
-  @IsString()
-  communityAddress: string;
+  @ApiProperty({
+    description: 'Block number at which the voting power is queried',
+  })
+  blockNum: number;
+
+  @ApiPropertyOptional({
+    description: 'List of delegated voting powers',
+    type: VotingPower,
+    isArray: true,
+  })
+  delegateList?: VotingPower[];
 }
 
 export enum Order {

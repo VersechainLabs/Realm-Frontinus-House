@@ -4,7 +4,7 @@ import Button, { ButtonColor } from '../../components/Button';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import ProposalEditor from '../../components/ProposalEditor';
-import DelegateEditor from '../../components/DelegateEditor';
+import ApplicationEditor from '../../components/ApplicationEditor';
 import Preview from '../Preview';
 import { clearProposal, patchProposal } from '../../state/slices/editor';
 import { useAppDispatch, useAppSelector } from '../../hooks';
@@ -29,7 +29,7 @@ import ConnectButton from '../../components/ConnectButton';
 import { useAccount, useSigner } from 'wagmi';
 import { infRoundBalance } from '../../utils/infRoundBalance';
 
-const Create: React.FC<{}> = () => {
+const ApplicationCreate: React.FC<{}> = () => {
   const { address: account } = useAccount();
   const { data: signer } = useSigner();
 
@@ -67,11 +67,11 @@ const Create: React.FC<{}> = () => {
     const { title, what, tldr, reqAmount } = proposalEditorData;
 
     newProp =
-      isInfAuction(activeAuction) && reqAmount
-        ? new InfiniteAuctionProposal(title, what, tldr, activeAuction.id, reqAmount)
-        : new Proposal(title, what, tldr, activeAuction.id);
+        isInfAuction(activeAuction) && reqAmount
+            ? new InfiniteAuctionProposal(title, what, tldr, activeAuction.id, reqAmount)
+            : new Proposal(title, what, tldr, activeAuction.id);
 
-    const proposal = await backendClient.current.createProposal(newProp);
+    const proposal = await backendClient.current.createApplication(newProp);
 
     setPropId(proposal.id);
     dispatch(appendProposal({ proposal }));
@@ -90,7 +90,7 @@ const Create: React.FC<{}> = () => {
 
   // Drag and drop images in the editor or the upload image modal
   const onFileDrop = (
-    event: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>,
+      event: React.ChangeEvent<HTMLInputElement> | React.DragEvent<HTMLDivElement>,
   ) => {
     setInvalidFileError(false);
     setDuplicateFile({ error: false, name: '' });
@@ -155,20 +155,20 @@ const Create: React.FC<{}> = () => {
     //   • getDuplicateFileMessage() is a function that generates the error message
     //   • setDuplicateFile saves the error message to state
     duplicateFileNames.length > 0 &&
-      setDuplicateFile({
-        error: true,
-        name: getDuplicateFileMessage(Array.from(new Set(duplicateFileNames))),
-      });
+    setDuplicateFile({
+      error: true,
+      name: getDuplicateFileMessage(Array.from(new Set(duplicateFileNames))),
+    });
 
     // filter out invalid  & duplicate files
     const validFiles = Array.from(selectedFiles)
-      // filter out invalid files extensions
-      .filter(
-        file =>
-          validFileType(file) &&
-          // filter out duplicates
-          !files.find(f => f.name === file.name),
-      );
+        // filter out invalid files extensions
+        .filter(
+            file =>
+                validFileType(file) &&
+                // filter out duplicates
+                !files.find(f => f.name === file.name),
+        );
 
     // add the valid files to the list
     if (validFiles) {
@@ -178,91 +178,56 @@ const Create: React.FC<{}> = () => {
   };
 
   return (
-    <>
-      {activeAuction ? (
-        <>
-          <DragAndDrop
-            onFileDrop={onFileDrop}
-            showImageUploadModal={showImageUploadModal}
-            setShowImageUploadModal={setShowImageUploadModal}
-          >
-            {showProposalSuccessModal && propId && (
-              <ProposalSuccessModal
-                setShowProposalSuccessModal={setShowProposalSuccessModal}
-                proposalId={propId}
-                house={activeCommunity}
-                round={activeAuction}
-              />
-            )}
-
-            {/*<div className="gradientBg">*/}
-            {/*  <NavBar />*/}
-            {/*</div>*/}
-
-            <Container>
-              <Row>
-                <Col xl={12}>
-                  {showPreview ? (
-                    <Preview roundCurrency={activeAuction.currencyType} />
-                  ) : (
-                    <DelegateEditor
-                      onDataChange={onDataChange}
-                      showImageUploadModal={showImageUploadModal}
-                      setShowImageUploadModal={setShowImageUploadModal}
-                      files={files}
-                      setFiles={setFiles}
-                      onFileDrop={onFileDrop}
-                      invalidFileError={invalidFileError}
-                      setInvalidFileError={setInvalidFileError}
-                      invalidFileMessage={invalidFileMessage}
-                      setInvalidFileMessage={setInvalidFileMessage}
-                      duplicateFile={duplicateFile}
-                      setDuplicateFile={setDuplicateFile}
-                      remainingBal={remainingBal}
+      <>
+        {activeAuction ? (
+            <>
+              <DragAndDrop
+                  onFileDrop={onFileDrop}
+                  showImageUploadModal={showImageUploadModal}
+                  setShowImageUploadModal={setShowImageUploadModal}
+              >
+                {showProposalSuccessModal && propId && (
+                    <ProposalSuccessModal
+                        setShowProposalSuccessModal={setShowProposalSuccessModal}
+                        proposalId={propId}
+                        house={activeCommunity}
+                        round={activeAuction}
                     />
-                  )}
-                </Col>
-              </Row>
+                )}
 
-              {/* <Row>
-                <Col xl={12} className={classes.btnContainer}>
-                  <Button
-                    text={showPreview ? t('backToEditor') : t('preview')}
-                    bgColor={ButtonColor.Pink}
-                    onClick={() =>
-                      setShowPreview(prev => {
-                        return !prev;
-                      })
-                    }
-                    disabled={!isValidPropData(isInfAuction(activeAuction), proposalEditorData)}
-                  />
+                <Container>
+                  <Row>
+                    <Col xl={12}>
+                      {showPreview ? (
+                          <Preview roundCurrency={activeAuction.currencyType} />
+                      ) : (
+                          <ApplicationEditor
+                              onDataChange={onDataChange}
+                              showImageUploadModal={showImageUploadModal}
+                              setShowImageUploadModal={setShowImageUploadModal}
+                              files={files}
+                              setFiles={setFiles}
+                              onFileDrop={onFileDrop}
+                              invalidFileError={invalidFileError}
+                              setInvalidFileError={setInvalidFileError}
+                              invalidFileMessage={invalidFileMessage}
+                              setInvalidFileMessage={setInvalidFileMessage}
+                              duplicateFile={duplicateFile}
+                              setDuplicateFile={setDuplicateFile}
+                              remainingBal={remainingBal}
+                          />
+                      )}
+                    </Col>
+                  </Row>
 
-                  {showPreview &&
-                    (account ? (
-                      <Button
-                        classNames={classes.actionBtn}
-                        text={t('signAndSubmit')}
-                        bgColor={ButtonColor.Pink}
-                        onClick={submitProposal}
-                        disabled={!isValidPropData(isInfAuction(activeAuction), proposalEditorData)}
-                      />
-                    ) : (
-                      <ConnectButton
-                        classNames={classes.actionBtn}
-                        color={ButtonColor.Pink}
-                        text={t('connectWallet')}
-                      />
-                    ))}
-                </Col>
-              </Row> */}
-            </Container>
-          </DragAndDrop>
-        </>
-      ) : (
-        <LoadingIndicator />
-      )}
-    </>
+                </Container>
+              </DragAndDrop>
+            </>
+        ) : (
+            <LoadingIndicator />
+        )}
+      </>
   );
 };
 
-export default Create;
+export default ApplicationCreate;

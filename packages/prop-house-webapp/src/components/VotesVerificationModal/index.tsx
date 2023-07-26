@@ -16,19 +16,12 @@ const VotesVerificationModal: React.FC<{
   const verifiedVotes = (
     <div className={classes.votesContainer}>
       {proposal.votes
-        .filter(v => v.signatureState !== SignatureState.FAILED_VALIDATION)
         .map((vote, index) => (
           <div key={index} className={classes.votesRow}>
             <div className={classes.voteRowTitle}>
               {`${vote.weight}  ${vote.weight === 1 ? t('vote') : t('votes')} ${t('by')}`}
               <EthAddress address={vote.address} />
             </div>
-
-            {vote.signatureState === SignatureState.PENDING_VALIDATION && (
-              <button className={classes.verifyVoteBtn} disabled={true}>
-                {t('pending')} <MdOutlinePendingActions />
-              </button>
-            )}
           </div>
         ))}
     </div>

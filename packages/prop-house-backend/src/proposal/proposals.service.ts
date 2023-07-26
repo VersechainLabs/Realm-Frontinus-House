@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proposal } from './proposal.entity';
 import { GetProposalsDto } from './proposal.types';
+import { convertVoteListToDelegateVoteList } from '../vote/vote.entity';
 
 @Injectable()
 export class ProposalsService {
@@ -38,6 +39,9 @@ export class ProposalsService {
       where: { visible: true },
     });
 
+    if (!proposal || !proposal.auction) {
+      return null;
+    }
     proposal.auctionId = proposal.auction.id;
     return proposal;
   }
@@ -65,10 +69,5 @@ export class ProposalsService {
 
   async store(proposal: Proposal) {
     return await this.proposalsRepository.save(proposal);
-  }
-
-  async voteCountById(id: number): Promise<number> {
-    const foundProposal = await this.proposalsRepository.findOneOrFail(id);
-    return foundProposal.voteCount;
   }
 }
