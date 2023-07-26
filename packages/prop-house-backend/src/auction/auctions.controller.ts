@@ -92,6 +92,20 @@ export class AuctionsController {
     return auction;
   }
 
+  @Get('/pk/:id')
+  async findWithIDForCommunity(
+      @Param('id') id: number
+  ): Promise<Auction> {
+    const auction = await this.auctionsService.findWithIDForCommunity(
+        id,
+    );
+    if (!auction)
+      throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
+    return auction;
+  }
+
+
+
   @Get(':id/proposals')
   @ApiOperation({ summary: 'Find proposals by Auction ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Auction ID' })
