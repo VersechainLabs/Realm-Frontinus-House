@@ -75,6 +75,15 @@ export class DelegateService {
     return await this.delegateRepository.save(proposal, { reload: true });
   }
 
+
+  findByDelegationId(delegationId: number): Promise<Delegate[]> {
+    const delegateList = this.delegateRepository.find({
+      where: { delegationId: delegationId },
+    });
+
+    return delegateList;
+  }
+
   // findAllForCommunity(id: number): Promise<AuctionWithProposalCount[]> {
   //   return (
   //     this.auctionsRepository
