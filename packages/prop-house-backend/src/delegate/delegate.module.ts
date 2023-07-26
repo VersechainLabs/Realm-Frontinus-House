@@ -13,8 +13,11 @@ import { DelegateController } from './delegate.controller';
 import { DelegateService } from './delegate.service';
 import { AdminService } from 'src/admin/admin.service';
 import { Admin } from 'src/admin/admin.entity';
+import { Application } from 'src/delegation-application/application.entity';
+import { ApplicationService } from 'src/delegation-application/application.service';
 import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
+
 
 @Module({
   imports: [
@@ -25,6 +28,7 @@ import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
       Community,
       Auction,
       Admin,
+      Application,
       Snapshot
     ]),
   ],
@@ -35,6 +39,7 @@ import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
     ProposalsService,
     AdminService,
     CommunitiesService,
+    ApplicationService,
     SnapshotService,
   ],
   exports: [TypeOrmModule],
