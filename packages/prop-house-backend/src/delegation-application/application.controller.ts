@@ -43,4 +43,14 @@ export class ApplicationController {
   async create(@Body() dto: CreateApplicationDto): Promise<Application> {
     return await this.applicationService.createApplicationByDelegation(dto);
   }
+
+  @Get('/:id/detail')
+  async findOne(@Param('id') id: number): Promise<Application> {
+    const foundApplication = await this.applicationService.findOne(id);
+
+    if (!foundApplication)
+      throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
+      
+    return foundApplication;
+  }
 }
