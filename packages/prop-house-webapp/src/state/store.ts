@@ -4,6 +4,7 @@ import delegateReducer from './slices/delegate';
 import configurationReducer from './slices/configuration';
 import votingReducer from './slices/voting';
 import editorReducer from './slices/editor';
+import alertReducer from './slices/alert';
 
 const store = configureStore({
   reducer: {
@@ -13,6 +14,7 @@ const store = configureStore({
     configuration: configurationReducer,
     editor: editorReducer,
     voting: votingReducer,
+    alert: alertReducer,
   },
 });
 

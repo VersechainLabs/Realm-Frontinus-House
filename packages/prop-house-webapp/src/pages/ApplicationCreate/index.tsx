@@ -220,37 +220,6 @@ const ApplicationCreate: React.FC<{}> = () => {
                     </Col>
                   </Row>
 
-                  {/* <Row>
-                <Col xl={12} className={classes.btnContainer}>
-                  <Button
-                    text={showPreview ? t('backToEditor') : t('preview')}
-                    bgColor={ButtonColor.Pink}
-                    onClick={() =>
-                      setShowPreview(prev => {
-                        return !prev;
-                      })
-                    }
-                    disabled={!isValidPropData(isInfAuction(activeAuction), proposalEditorData)}
-                  />
-
-                  {showPreview &&
-                    (account ? (
-                      <Button
-                        classNames={classes.actionBtn}
-                        text={t('signAndSubmit')}
-                        bgColor={ButtonColor.Pink}
-                        onClick={submitProposal}
-                        disabled={!isValidPropData(isInfAuction(activeAuction), proposalEditorData)}
-                      />
-                    ) : (
-                      <ConnectButton
-                        classNames={classes.actionBtn}
-                        color={ButtonColor.Pink}
-                        text={t('connectWallet')}
-                      />
-                    ))}
-                </Col>
-              </Row> */}
                 </Container>
               </DragAndDrop>
             </>
