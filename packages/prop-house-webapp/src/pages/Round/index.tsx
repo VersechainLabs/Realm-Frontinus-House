@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import RoundHeader from '../../components/RoundHeader';
 import { useEffect, useRef, useState } from 'react';
@@ -40,6 +40,11 @@ const Round = () => {
   const communityName = 'frontinus';
 
   const roundName = location.pathname.substring(1).split('/')[0];
+
+  const params = useParams();
+  const { id } = params;
+
+
 
   console.log(roundName);
 
@@ -98,10 +103,7 @@ const Round = () => {
       try {
         setLoadingRound(true);
 
-        const round = await client.current.getAuctionWithNameForCommunity(
-          nameToSlug(roundName),
-          community.id,
-        );
+        const round = await client.current.getAuctionWithIDForCommunity(Number(id));
         dispatch(setActiveRound(round));
         setLoadingRound(false);
       } catch (e) {
