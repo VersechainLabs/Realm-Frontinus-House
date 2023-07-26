@@ -20,6 +20,10 @@ import {appendProposal} from "../../state/slices/propHouse";
 import {clearProposal} from "../../state/slices/editor";
 import ProposalSuccessModal from "../ProposalSuccessModal";
 import {buildRoundPath} from "../../utils/buildRoundPath";
+import {
+  setAlert
+} from '../../state/slices/alert';
+
 
 const ApplicationInputs: React.FC<{
   formData: FormDataType[];
@@ -99,7 +103,6 @@ const ApplicationInputs: React.FC<{
 
   const submit = async () => {
 
-    console.log(content,formData);
     if (content.length === 0 || !account) {
       return;
     }
@@ -109,14 +112,26 @@ const ApplicationInputs: React.FC<{
     let newProp: Proposal | InfiniteAuctionProposal;
 
     newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
-    const proposal = await client.current.createApplication(newProp);
 
-    setPropId(proposal.id);
-    dispatch(appendProposal({ proposal }));
-    dispatch(clearProposal());
-    // setShowProposalSuccessModal(true);
-    navigate(`/delegateDetails/${(activeAuction.id)}`)
-    setLoading(false);
+    try {
+      const proposal = await client.current.createApplication(newProp);
+
+      setPropId(proposal.id);
+      dispatch(appendProposal({ proposal }));
+      dispatch(clearProposal());
+      // setShowProposalSuccessModal(true);
+      navigate(`/delegateDetails/${(activeAuction.id)}`)
+      setLoading(false);
+
+    }
+    catch (e) {
+      dispatch(setAlert({
+        type : 'error',
+        message: e
+      }))
+    }
+
+
   };
 
 
