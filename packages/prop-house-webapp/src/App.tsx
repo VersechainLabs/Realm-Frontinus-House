@@ -5,6 +5,7 @@ import React, { Suspense, useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import Create from './pages/Create';
+import ApplicationCreate from './pages/ApplicationCreate';
 import House from './pages/House';
 import Footer from './components/Footer';
 import './App.css';
@@ -136,6 +137,10 @@ function App() {
                         <Create />
                       </ProtectedRoute>
                     }
+                  />
+                  <Route
+                    path="application/create"
+                    element={ <ApplicationCreate /> }
                   />
                   <Route path="/create-round" element={<CreateRound />} />
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
