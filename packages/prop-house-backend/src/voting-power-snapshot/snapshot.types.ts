@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsEthereumAddress } from 'class-validator';
+import { IsEthereumAddress, isString } from 'class-validator';
 
 import {
   IsArray,
@@ -36,6 +36,15 @@ export enum Order {
 }
 
 export class GetSnapshotDto {
+  @IsOptional()
+  @IsString()
+  address?: string;
+
+  @IsOptional()
+  @IsInt()
+  @Transform(({ value }) => Number(value))
+  blockNum?: number;
+
   @IsOptional()
   @IsInt()
   @Min(1)

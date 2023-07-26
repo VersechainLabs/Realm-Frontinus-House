@@ -12,6 +12,7 @@ import {
   import { SnapshotService } from './snapshot.service';
   import { DelegateService } from 'src/delegate/delegate.service';
   import { AdminService } from 'src/admin/admin.service';
+import { BlockchainService } from 'src/blockchain/blockchain.service';
   
   @Controller('snapshots')
   export class SnapshotController {
@@ -20,11 +21,13 @@ import {
       private readonly snapshotService: SnapshotService,
       private readonly delegateService: DelegateService,
       private readonly adminService: AdminService,
+      private readonly blockchainService: BlockchainService,
     ) {}
   
     @Get('/list')
     async getAll(@Body() dto: GetSnapshotDto) {
-      return await this.snapshotService.cacheAll(17665090);
+      return await this.blockchainService.getVotingPowerWithSnapshot(dto.address, dto.blockNum);
+      // return await this.blockchainService.cacheAll(17665090);
     }
   
     // @Post('/create')

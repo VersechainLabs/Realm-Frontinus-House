@@ -17,10 +17,10 @@ export class SnapshotService {
 
   constructor(
     @InjectRepository(Snapshot) private snapshotRepository: Repository<Snapshot>,
-    private readonly blockchainService: BlockchainService,
+    // private readonly blockchainService: BlockchainService,
     private readonly delegateService: DelegateService,
     private readonly delegationService: DelegationService,
-  ) {}
+    ) {}
 
   findBy(
     blockNum: number,
@@ -31,59 +31,55 @@ export class SnapshotService {
     });
   }
 
-  async cacheAll(blockNum: number) {
-    const activeDelegations = await this.delegationService.findByState(DelegationState.ACTIVE)
+  // async cacheAll(blockNum: number) {
+  //   const activeDelegations = await this.delegationService.findByState(DelegationState.ACTIVE)
 
-    let allDelegates = [];
+  //   let allDelegates = [];
 
-    for (const delegation of activeDelegations) {
-      const delegates = await this.delegateService.findByDelegationId(delegation.id);
-      allDelegates = allDelegates.concat(delegates);
-    }
+  //   for (const delegation of activeDelegations) {
+  //     const delegates = await this.delegateService.findByDelegationId(delegation.id);
+  //     allDelegates = allDelegates.concat(delegates);
+  //   }
 
-    // console.log("allDelegates:", allDelegates);
+  //   // console.log("allDelegates:", allDelegates);
 
-    let allAddress = [];
+  //   let allAddress = [];
 
-    // Cache both "from" & "to" address, b/c also need to count in "toAddress"'s voting power:
-    for (const delegate of allDelegates) {
-      if (!allAddress.includes(delegate.toAddress)) {
-        allAddress.push(delegate.toAddress);
-      }
-      if (!allAddress.includes(delegate.fromAddress)) {
-        allAddress.push(delegate.fromAddress);
-      }
-    }
+  //   // Cache both "from" & "to" address, b/c also need to count in "toAddress"'s voting power:
+  //   for (const delegate of allDelegates) {
+  //     if (!allAddress.includes(delegate.toAddress)) {
+  //       allAddress.push(delegate.toAddress);
+  //     }
+  //     if (!allAddress.includes(delegate.fromAddress)) {
+  //       allAddress.push(delegate.fromAddress);
+  //     }
+  //   }
 
-    // console.log("allAddress:", allAddress);
+  //   // console.log("allAddress:", allAddress);
 
-    for (const address of allAddress) {
-      try {
-        // const votingPower = await this.blockchainService.getVotingPower("0xcdFe3d7eBFA793675426F150E928CD395469cA53", process.env.COMMUNITY_ADDRESS, 17665090);
-        const votingPower = await this.blockchainService.getVotingPower(address, process.env.COMMUNITY_ADDRESS, blockNum);
+  //   for (const address of allAddress) {
+  //     try {
+  //       // const votingPower = await this.blockchainService.getVotingPower("0xcdFe3d7eBFA793675426F150E928CD395469cA53", process.env.COMMUNITY_ADDRESS, 17665090);
+  //       const votingPower = await this.blockchainService.getVotingPowerOnChain(address, blockNum);
 
-        console.log("[getVotingPower success]", address, votingPower);
+  //       console.log("[getVotingPower success]", address, votingPower);
         
-        const snapshot = new Snapshot();
-        snapshot.blockNum = blockNum;
-        snapshot.address = address;
-        snapshot.votingPower = votingPower;
+  //       const snapshot = new Snapshot();
+  //       snapshot.blockNum = blockNum;
+  //       snapshot.address = address;
+  //       snapshot.votingPower = votingPower;
 
-        const newRecord = await this.snapshotRepository.save(snapshot);
-      } catch (error) {
-        console.log("[getVotingPower error]", address, error.message);
-      }
-    }
+  //       const newRecord = await this.snapshotRepository.save(snapshot);
+  //     } catch (error) {
+  //       console.log("[getVotingPower error]", address, error.message);
+  //     }
+  //   }
 
-    return "all done";
-  }
+  //   return "all done";
+  // }
 
   async store(value: Snapshot): Promise<Snapshot> {
     return await this.snapshotRepository.save(value, { reload: true });
   }
-  // calculateVotingPower(fromAddress: string) {
-  //     let vPower = this.blockchainService.getVotingPower(
-  //         fromAddress, 
-  //         process.env.COMMUNITY_ADDRESS,)
-  // }
+
 }

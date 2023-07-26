@@ -17,10 +17,13 @@ import { SnapshotController } from './snapshot.controller';
 import { SnapshotService } from './snapshot.service';
 import { Snapshot } from './snapshot.entity';
 import { BlockchainService } from 'src/blockchain/blockchain.service';
+import { VotesService } from 'src/vote/votes.service';
+import { Vote } from 'src/vote/vote.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      Vote,
       Snapshot,
       Delegate,
       Delegation,
@@ -32,6 +35,7 @@ import { BlockchainService } from 'src/blockchain/blockchain.service';
   ],
   controllers: [SnapshotController],
   providers: [
+    VotesService,
     SnapshotService,
     DelegateService,
     DelegationService,

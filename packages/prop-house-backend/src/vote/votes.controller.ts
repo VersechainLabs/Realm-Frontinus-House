@@ -47,11 +47,16 @@ export class VotesController {
       foundProposal.auctionId,
     );
 
-    return this.blockchainService.getVotingPower(
+    return this.blockchainService.getVotingPowerWithSnapshot(
       address,
-      foundProposalAuction.community.contractAddress,
       foundProposalAuction.balanceBlockTag,
     );
+    // Old:
+    // return this.blockchainService.getVotingPower(
+    //   address,
+    //   foundProposalAuction.community.contractAddress,
+    //   foundProposalAuction.balanceBlockTag,
+    // );
     // Sample:
     // return getVotingPower(
     //   address,
