@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
 import BlotFormatter from 'quill-blot-formatter';
+import getPlaceholderModule from 'quill-placeholder-module';
 import { Form } from 'react-bootstrap';
 import clsx from 'clsx';
 import classes from './QuillEditor.module.css';
@@ -20,6 +21,7 @@ type QuillEditorProps = {
   onQuillInit?: (quill: Quill) => void;
   onButtonClick?: (widgetKey: string) => void;
   btnText:string | 'Submit';
+  placeholderText:string;
 }
 
 export default function QuillEditor(props: QuillEditorProps) {
@@ -42,6 +44,11 @@ export default function QuillEditor(props: QuillEditorProps) {
   const { address: account } = useAccount();
   const { openConnectModal } = useConnectModal();
 
+  const getPlaceholderModule = require('quill-placeholder-module').default;
+
+
+
+
   const modules = {
     // toolbar: {
     //   container: [
@@ -57,11 +64,18 @@ export default function QuillEditor(props: QuillEditorProps) {
       matchVisual: false,
     },
   };
+
+  const placeholder =  props.placeholderText;
+
+
   const theme = 'snow';
 
-  const { quill, quillRef, Quill } = useQuill({ theme, modules, formats });
+  const { quill, quillRef, Quill } = useQuill({ theme, modules,placeholder,formats});
   if (Quill && !quill) {
     Quill.register('modules/blotFormatter', BlotFormatter);
+    Quill.register('modules/placeholder', getPlaceholderModule(Quill, {
+      className: 'ql-placeholder-content'  // default
+    }))
   }
 
   useEffect(() => {
