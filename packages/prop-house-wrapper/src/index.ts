@@ -220,6 +220,28 @@ export class PropHouseWrapper {
     }
   }
 
+  async getAuctionWithIDForCommunity(
+      auctionID: number
+  ): Promise<StoredAuctionBase> {
+    try {
+      const rawTimedAuction = (
+          await axios.get(`${this.host}/auctions/pk/${auctionID}`)
+      ).data;
+      return StoredTimedAuction.FromResponse(rawTimedAuction);
+    } catch (e:any) {
+      // try {
+      //   const rawInfAuction = (
+      //       await axios.get(`${this.host}/infinite-auctions/${auctionName}/community/${communityId}`)
+      //   ).data;
+      //   return StoredInfiniteAuction.FromResponse(rawInfAuction);
+      // } catch (e: any) {
+        throw e.response.data.message;
+      // }
+    }
+  }
+
+
+
   async getDelegateDetails(
     id: number,
   ): Promise<StoredAuctionBase> {
