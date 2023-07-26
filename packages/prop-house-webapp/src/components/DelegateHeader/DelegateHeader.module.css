@@ -39,7 +39,7 @@
 
 .communityDescriptionRow p {
   font-size: large;
-  color: var(--brand-gray);
+  /*color: var(--brand-gray);*/
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
