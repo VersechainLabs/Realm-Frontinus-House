@@ -14,6 +14,7 @@ import { ProposalsModule } from 'src/proposal/proposals.module';
 import { TasksModule } from 'src/task/tasks.module';
 import { VotesModule } from 'src/vote/votes.module';
 import config from '../../ormconfig';
+import { SnapshotModule } from 'src/voting-power-snapshot/snapshot.module';
 
 /**
  * Import and provide base typeorm (mysql) related classes.
@@ -35,6 +36,7 @@ import config from '../../ormconfig';
     DelegateModule,
     CommentsModule,
     AdminModule,
+    SnapshotModule,
     TypeOrmModule.forRoot(config),
   ],
 })

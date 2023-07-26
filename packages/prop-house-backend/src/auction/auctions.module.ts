@@ -9,9 +9,15 @@ import { AuctionsResolver } from './auction.resolver';
 import { AuctionsController } from './auctions.controller';
 import { AuctionsService } from './auctions.service';
 import { BlockchainService } from '../blockchain/blockchain.service';
+import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
+import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
+import { DelegateService } from 'src/delegate/delegate.service';
+import { Delegate } from 'src/delegate/delegate.entity';
+import { DelegationService } from 'src/delegation/delegation.service';
+import { Delegation } from 'src/delegation/delegation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Auction, Proposal, Community])],
+  imports: [TypeOrmModule.forFeature([Auction, Proposal, Community, Snapshot, Delegate, Delegation])],
   controllers: [AuctionsController],
   providers: [
     AuctionsService,
@@ -19,6 +25,9 @@ import { BlockchainService } from '../blockchain/blockchain.service';
     AuctionsResolver,
     CommunitiesService,
     BlockchainService,
+    SnapshotService,
+    DelegateService,
+    DelegationService
   ],
   exports: [TypeOrmModule],
 })
