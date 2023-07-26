@@ -1,16 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
 import { Repository } from 'typeorm';
-import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
 import { Application } from './application.entity';
-import {
-  CreateApplicationDto,
-  GetApplicationDto,
-  LatestDto,
-} from './application.types';
+import { CreateApplicationDto, GetApplicationDto } from './application.types';
+import { Delegate } from '../delegate/delegate.entity';
 
 export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
@@ -22,7 +17,16 @@ export class ApplicationService {
     @InjectRepository(Delegation)
     private delegationRepository: Repository<Delegation>,
     @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
   ) {}
+
+  findOne(id: number): Promise<Application> {
+    return this.applicationRepository.findOne(id, {
+      relations: ['delegation'],
+      where: { visible: true },
+    });
+  }
 
   findAll(): Promise<Application[]> {
     return this.applicationRepository.find({
@@ -40,7 +44,6 @@ export class ApplicationService {
     // communityId: number,
     dto: CreateApplicationDto,
   ) {
-
     // Delegation must exists:
     const delegation = await this.delegationRepository.findOne(
       dto.delegationId,
@@ -54,23 +57,34 @@ export class ApplicationService {
     }
 
     // Same Application must NOT exists:
-    const exstingApplication = await this.applicationRepository.findOne({
+    const existingApplication = await this.applicationRepository.findOne({
       where: { delegationId: dto.delegationId, address: dto.address },
     });
 
-    if (exstingApplication) {
+    if (existingApplication) {
       throw new HttpException(
-        'Applicatoin already exists!',
+        'Application already exists!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Can not create application if he already delegate to another user.
+    const existingDelegate = await this.delegateRepository.findOne({
+      where: { delegationId: dto.delegationId, fromAddress: dto.address },
+    });
+    if (existingDelegate) {
+      throw new HttpException(
+        'Already delegate to another',
         HttpStatus.BAD_REQUEST,
       );
     }
 
     // Create:
-    const newApplicaiton = this.applicationRepository.create({
+    const newApplication = this.applicationRepository.create({
       ...dto,
       delegation,
     });
-    return await this.applicationRepository.save(newApplicaiton);
+    return await this.applicationRepository.save(newApplication);
   }
 
   async findByDelegation(
@@ -86,114 +100,17 @@ export class ApplicationService {
       .orderBy('id', dto.order)
       .getRawMany();
   }
-  // latestNumProps(dto: LatestDto): Promise<number> {
-  //   const timestamp = new Date(dto.timestamp); // Convert Unix timestamp (ms) to Date object
-  //   return this.auctionsRepository
-  //     .createQueryBuilder('a')
-  //     .leftJoin('a.proposals', 'p')
-  //     .select('COUNT(p.id)', 'numProposals')
-  //     .where('a.id = :auctionId AND p.createdDate > :timestamp', {
-  //       auctionId: dto.auctionId,
-  //       timestamp: timestamp,
-  //     })
-  //     .getRawOne()
-  //     .then((result) => result.numProposals);
-  // }
 
-  // latestNumVotes(dto: LatestDto): Promise<number> {
-  //   const timestamp = new Date(dto.timestamp); // Convert Unix timestamp (ms) to Date object
-  //   return this.auctionsRepository
-  //     .createQueryBuilder('a')
-  //     .leftJoinAndSelect('a.proposals', 'p')
-  //     .leftJoinAndSelect('p.votes', 'v')
-  //     .where('a.id = :auctionId AND v.createdDate > :timestamp', {
-  //       auctionId: dto.auctionId,
-  //       timestamp: timestamp,
-  //     })
-  //     .getOne()
-  //     .then((auction) => {
-  //       if (!auction) return 0; // Auction not found
-  //       return auction.proposals.reduce((totalVotes, proposal) => {
-  //         return (
-  //           totalVotes +
-  //           proposal.votes.reduce((totalWeight, vote) => {
-  //             return totalWeight + Number(vote.weight);
-  //           }, 0)
-  //         );
-  //       }, 0);
-  //     });
-  // }
-
-  // findWithNameForCommunity(name: string, id: number): Promise<Auction> {
-  //   const parsedName = name.replaceAll('-', ' '); // parse slug to name
-  //   return this.auctionsRepository
-  //     .createQueryBuilder('a')
-  //     .select('a.*')
-  //     .where('a.title ILIKE :parsedName', { parsedName }) // case insensitive
-  //     .andWhere('a.community.id = :id', { id })
-  //     .getRawOne();
-  // }
-
-  // findOne(id: number): Promise<Auction> {
-  //   return this.auctionsRepository.findOne(id, {
-  //     relations: ['proposals'],
-  //     loadRelationIds: {
-  //       relations: ['community'],
-  //     },
-  //     where: { visible: true },
-  //   });
-  // }
-
-  // findOneWithCommunity(id: number): Promise<Auction> {
-  //   return this.auctionsRepository.findOne(id, {
-  //     relations: ['proposals', 'community'],
-  //     where: { visible: true },
-  //   });
-  // }
-
-  // findWhere(
-  //   start: number,
-  //   limit: number,
-  //   where: Partial<Auction>,
-  //   relations: string[] = [],
-  //   relationIds?: string[],
-  // ) {
-  //   return this.auctionsRepository.find({
-  //     skip: start,
-  //     take: limit,
-  //     where,
-  //     order: { id: 'ASC' },
-  //     relations,
-  //     loadRelationIds: relationIds ? { relations: relationIds } : undefined,
-  //   });
-  // }
-
-  // async remove(id: number): Promise<void> {
-  //   await this.auctionsRepository.delete(id);
-  // }
+  async findByAddress(
+    delegationId: number,
+    address: string,
+  ): Promise<Application> {
+    return await this.applicationRepository.findOne({
+      where: { delegationId, address },
+    });
+  }
 
   async store(value: Application): Promise<Application> {
     return await this.applicationRepository.save(value, { reload: true });
   }
-
-  // // Chao
-  // async createAuctionByCommunity(
-  //   // communityId: number,
-  //   createAcutionDetails: CreateAuctionDto
-  // ) {
-  //   // console.log("createAcutionDetails.communityId:" + createAcutionDetails.communityId);
-  //   const community = await this.communitiesRepository.findOne(createAcutionDetails.communityId);
-
-  //   if (!community) {
-  //     throw new HttpException(
-  //       'Community not found. Cannot create auction',
-  //       HttpStatus.BAD_REQUEST,
-  //     );
-  //   }
-
-  //   const newAuction = this.auctionsRepository.create({...createAcutionDetails, community});
-  //   const savedAuction = await this.auctionsRepository.save(newAuction);
-
-  //   return savedAuction;
-  // }
 }

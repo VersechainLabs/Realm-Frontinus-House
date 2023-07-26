@@ -18,7 +18,6 @@ import { ApplicationService } from 'src/delegation-application/application.servi
 import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
 
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([
