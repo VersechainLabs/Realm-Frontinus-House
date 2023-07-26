@@ -1,6 +1,7 @@
 import { StoredAuctionBase, StoredTimedAuction } from '@nouns/prop-house-wrapper/dist/builders';
 import dayjs from 'dayjs';
 import { isInfAuction } from './auctionType';
+import diffTime from "./diffTime";
 
 export enum AuctionStatus {
   AuctionNotStarted,
@@ -108,7 +109,7 @@ export const delegateStatus = (auction: any): DelegateVoteStatus => {
 export const delegateDeadlineCopy = (auction: any) => {
   const status = delegateStatus(auction);
   return status === DelegateVoteStatus.DelegateNotStarted
-      ? 'Delegation starts'
+      ? 'Open to accept applicant'
       : status === DelegateVoteStatus.DelegateAccepting
           ? 'Last date to accept applicant'
               : status === DelegateVoteStatus.DelegateDelegating
@@ -121,8 +122,16 @@ export const delegateDeadlineCopy = (auction: any) => {
 };
 
 export const delegateDeadlineTime = (auction: any) =>
+
     delegateStatus(auction) === DelegateVoteStatus.DelegateNotStarted
-        ? auction.startTime
-        : delegateStatus(auction) === DelegateVoteStatus.DelegateDelegating
+    ? auction.startTime
+    : delegateStatus(auction) === DelegateVoteStatus.DelegateAccepting
         ? auction.proposalEndTime
-        : auction.votingEndTime;
+        : delegateStatus(auction) === DelegateVoteStatus.DelegateDelegating
+            ? auction.votingEndTime
+            : delegateStatus(auction) === DelegateVoteStatus.DelegateGranted
+                ? auction.endTime
+                : delegateStatus(auction) === DelegateVoteStatus.DelegateEnd
+                    ? auction.endTime
+                    : auction.endTime;
+

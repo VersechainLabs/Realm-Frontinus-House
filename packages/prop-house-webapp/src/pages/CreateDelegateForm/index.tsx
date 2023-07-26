@@ -155,6 +155,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       return;
     }
   };
+
   return (
     <div className={classes.blackBg}>
       <Container>

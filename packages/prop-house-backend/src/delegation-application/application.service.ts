@@ -40,10 +40,11 @@ export class ApplicationService {
     // communityId: number,
     dto: CreateApplicationDto,
   ) {
+
+    // Delegation must exists:
     const delegation = await this.delegationRepository.findOne(
       dto.delegationId,
     );
-    console.log('delegation', delegation);
 
     if (!delegation) {
       throw new HttpException(
@@ -51,8 +52,20 @@ export class ApplicationService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    console.log('dto:', dto);
 
+    // Same Application must NOT exists:
+    const exstingApplication = await this.applicationRepository.findOne({
+      where: { delegationId: dto.delegationId, address: dto.address },
+    });
+
+    if (exstingApplication) {
+      throw new HttpException(
+        'Applicatoin already exists!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Create:
     const newApplicaiton = this.applicationRepository.create({
       ...dto,
       delegation,

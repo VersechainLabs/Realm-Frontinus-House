@@ -5,6 +5,7 @@ import { Delegate } from './delegate.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
+import { CreateDelegateDto } from './delegate.types';
 // import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
 
 export type AuctionWithProposalCount = Delegate & { numProposals: number };
@@ -58,6 +59,16 @@ export class DelegateService {
     return this.delegateRepository.find({
       where: { delegationId, toAddress },
     });
+  }
+
+  async checkDuplication(dto: CreateDelegateDto): Promise<boolean> {
+    const delegate = await this.delegateRepository.findOne({
+      where: { delegationId: dto.delegationId, applicationId: dto.applicationId, fromAddress: dto.fromAddress, toAddress: dto.toAddress },
+    });
+
+    if (delegate) return true;
+
+    return false;
   }
 
   async store(proposal: Delegate): Promise<Delegate> {

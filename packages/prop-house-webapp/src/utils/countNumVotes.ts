@@ -5,5 +5,4 @@ import { SignatureState, StoredVote } from '@nouns/prop-house-wrapper/dist/build
  */
 export const countNumVotes = (votes: StoredVote[]) =>
   votes
-    .filter(v => v.signatureState === SignatureState.VALIDATED)
     .reduce((prev, current) => prev + Number(current.weight), 0);

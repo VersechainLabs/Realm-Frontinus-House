@@ -1,39 +1,29 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
 import { Proposal } from 'src/proposal/proposal.entity';
 import { CreateVoteDto } from 'src/vote/vote.types';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 
-/**
- * Verifies that signed vote matches CreateVoteDto
- * @returns decoded vote jsonb from signed payload
- */
-export const verifySignedPayload = (
-  createVoteDto: CreateVoteDto,
-  proposal: Proposal,
-) => {
-  // Get corresponding vote from signed payload (bulk voting payloads may have multiple votes)
+export const verifySignPayloadForVote = (createVoteDto: CreateVoteDto) => {
   const signedPayload = JSON.parse(
     Buffer.from(createVoteDto.signedData.message, 'base64').toString(),
   );
 
-  const voteDtos: CreateVoteDto[] = signedPayload.votes;
-  const voteFromPayload = voteDtos.find((v) => v.proposalId === proposal.id);
-
-  if (!voteFromPayload)
-    throw new HttpException(
-      'Signed payload does not contain vote for proposal being voted on (dto)',
-      HttpStatus.NOT_FOUND,
-    );
-
-  // Verify that signed payload is for corresponding prop and community
   if (
-    voteFromPayload.proposalId !== createVoteDto.proposalId ||
-    voteFromPayload.communityAddress !== createVoteDto.communityAddress ||
-    voteFromPayload.weight !== createVoteDto.weight
-  )
+    createVoteDto.signedData.signer.toLowerCase() !==
+    createVoteDto.address.toLowerCase()
+  ) {
     throw new HttpException(
-      "Signed payload and supplied data doesn't match",
+      'Signature validation Failed',
       HttpStatus.BAD_REQUEST,
     );
+  }
 
-  return voteFromPayload;
+  if (signedPayload.proposalId !== createVoteDto.proposalId) {
+    throw new HttpException(
+      'Signature validation Failed',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  return createVoteDto;
 };

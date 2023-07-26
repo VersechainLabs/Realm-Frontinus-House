@@ -1,26 +1,26 @@
 import { Wallet } from '@ethersproject/wallet';
 import axios from 'axios';
 import {
-  TimedAuction,
-  Proposal,
-  StoredTimedAuction,
-  StoredFile,
-  StoredVote,
-  Vote,
   Community,
   CommunityWithAuctions,
-  UpdatedProposal,
   DeleteProposal,
-  StoredInfiniteAuction,
-  StoredAuctionBase,
   InfiniteAuctionProposal,
+  Proposal,
+  StoredAuctionBase,
+  StoredFile,
+  StoredInfiniteAuction,
+  StoredTimedAuction,
+  StoredVote,
   StoredVoteWithProposal,
+  TimedAuction,
+  UpdatedProposal,
+  Vote,
 } from './builders';
 import FormData from 'form-data';
 import * as fs from 'fs';
 
 import {
-  DeleteProposalMessageTypes,
+  DeleteProposalMessageTypes, DomainSeparator,
   EditProposalMessageTypes,
   InfiniteAuctionProposalMessageTypes,
   TimedAuctionProposalMessageTypes,
@@ -36,11 +36,12 @@ export class PropHouseWrapper {
   constructor(
     private readonly host: string,
     private readonly signer: Signer | Wallet | null | undefined = undefined,
-  ) {}
+  ) {
+  }
 
   async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
     try {
-      return (await axios.post(`${this.host}/auctions/create`, auction )).data;
+      return (await axios.post(`${this.host}/auctions/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -48,7 +49,7 @@ export class PropHouseWrapper {
 
   async createDelegateAuction(auction: any): Promise<any[]> {
     try {
-      return (await axios.post(`${this.host}/delegations/create`, auction )).data;
+      return (await axios.post(`${this.host}/delegations/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -107,7 +108,7 @@ export class PropHouseWrapper {
   async getDelegateForCommunity(): Promise<StoredAuctionBase[]> {
     try {
       const [rawTimedAuctions] = await Promise.allSettled([
-        axios.get(`${this.host}/delegations/list/`)
+        axios.get(`${this.host}/delegations/list/`),
       ]);
 
       const timed =
@@ -136,6 +137,7 @@ export class PropHouseWrapper {
       throw e.response.data.message;
     }
   }
+
   async getActiveAuctionsForCommunities(
     skip = 5,
     limit = 5,
@@ -226,7 +228,7 @@ export class PropHouseWrapper {
         await axios.get(`${this.host}/delegations/${id}`)
       ).data;
       return StoredTimedAuction.FromResponse(rawTimedAuction);
-    } catch (e: any ) {
+    } catch (e: any) {
       throw e.response.data.message;
     }
   }
@@ -286,6 +288,26 @@ export class PropHouseWrapper {
     }
   }
 
+  async createApplication(proposal: Proposal | InfiniteAuctionProposal, isContract = false) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await proposal.signedPayload(
+        this.signer,
+        isContract,
+        proposal instanceof Proposal
+          ? TimedAuctionProposalMessageTypes
+          : InfiniteAuctionProposalMessageTypes,
+      );
+
+      signedPayload.description = signedPayload.what;
+      signedPayload.delegationId = signedPayload.parentAuctionId;
+
+      return (await axios.post(`${this.host}/applications/create`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async updateProposal(updatedProposal: UpdatedProposal, isContract = false) {
     if (!this.signer) return;
     try {
@@ -338,6 +360,31 @@ export class PropHouseWrapper {
   async getNumVotesCastedForRound(account: string, roundId: number) {
     try {
       return (await axios.get(`${this.host}/votes/numVotes/${account}/${roundId}`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async createVote(vote: Vote) {
+    if (!this.signer) return;
+    try {
+      let payload = {
+        'proposalId': vote.proposalId,
+      };
+      const signMessage = JSON.stringify(payload);
+      const signature = await this.signer.signMessage(signMessage);
+      const owner = await this.signer.getAddress();
+      const signedPayload = {
+        signedData: {
+          message: Buffer.from(signMessage).toString('base64'),
+          signature,
+          signer: owner,
+        },
+        address: owner,
+        proposalId: vote.proposalId,
+      };
+
+      return (await axios.post(`${this.host}/votes`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }

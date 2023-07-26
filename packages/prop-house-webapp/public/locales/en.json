@@ -175,6 +175,7 @@
   "tldrError": "TLDR must be between 10 & 120 characters",
   "descriptionError": "Description must be 50 characters minimum",
   "submittedProposals": "Submitted proposals will show up here.",
+  "submittedApplications": "Submitted applications will show up here.",
   "fundingRound": "funding round",
   "addLink": "Add Link",
   "addImage": "Add Image",
