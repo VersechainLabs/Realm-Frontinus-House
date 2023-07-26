@@ -96,9 +96,7 @@ export class AuctionsController {
   async findWithIDForCommunity(
       @Param('id') id: number
   ): Promise<Auction> {
-    const auction = await this.auctionsService.findWithIDForCommunity(
-        id,
-    );
+    const auction = await this.auctionsService.findWithIDForCommunity(id);
     if (!auction)
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
     return auction;
