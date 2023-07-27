@@ -61,6 +61,16 @@ export class DelegationController {
       throw new HttpException('Time order incorrect!', HttpStatus.BAD_REQUEST);
     }
 
+    // Check whether the effective time of the current incoming delegation conflicts with the existing delegation.
+    const conflictDelegateList =
+      await this.delegationService.getConflictDelegateByTimeRange(dto);
+    if (conflictDelegateList.length > 0) {
+      throw new HttpException(
+        `The effective time of the delegation conflicts with the delegation: ${conflictDelegateList[0].title}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const delegation = new Delegation();
     delegation.title = dto.title;
     delegation.description = dto.description;

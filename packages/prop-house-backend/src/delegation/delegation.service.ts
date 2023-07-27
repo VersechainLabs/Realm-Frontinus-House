@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { Delegation } from './delegation.entity';
-import { DelegationState } from './delegation.types';
+import { CreateDelegationDto, DelegationState } from './delegation.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 
@@ -72,6 +72,23 @@ export class DelegationService {
     } else {
       return DelegationState.EXPIRED;
     }
+  }
+
+  getConflictDelegateByTimeRange(
+    dto: CreateDelegationDto,
+  ): Promise<Delegation[]> {
+    return this.delegationRepository.find({
+      where: [
+        {
+          visible: true,
+          votingEndTime: Between(dto.votingEndTime, dto.endTime),
+        },
+        {
+          visible: true,
+          endTime: Between(dto.votingEndTime, dto.endTime),
+        },
+      ],
+    });
   }
 
   async findByState(

@@ -1,16 +1,14 @@
 import { Transform } from 'class-transformer';
-import { IsEthereumAddress } from 'class-validator';
-
 import {
   IsArray,
   IsEnum,
   IsInt,
-  IsNumber,
+  IsNotEmpty,
   IsOptional,
-  IsPositive,
   IsString,
+  MaxLength,
   Min,
-  isEthereumAddress,
+  MinLength,
 } from 'class-validator';
 
 export class CreateDelegationDto {
@@ -30,7 +28,10 @@ export class CreateDelegationDto {
   @IsString()
   endTime: Date;
 
+  @MinLength(3)
+  @MaxLength(100)
   @IsString()
+  @IsNotEmpty()
   title: string;
 
   @IsString()
