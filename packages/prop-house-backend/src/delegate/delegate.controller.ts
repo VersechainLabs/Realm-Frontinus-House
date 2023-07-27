@@ -36,6 +36,17 @@ export class DelegateController {
       dto.applicationId,
     );
 
+    const currentTime = new Date();
+    if (
+      currentTime < application.delegation.proposalEndTime ||
+      currentTime > application.delegation.votingEndTime
+    ) {
+      throw new HttpException(
+        'Not in the eligible voting period.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const existDelegate = await this.delegateService.findByFromAddress(
       application.delegationId,
       dto.fromAddress,

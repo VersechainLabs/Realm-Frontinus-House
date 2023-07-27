@@ -1,9 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
-import { FindConditions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
-import { CreateCommentDto, GetCommentsDto, LatestDto } from './comment.types';
+import { CreateCommentDto, GetCommentsDto } from './comment.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
@@ -197,6 +196,14 @@ export class CommentsService {
     if (!proposal) {
       throw new HttpException(
         'Proposal not found. Cannot create comment',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const currentDate = new Date();
+    if (currentDate > proposal.auction.votingEndTime) {
+      throw new HttpException(
+        'Round has been closed. Cannot create comment',
         HttpStatus.BAD_REQUEST,
       );
     }

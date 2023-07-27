@@ -3,11 +3,14 @@ import {
   IsArray,
   IsEnum,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
   IsString,
+  MaxLength,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class CreateApplicationDto {
@@ -17,7 +20,10 @@ export class CreateApplicationDto {
   //   @IsString()
   //   signedData: string;
 
+  @MinLength(3)
+  @MaxLength(100)
   @IsString()
+  @IsNotEmpty()
   title: string;
 
   @IsString()
