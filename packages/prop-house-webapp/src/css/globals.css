@@ -87,6 +87,11 @@ p {
   --brand-gray-hint: rgba(102, 102, 102, 0.1);
   --brand-gray-border:#2C2C2D;
 
+
+  /* White*/
+  --brand-white: #F4EEDF;
+
+
   /* Utils */
   --bg-light: #1A1A1B;
   --bg-med: #fcfcfc;
