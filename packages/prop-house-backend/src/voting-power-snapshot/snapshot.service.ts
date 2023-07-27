@@ -14,18 +14,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class SnapshotService {
-
   constructor(
-    @InjectRepository(Snapshot) private snapshotRepository: Repository<Snapshot>,
+    @InjectRepository(Snapshot)
+    private snapshotRepository: Repository<Snapshot>,
     // private readonly blockchainService: BlockchainService,
     private readonly delegateService: DelegateService,
     private readonly delegationService: DelegationService,
-    ) {}
+  ) {}
 
-  findBy(
-    blockNum: number,
-    address: string,
-  ): Promise<Snapshot> {
+  findBy(blockNum: number, address: string): Promise<Snapshot> {
     return this.snapshotRepository.findOne({
       where: { address, blockNum },
     });
@@ -63,7 +60,7 @@ export class SnapshotService {
   //       const votingPower = await this.blockchainService.getVotingPowerOnChain(address, blockNum);
 
   //       console.log("[getVotingPower success]", address, votingPower);
-        
+
   //       const snapshot = new Snapshot();
   //       snapshot.blockNum = blockNum;
   //       snapshot.address = address;
@@ -81,5 +78,4 @@ export class SnapshotService {
   async store(value: Snapshot): Promise<Snapshot> {
     return await this.snapshotRepository.save(value, { reload: true });
   }
-
 }

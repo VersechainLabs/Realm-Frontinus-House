@@ -74,7 +74,7 @@ const DelegateHeader: React.FC<{
               ? `${dayjs().isBefore(auction.startTime) ? `Starts` : `Started`} ${formatTime(
                   auction.startTime,
                 )}`
-              : `${formatTime(auction.startTime)} - ${formatTime(auction.proposalEndTime)}`}
+              : `${formatTime(auction.startTime)} - ${formatTime(auction.endTime)}`}
           </div>
           <Col
             className={clsx(

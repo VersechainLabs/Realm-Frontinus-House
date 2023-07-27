@@ -28,7 +28,7 @@ import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
       Auction,
       Admin,
       Application,
-      Snapshot
+      Snapshot,
     ]),
   ],
   controllers: [DelegateController],

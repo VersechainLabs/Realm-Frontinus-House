@@ -33,13 +33,13 @@ export class ApplicationController {
     @Param('delegationId') delegationId: number,
     @Body() dto: GetApplicationDto,
   ) {
-    const applictions = await this.applicationService.findByDelegation(
+    const applications = await this.applicationService.findByDelegation(
       delegationId,
       dto,
     );
-    if (!applictions)
+    if (!applications)
       throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
-    return applictions;
+    return applications;
   }
 
   @Post('/create')
@@ -53,7 +53,7 @@ export class ApplicationController {
 
     if (!foundApplication)
       throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
-      
+
     return foundApplication;
   }
 }

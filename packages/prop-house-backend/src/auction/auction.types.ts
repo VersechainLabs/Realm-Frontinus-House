@@ -3,6 +3,7 @@ import {
   IsArray,
   IsEnum,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -22,6 +23,7 @@ export class CreateAuctionDto {
   votingEndTime: Date;
 
   @IsString()
+  @IsNotEmpty()
   title: string;
 
   @IsNumber()

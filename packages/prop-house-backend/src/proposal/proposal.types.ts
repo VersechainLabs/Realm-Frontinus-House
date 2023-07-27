@@ -3,6 +3,7 @@ import {
   IsEnum,
   IsIn,
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
@@ -15,6 +16,7 @@ export type ProposalParent = 'auction' | 'infinite-auction';
 
 export class CreateProposalDto extends SignedEntity {
   @IsString()
+  @IsNotEmpty()
   title: string;
 
   @IsString()

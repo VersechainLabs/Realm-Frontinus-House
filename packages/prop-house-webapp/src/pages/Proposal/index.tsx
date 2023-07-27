@@ -38,7 +38,7 @@ const Proposal = () => {
 
   const handleBackClick = () => {
     if (!community || !round) return;
-    navigate(buildRoundPath(community, round), { replace: false });
+    navigate(buildRoundPath(community, round)+`/${round.id}`, { replace: false });
   };
 
   useEffect(() => {

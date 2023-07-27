@@ -56,6 +56,17 @@ export class ApplicationService {
       );
     }
 
+    const currentDate = new Date();
+    if (
+      currentDate < delegation.startTime ||
+      currentDate > delegation.proposalEndTime
+    ) {
+      throw new HttpException(
+        'Not in the eligible create application period.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     // Same Application must NOT exists:
     const existingApplication = await this.applicationRepository.findOne({
       where: { delegationId: dto.delegationId, address: dto.address },
