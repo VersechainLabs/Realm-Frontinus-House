@@ -19,7 +19,6 @@ import {
 } from './vote.types';
 import { VotesService } from './votes.service';
 import { AuctionsService } from 'src/auction/auctions.service';
-import { SignatureState } from 'src/types/signature';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
@@ -92,59 +91,11 @@ export class VotesController {
     if (!foundProposalAuction) {
       throw new HttpException('No auction with that ID', HttpStatus.NOT_FOUND);
     }
-
-    let votingPower = await this.blockchainService.getVotingPowerWithSnapshot(
+    return this.votesService.getVotingPower(
       address,
-      foundProposalAuction.community.contractAddress,
-      foundProposalAuction.balanceBlockTag,
+      foundProposalAuction,
+      delegate,
     );
-
-    const result = {
-      address: address,
-      weight: votingPower,
-      actualWeight: votingPower,
-      blockNum: foundProposalAuction.balanceBlockTag,
-    } as VotingPower;
-
-    if (delegate) {
-      const delegateList = await this.votesService.getDelegateListByAuction(
-        address,
-        foundProposalAuction,
-      );
-
-      if (delegateList.length > 0) {
-        result.delegateList = [];
-      }
-      const _blockchainService = this.blockchainService;
-      votingPower = await delegateList.reduce(
-        async (prevVotingPower, currentDelegate) => {
-          const currentVotingPower =
-            await _blockchainService.getVotingPowerWithSnapshot(
-              currentDelegate.fromAddress,
-              foundProposalAuction.community.contractAddress,
-              foundProposalAuction.balanceBlockTag,
-            );
-
-          result.delegateList.push({
-            address: currentDelegate.fromAddress,
-            weight: 0,
-            actualWeight: currentVotingPower,
-            blockNum: foundProposalAuction.balanceBlockTag,
-          } as VotingPower);
-
-          return (await prevVotingPower) + currentVotingPower;
-        },
-        Promise.resolve(votingPower),
-      );
-      result.weight = votingPower;
-    }
-
-    return result;
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: number): Promise<Vote> {
-    return this.votesService.findOne(id);
   }
 
   @Get('by/:address')
@@ -168,6 +119,29 @@ export class VotesController {
     if (!votes)
       throw new HttpException('Votes not found', HttpStatus.NOT_FOUND);
     return votes;
+  }
+
+  @Get('getVotingEligibility')
+  async isEligibleToVote(
+    proposalId: number,
+    address: string,
+  ): Promise<boolean> {
+    const foundProposal = await this.proposalService.findOne(proposalId);
+    if (!foundProposal) {
+      throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+    }
+    const foundProposalAuction = await this.auctionService.findOneWithCommunity(
+      foundProposal.auctionId,
+    );
+    if (!foundProposalAuction) {
+      throw new HttpException('No auction with that ID', HttpStatus.NOT_FOUND);
+    }
+
+    return await this.votesService.checkEligibleToVote(
+      foundProposal,
+      foundProposalAuction,
+      address,
+    );
   }
 
   /**
@@ -202,18 +176,12 @@ export class VotesController {
     }
 
     const foundAuction = foundProposal.auction;
-
-    // Check if user has voted for this round, Protect against casting same vote twice
-    const sameAuctionVote = await this.votesService.findBy(
-      foundAuction.id,
+    await this.votesService.checkEligibleToVote(
+      foundProposal,
+      foundAuction,
       createVoteDto.address,
+      false,
     );
-    if (sameAuctionVote) {
-      throw new HttpException(
-        `Vote for prop ${foundProposal.id} failed because user has already been voted in this auction`,
-        HttpStatus.FORBIDDEN,
-      );
-    }
 
     const delegateList = await this.votesService.getDelegateListByAuction(
       createVoteDto.address,
@@ -221,7 +189,7 @@ export class VotesController {
     );
 
     const voteList: DelegatedVoteDto[] = [];
-    const vp = await this.votesService.getVotingPower(
+    const vp = await this.votesService.getVotingPowerByBlockNum(
       createVoteDto.address,
       foundAuction.balanceBlockTag,
     );
@@ -234,7 +202,7 @@ export class VotesController {
       actualWeight: vp,
     } as DelegatedVoteDto);
     for (const delegate of delegateList) {
-      const vp = await this.votesService.getVotingPower(
+      const vp = await this.votesService.getVotingPowerByBlockNum(
         delegate.fromAddress,
         foundAuction.balanceBlockTag,
       );
@@ -277,5 +245,10 @@ export class VotesController {
     await this.proposalService.rollupVoteCount(foundProposal.id);
 
     return convertVoteListToDelegateVoteList(voteResultList);
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: number): Promise<Vote> {
+    return this.votesService.findOne(id);
   }
 }
