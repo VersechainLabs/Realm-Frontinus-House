@@ -116,7 +116,7 @@ export class VotesService {
   ): Promise<number> {
     return this.blockchainService.getVotingPowerWithSnapshot(
       address,
-      // this.communityAddress,
+      this.communityAddress,
       balanceBlockTag,
     );
   }

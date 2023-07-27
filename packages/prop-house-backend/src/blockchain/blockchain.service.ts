@@ -17,7 +17,7 @@ export class BlockchainService {
   constructor(
     private readonly snapshotService: SnapshotService,
     private readonly delegateService: DelegateService,
-    private readonly delegationService: DelegationService,    
+    private readonly delegationService: DelegationService,
   ) {
     this.provider = new ethers.providers.JsonRpcProvider(config().Web3RpcUrl);
   }
@@ -29,11 +29,15 @@ export class BlockchainService {
 
   async getVotingPowerWithSnapshot(
     userAddress: string,
+    communityAddress: string,
     blockTag: number,
   ): Promise<number> {
     // First, search DB for snapshot:
-    const existSnapshot = await this.snapshotService.findBy(blockTag, userAddress);
-    console.log("First - existSnapshot:", existSnapshot);
+    const existSnapshot = await this.snapshotService.findBy(
+      blockTag,
+      userAddress,
+    );
+    console.log('First - existSnapshot:', existSnapshot);
 
     if (existSnapshot) {
       return existSnapshot.votingPower;
@@ -41,21 +45,24 @@ export class BlockchainService {
 
     // Second, snapshot not found, search on chain:
     await this.provider.ready;
-    const votingPowerOnChian = await getVotingPower(
+    console.log(`community: ${communityAddress}`);
+    const votingPowerOnChain = await getVotingPower(
       userAddress,
-      process.env.COMMUNITY_ADDRESS,
+      communityAddress,
       this.provider,
       blockTag,
     );
-    console.log("Second - votingPowerOnChian:", votingPowerOnChian);
+    console.log('Second - votingPowerOnChain:', votingPowerOnChain);
 
     // Then, save the on-chain voting power to DB.snapshot:
     const newSnapshot = new Snapshot();
     newSnapshot.blockNum = blockTag;
     newSnapshot.address = userAddress;
-    newSnapshot.votingPower = votingPowerOnChian;
+    newSnapshot.votingPower = votingPowerOnChain;
+    console.log('Then - store newSnapshot:', newSnapshot);
     this.snapshotService.store(newSnapshot);
-    console.log("Then - store newSnapshot:", newSnapshot);
+
+    return newSnapshot.votingPower;
   }
 
   async getVotingPowerOnChain(
@@ -69,7 +76,7 @@ export class BlockchainService {
       this.provider,
       blockTag,
     );
-  }  
+  }
 
   // Old:
   // async getVotingPower(
@@ -84,21 +91,25 @@ export class BlockchainService {
   //     this.provider,
   //     blockTag,
   //   );
-  // }  
+  // }
 
   async cacheAll(blockNum: number) {
-    const activeDelegations = await this.delegationService.findByState(DelegationState.ACTIVE)
+    const activeDelegations = await this.delegationService.findByState(
+      DelegationState.ACTIVE,
+    );
 
     let allDelegates = [];
 
     for (const delegation of activeDelegations) {
-      const delegates = await this.delegateService.findByDelegationId(delegation.id);
+      const delegates = await this.delegateService.findByDelegationId(
+        delegation.id,
+      );
       allDelegates = allDelegates.concat(delegates);
     }
 
     // console.log("allDelegates:", allDelegates);
 
-    let allAddress = [];
+    const allAddress = [];
 
     // Cache both "from" & "to" address, b/c also need to count in "toAddress"'s voting power:
     for (const delegate of allDelegates) {
@@ -117,8 +128,8 @@ export class BlockchainService {
         // const votingPower = await this.blockchainService.getVotingPower("0xcdFe3d7eBFA793675426F150E928CD395469cA53", process.env.COMMUNITY_ADDRESS, 17665090);
         const votingPower = await this.getVotingPowerOnChain(address, blockNum);
 
-        console.log("[getVotingPower success]", address, votingPower);
-        
+        console.log('[getVotingPower success]', address, votingPower);
+
         const snapshot = new Snapshot();
         snapshot.blockNum = blockNum;
         snapshot.address = address;
@@ -126,11 +137,10 @@ export class BlockchainService {
 
         const newRecord = await this.snapshotService.store(snapshot);
       } catch (error) {
-        console.log("[getVotingPower error]", address, error.message);
+        console.log('[getVotingPower error]', address, error.message);
       }
     }
 
-    return "all done";
+    return 'all done';
   }
-
 }

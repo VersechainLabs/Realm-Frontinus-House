@@ -93,24 +93,11 @@ export class VotesController {
       throw new HttpException('No auction with that ID', HttpStatus.NOT_FOUND);
     }
 
-
     let votingPower = await this.blockchainService.getVotingPowerWithSnapshot(
       address,
+      foundProposalAuction.community.contractAddress,
       foundProposalAuction.balanceBlockTag,
     );
-    // Old:
-    // return this.blockchainService.getVotingPower(
-    //   address,
-    //   foundProposalAuction.community.contractAddress,
-    //   foundProposalAuction.balanceBlockTag,
-    // );
-    // Sample:
-    // return getVotingPower(
-    //   address,
-    //   '0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d',
-    //   this.provider,
-    //   17665090,
-    // );
 
     const result = {
       address: address,
@@ -131,11 +118,12 @@ export class VotesController {
       const _blockchainService = this.blockchainService;
       votingPower = await delegateList.reduce(
         async (prevVotingPower, currentDelegate) => {
-          const currentVotingPower = await _blockchainService.getVotingPowerWithSnapshot(
-            currentDelegate.fromAddress,
-            // foundProposalAuction.community.contractAddress,
-            foundProposalAuction.balanceBlockTag,
-          );
+          const currentVotingPower =
+            await _blockchainService.getVotingPowerWithSnapshot(
+              currentDelegate.fromAddress,
+              foundProposalAuction.community.contractAddress,
+              foundProposalAuction.balanceBlockTag,
+            );
 
           result.delegateList.push({
             address: currentDelegate.fromAddress,
