@@ -44,7 +44,9 @@ const UserCardFooter: React.FC<{
               openInNewTab(`${window.location.href}/${userProps[cardIndex].id}`);
               return;
             }
-            navigate(`${userProps[cardIndex].id}`);
+            openInNewTab(`/proposal/${userProps[cardIndex].id}`);
+
+            // navigate(`/proposals/${userProps[cardIndex].id}`);
           }}
           className={classes.viewProposal}
         >
