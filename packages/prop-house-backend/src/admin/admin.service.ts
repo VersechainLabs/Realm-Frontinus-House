@@ -38,19 +38,17 @@ export class AdminService {
     return await this.adminRepository.save(newRecord);
   }
 
-
   async remove(id: number): Promise<void> {
     await this.adminRepository.delete(id);
   }
 
   async isAdmin(address: string): Promise<boolean> {
-      const adminList = await this.adminRepository.find();
+    const adminList = await this.adminRepository.find();
 
-      const isAdmin = adminList.find((v) => v.address === address);
-      
-      if (!isAdmin) return false;
+    const isAdmin = adminList.find((v) => v.address === address);
 
-      return true;
+    if (!isAdmin) return false;
+
+    return true;
   }
-    
 }

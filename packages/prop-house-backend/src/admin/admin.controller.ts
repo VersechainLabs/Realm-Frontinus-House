@@ -26,5 +26,5 @@ export class AdminsController {
   async delete(@Param('id') id: number): Promise<boolean> {
     await this.adminService.remove(id);
     return true;
-  }  
+  }
 }

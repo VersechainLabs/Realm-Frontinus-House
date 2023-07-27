@@ -17,7 +17,16 @@ import { DelegationService } from 'src/delegation/delegation.service';
 import { Delegation } from 'src/delegation/delegation.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Auction, Proposal, Community, Snapshot, Delegate, Delegation])],
+  imports: [
+    TypeOrmModule.forFeature([
+      Auction,
+      Proposal,
+      Community,
+      Snapshot,
+      Delegate,
+      Delegation,
+    ]),
+  ],
   controllers: [AuctionsController],
   providers: [
     AuctionsService,
@@ -27,7 +36,7 @@ import { Delegation } from 'src/delegation/delegation.entity';
     BlockchainService,
     SnapshotService,
     DelegateService,
-    DelegationService
+    DelegationService,
   ],
   exports: [TypeOrmModule],
 })

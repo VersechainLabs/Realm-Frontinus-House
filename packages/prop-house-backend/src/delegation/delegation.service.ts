@@ -1,14 +1,8 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { proposalCountSubquery } from 'src/utils/proposal-count-subquery';
-import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
+import { Between, LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { Delegation } from './delegation.entity';
-import {
-  CreateDelegationDto,
-  DelegationState,
-  GetDelegationDto,
-  LatestDto,
-} from './delegation.types';
+import { CreateDelegationDto, DelegationState } from './delegation.types';
 import { Community } from 'src/community/community.entity';
 import { Auction } from 'src/auction/auction.entity';
 
@@ -80,7 +74,27 @@ export class DelegationService {
     }
   }
 
-  async findByState(stateToFind: DelegationState, timeToFind?: Date): Promise<Delegation[]> {
+  getConflictDelegateByTimeRange(
+    dto: CreateDelegationDto,
+  ): Promise<Delegation[]> {
+    return this.delegationRepository.find({
+      where: [
+        {
+          visible: true,
+          votingEndTime: Between(dto.votingEndTime, dto.endTime),
+        },
+        {
+          visible: true,
+          endTime: Between(dto.votingEndTime, dto.endTime),
+        },
+      ],
+    });
+  }
+
+  async findByState(
+    stateToFind: DelegationState,
+    timeToFind?: Date,
+  ): Promise<Delegation[]> {
     if (timeToFind === undefined) {
       timeToFind = new Date();
     }
@@ -90,44 +104,39 @@ export class DelegationService {
         where: {
           visible: true,
           startTime: MoreThan(timeToFind),
-        }
+        },
       });
-    }
-    else if (stateToFind == DelegationState.APPLYING) {
+    } else if (stateToFind == DelegationState.APPLYING) {
       return this.delegationRepository.find({
         where: {
           visible: true,
           startTime: LessThanOrEqual(timeToFind),
           proposalEndTime: MoreThan(timeToFind),
-        }
+        },
       });
-    }
-    else if (stateToFind == DelegationState.DELEGATING) {
+    } else if (stateToFind == DelegationState.DELEGATING) {
       return this.delegationRepository.find({
         where: {
           visible: true,
           proposalEndTime: LessThanOrEqual(timeToFind),
           votingEndTime: MoreThan(timeToFind),
-        }
+        },
       });
-    }
-    else if (stateToFind == DelegationState.ACTIVE) {
+    } else if (stateToFind == DelegationState.ACTIVE) {
       return this.delegationRepository.find({
         where: {
           visible: true,
           votingEndTime: LessThanOrEqual(timeToFind),
           endTime: MoreThan(timeToFind),
-        }
+        },
       });
-    }
-    else if (stateToFind == DelegationState.EXPIRED) {
+    } else if (stateToFind == DelegationState.EXPIRED) {
       return this.delegationRepository.find({
         where: {
           visible: true,
           endTime: LessThanOrEqual(timeToFind),
-        }
+        },
       });
     }
   }
-
 }

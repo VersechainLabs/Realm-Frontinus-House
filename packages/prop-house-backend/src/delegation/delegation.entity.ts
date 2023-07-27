@@ -45,6 +45,10 @@ export class Delegation {
   applicationCount: number;
 
   @Column()
+  @Field(() => Date)
+  createdDate: Date;
+
+  @Column()
   @Field(() => Date, {
     description: 'After the Start Time users may submit proposals',
   })
@@ -69,10 +73,6 @@ export class Delegation {
       'Between Voting End Time and End Time, delegaters vote for users',
   })
   endTime: Date;
-
-  @Column()
-  @Field(() => Date)
-  createdDate: Date;
 
   @Column({ nullable: true })
   @Field(() => Date)

@@ -7,7 +7,7 @@ import {
   Repository,
 } from 'typeorm';
 import { Vote } from './vote.entity';
-import { DelegatedVoteDto, GetVoteDto } from './vote.types';
+import { DelegatedVoteDto, GetVoteDto, VotingPower } from './vote.types';
 import { Proposal } from 'src/proposal/proposal.entity';
 import config from 'src/config/configuration';
 import { BlockchainService } from '../blockchain/blockchain.service';
@@ -112,6 +112,60 @@ export class VotesService {
 
   async getVotingPower(
     address: string,
+    auction: Auction,
+    delegate: boolean,
+  ): Promise<VotingPower> {
+    let votingPower = await this.blockchainService.getVotingPowerWithSnapshot(
+      address,
+      auction.community.contractAddress,
+      auction.balanceBlockTag,
+    );
+
+    const result = {
+      address: address,
+      weight: votingPower,
+      actualWeight: votingPower,
+      blockNum: auction.balanceBlockTag,
+    } as VotingPower;
+
+    if (delegate) {
+      const delegateList = await this.getDelegateListByAuction(
+        address,
+        auction,
+      );
+
+      if (delegateList.length > 0) {
+        result.delegateList = [];
+      }
+      const _blockchainService = this.blockchainService;
+      votingPower = await delegateList.reduce(
+        async (prevVotingPower, currentDelegate) => {
+          const currentVotingPower =
+            await _blockchainService.getVotingPowerWithSnapshot(
+              currentDelegate.fromAddress,
+              auction.community.contractAddress,
+              auction.balanceBlockTag,
+            );
+
+          result.delegateList.push({
+            address: currentDelegate.fromAddress,
+            weight: 0,
+            actualWeight: currentVotingPower,
+            blockNum: auction.balanceBlockTag,
+          } as VotingPower);
+
+          return (await prevVotingPower) + currentVotingPower;
+        },
+        Promise.resolve(votingPower),
+      );
+      result.weight = votingPower;
+    }
+
+    return result;
+  }
+
+  async getVotingPowerByBlockNum(
+    address: string,
     balanceBlockTag: number,
   ): Promise<number> {
     return this.blockchainService.getVotingPowerWithSnapshot(
@@ -119,6 +173,49 @@ export class VotesService {
       this.communityAddress,
       balanceBlockTag,
     );
+  }
+
+  /**
+   * Check if the vote is valid. The checks include:
+   * - The proposal is within the valid voting period
+   * - The address has not voted in this round
+   * - The address has not delegated to another address
+   * - The address has voting power
+   */
+  async checkEligibleToVote(
+    proposal: Proposal,
+    auction: Auction,
+    address: string,
+    checkVotingPower = true,
+  ): Promise<boolean> {
+    const currentTime = new Date();
+    if (
+      currentTime < auction.proposalEndTime ||
+      currentTime > auction.votingEndTime
+    ) {
+      throw new HttpException(
+        'Not in the eligible voting period.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Check if user has voted for this round, Protect against casting same vote twice
+    const sameAuctionVote = await this.findBy(auction.id, address);
+    if (sameAuctionVote) {
+      throw new HttpException(
+        `Vote for prop ${proposal.id} failed because user has already been voted in this auction`,
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    if (checkVotingPower) {
+      const vp = await this.getVotingPower(address, auction, true);
+      if (vp.weight === 0) {
+        throw new HttpException('No Voting power.', HttpStatus.FORBIDDEN);
+      }
+    }
+
+    return true;
   }
 
   async createNewVoteList(voteDtoList: DelegatedVoteDto[], proposal: Proposal) {
