@@ -130,10 +130,10 @@ export class AuctionsService {
 
   findWithIDForCommunity(id: number): Promise<Auction> {
     return this.auctionsRepository
-        .createQueryBuilder('a')
-        .select('a.*')
-        .where('a.id=:id', { id })
-        .getRawOne();
+      .createQueryBuilder('a')
+      .select('a.*')
+      .where('a.id=:id', { id })
+      .getRawOne();
   }
 
   findOne(id: number): Promise<Auction> {

@@ -19,7 +19,15 @@ import { Delegation } from 'src/delegation/delegation.entity';
 @Module({
   imports: [
     ScheduleModule.forRoot(),
-    TypeOrmModule.forFeature([Proposal, Vote, Auction, Community, Snapshot, Delegate, Delegation]),
+    TypeOrmModule.forFeature([
+      Proposal,
+      Vote,
+      Auction,
+      Community,
+      Snapshot,
+      Delegate,
+      Delegation,
+    ]),
   ],
   providers: [
     ProposalsService,
@@ -28,7 +36,7 @@ import { Delegation } from 'src/delegation/delegation.entity';
     BlockchainService,
     SnapshotService,
     DelegateService,
-    DelegationService, 
+    DelegationService,
   ],
 })
 export class TasksModule {}

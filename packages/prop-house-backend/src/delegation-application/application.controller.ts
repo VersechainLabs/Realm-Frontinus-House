@@ -50,7 +50,7 @@ export class ApplicationController {
 
     if (!foundApplication)
       throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
-      
+
     return foundApplication;
   }
 }
