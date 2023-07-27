@@ -115,7 +115,8 @@ const ProposalInputs: React.FC<{
     dispatch(appendProposal({ proposal }));
     dispatch(clearProposal());
     // setShowProposalSuccessModal(true);
-    navigate(buildRoundPath(activeCommunity, activeAuction), { replace: false });
+    // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
+    navigate(`/proposal/${proposal.id}`, { replace: false });
     setLoading(false);
   };
 
