@@ -221,15 +221,17 @@ export class VotesController {
     );
 
     const voteList: DelegatedVoteDto[] = [];
+    const vp = await this.votesService.getVotingPower(
+      createVoteDto.address,
+      foundAuction.balanceBlockTag,
+    );
     voteList.push({
       ...createVoteDto,
       delegateId: null,
       delegate: null,
       blockHeight: foundAuction.balanceBlockTag,
-      weight: await this.votesService.getVotingPower(
-        createVoteDto.address,
-        foundAuction.balanceBlockTag,
-      ),
+      weight: vp,
+      actualWeight: vp,
     } as DelegatedVoteDto);
     for (const delegate of delegateList) {
       const vp = await this.votesService.getVotingPower(
@@ -247,13 +249,16 @@ export class VotesController {
         delegateAddress: delegate.toAddress,
         delegate: delegate,
         blockHeight: foundAuction.balanceBlockTag,
-        weight: vp,
-        actualWeight: 0, // actual weight is 0 because they are delegated by other.
+        weight: 0, //  weight is 0 because they are delegated by other.
+        actualWeight: vp,
       } as DelegatedVoteDto);
     }
 
     // Verify that signer has voting power
-    const votingPower = voteList.reduce((acc, vote) => acc + vote.weight, 0);
+    const votingPower = voteList.reduce(
+      (acc, vote) => acc + vote.actualWeight,
+      0,
+    );
 
     if (votingPower === 0) {
       throw new HttpException(
@@ -261,7 +266,7 @@ export class VotesController {
         HttpStatus.BAD_REQUEST,
       );
     } else {
-      voteList[0].actualWeight = votingPower;
+      voteList[0].weight = votingPower;
     }
 
     const voteResultList = await this.votesService.createNewVoteList(
