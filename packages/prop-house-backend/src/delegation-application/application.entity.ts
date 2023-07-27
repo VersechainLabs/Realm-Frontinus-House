@@ -1,4 +1,5 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
 import { Community } from 'src/community/community.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
@@ -18,6 +19,7 @@ import {
 @Entity()
 @ObjectType()
 export class Application {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
     description: 'All applications are issued a unique ID number',
@@ -27,6 +29,7 @@ export class Application {
   @Column({ default: true })
   visible: boolean;
 
+  @ApiProperty()
   @Column()
   @Field(() => String)
   address: string;
@@ -35,18 +38,22 @@ export class Application {
   //   @Field(() => String)
   //   signedData: string;
 
+  @ApiProperty()
   @Column()
   @Field(() => String)
   title: string;
 
+  @ApiProperty()
   @Column()
   @Field(() => String)
   tldr: string;
 
+  @ApiProperty()
   @Column({ nullable: true })
   @Field(() => String)
   description: string;
 
+  @ApiProperty({ type: () => Delegation, isArray: true })
   @ManyToOne(() => Delegation)
   @JoinColumn()
   @Field(() => Delegation)
@@ -55,14 +62,17 @@ export class Application {
   @Column({})
   delegationId: number;
 
+  @ApiProperty()
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   delegatorCount: number;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date)
   createdDate: Date;
 
+  @ApiProperty()
   @Column({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;

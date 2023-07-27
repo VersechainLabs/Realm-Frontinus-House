@@ -1,4 +1,5 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
 import { Community } from 'src/community/community.entity';
 import { Application } from 'src/delegation-application/application.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
@@ -18,6 +19,7 @@ import {
 @Entity()
 @ObjectType()
 export class Delegation {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
     description: 'All delegation are issued a unique ID number',
@@ -27,35 +29,45 @@ export class Delegation {
   @Column({ default: true })
   visible: boolean;
 
+  @ApiProperty()
   @Column()
   @Field(() => String)
   title: string;
 
+  @ApiProperty({
+    description:
+      'This is description of the delegation.',
+  })
   @Column({ nullable: true })
   @Field(() => String)
   description: string;
 
+  @ApiProperty({ type: () => Application, isArray: true })
   @OneToMany(() => Application, (application) => application.delegation)
   @JoinColumn()
   @Field(() => [Application])
   applications: Application[];
 
+  @ApiProperty()
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   applicationCount: number;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date, {
     description: 'After the Start Time users may submit proposals',
   })
   startTime: Date;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date, {
     description: 'Users may submit proposals up until Proposal End Time',
   })
   proposalEndTime: Date;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date, {
     description:
@@ -63,6 +75,7 @@ export class Delegation {
   })
   votingEndTime: Date;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date, {
     description:
@@ -70,10 +83,12 @@ export class Delegation {
   })
   endTime: Date;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date)
   createdDate: Date;
 
+  @ApiProperty()
   @Column({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;

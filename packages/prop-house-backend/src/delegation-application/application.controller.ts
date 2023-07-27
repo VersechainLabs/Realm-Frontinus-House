@@ -11,6 +11,7 @@ import { Application } from './application.entity';
 import { CreateApplicationDto, GetApplicationDto } from './application.types';
 import { DelegationService } from 'src/delegation/delegation.service';
 import { ApplicationService } from './application.service';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('applications')
 export class ApplicationController {
@@ -20,6 +21,8 @@ export class ApplicationController {
     private readonly delegationService: DelegationService,
   ) {}
 
+  @ApiResponse({ status: 201, description: 'The record has been successfully created.'})
+  @ApiResponse({ status: 403, description: 'Forbidden.'})
   @Get('/list')
   getAll(): Promise<Application[]> {
     return this.applicationService.findAll();

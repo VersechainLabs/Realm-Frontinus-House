@@ -17,6 +17,7 @@ import {
   import { Proposal } from 'src/proposal/proposal.entity';
   import { AdminService } from 'src/admin/admin.service';
   import { Admin } from 'src/admin/admin.entity';
+import { ApiOkResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
   
   @Controller('delegations')
   export class DelegationController {
@@ -76,6 +77,15 @@ import {
 
   
     @Get(':id')
+    @ApiOperation({ summary: 'Get one delegation' })
+    @ApiOkResponse({
+      type: Delegation,
+    })
+    // @ApiQuery({
+    //   name: 'address',
+    //   description: 'Address for which to get the voting power',
+    //   type: String,
+    // })
     async findOne(@Param('id') id: number): Promise<Delegation> {
       const foundDelegation = await this.delegationService.findOne(id);
 
