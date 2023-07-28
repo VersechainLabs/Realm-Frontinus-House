@@ -17,6 +17,7 @@ import {
 import { DelegationService } from './delegation.service';
 import { ProposalsService } from 'src/proposal/proposals.service';
 import { AdminService } from 'src/admin/admin.service';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('delegations')
 export class DelegationController {
@@ -28,7 +29,7 @@ export class DelegationController {
     private readonly adminService: AdminService,
   ) {}
 
-  @Get('/:id/state')
+  @Get('/:id/state')     
   async getState(@Param('id') id: number): Promise<DelegationState> {
     const testDate: Date = new Date('2023-08-15 00:00:04.000000');
 
@@ -37,11 +38,17 @@ export class DelegationController {
   }
 
   @Get('/list')
+  @ApiOkResponse({
+    type: [Delegation],
+  })  
   async getAll(@Body() dto: GetDelegationDto): Promise<Delegation[]> {
     return this.delegationService.findAll();
   }
 
   @Post('/create')
+  @ApiOkResponse({
+    type: Delegation,
+  })    
   async create(@Body() dto: CreateDelegationDto): Promise<Delegation> {
     // Open this feature later:
     // if (await this.adminService.isAdmin(dto.address) !== true) {
@@ -92,6 +99,9 @@ export class DelegationController {
   }
 
   @Post('/:id/delete')
+  @ApiOkResponse({
+    type: Boolean,
+  })      
   async delete(@Param('id') id: number): Promise<boolean> {
     await this.delegationService.remove(id);
     return true;

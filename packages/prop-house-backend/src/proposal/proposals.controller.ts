@@ -162,6 +162,9 @@ export class ProposalsController {
   }
 
   @Post()
+  @ApiOkResponse({
+    type: Proposal,
+  })   
   async create(
     @Body(ECDSASignedPayloadValidationPipe)
     createProposalDto: CreateProposalDto,
