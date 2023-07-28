@@ -1,5 +1,5 @@
 import { DeltaStatic, Quill } from 'quill';
-import React, { useEffect } from 'react';
+import React, { useEffect,useRef } from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
 import BlotFormatter from 'quill-blot-formatter';
@@ -38,7 +38,8 @@ export default function QuillEditor(props: QuillEditorProps) {
       'list',
       'bullet',
       'link',
-      'align'
+      'align',
+      'image'
   ];
 
   const { address: account } = useAccount();
@@ -48,6 +49,44 @@ export default function QuillEditor(props: QuillEditorProps) {
 
 
 
+  const imageHandler = async () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files ? input.files[0] : null;
+      let data = null;
+      const formData = new FormData();
+      const quillObj = quillRef.current.__quill;
+      const range = quillObj?.getSelection();
+
+      // console.log(file);
+      // console.log(quillRef);
+      // console.log(range);
+
+      quillObj.editor.insertEmbed(range.index, 'image', 'https://www.baidu.com/img/flexible/logo/pc/result.png','user');
+      quillObj.setSelection(range.index + 1)
+
+      if (file) {
+        formData.append('file', file);
+        formData.append('resource_type', 'raw');
+
+        // const responseUpload = await fetch(
+        //     `${process.env.NEXT_PUBLIC_IMAGE_UPLOAD}/upload`,
+        //     { method: 'POST', body: formData }
+        // );
+        //
+        // data = await responseUpload.json();
+        // if (data.error) {
+        //   console.error(data.error);
+        // }
+        //
+        // quillObj.editor.insertEmbed(range.index, 'image', data?.secure_url);
+      }
+    };
+  };
 
   const modules = {
     // toolbar: {
@@ -58,7 +97,13 @@ export default function QuillEditor(props: QuillEditorProps) {
     //     ['link'],
     //   ],
     // },
-    toolbar: "#toolbar",
+    // toolbar: "#toolbar",
+    toolbar: {
+      container:'#toolbar',
+      handlers: {
+        image: imageHandler
+      }
+    },
     blotFormatter: {},
     clipboard: {
       matchVisual: false,
@@ -70,12 +115,12 @@ export default function QuillEditor(props: QuillEditorProps) {
 
   const theme = 'snow';
 
-  const { quill, quillRef, Quill } = useQuill({ theme, modules,placeholder,formats});
+  const { quill, quillRef, Quill } = useQuill({ theme, modules,formats});
   if (Quill && !quill) {
     Quill.register('modules/blotFormatter', BlotFormatter);
-    Quill.register('modules/placeholder', getPlaceholderModule(Quill, {
-      className: 'ql-placeholder-content'  // default
-    }))
+    // Quill.register('modules/placeholder', getPlaceholderModule(Quill, {
+    //   className: 'ql-placeholder-content'  // default
+    // }))
   }
 
   useEffect(() => {
@@ -87,12 +132,17 @@ export default function QuillEditor(props: QuillEditorProps) {
       props.onQuillInit(quill);
     }
 
-    quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
+    // quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
+    //   if (source === 'user') {
+    //     props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
+    //   }
+    // });
+
+    quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
       if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
       }
     });
-
 
 
 
@@ -145,6 +195,7 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               <button className="ql-link"></button>
 
+              <button className="ql-image"></button>
 
               <div
                   id="custom-button"

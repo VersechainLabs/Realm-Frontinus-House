@@ -66,7 +66,6 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       onQuillInit={(q) => setQuill(q)}
       btnText='Submit'
       onButtonClick={submit}
-      placeholderText='What are your thoughts?'
     />
     {/*{account ? (*/}
     {/*  <Button text={'submit'} bgColor={ButtonColor.Purple} onClick={submit} />*/}
