@@ -9,13 +9,13 @@ RUN yarn
 
 ADD . .
 
-WORKDIR /app/packages/prop-house-communities
+WORKDIR /app/packages/frontinus-house-communities
 
 RUN yarn
 
 RUN yarn build
 
-WORKDIR /app/packages/prop-house-backend
+WORKDIR /app/packages/frontinus-house-backend
 
 RUN yarn
 
