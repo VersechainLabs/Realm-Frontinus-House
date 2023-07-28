@@ -150,11 +150,9 @@ export class ProposalsController {
       );
 
     foundProposal.address = updateProposalDto.address;
-    foundProposal.signatureState = updateProposalDto.signatureState;
     foundProposal.what = updateProposalDto.what;
     foundProposal.tldr = updateProposalDto.tldr;
     foundProposal.title = updateProposalDto.title;
-    foundProposal.signedData = updateProposalDto.signedData;
     foundProposal.reqAmount = updateProposalDto.reqAmount
       ? updateProposalDto.reqAmount
       : null;
@@ -164,7 +162,7 @@ export class ProposalsController {
   @Post()
   @ApiOkResponse({
     type: Proposal,
-  })   
+  })
   async create(
     @Body(ECDSASignedPayloadValidationPipe)
     createProposalDto: CreateProposalDto,
@@ -204,14 +202,10 @@ export class ProposalsController {
 
     const proposal = new Proposal();
     proposal.address = createProposalDto.address;
-    proposal.signatureState = createProposalDto.signatureState;
     proposal.what = createProposalDto.what;
     proposal.tldr = createProposalDto.tldr;
     proposal.title = createProposalDto.title;
-    proposal.signedData = createProposalDto.signedData;
     proposal.auction = foundAuction;
-    proposal.messageTypes = createProposalDto.messageTypes;
-    proposal.domainSeparator = createProposalDto.domainSeparator;
     proposal.createdDate = new Date();
 
     return this.proposalsService.store(proposal);
