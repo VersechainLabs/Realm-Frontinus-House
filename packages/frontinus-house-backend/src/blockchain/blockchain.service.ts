@@ -34,10 +34,10 @@ export class BlockchainService {
   ): Promise<number> {
     // First, search DB for snapshot:
     const existSnapshot = await this.snapshotService.findBy(
+      communityAddress,
       blockTag,
       userAddress,
     );
-    console.log('First - existSnapshot:', existSnapshot);
 
     if (existSnapshot) {
       return existSnapshot.votingPower;
@@ -45,21 +45,20 @@ export class BlockchainService {
 
     // Second, snapshot not found, search on chain:
     await this.provider.ready;
-    console.log(`community: ${communityAddress}`);
     const votingPowerOnChain = await getVotingPower(
       userAddress,
       communityAddress,
       this.provider,
       blockTag,
     );
-    console.log('Second - votingPowerOnChain:', votingPowerOnChain);
 
     // Then, save the on-chain voting power to DB.snapshot:
     const newSnapshot = new Snapshot();
+    newSnapshot.communityAddress = communityAddress;
     newSnapshot.blockNum = blockTag;
     newSnapshot.address = userAddress;
     newSnapshot.votingPower = votingPowerOnChain;
-    console.log('Then - store newSnapshot:', newSnapshot);
+    // noinspection ES6MissingAwait . just a cache
     this.snapshotService.store(newSnapshot);
 
     return newSnapshot.votingPower;
@@ -67,12 +66,13 @@ export class BlockchainService {
 
   async getVotingPowerOnChain(
     userAddress: string,
+    communityAddress: string,
     blockTag: number,
   ): Promise<number> {
     await this.provider.ready;
     return getVotingPower(
       userAddress,
-      process.env.COMMUNITY_ADDRESS,
+      communityAddress,
       this.provider,
       blockTag,
     );
@@ -93,7 +93,9 @@ export class BlockchainService {
   //   );
   // }
 
-  async cacheAll(blockNum: number) {
+  // The addresses used here are probably from an address table, which is used to list all possible
+  // users that may appear in the system.
+  async cacheAll(communityAddress: string, blockNum: number) {
     const activeDelegations = await this.delegationService.findByState(
       DelegationState.ACTIVE,
     );
@@ -121,25 +123,26 @@ export class BlockchainService {
       }
     }
 
-    // console.log("allAddress:", allAddress);
-
+    const snapshotList = [];
     for (const address of allAddress) {
       try {
-        // const votingPower = await this.blockchainService.getVotingPower("0xcdFe3d7eBFA793675426F150E928CD395469cA53", process.env.COMMUNITY_ADDRESS, 17665090);
-        const votingPower = await this.getVotingPowerOnChain(address, blockNum);
-
-        console.log('[getVotingPower success]', address, votingPower);
+        const votingPower = await this.getVotingPowerOnChain(
+          address,
+          communityAddress,
+          blockNum,
+        );
 
         const snapshot = new Snapshot();
+        snapshot.communityAddress = communityAddress;
         snapshot.blockNum = blockNum;
         snapshot.address = address;
         snapshot.votingPower = votingPower;
-
-        const newRecord = await this.snapshotService.store(snapshot);
+        snapshotList.push(snapshot);
       } catch (error) {
         console.log('[getVotingPower error]', address, error.message);
       }
     }
+    await this.snapshotService.storeMany(snapshotList);
 
     return 'all done';
   }
