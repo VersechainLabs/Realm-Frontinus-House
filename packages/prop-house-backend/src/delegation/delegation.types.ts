@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
@@ -15,25 +16,31 @@ export class CreateDelegationDto {
   // @IsEthereumAddress()
   // address: string;
 
+  @ApiProperty({})
   @IsString()
   @IsOptional()
   startTime: Date;
 
+  @ApiProperty({})
   @IsString()
   proposalEndTime: Date;
 
+  @ApiProperty({})
   @IsString()
   votingEndTime: Date;
 
+  @ApiProperty({})
   @IsString()
   endTime: Date;
 
+  @ApiProperty({})
   @MinLength(3)
   @MaxLength(100)
   @IsString()
   @IsNotEmpty()
   title: string;
 
+  @ApiProperty({})
   @IsString()
   description: string;
 

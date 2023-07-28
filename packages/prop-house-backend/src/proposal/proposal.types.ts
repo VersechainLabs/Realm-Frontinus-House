@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsEnum,
@@ -15,19 +16,24 @@ import { Order } from 'src/utils/dto-types';
 export type ProposalParent = 'auction' | 'infinite-auction';
 
 export class CreateProposalDto extends SignedEntity {
+  @ApiProperty({})
   @IsString()
   @IsNotEmpty()
   title: string;
 
+  @ApiProperty({})
   @IsString()
   what: string;
 
+  @ApiProperty({})
   @IsString()
   tldr: string;
 
+  @ApiProperty({})
   @IsNumber()
   parentAuctionId: number;
 
+  @ApiProperty({})
   @IsString()
   parentType: ProposalParent;
 }
