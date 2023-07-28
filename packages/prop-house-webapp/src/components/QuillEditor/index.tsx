@@ -20,6 +20,7 @@ type QuillEditorProps = {
   onQuillInit?: (quill: Quill) => void;
   onButtonClick?: (widgetKey: string) => void;
   btnText:string | 'Submit';
+  placeholderText:string;
 }
 
 export default function QuillEditor(props: QuillEditorProps) {
@@ -58,8 +59,9 @@ export default function QuillEditor(props: QuillEditorProps) {
     },
   };
   const theme = 'snow';
+  const placeholder = props.placeholderText;
 
-  const { quill, quillRef, Quill } = useQuill({ theme, modules, formats });
+  const { quill, quillRef, Quill } = useQuill({ theme, modules,placeholder,formats });
   if (Quill && !quill) {
     Quill.register('modules/blotFormatter', BlotFormatter);
   }

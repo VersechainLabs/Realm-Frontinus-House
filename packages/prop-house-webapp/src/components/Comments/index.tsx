@@ -153,8 +153,9 @@ export function CommentListItem(props: CommentListItemProps) {
           display: 'flex',
           alignItems: 'baseline',
           marginBottom: '8px',
+          marginTop:'-2px'
         }}>
-          <EthAddress address={props.comment.owner} />
+          <EthAddress address={props.comment.owner} className={'commentName'} />
 
           <div className={classes.date}>
             <span style={{
