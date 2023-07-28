@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
@@ -12,31 +13,39 @@ import {
 } from 'class-validator';
 
 export class CreateAuctionDto {
+  @ApiProperty()
   @IsString()
   @IsOptional()
   startTime: Date;
 
+  @ApiProperty()
   @IsString()
   proposalEndTime: Date;
 
+  @ApiProperty()
   @IsString()
   votingEndTime: Date;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   title: string;
 
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   fundingAmount: number;
 
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   numWinners: number;
 
+  @ApiProperty()
   @IsString()
   currencyType: string;
 
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   communityId: number;
