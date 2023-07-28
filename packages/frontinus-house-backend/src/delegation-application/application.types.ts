@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
@@ -20,18 +21,22 @@ export class CreateApplicationDto {
   //   @IsString()
   //   signedData: string;
 
+  @ApiProperty({})
   @MinLength(3)
   @MaxLength(100)
   @IsString()
   @IsNotEmpty()
   title: string;
 
+  @ApiProperty({})
   @IsString()
   tldr: string;
 
+  @ApiProperty({})
   @IsString()
   description: string;
 
+  @ApiProperty({})
   @IsNumber()
   @IsPositive()
   delegationId: number;
