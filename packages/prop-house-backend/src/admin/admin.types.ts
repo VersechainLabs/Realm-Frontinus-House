@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
@@ -12,6 +13,7 @@ import {
 } from 'class-validator';
 
 export class CreateAdminDto {
+  @ApiProperty()
   @IsEthereumAddress()
   address: string;
 }

@@ -13,6 +13,7 @@ import { DelegateService } from './delegate.service';
 import { DelegationService } from 'src/delegation/delegation.service';
 import { AdminService } from 'src/admin/admin.service';
 import { ApplicationService } from '../delegation-application/application.service';
+import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('delegates')
 export class DelegateController {
@@ -26,11 +27,17 @@ export class DelegateController {
   ) {}
 
   @Get('/list')
+  @ApiOkResponse({
+    type: [Delegate],
+  })     
   async getAll(@Body() dto: GetDelegateDto): Promise<Delegate[]> {
     return this.delegateService.findAll();
   }
 
   @Post('/create')
+  @ApiOkResponse({
+    type: Delegate,
+  })   
   async create(@Body() dto: CreateDelegateDto): Promise<Delegate> {
     const application = await this.applicationService.findOne(
       dto.applicationId,
@@ -79,6 +86,9 @@ export class DelegateController {
   }
 
   @Get(':id')
+  @ApiOkResponse({
+    type: Delegate,
+  })     
   async findOne(@Param('id') id: number): Promise<Delegate> {
     const foundDelegate = await this.delegateService.findOne(id);
 

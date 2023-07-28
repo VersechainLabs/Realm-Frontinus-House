@@ -1,4 +1,5 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { ApiProperty } from '@nestjs/swagger';
 import { Community } from 'src/community/community.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
@@ -17,6 +18,7 @@ import {
 @Entity()
 @ObjectType()
 export class Comment {
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   @Field(() => Int, {
     description: 'All comments are issued a unique ID number',
@@ -26,14 +28,17 @@ export class Comment {
   @Column({ default: true })
   visible: boolean;
 
+  @ApiProperty()
   @Column()
   @Field(() => String)
   content: string;
 
+  @ApiProperty()
   @Column({})
   @Field(() => String)
   owner: string;
 
+  @ApiProperty({ type: () => Proposal, isArray: true })
   @ManyToOne(() => Proposal)
   @JoinColumn()
   @Field(() => Proposal)
@@ -43,10 +48,12 @@ export class Comment {
   //   @RelationId((comment: Comment) => comment.proposal)
   proposalId: number;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date)
   createdDate: Date;
 
+  @ApiProperty()
   @Column({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;
