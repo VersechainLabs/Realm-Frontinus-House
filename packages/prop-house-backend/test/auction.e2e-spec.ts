@@ -10,8 +10,6 @@ import { AuctionsModule } from 'src/auction/auctions.module';
 import { ProposalsModule } from 'src/proposal/proposals.module';
 import { Repository } from 'typeorm';
 import { Auction } from 'src/auction/auction.entity';
-import { InfiniteAuction } from 'src/infinite-auction/infinite-auction.entity';
-import { InfiniteAuctionModule } from 'src/infinite-auction/infinite-auction.module';
 import { PropHouseWrapper } from '@nouns/prop-house-wrapper';
 import { Wallet } from '@ethersproject/wallet';
 import {

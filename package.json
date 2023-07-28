@@ -1,9 +1,9 @@
 {
-  "name": "prop-house",
+  "name": "frontinus-house",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:cryptoseneca/prop-house.git",
-  "author": "cryptoseneca <85328329+cryptoseneca@users.noreply.github.com>",
+  "repository": "git@github.com:metaforo/Realm-Frontinus-House.git",
+  "author": "metaforo <admin@metaforo.io>",
   "license": "MIT",
   "private": "true",
   "scripts": {
