@@ -32,7 +32,9 @@ export class Vote {
   address: Address;
 
   @ApiProperty({ type: () => Proposal })
-  @ManyToOne(() => Proposal, (proposal) => proposal.votes)
+  @ManyToOne(() => Proposal, (proposal) => proposal.votes, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   proposal: Proposal;
 
@@ -81,7 +83,10 @@ export class Vote {
   delegateAddress?: string;
 
   @ApiProperty()
-  @ManyToOne(() => Delegate, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => Delegate, {
+    nullable: true,
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn({ name: 'delegateId' })
   delegate: Delegate | null;
 

@@ -57,7 +57,9 @@ export class Proposal {
   address: Address;
 
   @ApiProperty({ type: () => Vote, isArray: true })
-  @OneToMany(() => Vote, (vote) => vote.proposal)
+  @OneToMany(() => Vote, (vote) => vote.proposal, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => [Vote])
   votes: Vote[];
@@ -110,7 +112,9 @@ export class Proposal {
   parentType: ProposalParent;
 
   @ApiProperty({ type: () => Auction })
-  @ManyToOne(() => Auction, (auction) => auction.proposals)
+  @ManyToOne(() => Auction, (auction) => auction.proposals, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => Auction)
   auction: Auction;
