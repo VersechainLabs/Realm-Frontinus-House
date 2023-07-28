@@ -3,7 +3,7 @@ import { ProposalFields } from '../../utils/proposalFields';
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react';
 import { useQuill } from 'react-quilljs';
 import { useTranslation } from 'react-i18next';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import BlotFormatter from 'quill-blot-formatter';
 import ImageUploadModal from '../ImageUploadModal';
 import ProposalInputs from '../ProposalInputs';
@@ -71,7 +71,7 @@ const ProposalEditor: React.FC<{
   const { data: signer } = useSigner();
 
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
 
   const location = useLocation();
   // active round comes from two diff places depending on where inputs are being displayed
@@ -85,7 +85,7 @@ const ProposalEditor: React.FC<{
     : '';
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   const formData: FormDataType[] = [

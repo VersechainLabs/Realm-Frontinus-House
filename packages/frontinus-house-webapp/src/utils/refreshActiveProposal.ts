@@ -1,4 +1,4 @@
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {
   StoredAuctionBase,
   StoredProposalWithVotes,
@@ -16,7 +16,7 @@ import { AuctionStatus, auctionStatus } from './auctionStatus';
 import { isInfAuction } from './auctionType';
 
 const refreshActiveProposal = (
-  client: PropHouseWrapper,
+  client: ApiWrapper,
   activeProposal: StoredProposalWithVotes,
   dispatch: Dispatch,
 ) => {
@@ -24,7 +24,7 @@ const refreshActiveProposal = (
 };
 
 export const refreshActiveProposals = async (
-  client: PropHouseWrapper,
+  client: ApiWrapper,
   auction: StoredAuctionBase,
   dispatch: Dispatch,
 ) => {

@@ -32,7 +32,7 @@ import { Signer } from 'ethers';
 // @ts-ignore
 import { CommentModal } from '../../frontinus-house-webapp/src/components/Comments';
 
-export class PropHouseWrapper {
+export class ApiWrapper {
   constructor(
     private readonly host: string,
     private readonly signer: Signer | Wallet | null | undefined = undefined,

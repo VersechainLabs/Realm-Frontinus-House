@@ -21,7 +21,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { setActiveRound } from '../../state/slices/propHouse';
 import TruncateThousands from '../TruncateThousands';
 import { useEffect, useMemo, useState } from 'react';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAccount } from 'wagmi';
 import { InfuraProvider } from '@ethersproject/providers';
 import { getVotingPower } from 'frontinus-house-communities';
@@ -46,7 +46,7 @@ const StatusRoundCard: React.FC<{
   const dispatch = useAppDispatch();
 
   const host = useAppSelector(state => state.configuration.backendHost);
-  const wrapper = useMemo(() => new PropHouseWrapper(host), [host]);
+  const wrapper = useMemo(() => new ApiWrapper(host), [host]);
 
   const { address: account } = useAccount();
 

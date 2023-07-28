@@ -1,7 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { HDNode } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
-import { PropHouseWrapper } from '../src';
+import { ApiWrapper } from '../src';
 import {
   DeleteProposal,
   Direction,
@@ -22,7 +22,7 @@ const run = async () => {
   console.log(`The example wallet is using address ${exampleWallet.address}`);
   console.log(`The admin wallet is using address ${adminWallet.address}`);
 
-  const local = new PropHouseWrapper('http://localhost:3000', exampleWallet);
+  const local = new ApiWrapper('http://localhost:3000', exampleWallet);
 
   const auction = (await local.getAuctions())[0];
 

@@ -1,7 +1,7 @@
 import classes from './CreateRoundForm.module.css';
 import { Col, Container, Row } from 'react-bootstrap';
 import { useEffect, useRef, useState } from 'react';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSigner } from 'wagmi';
 import {nameToSlug} from "../../utils/communitySlugs";
@@ -16,10 +16,10 @@ import dayjs from "dayjs";
 
 const CreateRound: React.FC<{}> = () => {
     const host = useAppSelector(state => state.configuration.backendHost);
-    const client = useRef(new PropHouseWrapper(host));
+    const client = useRef(new ApiWrapper(host));
     const { data: signer } = useSigner();
     useEffect(() => {
-        client.current = new PropHouseWrapper(host, signer);
+        client.current = new ApiWrapper(host, signer);
     }, [signer, host]);
     const navigate = useNavigate();
     const state  = {

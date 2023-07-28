@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import HouseHeader from '../../components/HouseHeader';
 import React, { useEffect, useRef, useState } from 'react';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { setActiveCommunity } from '../../state/slices/propHouse';
 import { slugToName } from '../../utils/communitySlugs';
 import { Col, Container, Row } from 'react-bootstrap';
@@ -36,7 +36,7 @@ const House = () => {
   const dispatch = useAppDispatch();
   const community = useAppSelector(state => state.propHouse.activeCommunity);
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
 
   const [rounds, setRounds] = useState<StoredAuctionBase[]>([]);
   const [roundsOnDisplay, setRoundsOnDisplay] = useState<StoredAuctionBase[]>([]);
@@ -56,7 +56,7 @@ const House = () => {
   const [numberOfRoundsPerStatus, setNumberOfRoundsPerStatus] = useState<number[]>([]);
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   // fetch community

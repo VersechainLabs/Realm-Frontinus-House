@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import RoundHeader from '../../components/RoundHeader';
 import DelegateHeader from '../../components/DelegateHeader';
 import { useEffect, useRef, useState } from 'react';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {
   filterInfRoundProposals,
   InfRoundFilterType,
@@ -52,7 +52,7 @@ const DelegateDetails = () => {
   );
   const host = useAppSelector(state => state.configuration.backendHost);
   const modalActive = useAppSelector(state => state.delegate.modalActive);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
 
   const isRoundOver = round && auctionStatus(round) === AuctionStatus.AuctionEnded;
   const isVotingWindow = round && auctionStatus(round) === AuctionStatus.AuctionVoting;
@@ -66,7 +66,7 @@ const DelegateDetails = () => {
   const [propsFailedFetch, setPropsFailedFetch] = useState(false);
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   // if no data is found in store (ie round page is entry point), fetch data

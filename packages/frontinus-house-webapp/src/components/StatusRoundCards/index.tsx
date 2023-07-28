@@ -1,5 +1,5 @@
 import classes from './StatusRoundCards.module.css';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { StoredAuctionBase } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { getRelevantComms } from 'frontinus-house-communities';
 import { useEffect, useState } from 'react';
@@ -25,7 +25,7 @@ const StatusRoundCards = () => {
   const [roundsSkip, setRoundsSkip] = useState(0);
 
   const host = useAppSelector(state => state.configuration.backendHost);
-  const wrapper = new PropHouseWrapper(host);
+  const wrapper = new ApiWrapper(host);
 
   useEffect(() => {
     if (relevantCommunities !== undefined || !block) return;

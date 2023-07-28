@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 're
 import Modal from '../Modal';
 import Button, { ButtonColor } from '../Button';
 import { useAppSelector } from '../../hooks';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { NounImage } from '../../utils/getNounImage';
 import { useTranslation } from 'react-i18next';
 import DragDropFileInput from '../DragDropFileInput';
@@ -45,10 +45,10 @@ const ImageUploadModal: React.FC<{
 
   const { data: signer } = useSigner();
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   const handleImageUpload = async () => {

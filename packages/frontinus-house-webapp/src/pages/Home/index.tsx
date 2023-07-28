@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 import CommunityCardGrid from '../../components/CommunityCardGrid';
 import { useEffect, useState, useRef } from 'react';
 import { Community } from '@nouns/frontinus-house-wrapper/dist/builders';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppSelector } from '../../hooks';
 import NavBar from '../../components/NavBar';
 import { useSigner } from 'wagmi';
@@ -32,10 +32,10 @@ const Home = () => {
   const { data: signer } = useSigner();
 
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   // fetch communities
