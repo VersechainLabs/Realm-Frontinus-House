@@ -10,7 +10,7 @@ import { clearProposal, patchProposal } from '../../state/slices/editor';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { InfiniteAuctionProposal, Proposal } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { appendProposal } from '../../state/slices/propHouse';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import isAuctionActive from '../../utils/isAuctionActive';
 import { ProposalFields } from '../../utils/proposalFields';
 import { useTranslation } from 'react-i18next';
@@ -50,10 +50,10 @@ const Create: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
 
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const backendClient = useRef(new PropHouseWrapper(backendHost, signer));
+  const backendClient = useRef(new ApiWrapper(backendHost, signer));
 
   useEffect(() => {
-    backendClient.current = new PropHouseWrapper(backendHost, signer);
+    backendClient.current = new ApiWrapper(backendHost, signer);
   }, [signer, backendHost]);
 
   const onDataChange = (data: Partial<ProposalFields>) => {

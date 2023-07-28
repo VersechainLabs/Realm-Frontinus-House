@@ -1,6 +1,6 @@
 import { Container } from 'react-bootstrap';
 import React, { useEffect, useRef, useState } from 'react';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppSelector } from '../../hooks';
 import CreateCommentWidget from '../CreateCommentWidget';
 import { Avatar, List, ListItem } from '@mui/material';
@@ -24,7 +24,7 @@ export default function Comments(props: CommentsProps) {
   const [showTailLoading, setShowTailLoading] = useState(false);
 
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [loading,setLoading] = useState(true);
 

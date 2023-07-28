@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
 import NotFound from '../../components/NotFound';
 import { useEffect, useRef, useState } from 'react';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useDispatch } from 'react-redux';
 import { setActiveCommunity, setActiveProposal, setActiveRound } from '../../state/slices/propHouse';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
@@ -32,7 +32,7 @@ const Proposal = () => {
   const community = useAppSelector(state => state.propHouse.activeCommunity);
   const round = useAppSelector(state => state.propHouse.activeRound);
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const backendClient = useRef(new PropHouseWrapper(backendHost, signer));
+  const backendClient = useRef(new ApiWrapper(backendHost, signer));
   const [loading,setLoading] = useState(true);
 
 
@@ -42,7 +42,7 @@ const Proposal = () => {
   };
 
   useEffect(() => {
-    backendClient.current = new PropHouseWrapper(backendHost, signer);
+    backendClient.current = new ApiWrapper(backendHost, signer);
   }, [signer, backendHost]);
 
   // fetch proposal

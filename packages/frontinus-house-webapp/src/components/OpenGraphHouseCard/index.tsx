@@ -1,5 +1,5 @@
 import classes from './OpenGraphHouseCard.module.css';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
@@ -18,11 +18,11 @@ const OpenGraphHouseCard: React.FC = () => {
   const { data: signer } = useSigner();
 
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
   const houseCurrency = community && getHouseCurrency(community.contractAddress);
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   useEffect(() => {

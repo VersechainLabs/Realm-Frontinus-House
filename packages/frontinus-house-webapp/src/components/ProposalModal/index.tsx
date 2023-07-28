@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Modal from 'react-modal';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useDispatch } from 'react-redux';
 import {
   Direction,
@@ -51,7 +51,7 @@ const ProposalModal = () => {
   const proposals = round && isTimedAuction(round) ? activeProposals : infRoundProposals;
 
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const backendClient = useRef(new PropHouseWrapper(backendHost, signer));
+  const backendClient = useRef(new ApiWrapper(backendHost, signer));
 
   const [propModalEl, setPropModalEl] = useState<Element | null>();
   const [currentPropIndex, setCurrentPropIndex] = useState<number | undefined>();
@@ -84,7 +84,7 @@ const ProposalModal = () => {
 
   // provider
   useEffect(() => {
-    backendClient.current = new PropHouseWrapper(backendHost, signer);
+    backendClient.current = new ApiWrapper(backendHost, signer);
   }, [signer, backendHost]);
 
   useEffect(() => {

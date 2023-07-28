@@ -10,7 +10,7 @@ import { AuctionsModule } from 'src/auction/auctions.module';
 import { ProposalsModule } from 'src/proposal/proposals.module';
 import { Repository } from 'typeorm';
 import { Auction } from 'src/auction/auction.entity';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { Wallet } from '@ethersproject/wallet';
 import {
   Direction,
@@ -33,8 +33,8 @@ let community: Community;
 
 describe('Auctions (e2e)', () => {
   let app: INestApplication;
-  let wrapper: PropHouseWrapper;
-  let wrapperTwo: PropHouseWrapper;
+  let wrapper: ApiWrapper;
+  let wrapperTwo: ApiWrapper;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -66,13 +66,13 @@ describe('Auctions (e2e)', () => {
     proposalRepository = moduleFixture.get('ProposalRepository');
     communityRepository = moduleFixture.get('CommunityRepository');
     await app.getHttpServer().listen(9999);
-    wrapper = new PropHouseWrapper(
+    wrapper = new ApiWrapper(
       'http://localhost:9999',
       Wallet.fromMnemonic(
         'test test test test test test test test test test test junk',
       ),
     );
-    wrapperTwo = new PropHouseWrapper(
+    wrapperTwo = new ApiWrapper(
       'http://localhost:9999',
       Wallet.fromMnemonic(
         'test test test test test test test test test test test junk',

@@ -1,5 +1,5 @@
 import { Wallet } from "@ethersproject/wallet";
-import { PropHouseWrapper } from "../src";
+import { ApiWrapper } from "../src";
 import { Auction, Direction, Proposal, Vote } from "../src/builders";
 
 const run = async () => {
@@ -7,7 +7,7 @@ const run = async () => {
     "test test test test test test test test test test test junk"
   );
 
-  const local = new PropHouseWrapper("http://localhost:3000", exampleWallet);
+  const local = new ApiWrapper("http://localhost:3000", exampleWallet);
 
 
   if (process.argv.length !== 3) {

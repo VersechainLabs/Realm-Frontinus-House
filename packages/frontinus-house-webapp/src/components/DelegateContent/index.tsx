@@ -9,7 +9,7 @@ import { auctionStatus, AuctionStatus } from '../../utils/auctionStatus';
 import { useEffect, useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../hooks';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { refreshActiveProposals } from '../../utils/refreshActiveProposal';
 import { getVotingPower } from 'frontinus-house-communities';
 import ErrorMessageCard from '../ErrorMessageCard';
@@ -57,7 +57,7 @@ const DelegateContent: React.FC<{
   const modalActive = useAppSelector(state => state.delegate.modalActive);
   const host = useAppSelector(state => state.configuration.backendHost);
 
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
   const { data: signer } = useSigner();
   const provider = useProvider();
   const staleProp = isInfAuction(auction) && infRoundFilter === InfRoundFilterType.Stale;
@@ -70,7 +70,7 @@ const DelegateContent: React.FC<{
     : 'Proposals that did not meet quorum before voting period ended will show up here.';
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   // fetch voting power for user

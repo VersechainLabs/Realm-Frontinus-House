@@ -7,7 +7,7 @@ import {useLocation, useNavigate} from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import '../../quill.css';
 import clsx from 'clsx';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../DelegateEditor';
@@ -83,10 +83,10 @@ const ProposalInputs: React.FC<{
   const { address: account } = useAccount();
   const { data: signer } = useSigner();
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host, signer));
+  const client = useRef(new ApiWrapper(host, signer));
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {

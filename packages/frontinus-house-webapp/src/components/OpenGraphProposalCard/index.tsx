@@ -1,4 +1,4 @@
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {
   TimedAuction,
   Community,
@@ -24,10 +24,10 @@ const OpenGraphProposalCard: React.FC = () => {
   const [ens, setEns] = useState<null | string>(null);
 
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(backendHost));
+  const client = useRef(new ApiWrapper(backendHost));
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(backendHost);
+    client.current = new ApiWrapper(backendHost);
   }, [backendHost]);
 
   useEffect(() => {

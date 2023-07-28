@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 're
 import Button, { ButtonColor } from '../Button';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import refreshActiveProposal, { refreshActiveProposals } from '../../utils/refreshActiveProposal';
 import { NounImage } from '../../utils/getNounImage';
 import Modal from '../Modal';
@@ -29,11 +29,11 @@ const SaveProposalModal: React.FC<{
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const round = useAppSelector(state => state.propHouse.activeRound);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
   const { data: signer } = useSigner();
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   const [hasBeenSaved, setHasBeenSaved] = useState(false);

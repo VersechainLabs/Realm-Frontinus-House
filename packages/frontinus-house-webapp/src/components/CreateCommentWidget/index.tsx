@@ -4,7 +4,7 @@ import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
 import Button, { ButtonColor } from '../Button';
 import { CommentModal } from '../Comments';
 import { useAppSelector } from '../../hooks';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAccount, useSigner } from 'wagmi';
 import ConnectButton from '../ConnectButton';
 import classes from '../../pages/Create/Create.module.css';
@@ -22,10 +22,10 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
   const { address: account } = useAccount();
   const { data: signer } = useSigner();
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host, signer));
+  const client = useRef(new ApiWrapper(host, signer));
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {

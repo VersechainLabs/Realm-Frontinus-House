@@ -1,10 +1,10 @@
 import { Signer } from '@ethersproject/abstract-signer'
 import { Wallet } from '@ethersproject/wallet'
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper'
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 export interface BackendSlice {
-	backend: PropHouseWrapper;
+	backend: ApiWrapper;
 }
 
 
@@ -19,7 +19,7 @@ const adminWallet = Wallet.fromMnemonic(
 console.log(`The example wallet is using address ${exampleWallet.address}`);
 console.log(`The admin wallet is using address ${adminWallet.address}`);
 
-const local = new PropHouseWrapper("http://localhost:3000", exampleWallet);
+const local = new ApiWrapper("http://localhost:3000", exampleWallet);
 
 const initialState: BackendSlice = {
 	backend: local,
@@ -30,7 +30,7 @@ export const backendSlice = createSlice({
   initialState,
   reducers: {
 		reconnect: (state, action: PayloadAction<Signer | Wallet>) => {
-			state.backend = new PropHouseWrapper("http://localhost:3000", action.payload)
+			state.backend = new ApiWrapper("http://localhost:3000", action.payload)
 		}
   }
 })

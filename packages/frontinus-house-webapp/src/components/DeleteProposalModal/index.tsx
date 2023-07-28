@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useRef, useState } from 're
 import Button, { ButtonColor } from '../Button';
 import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../hooks';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { DeleteProposal } from '@nouns/frontinus-house-wrapper/dist/builders';
 import refreshActiveProposal, { refreshActiveProposals } from '../../utils/refreshActiveProposal';
 import { useDispatch } from 'react-redux';
@@ -28,10 +28,10 @@ const DeleteProposalModal: React.FC<{
   const round = useAppSelector(state => state.propHouse.activeRound);
   const activeProposal = useAppSelector(state => state.propHouse.activeProposal);
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new PropHouseWrapper(host));
+  const client = useRef(new ApiWrapper(host));
 
   useEffect(() => {
-    client.current = new PropHouseWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
 
   const handleDeleteProposal = async () => {

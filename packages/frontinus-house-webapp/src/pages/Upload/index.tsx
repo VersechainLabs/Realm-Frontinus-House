@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAppSelector } from '../../hooks';
-import { PropHouseWrapper } from '@nouns/frontinus-house-wrapper';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import Button from '@restart/ui/esm/Button';
 import { StoredFile } from '@nouns/frontinus-house-wrapper/dist/builders';
 import buildIpfsPath from '../../utils/buildIpfsPath';
@@ -36,7 +36,7 @@ const Upload = () => {
   const backendHost = useAppSelector(state => state.configuration.backendHost);
   const { data: signer } = useSigner();
 
-  let backendClient = new PropHouseWrapper(backendHost, signer);
+  let backendClient = new ApiWrapper(backendHost, signer);
   const { t } = useTranslation();
 
   const onFileChange = (event: any) => {
