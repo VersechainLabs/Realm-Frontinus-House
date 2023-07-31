@@ -1,0 +1,7 @@
+.propEditor {
+  display: block;
+}
+
+.propEditor .ql-container .ql-editor {
+  min-height: 400px!important;
+}
