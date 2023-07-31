@@ -36,7 +36,7 @@ export class ProposalsService {
 
   async findOne(id: number) {
     const proposal = await this.proposalsRepository.findOne(id, {
-      relations: ['votes', 'auction'],
+      relations: ['votes', 'auction', 'auction.community'],
       where: { visible: true },
     });
 
