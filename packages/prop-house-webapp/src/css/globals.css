@@ -448,3 +448,13 @@ p {
 /*}*/
 
 
+.loadingImg{
+  position: absolute;
+  z-index: 1000;
+  left: 45%;
+  margin-top: -80px;
+}
+
+.loadingImg img{
+  width: 50px;
+}

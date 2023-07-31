@@ -1,9 +1,8 @@
 import { DeltaStatic, Quill } from 'quill';
-import React, { useEffect,useRef } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
 import BlotFormatter from 'quill-blot-formatter';
-import getPlaceholderModule from 'quill-placeholder-module';
 import { Form } from 'react-bootstrap';
 import clsx from 'clsx';
 import classes from './QuillEditor.module.css';
@@ -44,8 +43,7 @@ export default function QuillEditor(props: QuillEditorProps) {
 
   const { address: account } = useAccount();
   const { openConnectModal } = useConnectModal();
-
-  const getPlaceholderModule = require('quill-placeholder-module').default;
+  const [showLoading, setShowLoading] = useState(false);
 
 
 
@@ -66,24 +64,31 @@ export default function QuillEditor(props: QuillEditorProps) {
       // console.log(quillRef);
       // console.log(range);
 
-      quillObj.editor.insertEmbed(range.index, 'image', 'https://www.baidu.com/img/flexible/logo/pc/result.png','user');
-      quillObj.setSelection(range.index + 1)
 
       if (file) {
-        formData.append('file', file);
-        formData.append('resource_type', 'raw');
 
-        // const responseUpload = await fetch(
-        //     `${process.env.NEXT_PUBLIC_IMAGE_UPLOAD}/upload`,
-        //     { method: 'POST', body: formData }
-        // );
-        //
-        // data = await responseUpload.json();
-        // if (data.error) {
-        //   console.error(data.error);
-        // }
-        //
-        // quillObj.editor.insertEmbed(range.index, 'image', data?.secure_url);
+        setShowLoading(true);
+        quillObj.disable();
+
+        formData.append('file', file);
+        formData.append('name', file.name);
+
+        const responseUpload = await fetch(
+            `${process.env.REACT_APP_DEV_BACKEND_URI}/file`,
+            { method: 'POST', body: formData }
+        );
+
+        data = await responseUpload.json();
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        setShowLoading(false);
+        quillObj.enable();
+
+        quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
+        quillObj.setSelection(range.index + 1)
       }
     };
   };
@@ -161,6 +166,14 @@ export default function QuillEditor(props: QuillEditorProps) {
     }
   }, [props.loading, quill]);
 
+
+  const clickBtn =  () => {
+    if( showLoading ){
+      return false;
+    }
+    return     props.onButtonClick?.(props.widgetKey);
+  }
+
   return (
     <Form>
       <Form.Group className={clsx(classes.inputGroup)}>
@@ -171,6 +184,13 @@ export default function QuillEditor(props: QuillEditorProps) {
           {/*</div>*/}
           <>
             <div  style={{minHeight:(props.minHeightStr)}} ref={quillRef} />
+            {
+              showLoading && (
+                  <div className={'loadingImg'}>
+                    <div><img src="/loading.gif" alt=""/></div>
+                  </div>
+              )
+            }
             <div id="toolbar">
 
               <select className="ql-size">
@@ -199,7 +219,7 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               <div
                   id="custom-button"
-                  onClick={() => props.onButtonClick?.(props.widgetKey)}
+                  onClick={clickBtn}
               >
                 <span>{ props.btnText }</span>
               </div>
