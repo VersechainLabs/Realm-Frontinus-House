@@ -47,6 +47,7 @@ import {useAppDispatch, useAppSelector} from "./hooks";
 import {
   clearClick
 } from './state/slices/alert';
+import Application from "./pages/Application";
 
 const { chains, provider } = configureChains(
   [mainnet],
@@ -188,6 +189,7 @@ function App() {
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
+                  <Route path="/application/:id" element={<Application />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   {/*<Route path="/:house" element={<House />} />*/}
                   {/*<Route path="/:title" element={<Round />} />*/}

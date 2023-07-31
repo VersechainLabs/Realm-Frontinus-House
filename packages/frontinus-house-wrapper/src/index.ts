@@ -278,6 +278,14 @@ export class ApiWrapper {
     }
   }
 
+  async getApplication(id: number) {
+    try {
+      return (await axios.get(`${this.host}/applications/${id}/detail`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getAuctionProposals(auctionId: number) {
     try {
       return (await axios.get(`${this.host}/auctions/${auctionId}/proposals`)).data;
