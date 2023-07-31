@@ -203,7 +203,7 @@ export class VotesService {
     const sameAuctionVote = await this.findBy(auction.id, address);
     if (sameAuctionVote) {
       throw new HttpException(
-        `Vote for prop ${proposal.id} failed because user has already been voted in this auction`,
+        `Vote for prop ${proposal.id} failed because user has already been voted in this round`,
         HttpStatus.FORBIDDEN,
       );
     }

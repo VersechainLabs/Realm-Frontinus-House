@@ -29,12 +29,14 @@ import {
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
 import getProposalByIdResponse from 'examples/getProposalById.json';
+import { VotesService } from '../vote/votes.service';
 
 @Controller('proposals')
 export class ProposalsController {
   constructor(
     private readonly proposalsService: ProposalsService,
     private readonly auctionsService: AuctionsService,
+    private readonly voteService: VotesService,
   ) {}
 
   @Get()
@@ -45,6 +47,13 @@ export class ProposalsController {
   @Get(':id')
   @ApiOperation({ summary: 'Find proposal by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Proposal ID' })
+  @ApiParam({
+    name: 'address',
+    type: String,
+    description:
+      "Current logged-in user's address, if available, also check if they can vote on this proposal.",
+    required: false,
+  })
   @ApiOkResponse({
     description: 'Proposal found and returned successfully',
     type: Proposal,
@@ -57,10 +66,18 @@ export class ProposalsController {
     },
   })
   @ApiNotFoundResponse({ description: 'Proposal not found' })
-  async findOne(@Param('id') id: number): Promise<Proposal> {
+  async findOne(
+    @Param('id') id: number,
+    @Query('address') userAddress: string,
+  ): Promise<Proposal> {
     const foundProposal = await this.proposalsService.findOne(id);
     if (!foundProposal)
       throw new HttpException('Proposal not found', HttpStatus.NOT_FOUND);
+
+    if (userAddress && userAddress.length > 0) {
+      await this.checkCanVote(foundProposal, userAddress);
+    }
+
     return foundProposal;
   }
 
@@ -209,5 +226,34 @@ export class ProposalsController {
     proposal.createdDate = new Date();
 
     return this.proposalsService.store(proposal);
+  }
+
+  async checkCanVote(foundProposal: Proposal, userAddress: string) {
+    try {
+      if (foundProposal.votes) {
+        for (const vote of foundProposal.votes) {
+          if (vote.address === userAddress) {
+            foundProposal.canVote = false;
+            foundProposal.disallowedVoteReason =
+              'You have voted for this proposal';
+            return;
+          }
+        }
+      }
+
+      await this.voteService.checkEligibleToVote(
+        foundProposal,
+        foundProposal.auction,
+        userAddress,
+        true,
+      );
+
+      foundProposal.canVote = true;
+    } catch (e) {
+      if (e instanceof HttpException) {
+        foundProposal.canVote = false;
+        foundProposal.disallowedVoteReason = e.message;
+      }
+    }
   }
 }

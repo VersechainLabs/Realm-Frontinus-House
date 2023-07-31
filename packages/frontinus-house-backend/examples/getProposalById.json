@@ -89,5 +89,7 @@
     "proposalIds": [
       4
     ]
-  }
+  },
+  "canVote": false,
+  "disallowedVoteReason": "Not in the eligible voting period."
 }

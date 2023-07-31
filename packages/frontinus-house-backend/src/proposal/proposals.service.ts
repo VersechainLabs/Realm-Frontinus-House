@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Proposal } from './proposal.entity';
 import { GetProposalsDto } from './proposal.types';
 import { convertVoteListToDelegateVoteList } from '../vote/vote.entity';
+import { VotesService } from '../vote/votes.service';
 
 @Injectable()
 export class ProposalsService {
