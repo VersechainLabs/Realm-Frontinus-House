@@ -26,7 +26,7 @@ import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 import {
   AvatarComponent,
-  connectorsForWallets,
+  connectorsForWallets, darkTheme,
   getDefaultWallets,
   lightTheme,
   RainbowKitProvider,
@@ -158,7 +158,7 @@ function App() {
         ) : (
           <RainbowKitProvider
             chains={chains}
-            theme={lightTheme({
+            theme={darkTheme({
               accentColor: 'var(--brand-purple)',
             })}
             avatar={CustomAvatar}

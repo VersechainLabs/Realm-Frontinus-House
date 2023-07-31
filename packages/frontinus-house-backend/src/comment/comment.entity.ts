@@ -39,7 +39,9 @@ export class Comment {
   owner: string;
 
   @ApiProperty({ type: () => Proposal, isArray: true })
-  @ManyToOne(() => Proposal)
+  @ManyToOne(() => Proposal, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => Proposal)
   proposal: Proposal;

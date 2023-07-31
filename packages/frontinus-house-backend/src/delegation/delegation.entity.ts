@@ -35,15 +35,16 @@ export class Delegation {
   title: string;
 
   @ApiProperty({
-    description:
-      'This is description of the delegation.',
+    description: 'This is description of the delegation.',
   })
   @Column({ nullable: true })
   @Field(() => String)
   description: string;
 
   @ApiProperty({ type: () => Application, isArray: true })
-  @OneToMany(() => Application, (application) => application.delegation)
+  @OneToMany(() => Application, (application) => application.delegation, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => [Application])
   applications: Application[];
