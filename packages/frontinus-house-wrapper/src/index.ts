@@ -295,9 +295,13 @@ export class ApiWrapper {
     }
   }
 
-  async getProposal(id: number) {
+  async getProposal(id: number, address?: string) {
     try {
-      return (await axios.get(`${this.host}/proposals/${id}`)).data;
+      return (await axios.get(`${this.host}/proposals/${id}`, {
+        params: {
+          address,
+        }
+      })).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
