@@ -188,7 +188,6 @@ export class CommentsService {
     // communityId: number,
     createCommentDetails: CreateCommentDto,
   ) {
-    // console.log("createCommentDetails.proposalId:" + createCommentDetails.proposalId);
     const proposal = await this.proposalsRepository.findOne(
       createCommentDetails.proposalId,
     );
@@ -199,9 +198,9 @@ export class CommentsService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
+    const auction = await this.auctionsRepository.findOne(proposal.auctionId);
     const currentDate = new Date();
-    if (currentDate > proposal.auction.votingEndTime) {
+    if (currentDate > auction.votingEndTime) {
       throw new HttpException(
         'Round has been closed. Cannot create comment',
         HttpStatus.BAD_REQUEST,

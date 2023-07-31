@@ -27,7 +27,7 @@ export class CommentsController {
   @Get()
   @ApiOkResponse({
     type: [Comment],
-  })     
+  })
   getAll(): Promise<Comment[]> {
     return this.commentsService.findAll();
   }
@@ -35,7 +35,7 @@ export class CommentsController {
   @Post('/create')
   @ApiOkResponse({
     type: Comment,
-  })      
+  })
   async create(
     @Body(ECDSAPersonalSignedPayloadValidationPipe)
     createCommentDto: CreateCommentDto,
@@ -46,7 +46,7 @@ export class CommentsController {
   @Get('/byProposal/:proposalId')
   @ApiOkResponse({
     type: [Comment],
-  })     
+  })
   async findByProposal(
     @Param('proposalId') proposalId: number,
     @Query('limit') limit: number,
@@ -63,5 +63,4 @@ export class CommentsController {
       throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
     return comments;
   }
-
 }
