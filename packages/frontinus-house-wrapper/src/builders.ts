@@ -266,6 +266,9 @@ export interface StoredProposal extends Proposal {
   lastUpdatedDate: Date;
   deletedAt: Date;
   reqAmount: number | null;
+
+  canVote: boolean;
+  disallowedVoteReason: string | null;
 }
 
 export interface StoredProposalWithVotes extends StoredProposal {
