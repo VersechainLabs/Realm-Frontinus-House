@@ -413,6 +413,10 @@ p {
   stroke:white !important;
 }
 
+.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill{
+  fill: white !important;
+}
+
 .ql-snow .ql-picker{
   color:white !important;
 }
@@ -449,3 +453,13 @@ p {
 /*}*/
 
 
+.loadingImg{
+  position: absolute;
+  z-index: 1000;
+  left: 45%;
+  margin-top: -80px;
+}
+
+.loadingImg img{
+  width: 50px;
+}

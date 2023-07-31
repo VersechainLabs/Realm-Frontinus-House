@@ -1,5 +1,5 @@
 import { DeltaStatic, Quill } from 'quill';
-import React, { useEffect } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
 import BlotFormatter from 'quill-blot-formatter';
@@ -20,6 +20,7 @@ type QuillEditorProps = {
   onQuillInit?: (quill: Quill) => void;
   onButtonClick?: (widgetKey: string) => void;
   btnText:string | 'Submit';
+  placeholderText:string;
 }
 
 export default function QuillEditor(props: QuillEditorProps) {
@@ -36,11 +37,61 @@ export default function QuillEditor(props: QuillEditorProps) {
       'list',
       'bullet',
       'link',
-      'align'
+      'align',
+      'image'
   ];
 
   const { address: account } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const [showLoading, setShowLoading] = useState(false);
+
+
+
+  const imageHandler = async () => {
+    const input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
+
+    input.onchange = async () => {
+      const file = input.files ? input.files[0] : null;
+      let data = null;
+      const formData = new FormData();
+      const quillObj = quillRef.current.__quill;
+      const range = quillObj?.getSelection();
+
+      // console.log(file);
+      // console.log(quillRef);
+      // console.log(range);
+
+
+      if (file) {
+
+        setShowLoading(true);
+        quillObj.disable();
+
+        formData.append('file', file);
+        formData.append('name', file.name);
+
+        const responseUpload = await fetch(
+            `${process.env.REACT_APP_DEV_BACKEND_URI}/file`,
+            { method: 'POST', body: formData }
+        );
+
+        data = await responseUpload.json();
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        setShowLoading(false);
+        quillObj.enable();
+
+        quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
+        quillObj.setSelection(range.index + 1)
+      }
+    };
+  };
 
   const modules = {
     // toolbar: {
@@ -51,17 +102,30 @@ export default function QuillEditor(props: QuillEditorProps) {
     //     ['link'],
     //   ],
     // },
-    toolbar: "#toolbar",
+    // toolbar: "#toolbar",
+    toolbar: {
+      container:'#toolbar',
+      handlers: {
+        image: imageHandler
+      }
+    },
     blotFormatter: {},
     clipboard: {
       matchVisual: false,
     },
   };
+
+  const placeholder =  props.placeholderText;
+
+
   const theme = 'snow';
 
-  const { quill, quillRef, Quill } = useQuill({ theme, modules, formats });
+  const { quill, quillRef, Quill } = useQuill({ theme, modules,placeholder,formats});
   if (Quill && !quill) {
     Quill.register('modules/blotFormatter', BlotFormatter);
+    // Quill.register('modules/placeholder', getPlaceholderModule(Quill, {
+    //   className: 'ql-placeholder-content'  // default
+    // }))
   }
 
   useEffect(() => {
@@ -73,12 +137,17 @@ export default function QuillEditor(props: QuillEditorProps) {
       props.onQuillInit(quill);
     }
 
-    quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
+    // quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
+    //   if (source === 'user') {
+    //     props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
+    //   }
+    // });
+
+    quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
       if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
       }
     });
-
 
 
 
@@ -97,6 +166,14 @@ export default function QuillEditor(props: QuillEditorProps) {
     }
   }, [props.loading, quill]);
 
+
+  const clickBtn =  () => {
+    if( showLoading ){
+      return false;
+    }
+    return     props.onButtonClick?.(props.widgetKey);
+  }
+
   return (
     <Form>
       <Form.Group className={clsx(classes.inputGroup)}>
@@ -107,6 +184,13 @@ export default function QuillEditor(props: QuillEditorProps) {
           {/*</div>*/}
           <>
             <div  style={{minHeight:(props.minHeightStr)}} ref={quillRef} />
+            {
+              showLoading && (
+                  <div className={'loadingImg'}>
+                    <div><img src="/loading.gif" alt=""/></div>
+                  </div>
+              )
+            }
             <div id="toolbar">
 
               <select className="ql-size">
@@ -131,10 +215,11 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               <button className="ql-link"></button>
 
+              <button className="ql-image"></button>
 
               <div
                   id="custom-button"
-                  onClick={() => props.onButtonClick?.(props.widgetKey)}
+                  onClick={clickBtn}
               >
                 <span>{ props.btnText }</span>
               </div>

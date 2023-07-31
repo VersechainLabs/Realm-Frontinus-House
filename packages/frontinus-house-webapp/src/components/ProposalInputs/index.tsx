@@ -178,6 +178,7 @@ const ProposalInputs: React.FC<{
                 onQuillInit={(q) => setQuill(q)}
                 btnText='Submit'
                 onButtonClick={submit}
+                placeholderText=''
             />
           </div>
 
