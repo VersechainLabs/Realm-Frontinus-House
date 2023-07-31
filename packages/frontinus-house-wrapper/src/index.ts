@@ -39,29 +39,38 @@ export class ApiWrapper {
   ) {
   }
 
-  async createAuction(auction: TimedAuction, owner: string): Promise<StoredTimedAuction[]> {
+  async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
     if (!this.signer) throw 'Please sign';
     try {
       const signMessage = JSON.stringify(auction);
 
       const signResult = await this.signer.signMessage(signMessage);
-      return (await axios.post(`${this.host}/auctions/create`, {
-        'auction': auction,
-        'owner': owner,
-        'signedData': {
-          'message': signMessage,
-          'signature': signResult,
-          'signer': owner,
-        },
-      } )).data;
-      // return (await axios.post(`${this.host}/auctions/create`, auction)).data;
+      const owner = await this.signer.getAddress();
+      (auction as any).owner = owner;
+      (auction as any).signedData = {
+        'message': signMessage,
+        'signature': signResult,
+        'signer': owner,
+      };
+      return (await axios.post(`${this.host}/auctions/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
   }
 
   async createDelegateAuction(auction: any): Promise<any[]> {
+    if (!this.signer) throw 'Please sign';
     try {
+      const signMessage = JSON.stringify(auction);
+
+      const signResult = await this.signer.signMessage(signMessage);
+      const owner = await this.signer.getAddress();
+      (auction as any).owner = owner;
+      (auction as any).signedData = {
+        'message': signMessage,
+        'signature': signResult,
+        'signer': owner,
+      };
       return (await axios.post(`${this.host}/delegations/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
