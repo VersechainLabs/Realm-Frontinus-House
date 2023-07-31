@@ -49,7 +49,9 @@ export class Community {
   @Field(() => Int)
   numAuctions: number;
 
-  @OneToMany(() => Auction, (auction) => auction.community)
+  @OneToMany(() => Auction, (auction) => auction.community, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => [Auction])
   auctions: Auction[];

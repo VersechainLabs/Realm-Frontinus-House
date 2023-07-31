@@ -56,7 +56,12 @@ export class Auction implements AuctionBase {
   votingEndTime: Date;
 
   @ApiProperty()
-  @Column({ type: 'decimal', scale: 2, default: 0.0 })
+  @Column({
+    type: 'decimal',
+    scale: 2,
+    precision: 10,
+    default: '0',
+  })
   @Field(() => Float, {
     description: 'The number of currency units paid to each winner',
   })
@@ -82,7 +87,9 @@ export class Auction implements AuctionBase {
   numWinners: number;
 
   @ApiProperty({ type: () => Proposal, isArray: true })
-  @OneToMany(() => Proposal, (proposal) => proposal.auction)
+  @OneToMany(() => Proposal, (proposal) => proposal.auction, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => [Proposal])
   proposals: Proposal[];
@@ -91,7 +98,9 @@ export class Auction implements AuctionBase {
   proposalIds: number[];
 
   @ApiProperty({ type: () => Community, isArray: true })
-  @ManyToOne(() => Community, (community) => community.auctions)
+  @ManyToOne(() => Community, (community) => community.auctions, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => Community)
   community: Community;

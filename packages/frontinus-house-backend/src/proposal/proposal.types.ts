@@ -38,13 +38,6 @@ export class CreateProposalDto extends SignedEntity {
   parentType: ProposalParent;
 }
 
-export class CreateInfiniteAuctionProposalDto extends CreateProposalDto {
-  @IsNumber()
-  reqAmount: number;
-
-  parentType: 'infinite-auction';
-}
-
 export class UpdateProposalDto extends CreateProposalDto {
   @IsNumber()
   id: number;

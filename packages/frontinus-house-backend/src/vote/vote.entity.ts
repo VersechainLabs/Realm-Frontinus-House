@@ -1,6 +1,4 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { SignedEntity } from 'src/entities/signed';
-import { BaseProposal } from 'src/proposal/base-proposal.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
   BeforeInsert,
@@ -12,10 +10,12 @@ import {
 } from 'typeorm';
 import { Delegate } from '../delegate/delegate.entity';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
+import { Address } from '../types/address';
+import { IsEthereumAddress } from 'class-validator';
 
 @Entity()
 @ObjectType()
-export class Vote extends SignedEntity {
+export class Vote {
   @ApiProperty()
   @PrimaryGeneratedColumn()
   @Field(() => Int)
@@ -25,15 +25,18 @@ export class Vote extends SignedEntity {
   @Field(() => Int)
   direction: number;
 
-  @ApiProperty({ type: () => Proposal })
-  @ManyToOne(() => Proposal, (proposal) => proposal.votes)
-  @JoinColumn()
-  proposal: BaseProposal; //Proposal | InfiniteAuctionProposal;
-
-  // @ApiProperty()
+  @ApiProperty({ description: 'The signer address' })
   @Column()
-  @Field(() => Date)
-  createdDate?: Date;
+  @IsEthereumAddress()
+  @Field(() => String)
+  address: Address;
+
+  @ApiProperty({ type: () => Proposal })
+  @ManyToOne(() => Proposal, (proposal) => proposal.votes, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  proposal: Proposal;
 
   @ApiProperty()
   @Column()
@@ -80,7 +83,10 @@ export class Vote extends SignedEntity {
   delegateAddress?: string;
 
   @ApiProperty()
-  @ManyToOne(() => Delegate, { nullable: true, onDelete: 'SET NULL' })
+  @ManyToOne(() => Delegate, {
+    nullable: true,
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn({ name: 'delegateId' })
   delegate: Delegate | null;
 
@@ -90,13 +96,17 @@ export class Vote extends SignedEntity {
   })
   delegateList: Vote[];
 
+  // @ApiProperty()
+  @Column()
+  @Field(() => Date)
+  createdDate?: Date;
+
   @BeforeInsert()
   setCreatedDate() {
     this.createdDate = new Date();
   }
 
   constructor(opts?: Partial<Vote>) {
-    super(opts);
     if (opts) {
       this.direction = opts.direction;
       this.proposal = opts.proposal;
@@ -105,8 +115,6 @@ export class Vote extends SignedEntity {
       this.weight = opts.weight;
       this.actualWeight = opts.actualWeight;
       this.blockHeight = opts.blockHeight;
-      this.domainSeparator = opts.domainSeparator;
-      this.messageTypes = opts.messageTypes;
       this.delegateId = opts.delegateId;
       this.delegateAddress = opts.delegateAddress;
     }
@@ -139,10 +147,6 @@ export function convertVoteListToDelegateVoteList(voteList: Vote[]) {
         ...v,
       } as Vote;
       selfVote.delegateList = [];
-      delete selfVote.messageTypes;
-      delete selfVote.signedData;
-      delete selfVote.signatureState;
-      delete selfVote.domainSeparator;
       v.delegateList.unshift(selfVote);
     }
   });

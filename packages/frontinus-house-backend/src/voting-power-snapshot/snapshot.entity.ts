@@ -1,19 +1,5 @@
-import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
-import { Community } from 'src/community/community.entity';
-import { Application } from 'src/delegation-application/application.entity';
-import { Proposal } from 'src/proposal/proposal.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
-  BeforeInsert,
-  BeforeUpdate,
-  ManyToOne,
-  RelationId,
-} from 'typeorm';
-// import { AuctionBase } from './auction-base.type';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 @ObjectType()
@@ -23,6 +9,13 @@ export class Snapshot {
     description: 'All snapshots are issued a unique ID number',
   })
   id: number;
+
+  @Column({
+    comment:
+      'communityAddress in communities, used to confirm the voting power strategy',
+  })
+  @Field(() => String)
+  communityAddress: string;
 
   @Column()
   @Field(() => Int)
@@ -44,11 +37,4 @@ export class Snapshot {
   setCreatedDate() {
     this.createdDate = new Date();
   }
-
-
-  //   public isAcceptingProposals = (): boolean =>
-  //     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
-
-// @InputType()
-// export class AuctionInput extends Auction {}

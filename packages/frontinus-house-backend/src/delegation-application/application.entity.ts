@@ -54,7 +54,9 @@ export class Application {
   description: string;
 
   @ApiProperty({ type: () => Delegation, isArray: true })
-  @ManyToOne(() => Delegation)
+  @ManyToOne(() => Delegation, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   @Field(() => Delegation)
   delegation: Delegation;

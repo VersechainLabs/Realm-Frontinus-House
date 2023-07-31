@@ -197,6 +197,13 @@ export class AuctionsService {
     });
     newAuction.balanceBlockTag =
       await this.blockchainService.getCurrentBlockNum();
+
+    // noinspection ES6MissingAwait: Just a cache, no need await
+    this.blockchainService.cacheAll(
+      community.contractAddress,
+      newAuction.balanceBlockTag,
+    );
+
     return await this.auctionsRepository.save(newAuction);
   }
 }
