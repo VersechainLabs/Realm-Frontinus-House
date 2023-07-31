@@ -128,6 +128,38 @@ const Proposal = () => {
 
         {/*  )}*/}
 
+
+        <div className={classes.voteMain}>
+          <div className={classes.voteHeader}>
+            <div className={classes.voteHeaderText}>
+              Votes
+            </div>
+            <div className={classes.voteHeaderNum}>
+              123
+            </div>
+          </div>
+          <div className={classes.voteList}>
+            {proposal && proposal.votes.map(item => (
+                <div className={classes.voteContent}>
+                  <div className={classes.voteListChild}>
+                    <img className={classes.voteUserAvatar} src="/heads/wallet.png" alt=""/>
+                    <div className={classes.voteUserAddress}>{item.address} </div>
+                    {/*<div>X3 vote</div>*/}
+                  </div>
+                  <div className={classes.voteTotal}>
+                    {/*{item.actualWeight} BIBLIO*/}
+                    123 BIBLIO
+                  </div>
+                </div>
+            ))}
+
+
+
+          </div>
+
+        </div>
+
+
         {proposal && (
                 <div>
                   <div style={{ height: 30 }}></div>

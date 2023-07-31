@@ -95,9 +95,11 @@ export class PropHouseWrapper {
 
   async getAuctionsForCommunity(id: number): Promise<StoredAuctionBase[]> {
     try {
-      const [rawTimedAuctions, rawInfAuctions] = await Promise.allSettled([
-        axios.get(`${this.host}/auctions/forCommunity/${id}`),
-        axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
+      const [rawTimedAuctions
+        // , rawInfAuctions
+      ] = await Promise.allSettled([
+        axios.get(`${this.host}/auctions/forCommunity/${id}`)
+        // ,axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
       ]);
 
       const timed =
@@ -105,12 +107,13 @@ export class PropHouseWrapper {
           ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
           : [];
 
-      const infinite =
-        rawInfAuctions.status === 'fulfilled'
-          ? rawInfAuctions.value.data.map(StoredInfiniteAuction.FromResponse)
-          : [];
+      // const infinite =
+      //   rawInfAuctions.status === 'fulfilled'
+      //     ? rawInfAuctions.value.data.map(StoredInfiniteAuction.FromResponse)
+      //     : [];
 
-      return timed.concat(infinite);
+      // return timed.concat(infinite);
+      return timed;
     } catch (e: any) {
       throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
     }
