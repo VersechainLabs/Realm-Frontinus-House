@@ -1,9 +1,9 @@
 {
   "references": [
-    { "path": "packages/prop-house-backend" },
-    { "path": "packages/prop-house-communities" },
-    { "path": "packages/prop-house-webapp" },
-    { "path": "packages/prop-house-wrapper" }
+    { "path": "packages/frontinus-house-backend"},
+    { "path": "packages/frontinus-house-communities"},
+    { "path": "packages/frontinus-house-webapp"},
+    { "path": "packages/frontinus-house-wrapper"}
   ],
   "files": []
 }

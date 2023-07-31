@@ -1,0 +1,221 @@
+import classes from './CreateDelegateForm.module.css';
+import { Col, Container, Row } from 'react-bootstrap';
+import { useEffect, useRef, useState } from 'react';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useSigner } from 'wagmi';
+import {nameToSlug} from "../../utils/communitySlugs";
+import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { Link, useNavigate } from 'react-router-dom';
+
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
+const CreateDelegateForm: React.FC<{}> = () => {
+    const host = useAppSelector(state => state.configuration.backendHost);
+    const client = useRef(new ApiWrapper(host));
+    const { data: signer } = useSigner();
+    useEffect(() => {
+        client.current = new ApiWrapper(host, signer);
+    }, [signer, host]);
+    const navigate = useNavigate();
+
+
+
+    const state  = {
+        description: "",
+        title: "",
+        startTime: new Date("") ,
+        endTime: new Date("") ,
+        proposalEndTime: new Date("") ,
+        votingEndTime:  new Date("") ,
+    }
+
+    const saveFormTitle = (value:string) => {
+        state.title = value;
+        // console.log(state);
+    }
+    const saveFormDesc = (value:string) => {
+        state.description = value;
+        // console.log(state);
+    }
+    const saveFormStart = (value:any) => {
+        state.startTime = new Date(value);
+        // console.log(state);
+    }
+    const saveFormProposal = (value:any) => {
+        // state.proposalEndTime = Date.parse(value);
+        state.proposalEndTime = new Date(value);
+        // console.log(state);
+    }
+    const saveFormVote = (value:any) => {
+        state.votingEndTime = new Date(value);
+        // console.log(state);
+    }
+    const saveFormEnd = (value:any) => {
+        state.endTime = new Date(value);
+        // console.log(state);
+    }
+
+
+
+    const handleSubmit = async (e:any) => {
+        //该方法阻止表单的提交
+        e.preventDefault();
+
+        client.current.createDelegateAuction(state).then((round:any)=>{
+            navigate('/delegateDetails/'+round.id);
+        });
+
+        // console.log("round detail");
+        // console.log(round.id);
+
+    }
+
+
+  return (
+      <div  className={classes.blackBg}>
+          <Container>
+              <Row>
+                  <form onSubmit={handleSubmit}>
+                  <div className={classes.title}>
+                      Delegation Round Creation
+                  </div>
+                  <div className={classes.desc}>
+                      Use this form to create a new delegation round. Please visit our Discord if you have any questions: <a href="https://discord.gg/uQnjZhZPfu" target="_blank" className={classes.alink} rel="noreferrer">https://discord.gg/uQnjZhZPfu</a>.
+                  </div>
+
+                  <div className={classes.labelMargin}>
+                      <div className={classes.desc}>
+                          What is the delegation round name? (Please use only standard letters, no special characters such as dashes or question marks)*
+                      </div>
+
+                      <input onChange={event => saveFormTitle(event.target.value)} name={'title'} className={classes.input} type="text"/>
+                  </div>
+
+                  <div className={classes.labelMargin}>
+                      <div className={classes.desc}>
+                          What is the description of this round of delegation? (Please use a markdown editor to format your description) *
+                      </div>
+
+                      <textarea rows={4} onChange={event => saveFormDesc(event.target.value)} name={'description'} className={classes.input} />
+                  </div>
+                      <div className={classes.flexDiv}>
+
+
+                          <div className={classes.dateMain}>
+                  <div className={classes.labelMargin}>
+                      <div className={classes.desc}>
+                          When does the delegation round start accepting applications? (exact date and time in UTC)*
+                      </div>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormStart(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
+                  </div>
+
+                  <div className={classes.labelMargin}>
+
+                      <div className={classes.desc}>
+                          When can community members start granting voting power to delegate applicants? (exact date and time in UTC)*
+                      </div>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormProposal(newValue)} className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
+                  </div>
+
+                  <div className={classes.labelMargin}>
+
+                      <div className={classes.desc}>
+                          When is the last day community members can grant voting power to delegate applicants? (exact date and time in UTC)*
+                      </div>
+
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoContainer components={['DateTimePicker']}>
+                              <DateTimePicker onChange={(newValue) => saveFormVote(newValue)  } className={classes.input} />
+                          </DemoContainer>
+                      </LocalizationProvider>
+                  </div>
+                              <div className={classes.labelMargin}>
+                                  <div className={classes.desc}>
+                                      When does the delegation round end? (exact date and time in UTC)*
+                                  </div>
+
+
+                                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                      <DemoContainer components={['DateTimePicker']}>
+                                          <DateTimePicker onChange={(newValue) => saveFormEnd(newValue)} className={classes.input} />
+                                      </DemoContainer>
+                                  </LocalizationProvider>
+                              </div>
+
+
+                          </div>
+                          <div className={classes.paddingTop}>
+                              <div className={classes.xian+' '+classes.xian1}>
+
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Time to start accepting applicants
+                                  </div>
+                              </div>
+
+                              <div className={classes.xian+' '+classes.xian2}>
+
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Time to select delegates
+                                  </div>
+                              </div>
+                              <div className={classes.xian+' '+classes.xian3}>
+
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Time to end selection period
+                                  </div>
+                              </div>
+                              <div className={classes.xian+' '+classes.xian3}>
+
+                              </div>
+                              <div className={classes.flexDiv}>
+                                  <div className={classes.qiu}>
+
+                                  </div>
+                                  <div className={classes.qiuDesc}>
+                                      Delegation End Time
+                                  </div>
+                              </div>
+                              <div className={classes.xian+' '+classes.xian4}>
+
+                              </div>
+                          </div>
+                      </div>
+                  <button className={classes.button}>
+                      Submit
+                  </button>
+                  </form>
+              </Row>
+          </Container>
+      </div>
+
+  );
+};
+
+export default CreateDelegateForm;
