@@ -15,6 +15,7 @@ import { Delegate } from 'src/delegate/delegate.entity';
 import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { DelegateService } from 'src/delegate/delegate.service';
 import { DelegationService } from 'src/delegation/delegation.service';
+import { VotesService } from '../vote/votes.service';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { DelegationService } from 'src/delegation/delegation.service';
     SnapshotService,
     DelegateService,
     DelegationService,
+    VotesService,
   ],
   exports: [TypeOrmModule],
 })

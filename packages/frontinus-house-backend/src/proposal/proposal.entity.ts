@@ -119,6 +119,20 @@ export class Proposal {
   @Field(() => Auction)
   auction: Auction;
 
+  @ApiProperty({
+    description:
+      'Indicates whether the user is allowed to vote. If true, the user can vote; if false, voting is not allowed.',
+    type: Boolean,
+  })
+  canVote: boolean;
+  @ApiProperty({
+    description:
+      'Displays the reason why the user is not allowed to vote when canVote is false. This property will be a string describing the reason, such as "You have already voted." or "Voting has been closed." If canVote is true, this property can be set to null or an empty string.',
+    type: String,
+    nullable: true,
+  })
+  disallowedVoteReason: string | null;
+
   toJSON() {
     if (this.votes && this.votes.length > 0) {
       this.votes = convertVoteListToDelegateVoteList(this.votes);
