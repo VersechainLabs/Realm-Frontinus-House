@@ -14,6 +14,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Popup from '../../components/Popup';
 import dayjs, { Dayjs } from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
+import { setAlert } from '../../state/slices/alert';
 
 dayjs.extend(isToday);
 
@@ -32,8 +33,10 @@ const CreateRound: React.FC<{}> = () => {
   const [proposalEndTime, setProposalEndTime] = useState<Dayjs | null>(currentTime);
   const [votingEndTime, setVotingEndTime] = useState<Dayjs | null>(currentTime);
 
-  const MAX_TITLE_LENGTH = 10;
-  const MAX_DESCRIPTION_LENGTH = 10;
+  const MAX_TITLE_LENGTH = 50;
+  const MAX_DESCRIPTION_LENGTH = 300;
+  const [titleLength, setTitleLength] = useState(0);
+  const [descriptionLength, setDescriptionLength] = useState(0);
 
   const [state, setState] = useState({
     description: '',
@@ -64,19 +67,15 @@ const CreateRound: React.FC<{}> = () => {
   };
 
   const saveFormTitle = (value: string) => {
-    // Limit the title to between MIN_TITLE_LENGTH and MAX_TITLE_LENGTH characters
     const limitedTitle = value.slice(0, MAX_TITLE_LENGTH);
     setState(prevState => ({ ...prevState, title: limitedTitle }));
-    console.log('Title:', limitedTitle); // Add a log to check the limited title
-    console.log('Character Count:', limitedTitle.length); // Add a log to check the character count
+    setTitleLength(limitedTitle.length); // Update the titleLength state with the current input length
   };
 
   const saveFormDesc = (value: string) => {
-    // Limit the description to between MIN_DESCRIPTION_LENGTH and MAX_DESCRIPTION_LENGTH characters
     const limitedDescription = value.slice(0, MAX_DESCRIPTION_LENGTH);
     setState(prevState => ({ ...prevState, description: limitedDescription }));
-    console.log('Description:', limitedDescription); // Add a log to check the limited description
-    console.log('Character Count:', limitedDescription.length); // Add a log to check the character count
+    setDescriptionLength(limitedDescription.length); // Update the descriptionLength state with the current input length
   };
 
   const saveFormStart = (value: Dayjs | null) => {
@@ -218,6 +217,9 @@ const CreateRound: React.FC<{}> = () => {
               <div className={classes.desc}>
                 What is the round name? (Please use only standard letters, no special characters
                 such as dashes or question marks)*
+                <span className={classes.characterCount}>
+                  {titleLength}/{MAX_TITLE_LENGTH}
+                </span>
               </div>
 
               <input
@@ -232,6 +234,9 @@ const CreateRound: React.FC<{}> = () => {
               <div className={classes.desc}>
                 What is the round description? (Please use a markdown editor to format your
                 description) *
+                <span className={classes.characterCount1}>
+                  {descriptionLength}/{MAX_DESCRIPTION_LENGTH}
+                </span>
               </div>
 
               <textarea

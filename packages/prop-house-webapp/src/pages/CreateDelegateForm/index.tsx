@@ -12,6 +12,8 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { setAlert, clearClick, alertSlice } from '../../state/slices/alert';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -21,9 +23,16 @@ const CreateDelegateForm: React.FC<{}> = () => {
     client.current = new PropHouseWrapper(host, signer);
   }, [signer, host]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const MAX_TITLE_LENGTH = 10;
-  const MAX_DESCRIPTION_LENGTH = 10;
+  const timeWarningMessage = 'Time set should not be earlier than present time!';
+  const orderWarningMessage = 'Time set did not follow the required order!';
+  const blankWarningMessage = 'Input bar should not be blank!';
+
+  const MAX_TITLE_LENGTH = 50;
+  const MAX_DESCRIPTION_LENGTH = 300;
+  const [titleLength, setTitleLength] = useState(0);
+  const [descriptionLength, setDescriptionLength] = useState(0);
   const [showError, setShowError] = useState(false);
   const currentDate = useRef(new Date());
   const currentTime = dayjs();
@@ -40,6 +49,10 @@ const CreateDelegateForm: React.FC<{}> = () => {
   const [isVotingTimeFilled, setIsVotingTimeFilled] = useState(false);
   const [isEndTimeFilled, setIsEndTimeFilled] = useState(false);
 
+  const alertType = useSelector(state => state.alert.type);
+  const alertMessage = useSelector(state => state.alert.message);
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
+
   const [state, setState] = useState({
     description: '',
     title: '',
@@ -50,17 +63,15 @@ const CreateDelegateForm: React.FC<{}> = () => {
   });
 
   const saveFormTitle = (value: string) => {
-    // Limit the title to between 0 and MAX_TITLE_LENGTH characters
     const limitedTitle = value.slice(0, MAX_TITLE_LENGTH);
     setState(prevState => ({ ...prevState, title: limitedTitle }));
-    console.log(state);
+    setTitleLength(limitedTitle.length); // Update the titleLength state with the current input length
   };
 
   const saveFormDesc = (value: string) => {
-    // Limit the description to between 0 and MAX_DESCRIPTION_LENGTH characters
     const limitedDescription = value.slice(0, MAX_DESCRIPTION_LENGTH);
     setState(prevState => ({ ...prevState, description: limitedDescription }));
-    console.log(state);
+    setDescriptionLength(limitedDescription.length); // Update the descriptionLength state with the current input length
   };
 
   const saveFormStart = (value: Dayjs | null) => {
@@ -106,6 +117,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
       setIsEndTimeFilled(true);
     }
   };
+  const hideAlert = () => {
+    setIsAlertVisible(false); // 隐藏警告
+  };
 
   const handleSubmit = async (e: any) => {
     //该方法阻止表单的提交
@@ -119,9 +133,10 @@ const CreateDelegateForm: React.FC<{}> = () => {
       !state.votingEndTime ||
       !state.endTime
     ) {
-      setShowBlankWarning(true);
-      setShowOrderWarning(false);
-      setShowError(false);
+      //setShowOrderWarning(true);
+      //dispatch(setAlert({ type: 'error', message: blankWarningMessage }));
+      //setShowOrderWarning(false);
+      setIsAlertVisible(true);
       return;
     }
 
@@ -132,29 +147,42 @@ const CreateDelegateForm: React.FC<{}> = () => {
       state.votingEndTime < currentDate.current ||
       state.endTime < currentDate.current
     ) {
-      setShowError(true); // 设置状态以显示弹窗
-      setShowBlankWarning(false);
-      return; // 不继续处理表单提交的逻辑
+      //dispatch(setAlert({ type: 'error', message: timeWarningMessage }));
+      //setShowBlankWarning(false);
+      setIsAlertVisible(true);
+      return;
     }
     // 检查是否有时间比上一个时间要早的情况
     if (grantStartTime && grantStartTime.isBefore(roundStartTime)) {
-      setShowOrderWarning(true);
+      dispatch(setAlert({ type: 'error', message: orderWarningMessage }));
       setShowBlankWarning(false);
+
       return;
     }
 
     if (grantEndTime && grantEndTime.isBefore(grantStartTime)) {
-      setShowOrderWarning(true);
+      dispatch(setAlert({ type: 'error', message: orderWarningMessage }));
       setShowBlankWarning(false);
       return;
     }
 
     if (roundEndTime && roundEndTime.isBefore(grantEndTime)) {
-      setShowOrderWarning(true);
+      dispatch(setAlert({ type: 'error', message: orderWarningMessage }));
       setShowBlankWarning(false);
       return;
     }
+    dispatch(clearClick());
   };
+
+  useEffect(() => {
+    // 在isAlertVisible为true时，设定定时器
+    if (isAlertVisible) {
+      const timer = setTimeout(() => {
+        setIsAlertVisible(false); // 定时器到期后，隐藏警告
+      }, 5000); // 设定定时器时间，这里是5秒，可以根据需要调整
+      return () => clearTimeout(timer); // 组件卸载时，清除定时器
+    }
+  }, [isAlertVisible]);
 
   return (
     <div className={classes.blackBg}>
@@ -175,6 +203,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
               <div className={classes.desc}>
                 What is the delegation round name? (Please use only standard letters, no special
                 characters such as dashes or question marks)*
+                <span className={classes.characterCount}>
+                  {titleLength}/{MAX_TITLE_LENGTH}
+                </span>
               </div>
 
               <input
@@ -190,6 +221,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
               <div className={classes.desc}>
                 What is the description of this round of delegation? (Please use a markdown editor
                 to format your description) *
+                <span className={classes.characterCount1}>
+                  {descriptionLength}/{MAX_DESCRIPTION_LENGTH}
+                </span>
               </div>
 
               <textarea
@@ -330,41 +364,19 @@ const CreateDelegateForm: React.FC<{}> = () => {
               </div>
             </div>
             <button className={classes.button}>Submit</button>
-            {showError && (
-              <div className={classes.popup}>
+            {isAlertVisible && (
+              <div className={classes.popup} onClick={hideAlert}>
+                {/* Display the alert content here */}
                 <div className={classes.popupContent}>
-                  Time set should not be earlier than present time!
-                  <button className={classes.closeBtn} onClick={() => setShowError(false)}>
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-            {showOrderWarning && (
-              <div className={classes.popup}>
-                <div className={classes.popupContent}>
-                  <div className={classes.timeWarning}>
-                    Time set did not follow the required order!
-                  </div>
-                  <button
-                    className={classes.closeButton}
-                    onClick={() => setShowOrderWarning(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-            {showBlankWarning && (
-              <div className={classes.popup}>
-                <div className={classes.popupContent}>
-                  <div className={classes.timeWarning}>Input bar should not be blank!</div>
-                  <button
-                    className={classes.closeButton}
-                    onClick={() => setShowBlankWarning(false)}
-                  >
-                    Close
-                  </button>
+                  {/* Use the alertType and alertMessage variables to show the appropriate content */}
+                  {alertType === 'error' && <span className={classes.error}>{alertMessage}</span>}
+                  {alertType === 'warning' && (
+                    <span className={classes.warning}>{alertMessage}</span>
+                  )}
+                  {alertType === 'info' && <span className={classes.info}>{alertMessage}</span>}
+                  {alertType === 'success' && (
+                    <span className={classes.success}>{alertMessage}</span>
+                  )}
                 </div>
               </div>
             )}

@@ -134,4 +134,11 @@
     padding-top: 65px;
     padding-left: 40px;
 }
-
+.characterCount {
+    margin-left: 100px; 
+    color: #676b6d
+  }
+  .characterCount1 {
+    margin-left: 220px; 
+    color: #676b6d
+  }

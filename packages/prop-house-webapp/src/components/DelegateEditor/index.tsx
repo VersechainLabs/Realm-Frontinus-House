@@ -224,31 +224,26 @@ const DelegateEditor: React.FC<{
   return (
     <>
       <div className={classes.nominateText}>Creating your proposal for</div>
-      <ProposalInputs
-        onDataChange={onDataChange}
-        formData={formData}
-        fundReqData={fundReqData}
-      />
+      <ProposalInputs onDataChange={onDataChange} formData={formData} fundReqData={fundReqData} />
 
-
-      {/*<div className={classes.buttonContainer}>*/}
-      {/*  <button*/}
-      {/*    type="button"*/}
-      {/*    className={`${classes.submitButton} customButton`}*/}
-      {/*    // style={{ backgroundColor: buttonColor }}*/}
-      {/*    // onClick={onButtonClick}*/}
-      {/*  >*/}
-      {/*    {'Submit'}*/}
-      {/*  </button>*/}
-      {/*  <button*/}
-      {/*    type="button"*/}
-      {/*    className={`${classes.additionalButton} customButton`}*/}
-      {/*    // style={{ backgroundColor: additionalButtonColor }}*/}
-      {/*    // onClick={additionalButtonOnClick}*/}
-      {/*  >*/}
-      {/*    {'Preview'}*/}
-      {/*  </button>*/}
-      {/*</div>*/}
+      <div className={classes.buttonContainer}>
+        {/* <button
+          type="button"
+          className={`${classes.submitButton} customButton`}
+          // style={{ backgroundColor: buttonColor }}
+          // onClick={onButtonClick}
+        >
+          {'Submit'}
+        </button> */}
+        <button
+          type="button"
+          className={`${classes.additionalButton} customButton`}
+          // style={{ backgroundColor: additionalButtonColor }}
+          // onClick={additionalButtonOnClick}
+        >
+          {'Preview'}
+        </button>
+      </div>
     </>
   );
 };
