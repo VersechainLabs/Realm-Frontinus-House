@@ -587,9 +587,23 @@ export class ApiWrapper {
     }
   }
 
-  async getCommentList(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
+  async getCommentListByProposal(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
     try {
       return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`, {
+        params: {
+          'skip': skip,
+          'limit': limit,
+          'order': order,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async getCommentListByApplication(applicationId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
+    try {
+      return (await axios.get(`${this.host}/comments/byApplication/${applicationId}`, {
         params: {
           'skip': skip,
           'limit': limit,
