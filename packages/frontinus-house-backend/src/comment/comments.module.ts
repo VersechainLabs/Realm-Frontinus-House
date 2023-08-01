@@ -7,9 +7,11 @@ import { ProposalsService } from 'src/proposal/proposals.service';
 import { Comment } from './comment.entity';
 import { Auction } from 'src/auction/auction.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
-// import { AuctionsResolver } from './auction.resolver';
 import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';
+import { ApplicationService } from '../delegation-application/application.service';
+import { Application } from '../delegation-application/application.entity';
+import { Delegate } from '../delegate/delegate.entity';
 
 @Module({
   imports: [
@@ -19,10 +21,17 @@ import { CommentsService } from './comments.service';
       Proposal,
       Community,
       Auction,
+      Application,
+      Delegate,
     ]),
   ],
   controllers: [CommentsController],
-  providers: [CommentsService, ProposalsService, CommunitiesService],
+  providers: [
+    CommentsService,
+    ProposalsService,
+    CommunitiesService,
+    ApplicationService,
+  ],
   exports: [TypeOrmModule],
 })
 export class CommentsModule {}
