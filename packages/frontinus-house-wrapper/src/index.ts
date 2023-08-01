@@ -40,7 +40,18 @@ export class ApiWrapper {
   }
 
   async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
+    if (!this.signer) throw 'Please sign';
     try {
+      const signMessage = JSON.stringify(auction);
+
+      const signResult = await this.signer.signMessage(signMessage);
+      const owner = await this.signer.getAddress();
+      (auction as any).owner = owner;
+      (auction as any).signedData = {
+        'message': signMessage,
+        'signature': signResult,
+        'signer': owner,
+      };
       return (await axios.post(`${this.host}/auctions/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
@@ -48,7 +59,18 @@ export class ApiWrapper {
   }
 
   async createDelegateAuction(auction: any): Promise<any[]> {
+    if (!this.signer) throw 'Please sign';
     try {
+      const signMessage = JSON.stringify(auction);
+
+      const signResult = await this.signer.signMessage(signMessage);
+      const owner = await this.signer.getAddress();
+      (auction as any).owner = owner;
+      (auction as any).signedData = {
+        'message': signMessage,
+        'signature': signResult,
+        'signer': owner,
+      };
       return (await axios.post(`${this.host}/delegations/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
@@ -84,9 +106,11 @@ export class ApiWrapper {
 
   async getAuctionsForCommunity(id: number): Promise<StoredAuctionBase[]> {
     try {
-      const [rawTimedAuctions, rawInfAuctions] = await Promise.allSettled([
-        axios.get(`${this.host}/auctions/forCommunity/${id}`),
-        axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
+      const [rawTimedAuctions
+        // , rawInfAuctions
+      ] = await Promise.allSettled([
+        axios.get(`${this.host}/auctions/forCommunity/${id}`)
+        // ,axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
       ]);
 
       const timed =
@@ -94,12 +118,13 @@ export class ApiWrapper {
           ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
           : [];
 
-      const infinite =
-        rawInfAuctions.status === 'fulfilled'
-          ? rawInfAuctions.value.data.map(StoredInfiniteAuction.FromResponse)
-          : [];
+      // const infinite =
+      //   rawInfAuctions.status === 'fulfilled'
+      //     ? rawInfAuctions.value.data.map(StoredInfiniteAuction.FromResponse)
+      //     : [];
 
-      return timed.concat(infinite);
+      // return timed.concat(infinite);
+      return timed;
     } catch (e: any) {
       throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
     }
@@ -270,9 +295,13 @@ export class ApiWrapper {
     }
   }
 
-  async getProposal(id: number) {
+  async getProposal(id: number, address?: string) {
     try {
-      return (await axios.get(`${this.host}/proposals/${id}`)).data;
+      return (await axios.get(`${this.host}/proposals/${id}`, {
+        params: {
+          address,
+        }
+      })).data;
     } catch (e: any) {
       throw e.response.data.message;
     }

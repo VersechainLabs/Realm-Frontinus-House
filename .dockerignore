@@ -76,7 +76,7 @@ web_modules/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
+packages/frontinus-house-webapp/.env
 .env.test
 .env.production
 
