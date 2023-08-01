@@ -10,13 +10,16 @@ import { DelegationService } from 'src/delegation/delegation.service';
 import { DelegationState } from 'src/delegation/delegation.types';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
 import { Repository } from 'typeorm';
+import { Delegate } from '../delegate/delegate.entity';
+import { Delegation } from '../delegation/delegation.entity';
 
 @Injectable()
 export class BlockchainService {
   private readonly provider: JsonRpcProvider;
 
   constructor(
-    private readonly delegateService: DelegateService,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
     private readonly delegationService: DelegationService,
 
     @InjectRepository(Snapshot)
@@ -103,9 +106,9 @@ export class BlockchainService {
     let allDelegates = [];
 
     for (const delegation of activeDelegations) {
-      const delegates = await this.delegateService.findByDelegationId(
-        delegation.id,
-      );
+      const delegates = await this.delegateRepository.find({
+        where: { delegationId: delegation.id },
+      });
       allDelegates = allDelegates.concat(delegates);
     }
 

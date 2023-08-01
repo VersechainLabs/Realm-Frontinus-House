@@ -32,7 +32,6 @@ import { VotesService } from '../vote/votes.service';
   providers: [
     ProposalsService,
     AuctionsService,
-    ProposalsResolver,
     BlockchainService,
     DelegateService,
     DelegationService,

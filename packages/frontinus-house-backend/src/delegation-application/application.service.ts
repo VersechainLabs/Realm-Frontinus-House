@@ -1,13 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Auction } from 'src/auction/auction.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
 import { Application } from './application.entity';
 import { CreateApplicationDto, GetApplicationDto } from './application.types';
 import { Delegate } from '../delegate/delegate.entity';
-
-export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
 @Injectable()
 export class ApplicationService {
@@ -16,7 +13,6 @@ export class ApplicationService {
     private applicationRepository: Repository<Application>,
     @InjectRepository(Delegation)
     private delegationRepository: Repository<Delegation>,
-    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
     @InjectRepository(Delegate)
     private delegateRepository: Repository<Delegate>,
   ) {}

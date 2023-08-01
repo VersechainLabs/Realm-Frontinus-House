@@ -1,19 +1,13 @@
-import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Community } from 'src/community/community.entity';
-import { Application } from 'src/delegation-application/application.entity';
-import { Proposal } from 'src/proposal/proposal.entity';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
-  ManyToOne,
-  RelationId,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+
 // import { AuctionBase } from './auction-base.type';
 
 @Entity()
@@ -65,10 +59,4 @@ export class Delegate {
   setUpdatedDate() {
     this.lastUpdatedDate = new Date();
   }
-
-  //   public isAcceptingProposals = (): boolean =>
-  //     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
-
-// @InputType()
-// export class AuctionInput extends Auction {}

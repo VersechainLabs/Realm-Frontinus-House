@@ -3,21 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Between, LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { Delegation } from './delegation.entity';
 import { CreateDelegationDto, DelegationState } from './delegation.types';
-import { Community } from 'src/community/community.entity';
-import { Auction } from 'src/auction/auction.entity';
-
-// import { CreateAuctionByCommunityParams } from 'src/utils/dto-types';
-
-export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
 @Injectable()
 export class DelegationService {
   constructor(
     @InjectRepository(Delegation)
     private delegationRepository: Repository<Delegation>,
-    @InjectRepository(Community)
-    private communitiesRepository: Repository<Community>,
-    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
   findAll(): Promise<Delegation[]> {
