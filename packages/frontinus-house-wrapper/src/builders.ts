@@ -1,37 +1,76 @@
 import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from '@ethersproject/abstract-signer';
 import { Wallet } from '@ethersproject/wallet';
 import { DomainSeparator } from './types/eip712Types';
+import {WalletClient} from 'viem';
 
 export abstract class Signable {
   abstract toPayload(): any;
 
   async typedSignature(
-    signer: Signer,
+    signer: WalletClient,
     domainSeparator: TypedDataDomain,
     eip712MessageType: Record<string, TypedDataField[]>,
+    account:any
   ) {
-    const typedSigner = signer as Signer & TypedDataSigner;
+    // const typedSigner = signer as Signer & TypedDataSigner;
 
     // parse reqAmount to support decimal values when signing an uint256 type
     let payload = this.toPayload();
     if (payload.hasOwnProperty('reqAmount')) payload.reqAmount = payload.reqAmount.toString();
 
-    return await typedSigner._signTypedData(domainSeparator, eip712MessageType, payload);
+    // return await signer.signTypedData(domainSeparator, eip712MessageType, payload);
+    return await signer.signTypedData({
+      account,
+      domain: {
+        name: 'Ether Mail',
+        version: '1',
+        chainId: 1,
+        verifyingContract: '0x0000000000000000000000000000000000000000',
+      },
+      types: {
+        Person: [
+          { name: 'name', type: 'string' },
+          { name: 'wallet', type: 'address' },
+        ],
+        Mail: [
+          { name: 'from', type: 'Person' },
+          { name: 'to', type: 'Person' },
+          { name: 'contents', type: 'string' },
+        ],
+      },
+      primaryType: 'Mail',
+      message: {
+        from: {
+          name: 'Cow',
+          wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+        },
+        to: {
+          name: 'Bob',
+          wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+        },
+        contents: 'Hello, Bob!',
+      },
+    });
+
   }
 
   async signedPayload(
-    signer: Signer | Wallet,
+    signer: WalletClient,
     isContract: boolean,
     eip712MessageTypes?: Record<string, TypedDataField[]>,
   ) {
     const jsonPayload = this.jsonPayload();
-    const address = await signer.getAddress();
+    const address = (await signer.getAddresses())[0];
 
     let signature: string | undefined;
 
-    if (isContract) signature = await signer.signMessage(jsonPayload);
+    //jsonPayload
+    if (isContract) signature = await signer.signMessage({
+      account:address,
+      message:jsonPayload
+    });
     if (eip712MessageTypes)
-      signature = await this.typedSignature(signer, DomainSeparator, eip712MessageTypes);
+      signature = await this.typedSignature(signer, DomainSeparator, eip712MessageTypes,address);
 
     if (!signature) throw new Error(`Error signing payload.`);
 
@@ -52,12 +91,12 @@ export abstract class Signable {
    * Signed payload with supplied signature
    */
   async presignedPayload(
-    signer: Signer | Wallet,
+    signer: WalletClient,
     signature: string,
     jsonPayload?: string,
     eip712MessageTypes?: Record<string, TypedDataField[]>,
   ) {
-    const address = await signer.getAddress();
+    const address = (await signer.getAddresses())[0];
     return {
       signedData: {
         message: Buffer.from(jsonPayload ? jsonPayload : this.jsonPayload()).toString('base64'),

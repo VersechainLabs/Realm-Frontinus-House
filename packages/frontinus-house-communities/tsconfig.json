@@ -1,12 +1,26 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
+//  "compilerOptions": {
+//    "outDir": "dist",
+//    "rootDir": "src",
+//    "resolveJsonModule": true,
+//    "declaration": true,
+//    "declarationMap": true,
+//    "composite": true
+//  },
   "compilerOptions": {
-    "outDir": "dist",
     "rootDir": "src",
     "resolveJsonModule": true,
+    "preserveConstEnums": true,
+    "outDir": "dist",
     "declaration": true,
-    "declarationMap": true,
-    "composite": true
+    "lib": [
+      "decorators",
+      "dom",
+      "es5",
+      "scripthost",
+      "es2015.promise"
+    ]
   },
   "include": ["src/**/*", "src/abi/*.json"],
   "exclude": ["node_modules", "**/*.spec.ts"]

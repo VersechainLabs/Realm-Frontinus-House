@@ -25,7 +25,7 @@ import { Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import DelegateModules from '../DelegateModules';
 import { InfuraProvider } from '@ethersproject/providers';
-import { useAccount, useSigner, useProvider } from 'wagmi';
+import { useAccount, useWalletClient, usePublicClient } from 'wagmi';
 import { fetchBlockNumber } from '@wagmi/core';
 import NomineesCard from '../NomineesCard';
 import { cardStatus } from '../../utils/cardStatus';
@@ -58,8 +58,11 @@ const DelegateContent: React.FC<{
   const host = useAppSelector(state => state.configuration.backendHost);
 
   const client = useRef(new ApiWrapper(host));
-  const { data: signer } = useSigner();
-  const provider = useProvider();
+  // const { data: signer } = useSigner();
+  // const provider = useProvider();
+
+  const provider = usePublicClient();
+  const { data: walletClient } = useWalletClient();
   const staleProp = isInfAuction(auction) && infRoundFilter === InfRoundFilterType.Stale;
   const warningMessage = isTimedAuction(auction)
     ? t('submittedApplications')
@@ -70,16 +73,16 @@ const DelegateContent: React.FC<{
     : 'Proposals that did not meet quorum before voting period ended will show up here.';
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   // fetch voting power for user
   useEffect(() => {
-    if (!account || !signer || !community) return;
+    if (!account || !walletClient || !community) return;
 
     const fetchVotes = async () => {
       try {
-        const provider = new InfuraProvider(1, process.env.REACT_APP_INFURA_PROJECT_ID);
+        // const provider = new InfuraProvider(1, process.env.REACT_APP_INFURA_PROJECT_ID);
         const votes = await getVotingPower(
           account,
           community.contractAddress,
@@ -92,7 +95,7 @@ const DelegateContent: React.FC<{
       }
     };
     fetchVotes();
-  }, [account, signer, dispatch, community, auction.balanceBlockTag]);
+  }, [account, walletClient, dispatch, community, auction.balanceBlockTag]);
 
   // update submitted votes on proposal changes
   useEffect(() => {

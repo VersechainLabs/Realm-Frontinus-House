@@ -21,23 +21,33 @@ import OpenGraphHouseCard from './components/OpenGraphHouseCard';
 import OpenGraphRoundCard from './components/OpenGraphRoundCard';
 import OpenGraphProposalCard from './components/OpenGraphProposalCard';
 import Proposal from './pages/Proposal';
-import { createClient, mainnet, configureChains, WagmiConfig } from 'wagmi';
-import { infuraProvider } from 'wagmi/providers/infura';
-import { publicProvider } from 'wagmi/providers/public';
+// import { createClient, mainnet, configureChains, WagmiConfig } from 'wagmi';
+// import { infuraProvider } from 'wagmi/providers/infura';
+// import { publicProvider } from 'wagmi/providers/public';
 import {
   AvatarComponent,
-  connectorsForWallets, darkTheme,
+   darkTheme,
+} from '@rainbow-me/rainbowkit';
+
+import {
   getDefaultWallets,
-  lightTheme,
   RainbowKitProvider,
 } from '@rainbow-me/rainbowkit';
+import { configureChains, createConfig, WagmiConfig } from 'wagmi';
+import {
+  mainnet,
+} from 'wagmi/chains';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { publicProvider } from 'wagmi/providers/public';
+
+
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
 import CommentsPage from './pages/CommentsPage';
-import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
+// import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
 import AddressAvatar from './components/AddressAvatar';
 import classes from './components/AddressAvatar/AddressAvatar.module.css';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
@@ -48,33 +58,56 @@ import {
   clearClick
 } from './state/slices/alert';
 
-const { chains, provider } = configureChains(
-  [mainnet],
-  [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
-);
+// const { chains, provider } = configureChains(
+//   [mainnet],
+//   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
+// );
 
 // const { connectors } = getDefaultWallets({
 //   appName: 'Frontinus House',
 //   chains,
 // });
 
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended',
-    wallets: [
-      injectedWallet({ chains }),
-      rainbowWallet({ chains }),
-      metaMaskWallet({ chains }),
-    ],
-  },
-]);
+// const connectors = connectorsForWallets([
+//   {
+//     groupName: 'Recommended',
+//     wallets: [
+//       injectedWallet({ chains }),
+//       rainbowWallet({ chains }),
+//       metaMaskWallet({ chains }),
+//     ],
+//   },
+// ]);
 
 
-const wagmiClient = createClient({
+// const wagmiClient = createClient({
+//   autoConnect: true,
+//   connectors,
+//   provider,
+// });
+
+const { chains, publicClient } = configureChains(
+    [mainnet],
+    [
+      infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }),
+      publicProvider()
+    ]
+);
+
+
+const { connectors } = getDefaultWallets({
+  appName: 'Frontinus',
+  projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID!,
+  chains
+});
+
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
-});
+  publicClient
+})
+
+
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -148,7 +181,7 @@ function App() {
   };
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
+      <WagmiConfig config={wagmiConfig}>
         {openGraphCardPath ? (
           <Routes>
             <Route path="/proposal/:id/card" element={<OpenGraphProposalCard />} />
@@ -161,7 +194,6 @@ function App() {
             theme={darkTheme({
               accentColor: 'var(--brand-purple)',
             })}
-            avatar={CustomAvatar}
           >
             <Suspense fallback={<LoadingIndicator />}>
               <div className={clsx(bgColorForPage(location.pathname), 'wrapper')}>

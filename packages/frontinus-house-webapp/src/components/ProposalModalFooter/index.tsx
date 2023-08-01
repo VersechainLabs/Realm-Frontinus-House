@@ -14,7 +14,7 @@ import VotesDisplay from '../VotesDisplay';
 import { useTranslation } from 'react-i18next';
 import ProposalWindowButtons from '../ProposalWindowButtons';
 import ConnectButton from '../ConnectButton';
-import { useAccount, useProvider } from 'wagmi';
+import { useAccount, usePublicClient } from 'wagmi';
 import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
 import { isActiveProp } from '../../utils/isActiveProp';
 
@@ -45,7 +45,7 @@ const ProposalModalFooter: React.FC<{
   } = props;
 
   const { address: account } = useAccount();
-  const provider = useProvider();
+  const provider = usePublicClient();
 
   const dispatch = useDispatch();
   const { t } = useTranslation();

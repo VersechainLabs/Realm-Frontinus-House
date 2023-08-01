@@ -1,10 +1,11 @@
 import { Strategy } from '../types/Strategy';
-import { Provider } from '@ethersproject/providers';
+// import { Provider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
-import { Contract } from 'ethers';
+// import { Contract } from 'ethers';
 import BalanceOfABI from '../abi/BalanceOfABI.json';
 import ContractCallABI from '../abi/ContractCallABI.json';
 import { parseBlockTag } from '../utils/parseBlockTag';
+import {PublicClient,getContract} from "viem";
 
 export enum StrategyType {
   Erc721,
@@ -18,8 +19,7 @@ export type SnapshotStrategy = {
 }
 
 export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
-  return async (userAddress: string, _communityAddress: string, blockTag: number, provider: Provider) => {
-
+  return async (userAddress: string, _communityAddress: string, blockTag: number, provider: PublicClient) => {
     const balances = await Promise.all(
       strategies.map(async strategy => {
         let power;
@@ -40,27 +40,60 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
   };
 };
 
-const getErc721Balance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: Provider): Promise<BigNumber> => {
-  const contract = new Contract(strategyAddress, BalanceOfABI, provider);
-  let config;
-  if (blockTag === 0) {
-    config = {};
-  } else {
-    config = { blockTag: parseBlockTag(blockTag) };
+const getErc721Balance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: PublicClient): Promise<BigNumber> => {
+
+  // const contract = new Contract(strategyAddress, BalanceOfABI, provider);
+  // let config;
+  // if (blockTag === 0) {
+  //   config = {};
+  // } else {
+  //   config = { blockTag: parseBlockTag(blockTag) };
+  // }
+  // const balance = await contract.balanceOf(userAddress, config);
+
+  let config  = {
+    address: strategyAddress as `0x{string}`,
+    abi: BalanceOfABI,
+    functionName: 'balanceOf',
+    args: [userAddress],
+    // blockNumber:new BigNumber(blockTag)
   }
-  const balance = await contract.balanceOf(userAddress, config);
-  return new BigNumber(balance.toString());
+
+  const data = await provider.readContract(config);
+  try {
+    return new BigNumber( (data as [number])[0] as number);
+  } catch (e) {
+    throw Error(`Error fetching name for contract ${strategyAddress}`);
+  }
+  // return new BigNumber(balance.toString());
 };
 
-const getContractCallBalance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: Provider): Promise<BigNumber> => {
-  const contract = new Contract(strategyAddress, ContractCallABI, provider);
-  let config;
-  if (blockTag === 0) {
-    config = {};
-  } else {
-    config = { blockTag: parseBlockTag(blockTag) };
+const getContractCallBalance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: PublicClient): Promise<BigNumber> => {
+  // const contract = new Contract(strategyAddress, ContractCallABI, provider);
+  // let config;
+  // if (blockTag === 0) {
+  //   config = {};
+  // } else {
+  //   config = { blockTag: parseBlockTag(blockTag) };
+  // }
+  // const balance = await contract.getNumberRealms(userAddress, config);
+  // return new BigNumber(balance.toString());
+
+  let config  = {
+    address: strategyAddress as `0x{string}`,
+    abi: ContractCallABI,
+    functionName: 'getNumberRealms',
+    args: [userAddress],
+    // blockNumber:new BigNumber(blockTag)
   }
-  const balance = await contract.getNumberRealms(userAddress, config);
-  return new BigNumber(balance.toString());
+
+  const data = await provider.readContract(config);
+  try {
+    return new BigNumber( (data as [number])[0] as number);
+  } catch (e) {
+    throw Error(`Error fetching name for contract ${strategyAddress}`);
+  }
+
+
 };
 
