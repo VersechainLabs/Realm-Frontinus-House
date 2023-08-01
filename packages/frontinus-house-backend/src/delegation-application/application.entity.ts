@@ -1,19 +1,16 @@
-import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Community } from 'src/community/community.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
-import { Proposal } from 'src/proposal/proposal.entity';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
   ManyToOne,
-  RelationId,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
+
 // import { AuctionBase } from './auction-base.type';
 
 @Entity()
@@ -33,10 +30,6 @@ export class Application {
   @Column()
   @Field(() => String)
   address: string;
-
-  //   @Column()
-  //   @Field(() => String)
-  //   signedData: string;
 
   @ApiProperty()
   @Column()

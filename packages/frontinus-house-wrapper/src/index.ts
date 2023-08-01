@@ -1,6 +1,7 @@
 import { Wallet } from '@ethersproject/wallet';
 import axios from 'axios';
 import {
+  Comment,
   Community,
   CommunityWithAuctions,
   DeleteProposal,
@@ -20,7 +21,7 @@ import FormData from 'form-data';
 import * as fs from 'fs';
 
 import {
-  DeleteProposalMessageTypes, DomainSeparator,
+  DeleteProposalMessageTypes,
   EditProposalMessageTypes,
   InfiniteAuctionProposalMessageTypes,
   TimedAuctionProposalMessageTypes,
@@ -106,10 +107,10 @@ export class ApiWrapper {
 
   async getAuctionsForCommunity(id: number): Promise<StoredAuctionBase[]> {
     try {
-      const [rawTimedAuctions
+      const [rawTimedAuctions,
         // , rawInfAuctions
       ] = await Promise.allSettled([
-        axios.get(`${this.host}/auctions/forCommunity/${id}`)
+        axios.get(`${this.host}/auctions/forCommunity/${id}`),
         // ,axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
       ]);
 
@@ -246,25 +247,24 @@ export class ApiWrapper {
   }
 
   async getAuctionWithIDForCommunity(
-      auctionID: number
+    auctionID: number,
   ): Promise<StoredAuctionBase> {
     try {
       const rawTimedAuction = (
-          await axios.get(`${this.host}/auctions/pk/${auctionID}`)
+        await axios.get(`${this.host}/auctions/pk/${auctionID}`)
       ).data;
       return StoredTimedAuction.FromResponse(rawTimedAuction);
-    } catch (e:any) {
+    } catch (e: any) {
       // try {
       //   const rawInfAuction = (
       //       await axios.get(`${this.host}/infinite-auctions/${auctionName}/community/${communityId}`)
       //   ).data;
       //   return StoredInfiniteAuction.FromResponse(rawInfAuction);
       // } catch (e: any) {
-        throw e.response.data.message;
+      throw e.response.data.message;
       // }
     }
   }
-
 
 
   async getDelegateDetails(
@@ -300,7 +300,7 @@ export class ApiWrapper {
       return (await axios.get(`${this.host}/proposals/${id}`, {
         params: {
           address,
-        }
+        },
       })).data;
     } catch (e: any) {
       throw e.response.data.message;
@@ -601,20 +601,22 @@ export class ApiWrapper {
     }
   }
 
-  async createComment(proposalId: number, content: string, owner: string): Promise<CommentModal | undefined> {
+  async createComment(comment: Comment): Promise<CommentModal | undefined> {
     if (!this.signer) return undefined;
+    if (!comment.proposalId && !comment.applicationId) return undefined;
     try {
       let payload = {
-        'proposalId': proposalId,
-        'content': content,
-        'owner': owner,
+        'proposalId': comment.proposalId,
+        'applicationId': comment.applicationId,
+        'content': comment.content,
       };
       const signMessage = JSON.stringify(payload);
       const signResult = await this.signer.signMessage(signMessage);
-
+      const owner = await this.signer.getAddress();
       return (await axios.post(`${this.host}/comments/create`, {
-          'proposalId': proposalId,
-          'content': content,
+          'proposalId': comment.proposalId,
+          'applicationId': comment.applicationId,
+          'content': comment.content,
           'owner': owner,
           'signedData': {
             'message': signMessage,

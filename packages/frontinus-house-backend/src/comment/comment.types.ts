@@ -1,6 +1,5 @@
 import { Transform } from 'class-transformer';
 import {
-  IsArray,
   IsEnum,
   IsInt,
   IsNumber,
@@ -19,7 +18,13 @@ export class CreateCommentDto {
 
   @IsNumber()
   @IsPositive()
+  @IsOptional()
   proposalId: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  applicationId: number;
 }
 
 export enum Order {
@@ -44,12 +49,6 @@ export class GetCommentsDto {
   @Transform(({ value }) => value?.toUpperCase())
   @IsEnum(Order)
   order?: Order;
-
-  // When find comments, should always with proposalId:
-  //   @IsInt()
-  //   @Min(1)
-  //   @Transform(({ value }) => Number(value))
-  //   proposalId: number;
 }
 
 export class LatestDto {
