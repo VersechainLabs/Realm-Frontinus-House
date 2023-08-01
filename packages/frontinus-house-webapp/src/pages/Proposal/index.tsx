@@ -18,6 +18,7 @@ import RenderedProposalFields from '../../components/RenderedProposalFields';
 import { useAccount, useSigner } from 'wagmi';
 import Comments from '../../components/Comments';
 import Button, { ButtonColor } from '../../components/Button';
+import AddressAvatar from '../../components/AddressAvatar';
 
 const Proposal = () => {
   const params = useParams();
@@ -158,20 +159,20 @@ const Proposal = () => {
               Votes
             </div>
             <div className={classes.voteHeaderNum}>
-              123
+              {proposal.voteCount}
             </div>
           </div>
           <div className={classes.voteList}>
             {proposal && proposal.votes.map(item => (
                 <div className={classes.voteContent}>
                   <div className={classes.voteListChild}>
-                    <img className={classes.voteUserAvatar} src="/heads/wallet.png" alt=""/>
+                    <AddressAvatar address={item.address} size={20} />
                     <div className={classes.voteUserAddress}>{item.address} </div>
                     {/*<div>X3 vote</div>*/}
                   </div>
                   <div className={classes.voteTotal}>
-                    {/*{item.actualWeight} BIBLIO*/}
-                    123 BIBLIO
+                    {item.actualWeight} BIBLIO
+                    {/*123 BIBLIO*/}
                   </div>
                 </div>
             ))}
