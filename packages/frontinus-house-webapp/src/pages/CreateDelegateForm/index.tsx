@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSigner } from 'wagmi';
-import {nameToSlug} from "../../utils/communitySlugs";
+import { nameToSlug } from '../../utils/communitySlugs';
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
@@ -20,11 +20,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
   const client = useRef(new ApiWrapper(host));
   const { data: signer } = useSigner();
   useEffect(() => {
-      client.current = new ApiWrapper(host, signer);
+    client.current = new ApiWrapper(host, signer);
   }, [signer, host]);
   const navigate = useNavigate();
-
-
 
   const dispatch = useDispatch();
 
@@ -85,8 +83,6 @@ const CreateDelegateForm: React.FC<{}> = () => {
       }));
       setRoundStartTime(value);
       setIsStartTimeFilled(true);
-
-   
     }
   };
 
@@ -138,11 +134,10 @@ const CreateDelegateForm: React.FC<{}> = () => {
       !state.votingEndTime ||
       !state.endTime
     ) {
-      //setShowOrderWarning(true);
-      dispatch(setAlert({ type: 'error', message: blankWarningMessage }));
-      //setShowOrderWarning(false);
-      setIsAlertVisible(true);
-
+      const errorMessage = 'Input fields should not be blank!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
 
@@ -153,31 +148,36 @@ const CreateDelegateForm: React.FC<{}> = () => {
       state.votingEndTime < currentDate.current ||
       state.endTime < currentDate.current
     ) {
-      //dispatch(setAlert({ type: 'error', message: timeWarningMessage }));
-      //setShowBlankWarning(false);
-      setIsAlertVisible(true);
+      const errorMessage = 'Time set should not be earlier than present time!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
     // 检查是否有时间比上一个时间要早的情况
     if (grantStartTime && grantStartTime.isBefore(roundStartTime)) {
-      dispatch(setAlert({ type: 'error', message: orderWarningMessage }));
-      setShowBlankWarning(false);
-
+      const errorMessage = 'Time set did not follow the required order!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
 
     if (grantEndTime && grantEndTime.isBefore(grantStartTime)) {
-      dispatch(setAlert({ type: 'error', message: orderWarningMessage }));
-      setShowBlankWarning(false);
+      const errorMessage = 'Time set did not follow the required order!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
 
     if (roundEndTime && roundEndTime.isBefore(grantEndTime)) {
-      dispatch(setAlert({ type: 'error', message: orderWarningMessage }));
-      setShowBlankWarning(false);
+      const errorMessage = 'Time set did not follow the required order!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
-    dispatch(clearClick());
   };
 
   return (
@@ -250,7 +250,17 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                 <div className={classes.labelMargin}>
                   <div className={classes.desc}>
-                      Use this form to create a new delegation round. Please visit our Discord if you have any questions: <a href="https://discord.gg/uQnjZhZPfu" target="_blank" className={classes.alink} rel="noreferrer">https://discord.gg/uQnjZhZPfu</a>.
+                    Use this form to create a new delegation round. Please visit our Discord if you
+                    have any questions:{' '}
+                    <a
+                      href="https://discord.gg/uQnjZhZPfu"
+                      target="_blank"
+                      className={classes.alink}
+                      rel="noreferrer"
+                    >
+                      https://discord.gg/uQnjZhZPfu
+                    </a>
+                    .
                   </div>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
