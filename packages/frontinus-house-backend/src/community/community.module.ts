@@ -7,7 +7,6 @@ import { Community } from './community.entity';
 import { CommunityResolver } from './community.resolver';
 import { CommunitiesService } from './community.service';
 import { BlockchainService } from '../blockchain/blockchain.service';
-import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
 import { DelegateService } from 'src/delegate/delegate.service';
 import { Delegate } from 'src/delegate/delegate.entity';
@@ -30,7 +29,6 @@ import { Delegation } from 'src/delegation/delegation.entity';
     AuctionsService,
     CommunityResolver,
     BlockchainService,
-    SnapshotService,
     DelegateService,
     DelegationService,
   ],
