@@ -159,7 +159,7 @@ const Proposal = () => {
               Votes
             </div>
             <div className={classes.voteHeaderNum}>
-              {proposal.voteCount}
+              {proposal && proposal.voteCount}
             </div>
           </div>
           <div className={classes.voteList}>
