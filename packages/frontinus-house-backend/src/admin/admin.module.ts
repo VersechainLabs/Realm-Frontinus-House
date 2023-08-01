@@ -10,7 +10,6 @@ import { AuctionsService } from 'src/auction/auctions.service';
 import { AdminService } from './admin.service';
 import { AdminsController } from './admin.controller';
 import { BlockchainService } from '../blockchain/blockchain.service';
-import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
 import { DelegateService } from 'src/delegate/delegate.service';
 import { Delegate } from 'src/delegate/delegate.entity';
@@ -36,7 +35,6 @@ import { Delegation } from 'src/delegation/delegation.entity';
     ProposalsService,
     CommunitiesService,
     BlockchainService,
-    SnapshotService,
     DelegateService,
     DelegationService,
   ],

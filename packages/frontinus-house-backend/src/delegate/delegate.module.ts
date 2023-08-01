@@ -15,7 +15,6 @@ import { AdminService } from 'src/admin/admin.service';
 import { Admin } from 'src/admin/admin.entity';
 import { Application } from 'src/delegation-application/application.entity';
 import { ApplicationService } from 'src/delegation-application/application.service';
-import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
 
 @Module({
@@ -39,7 +38,6 @@ import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
     AdminService,
     CommunitiesService,
     ApplicationService,
-    SnapshotService,
   ],
   exports: [TypeOrmModule],
 })
