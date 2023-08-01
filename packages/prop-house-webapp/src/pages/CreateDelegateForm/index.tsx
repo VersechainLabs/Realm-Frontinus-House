@@ -134,9 +134,10 @@ const CreateDelegateForm: React.FC<{}> = () => {
       !state.endTime
     ) {
       //setShowOrderWarning(true);
-      //dispatch(setAlert({ type: 'error', message: blankWarningMessage }));
+      dispatch(setAlert({ type: 'error', message: blankWarningMessage }));
       //setShowOrderWarning(false);
       setIsAlertVisible(true);
+
       return;
     }
 
@@ -173,16 +174,6 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }
     dispatch(clearClick());
   };
-
-  useEffect(() => {
-    // 在isAlertVisible为true时，设定定时器
-    if (isAlertVisible) {
-      const timer = setTimeout(() => {
-        setIsAlertVisible(false); // 定时器到期后，隐藏警告
-      }, 5000); // 设定定时器时间，这里是5秒，可以根据需要调整
-      return () => clearTimeout(timer); // 组件卸载时，清除定时器
-    }
-  }, [isAlertVisible]);
 
   return (
     <div className={classes.blackBg}>
@@ -366,17 +357,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
             <button className={classes.button}>Submit</button>
             {isAlertVisible && (
               <div className={classes.popup} onClick={hideAlert}>
-                {/* Display the alert content here */}
                 <div className={classes.popupContent}>
-                  {/* Use the alertType and alertMessage variables to show the appropriate content */}
-                  {alertType === 'error' && <span className={classes.error}>{alertMessage}</span>}
-                  {alertType === 'warning' && (
-                    <span className={classes.warning}>{alertMessage}</span>
-                  )}
-                  {alertType === 'info' && <span className={classes.info}>{alertMessage}</span>}
-                  {alertType === 'success' && (
-                    <span className={classes.success}>{alertMessage}</span>
-                  )}
+                  {/* 显示alert中的错误信息 */}
+                  <span className={classes.error}>{state.message}</span>
                 </div>
               </div>
             )}

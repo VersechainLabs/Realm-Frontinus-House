@@ -13,6 +13,7 @@
     "@mui/lab": "^5.0.0-alpha.135",
     "@mui/material": "^5.13.7",
     "@mui/x-date-pickers": "^6.9.2",
+    "@nicolo-ribaudo/semver-v6": "nicolo-ribaudo/semver-v6",
     "@nouns/prop-house-wrapper": "1.0.0",
     "@rainbow-me/rainbowkit": "^0.8.1",
     "@reduxjs/toolkit": "^1.7.0",
