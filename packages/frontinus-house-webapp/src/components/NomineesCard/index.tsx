@@ -28,6 +28,7 @@ import getFirstImageFromProp from '../../utils/getFirstImageFromProp';
 import { useEffect, useState } from 'react';
 import { isTimedAuction } from '../../utils/auctionType';
 import { isMobile } from 'web3modal';
+import {useNavigate} from "react-router-dom";
 
 const NomineesCard: React.FC<{
   proposal: StoredProposalWithVotes;
@@ -42,6 +43,7 @@ const NomineesCard: React.FC<{
   const round = useAppSelector(state => state.delegate.activeRound);
   const infRoundFilter = useAppSelector(state => state.delegate.infRoundFilterType);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const roundIsActive = () =>
     auctionStatus === AuctionStatus.AuctionAcceptingProps ||
@@ -73,13 +75,15 @@ const NomineesCard: React.FC<{
         onClick={e => {
           if (!community || !round) return;
 
+          console.log(round);
+
           if (cmdPlusClicked(e)) {
-            openInNewTab(`${nameToSlug(round.title)}/${proposal.id}`);
+            navigate(`/application/${(round.id)}`)
             return;
           }
-
-          dispatch(setModalActive(true));
-          dispatch(setActiveProposal(proposal));
+          navigate(`/application/${(round.id)}`)
+          // dispatch(setModalActive(true));
+          // dispatch(setActiveProposal(proposal));
         }}
       >
         <Card

@@ -100,9 +100,6 @@ const DelegateDetails = () => {
         const round = await client.current.getDelegateDetails(
             parseInt( id ),
         );
-
-        console.log(round);
-
         dispatch(setActiveRound(round));
         setLoadingRound(false);
       } catch (e) {

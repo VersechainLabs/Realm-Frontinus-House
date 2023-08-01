@@ -72,6 +72,16 @@ export class ApiWrapper {
       }
     }
   }
+  async getDelegate(id: number): Promise<any> {
+    try {
+      const rawTimedAuction = (await axios.get(`${this.host}/delegates/${id}`)).data;
+      return StoredTimedAuction.FromResponse(rawTimedAuction);
+    } catch (e: any) {
+
+      throw e.response.data.message;
+
+    }
+  }
 
   async getAuctions(): Promise<StoredTimedAuction[]> {
     try {
@@ -277,6 +287,15 @@ export class ApiWrapper {
       throw e.response.data.message;
     }
   }
+
+  async getApplication(id: number) {
+    try {
+      return (await axios.get(`${this.host}/applications/${id}/detail`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
 
   async getAuctionProposals(auctionId: number) {
     try {
