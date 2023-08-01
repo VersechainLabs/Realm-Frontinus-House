@@ -5,7 +5,7 @@ import { BlockchainService } from './blockchain.service';
 
 @Controller('audio')
 export class BlockchainController {
-  constructor(@InjectQueue('audio') private readonly audioQueue: Queue,
+  constructor(@InjectQueue('bchain') private readonly audioQueue: Queue,
     private readonly blockchainService: BlockchainService,
     ) {}
 

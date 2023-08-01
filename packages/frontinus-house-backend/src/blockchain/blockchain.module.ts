@@ -18,7 +18,7 @@ import { Delegation } from 'src/delegation/delegation.entity';
 import { CommunitiesService } from 'src/community/community.service';
 import { BlockchainController } from './blockchain.controller';
 import { BullModule } from '@nestjs/bull';
-import { AudioProcessor } from './blockchain.processor';
+import { BchainProcessor } from './blockchain.processor';
 
 @Module({
   imports: [
@@ -32,7 +32,7 @@ import { AudioProcessor } from './blockchain.processor';
       Delegation,
     ]),
     BullModule.registerQueue({
-      name: 'audio',
+      name: 'bchain',
     }),
   ],
   controllers: [BlockchainController],
@@ -45,7 +45,7 @@ import { AudioProcessor } from './blockchain.processor';
     SnapshotService,
     DelegateService,
     DelegationService,
-    AudioProcessor
+    BchainProcessor
   ],
   exports: [TypeOrmModule],
 })

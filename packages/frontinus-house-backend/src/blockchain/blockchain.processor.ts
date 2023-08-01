@@ -3,9 +3,9 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 import { BlockchainService } from 'src/blockchain/blockchain.service';
 
-@Processor('audio')
-export class AudioProcessor {
-  private readonly logger = new Logger(AudioProcessor.name);
+@Processor('bchain')
+export class BchainProcessor {
+  private readonly logger = new Logger(BchainProcessor.name);
 
   constructor(
     // private readonly blockchainService: BlockchainService,
