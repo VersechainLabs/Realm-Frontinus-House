@@ -109,7 +109,7 @@ function App() {
 
     if(alertClick){
       setOpen(true);
-      dispatch(clearClick);
+      dispatch(clearClick());
     }
 
     setTimeout(() => {
