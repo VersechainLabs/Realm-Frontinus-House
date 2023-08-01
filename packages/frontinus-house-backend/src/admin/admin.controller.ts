@@ -8,10 +8,7 @@ import { ApiOkResponse } from '@nestjs/swagger';
 @Controller('admins')
 export class AdminsController {
   [x: string]: any;
-  constructor(
-    private readonly adminService: AdminService,
-    private readonly proposalService: ProposalsService,
-  ) {}
+  constructor(private readonly adminService: AdminService) {}
 
   @Get('/list')
   @ApiOkResponse({
