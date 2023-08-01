@@ -50,8 +50,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
   const [isVotingTimeFilled, setIsVotingTimeFilled] = useState(false);
   const [isEndTimeFilled, setIsEndTimeFilled] = useState(false);
 
-  const alertType = useSelector(state => state.alert.type);
-  const alertMessage = useSelector(state => state.alert.message);
+  // const alertType = useSelector(state => state.alert.type);
+  // const alertMessage = useSelector(state => state.alert.message);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
 
   const [state, setState] = useState({
@@ -373,7 +373,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
               <div className={classes.popup} onClick={hideAlert}>
                 <div className={classes.popupContent}>
                   {/* 显示alert中的错误信息 */}
-                  <span className={classes.error}>{state.message}</span>
+                  {/* <span className={classes.error}>{state.message}</span> */}
                 </div>
               </div>
             )}

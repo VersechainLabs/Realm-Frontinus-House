@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useSigner } from 'wagmi';
-import {nameToSlug} from "../../utils/communitySlugs";
+import { nameToSlug } from '../../utils/communitySlugs';
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -14,18 +14,19 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import Popup from '../../components/Popup';
 import dayjs, { Dayjs } from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
+import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../state/slices/alert';
 
 dayjs.extend(isToday);
 
 const CreateRound: React.FC<{}> = () => {
-const host = useAppSelector(state => state.configuration.backendHost);
-const client = useRef(new ApiWrapper(host));
-const { data: signer } = useSigner();
-useEffect(() => {
+  const host = useAppSelector(state => state.configuration.backendHost);
+  const client = useRef(new ApiWrapper(host));
+  const { data: signer } = useSigner();
+  useEffect(() => {
     client.current = new ApiWrapper(host, signer);
-}, [signer, host]);
-const navigate = useNavigate();
+  }, [signer, host]);
+  const navigate = useNavigate();
   const currentTime = dayjs();
   const minDateTime = dayjs().subtract(1, 'minute');
   // 初始化表单中的时间字段为当前时间
@@ -37,6 +38,7 @@ const navigate = useNavigate();
   const MAX_DESCRIPTION_LENGTH = 300;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
+  const dispatch = useDispatch();
 
   const [state, setState] = useState({
     description: '',
@@ -61,6 +63,8 @@ const navigate = useNavigate();
   const [isStartTimeFilled, setIsStartTimeFilled] = useState(false);
   const [isProposalTimeFilled, setIsProposalTimeFilled] = useState(false);
   const [isEndTimeFilled, setIsEndTimeFilled] = useState(false);
+
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
 
   const openPopup: { flag: boolean } = {
     flag: false,
@@ -125,6 +129,10 @@ const navigate = useNavigate();
     console.log(state);
   };
 
+  const hideAlert = () => {
+    setIsAlertVisible(false); // 隐藏警告
+  };
+
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -136,34 +144,38 @@ const navigate = useNavigate();
       !state.currencyType ||
       !state.fundingAmount
     ) {
-      setShowBlankWarning(true); // Set the flag to show the blank input warning message
-      setShowTimeWarning(false); // Hide the time warning message if it was shown earlier
-      setShowOrderWarning(false); // Hide the order warning message if it was shown earlier
-      return; // Stop further execution of the form submission logic
+      const errorMessage = 'Input fields should not be blank!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
+      return;
     }
 
     // Check if proposingStartTime is earlier than the current time
     const currentTime = dayjs();
     if (proposingStartTime && proposingStartTime.isBefore(currentTime)) {
-      setShowTimeWarning(true);
-      setShowOrderWarning(false);
-      setShowBlankWarning(false);
+      const errorMessage = 'Time set should not be earlier than present time!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
 
     // Check if proposalEndTime is greater than or equal to proposingStartTime
     if (proposalEndTime && proposalEndTime.isBefore(proposingStartTime)) {
-      setShowTimeWarning(false);
-      setShowOrderWarning(true);
-      setShowBlankWarning(false);
+      const errorMessage = 'Time set did not follow the required order!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
 
     // Check if votingEndTime is greater than or equal to proposalEndTime
     if (votingEndTime && votingEndTime.isBefore(proposalEndTime)) {
-      setShowTimeWarning(false);
-      setShowOrderWarning(true);
-      setShowBlankWarning(false);
+      const errorMessage = 'Time set did not follow the required order!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
 
