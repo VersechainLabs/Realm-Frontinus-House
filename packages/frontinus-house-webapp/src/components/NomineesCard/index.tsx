@@ -73,15 +73,13 @@ const NomineesCard: React.FC<{
     <>
       <div
         onClick={e => {
-          if (!community || !round) return;
-
-          console.log(round);
+          if (!proposal) return;
 
           if (cmdPlusClicked(e)) {
-            navigate(`/application/${(round.id)}`)
+            navigate(`/application/${(proposal.id)}`)
             return;
           }
-          navigate(`/application/${(round.id)}`)
+          navigate(`/application/${(proposal.id)}`)
           // dispatch(setModalActive(true));
           // dispatch(setActiveProposal(proposal));
         }}

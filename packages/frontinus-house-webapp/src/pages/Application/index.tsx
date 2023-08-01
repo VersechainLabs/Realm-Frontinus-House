@@ -37,9 +37,11 @@ const Application = () => {
 
 
   const handleBackClick = () => {
-    if (!community || !round) return;
+    console.log();
+
+    if (!proposal || !proposal.delegationId ) return;
     // navigate(buildRoundPath(community, round)+`/${round.id}`, { replace: false });
-    navigate(`delegateDetails/${round.id}`, { replace: false });
+    navigate(`/delegateDetails/` + proposal.delegationId , { replace: false });
   };
 
   useEffect(() => {
@@ -106,7 +108,7 @@ const Application = () => {
               round={round && round}
               backButton={
                 <div className={classes.backToAuction} onClick={() => handleBackClick()}>
-                  <IoArrowBackCircleOutline size={'1.5rem'} /> View round
+                  <IoArrowBackCircleOutline size={'1.5rem'} /> View delegate
                 </div>
               }
             />
@@ -121,7 +123,7 @@ const Application = () => {
                 <div>
                   <div style={{ height: 30 }}></div>
                   {/*<h2>Comments</h2>*/}
-                  <Comments proposalId={Number(id)} />
+                  <Comments applicationId={Number(id)} />
                 </div>
             )}
 
