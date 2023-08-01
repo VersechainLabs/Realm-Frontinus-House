@@ -9,6 +9,8 @@ import { FileModule } from './file/file.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { BullModule } from '@nestjs/bull';
+import { BlockchainModule } from './blockchain/blockchain.module';
 
 @Module({
   imports: [
@@ -22,6 +24,13 @@ import { ThrottlerModule } from '@nestjs/throttler';
     }),
     IpfsModule,
     FileModule,
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    // BlockchainModule 
   ],
   controllers: [AppController],
   providers: [AppService],
