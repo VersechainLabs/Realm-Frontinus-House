@@ -1,7 +1,7 @@
 import { BullModule } from '@nestjs/bull';
+import { BchainProcessor } from './blockchain.processor';
 import { Module } from '@nestjs/common';
 import { BlockchainService } from './blockchain.service';
-import { AudioProcessor } from './blockchain.processor';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { Delegate } from '../delegate/delegate.entity';
 import { DelegateService } from '../delegate/delegate.service';
@@ -10,19 +10,21 @@ import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
 import { Delegation } from '../delegation/delegation.entity';
 import { Application } from '../delegation-application/application.entity';
 import { ApplicationService } from '../delegation-application/application.service';
+import { BlockchainController } from './blockchain.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Snapshot, Delegate, Delegation, Application]),
     BullModule.registerQueue({
-      name: 'audio',
+      name: 'bchain',
     }),
   ],
+  controllers: [BlockchainController],
   providers: [
     BlockchainService,
-    AudioProcessor,
     DelegationService,
-    ApplicationService,
+    BchainProcessor
+    // ApplicationService,
   ],
 })
 export class BlockchainModule {}
