@@ -11,6 +11,7 @@ import { useSigner } from 'wagmi';
 import { useLocation } from 'react-router-dom';
 import { isInfAuction } from '../../utils/auctionType';
 import classes from './DelegateEditor.module.css';
+import DelegatePreview from '../DelegatePreview';
 
 export interface FormDataType {
   title: string;
@@ -81,6 +82,7 @@ const DelegateEditor: React.FC<{
     // additionalButtonOnClick,
   } = props;
 
+  const [previewMode, setPreviewMode] = useState(false);
   const data = useAppSelector(state => state.editor.proposal);
   const [editorBlurred, setEditorBlurred] = useState(false);
   const { t } = useTranslation();
@@ -192,7 +194,14 @@ const DelegateEditor: React.FC<{
   if (Quill && !quill) {
     Quill.register('modules/blotFormatter', BlotFormatter);
   }
-
+  const handlePreviewClick = () => {
+    setPreviewMode(!previewMode);
+    // Navigate to the preview page when previewMode is true
+    if (previewMode) {
+      const newPath = '/preview';
+      window.location.href = newPath;
+    }
+  };
   useEffect(() => {
     if (quill) {
       var toolbar = quill.getModule('toolbar');
@@ -224,31 +233,29 @@ const DelegateEditor: React.FC<{
   return (
     <>
       <div className={classes.nominateText}>Creating your proposal for</div>
-      <ProposalInputs
-        onDataChange={onDataChange}
-        formData={formData}
-        fundReqData={fundReqData}
-      />
+      <ProposalInputs onDataChange={onDataChange} formData={formData} fundReqData={fundReqData} />
 
-
-      {/*<div className={classes.buttonContainer}>*/}
-      {/*  <button*/}
-      {/*    type="button"*/}
-      {/*    className={`${classes.submitButton} customButton`}*/}
-      {/*    // style={{ backgroundColor: buttonColor }}*/}
-      {/*    // onClick={onButtonClick}*/}
-      {/*  >*/}
-      {/*    {'Submit'}*/}
-      {/*  </button>*/}
-      {/*  <button*/}
-      {/*    type="button"*/}
-      {/*    className={`${classes.additionalButton} customButton`}*/}
-      {/*    // style={{ backgroundColor: additionalButtonColor }}*/}
-      {/*    // onClick={additionalButtonOnClick}*/}
-      {/*  >*/}
-      {/*    {'Preview'}*/}
-      {/*  </button>*/}
-      {/*</div>*/}
+      <div className={classes.buttonContainer}>
+        {/* <button
+          type="button"
+          className={`${classes.submitButton} customButton`}
+          // style={{ backgroundColor: buttonColor }}
+          // onClick={onButtonClick}
+        >
+          {'Submit'}
+        </button> */}
+        <button
+          type="button"
+          className={`${classes.additionalButton} customButton`}
+          onClick={handlePreviewClick}
+          // style={{ backgroundColor: additionalButtonColor }}
+          // onClick={additionalButtonOnClick}
+        >
+          {previewMode ? 'Edit' : 'Preview'}
+        </button>
+      </div>
+      {/* Render the DelegatePreview component if in previewMode */}
+      {previewMode && <DelegatePreview data={data} />}
     </>
   );
 };

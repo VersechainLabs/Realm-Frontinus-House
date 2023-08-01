@@ -4431,6 +4431,10 @@
   dependencies:
     uuid "8.3.2"
 
+"@nicolo-ribaudo/semver-v6@nicolo-ribaudo/semver-v6":
+  version "6.3.3"
+  resolved "https://codeload.github.com/nicolo-ribaudo/semver-v6/tar.gz/b68efe3c7b62fb90157f3af55576d5e09cf80e57"
+
 "@noble/ed25519@^1.7.0":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@noble/ed25519/-/ed25519-1.7.1.tgz#6899660f6fbb97798a6fbd227227c4589a454724"
