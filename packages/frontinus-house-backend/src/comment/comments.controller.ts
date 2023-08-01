@@ -11,26 +11,13 @@ import {
 import { Comment } from './comment.entity';
 import { CreateCommentDto, GetCommentsDto } from './comment.types';
 import { CommentsService } from './comments.service';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { Order } from 'src/utils/dto-types';
 import { ECDSAPersonalSignedPayloadValidationPipe } from '../entities/ecdsa-personal-signed.pipe';
 import { ApiOkResponse } from '@nestjs/swagger';
 
 @Controller('comments')
 export class CommentsController {
   [x: string]: any;
-  constructor(
-    private readonly commentsService: CommentsService,
-    private readonly proposalService: ProposalsService,
-  ) {}
-
-  @Get()
-  @ApiOkResponse({
-    type: [Comment],
-  })
-  getAll(): Promise<Comment[]> {
-    return this.commentsService.findAll();
-  }
+  constructor(private readonly commentsService: CommentsService) {}
 
   @Post('/create')
   @ApiOkResponse({
@@ -49,16 +36,26 @@ export class CommentsController {
   })
   async findByProposal(
     @Param('proposalId') proposalId: number,
-    @Query('limit') limit: number,
-    @Query('skip') skip: number,
-    @Query('order') order: Order,
-    @Body() dto: GetCommentsDto,
+    @Query() dto: GetCommentsDto,
   ): Promise<Comment[]> {
-    dto.limit = limit;
-    dto.skip = skip;
-    dto.order = Order[order.toUpperCase()]; // support lowercase "asc" | "desc"
-
     const comments = await this.commentsService.findByProposal(proposalId, dto);
+    if (!comments)
+      throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
+    return comments;
+  }
+
+  @Get('/byApplication/:applicationId')
+  @ApiOkResponse({
+    type: [Comment],
+  })
+  async findByApplication(
+    @Param('applicationId') applicationId: number,
+    @Query() dto: GetCommentsDto,
+  ): Promise<Comment[]> {
+    const comments = await this.commentsService.findByApplication(
+      applicationId,
+      dto,
+    );
     if (!comments)
       throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
     return comments;

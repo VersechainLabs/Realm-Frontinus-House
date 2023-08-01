@@ -17,6 +17,58 @@
   transition-duration: 150ms;
 }
 
+.voteMain {
+  height: 440px;
+  border: 1px solid #2C2C2D;
+}
+.voteHeader {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 1px solid #2C2C2D;
+}
+
+.voteHeaderText {
+  color: #F5EEE6;
+  font-weight: bold;
+  font-size: 18px;
+}
+.voteHeaderNum {
+  background: #454343;
+  border-radius: 10px;
+  height: 20px;
+  line-height: 20px;
+  padding: 0 4px;
+  font-size: 14px;
+  margin-left: 8px;
+  font-weight: bold;
+}
+
+.voteList {
+
+}
+.voteContent {
+  display: flex;
+  padding: 10px 20px;
+  border-bottom: 1px solid #2C2C2D;
+  justify-content: space-between
+}
+.voteListChild {
+  display: flex;
+}
+.voteUserAvatar {
+  height: 20px;
+  width: 20px;
+  border-radius: 10px;
+}
+.voteUserAddress {
+  display: inline-block;
+  margin-left: 8px;
+}
+.voteTotal {
+
+}
+
 @media (min-width: 577px) {
   .backToAuction svg {
     height: 1.5rem;
