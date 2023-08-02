@@ -94,19 +94,19 @@ const TimedRoundVotingModule: React.FC<TimedRoundVotingModuleProps> = (
           </div>
         </p>
       )}
-      {!account ? (
-        <ConnectButton text={t('connectToVote')} color={ButtonColor.Pink} />
-      ) : account && votingPower ? (
-        <Button
-          text={t('submitVotes')}
-          bgColor={ButtonColor.Purple}
-          onClick={() => setShowVotingModal(true)}
-          disabled={
-            countTotalVotesAlloted(voteAllotments) === 0 ||
-            numVotesByUserInActiveRound === votingPower
-          }
-        />
-      ) : null}
+      {/*{!account ? (*/}
+      {/*  <ConnectButton text={t('connectToVote')} color={ButtonColor.Pink} />*/}
+      {/*) : account && votingPower ? (*/}
+      {/*  <Button*/}
+      {/*    text={t('submitVotes')}*/}
+      {/*    bgColor={ButtonColor.Purple}*/}
+      {/*    onClick={() => setShowVotingModal(true)}*/}
+      {/*    disabled={*/}
+      {/*      countTotalVotesAlloted(voteAllotments) === 0 ||*/}
+      {/*      numVotesByUserInActiveRound === votingPower*/}
+      {/*    }*/}
+      {/*  />*/}
+      {/*) : null}*/}
     </>
   );
 

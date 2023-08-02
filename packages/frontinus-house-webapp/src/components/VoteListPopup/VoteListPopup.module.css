@@ -5,7 +5,7 @@
     width: 632px;
     border: 1px solid #2c2c2d;
     border-radius: 24px;
-    background-color: #2c2c2d;
+    background-color: #1A1A1B;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -20,13 +20,11 @@
   
   .popupinner {
     width: 592px;
-    gap: 17px;
-    background-color: #2c2c2d;
+    background-color: #1A1A1B;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    margin-top: 20px;
   }
   
   
@@ -69,11 +67,30 @@
     display: flex;
 }
 
+.listTitle {
+    padding-bottom: 30px;
+    width: 100%;
+}
+
+.voteList {
+    border-top: 1px solid #2C2C2D;
+
+}
+
 .voteContent {
     display: flex;
     padding: 10px 20px;
     border-bottom: 1px solid #2C2C2D;
     justify-content: space-between
+}
+.voteContent2 {
+    display: flex;
+    padding: 10px 20px;
+    padding-left: 40px;
+    justify-content: space-between
+}
+.voteContent2:last-child{
+    border-bottom: 1px solid #2C2C2D;
 }
 .voteListChild {
     display: flex;
