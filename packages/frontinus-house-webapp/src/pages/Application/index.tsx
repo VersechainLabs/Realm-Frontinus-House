@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
 import NotFound from '../../components/NotFound';
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useDispatch } from 'react-redux';
 import { setActiveCommunity, setActiveProposal, setActiveRound } from '../../state/slices/delegate';
@@ -17,6 +17,7 @@ import OpenGraphElements from '../../components/OpenGraphElements';
 import RenderedProposalFields from '../../components/RenderedProposalFields';
 import { useSigner } from 'wagmi';
 import Comments from '../../components/Comments';
+import Button, {ButtonColor} from "../../components/Button";
 
 const Application = () => {
   const params = useParams();
@@ -35,6 +36,7 @@ const Application = () => {
   const backendClient = useRef(new ApiWrapper(backendHost, signer));
   const [loading,setLoading] = useState(true);
 
+  const [canVote, setCanVote] = useState(false);
 
   const handleBackClick = () => {
     console.log();
@@ -81,7 +83,7 @@ const Application = () => {
   useEffect(() => {
     if (!proposal) return;
     const fetchCommunity = async () => {
-      const round = await backendClient.current.getDelegate(proposal.auctionId);
+      const round = await backendClient.current.getDelegate(proposal.delegationId);
       const community = await backendClient.current.getCommunityWithId(round.community);
       dispatch(setActiveCommunity(community));
       dispatch(setActiveRound(round));
@@ -89,6 +91,23 @@ const Application = () => {
 
     fetchCommunity();
   }, [id, dispatch, proposal]);
+
+  useEffect(() => {
+    if (!proposal || !signer) return;
+    const fetchVoteStatus = async () => {
+
+      const status = await backendClient.current.getDelegateStatus(proposal.id);
+
+      if(status === 'true'){
+        setCanVote(true);
+      } else {
+        setCanVote(false);
+      }
+
+    };
+
+    fetchVoteStatus();
+  }, [id, dispatch, proposal, signer]);
 
   return (
     <>
@@ -117,6 +136,23 @@ const Application = () => {
           <NotFound />
         ) : (
           <LoadingIndicator />
+        )}
+
+        {proposal && (
+            <div style={{ marginTop: '30px', marginBottom: '30px' ,display:'flex'}}>
+              <Button text={'　　delegate　　'} bgColor={ButtonColor.Purple}
+                      disabled={!canVote}
+                      onClick={async () => {
+                        try {
+                          const voteResult = await backendClient.current.createDelegate(proposal.id);
+                          console.log('voteResult: ', voteResult);
+                        } catch (e) {
+                          //
+                        } finally {
+
+                        }
+                      }} />
+            </div>
         )}
 
         {proposal && (
