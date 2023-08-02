@@ -96,6 +96,28 @@ export class ApiWrapper {
     }
   }
 
+  async getDelegateStatus(id: any): Promise<any> {
+    if (!this.signer) throw 'Please sign';
+    try {
+      const owner = await this.signer.getAddress();
+      const raw = (await axios.get(`${this.host}/delegates/checkExist?address=${owner}&applicationId=${id}`)).data;
+      return raw;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async getDelegate(id: number): Promise<any> {
+    try {
+      const rawTimedAuction = (await axios.get(`${this.host}/delegates/${id}`)).data;
+      return StoredTimedAuction.FromResponse(rawTimedAuction);
+    } catch (e: any) {
+
+      throw e.response.data.message;
+
+    }
+  }
+
   async getAuctions(): Promise<StoredTimedAuction[]> {
     try {
       const rawAuctions = (await axios.get(`${this.host}/auctions`)).data;
@@ -307,6 +329,15 @@ export class ApiWrapper {
     }
   }
 
+  async getApplication(id: number) {
+    try {
+      return (await axios.get(`${this.host}/applications/${id}/detail`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+
   async getAuctionProposals(auctionId: number) {
     try {
       return (await axios.get(`${this.host}/auctions/${auctionId}/proposals`)).data;
@@ -436,6 +467,31 @@ export class ApiWrapper {
       };
 
       return (await axios.post(`${this.host}/votes`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async createDelegate(applicationId : any) {
+    if (!this.signer) return;
+    try {
+      let payload = {
+        'applicationId': applicationId,
+      };
+      const signMessage = JSON.stringify(payload);
+      const signature = await this.signer.signMessage(signMessage);
+      const owner = await this.signer.getAddress();
+      const signedPayload = {
+        signedData: {
+          message: Buffer.from(signMessage).toString('base64'),
+          signature,
+          signer: owner,
+        },
+        address: owner,
+        applicationId: applicationId,
+      };
+
+      return (await axios.post(`${this.host}/delegates/create`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }

@@ -7,7 +7,7 @@ export interface ProposalFields {
   reqAmount: number | null;
 }
 
-const proposalFields = (proposal: StoredProposal): ProposalFields => ({
+const proposalFields = (proposal: any): ProposalFields => ({
   title: proposal.title,
   what: proposal.what,
   tldr: proposal.tldr,
