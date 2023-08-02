@@ -44,7 +44,7 @@ export class DelegateController {
 
     const existDelegate = await this.delegateService.findByFromAddress(
       application.delegationId,
-      dto.fromAddress,
+      dto.address,
     );
     if (existDelegate) {
       throw new HttpException(
@@ -55,7 +55,7 @@ export class DelegateController {
 
     const createdApplication = await this.applicationService.findByAddress(
       application.delegationId,
-      dto.fromAddress,
+      dto.address,
     );
     if (createdApplication) {
       throw new HttpException(
@@ -67,7 +67,7 @@ export class DelegateController {
     const delegate = new Delegate();
     delegate.delegationId = application.delegationId;
     delegate.applicationId = dto.applicationId;
-    delegate.fromAddress = dto.fromAddress;
+    delegate.fromAddress = dto.address;
     delegate.toAddress = application.address;
 
     return this.delegateService.store(delegate);
