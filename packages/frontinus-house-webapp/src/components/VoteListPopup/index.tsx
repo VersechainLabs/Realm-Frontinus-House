@@ -16,7 +16,7 @@ const VoteListPopup: React.FC<PopupProps> = (props: PopupProps) => {
   return (
     <div className={classes.popup} >
       <div className={classes.popupinner}>
-        <div className={classes.listTitle}>Votes({voteCount})</div>
+        <div className={classes.listTitle}>Votes ({voteCount})</div>
         <div className={classes.voteList}>
           {voteList && voteList.map(item => (
               <div key={item.id}>
