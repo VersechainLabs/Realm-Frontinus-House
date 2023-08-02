@@ -6,5 +6,5 @@ import { PublicClient } from 'viem';
 export const getCurrentBlockNum = async (
   provider: PublicClient,
 ): Promise<number> => {
-  return Number(provider.getBlockNumber());
+  return provider.getBlockNumber().then((n) => Number(n));
 };
