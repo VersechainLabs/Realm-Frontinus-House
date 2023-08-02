@@ -1,0 +1,90 @@
+.popup {
+    position: fixed;
+    top: calc(50% - 106px);
+    left: calc(50% - 316px); 
+    width: 632px;
+    border: 1px solid #2c2c2d;
+    border-radius: 24px;
+    background-color: #2c2c2d;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Garamond', serif;
+    font-weight: 700;
+    color: #f5eee6;
+    text-align: center;
+  }
+  
+  
+  .popupinner {
+    width: 592px;
+    gap: 17px;
+    background-color: #2c2c2d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 20px;
+  }
+  
+  
+  .closebtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #2c2c2d;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #2c2c2d;
+    cursor: pointer;
+  }
+  
+  .buttongroup {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .ok-btn {
+    width: 96px;
+    height: 40px;
+    padding: 0 16px;
+    background-color: #d0a059;
+    border: 1px solid #2c2c2d;
+    border-radius: 8px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+    cursor: pointer;
+    margin-top: 20px; 
+  }
+
+.voteListChild {
+    display: flex;
+}
+
+.voteContent {
+    display: flex;
+    padding: 10px 20px;
+    border-bottom: 1px solid #2C2C2D;
+    justify-content: space-between
+}
+.voteListChild {
+    display: flex;
+}
+.voteUserAvatar {
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+}
+.voteUserAddress {
+    display: inline-block;
+    margin-left: 8px;
+}
+  

@@ -98,29 +98,47 @@
     height: 21px;
 }
 .xian2 {
-    height: 90px;
+    height: 116px;
 }
 .xian3 {
-    height: 90px;
+    height: 116px;
 }
 .xian4 {
+    height: 90px;
+}
+.xian5 {
     height: 21px;
 }
+:root {
+    --qiu-color-default: radial-gradient(circle, black 30%, #D9D9D9 31%);
+    --qiu-color-filled: #D0A059;
+  }
+
 .qiu {
     height: 16px;
     width: 16px;
     border-radius: 8px;
-    background: #D0A059;
+    background: var(--qiu-color-default);
 }
+.qiuDesc.filled {
+    color: #D0A059;
+  }
 .qiuDesc {
-    color:  #D0A059;
+    color:  #f5eee6;
     height: 16px;
     line-height: 16px;
     margin-left: 8px;
     font-weight: bold;
 }
 .paddingTop {
-    padding-top: 42px;
+    padding-top: 65px;
     padding-left: 40px;
 }
-
+.characterCount {
+    margin-left: 100px; 
+    color: #676b6d
+  }
+  .characterCount1 {
+    margin-left: 220px; 
+    color: #676b6d
+  }
