@@ -16,13 +16,13 @@ import { setAlert, clearClick, alertSlice } from '../../state/slices/alert';
 import { useDispatch, useSelector } from 'react-redux';
 
 const CreateDelegateForm: React.FC<{}> = () => {
-    const host = useAppSelector(state => state.configuration.backendHost);
-    const client = useRef(new ApiWrapper(host));
-    const { data: walletClient } = useWalletClient();
-    useEffect(() => {
-        client.current = new ApiWrapper(host, walletClient);
-    }, [walletClient, host]);
-    const navigate = useNavigate();
+  const host = useAppSelector(state => state.configuration.backendHost);
+  const client = useRef(new ApiWrapper(host));
+  const { data: walletClient } = useWalletClient();
+  useEffect(() => {
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
+  const navigate = useNavigate();
 
   const dispatch = useDispatch();
 

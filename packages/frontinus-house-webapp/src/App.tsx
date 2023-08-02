@@ -1,9 +1,8 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/css/globals.css';
 import React, { Suspense, useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
-import Home from './pages/Home';
 import Create from './pages/Create';
 import ApplicationCreate from './pages/ApplicationCreate';
 import House from './pages/House';
@@ -21,22 +20,9 @@ import OpenGraphHouseCard from './components/OpenGraphHouseCard';
 import OpenGraphRoundCard from './components/OpenGraphRoundCard';
 import OpenGraphProposalCard from './components/OpenGraphProposalCard';
 import Proposal from './pages/Proposal';
-// import { createClient, mainnet, configureChains, WagmiConfig } from 'wagmi';
-// import { infuraProvider } from 'wagmi/providers/infura';
-// import { publicProvider } from 'wagmi/providers/public';
-import {
-  AvatarComponent,
-   darkTheme,
-} from '@rainbow-me/rainbowkit';
-
-import {
-  getDefaultWallets,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
+import { AvatarComponent, darkTheme, getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import {
-  mainnet,
-} from 'wagmi/chains';
+import { mainnet } from 'wagmi/chains';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -47,44 +33,12 @@ import CreateRound from './pages/CreateRound';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
 import CommentsPage from './pages/CommentsPage';
-// import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
-import AddressAvatar from './components/AddressAvatar';
 import classes from './components/AddressAvatar/AddressAvatar.module.css';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import {useAppDispatch, useAppSelector} from "./hooks";
-import {
-  clearClick
-} from './state/slices/alert';
-
-// const { chains, provider } = configureChains(
-//   [mainnet],
-//   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
-// );
-
-// const { connectors } = getDefaultWallets({
-//   appName: 'Frontinus House',
-//   chains,
-// });
-
-// const connectors = connectorsForWallets([
-//   {
-//     groupName: 'Recommended',
-//     wallets: [
-//       injectedWallet({ chains }),
-//       rainbowWallet({ chains }),
-//       metaMaskWallet({ chains }),
-//     ],
-//   },
-// ]);
-
-
-// const wagmiClient = createClient({
-//   autoConnect: true,
-//   connectors,
-//   provider,
-// });
+import { useAppDispatch, useAppSelector } from './hooks';
+import { clearClick } from './state/slices/alert';
 
 const { chains, publicClient } = configureChains(
     [mainnet],
@@ -93,7 +47,6 @@ const { chains, publicClient } = configureChains(
       publicProvider()
     ]
 );
-
 
 const { connectors } = getDefaultWallets({
   appName: 'Frontinus',
@@ -106,8 +59,6 @@ const wagmiConfig = createConfig({
   connectors,
   publicClient
 })
-
-
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -194,6 +145,7 @@ function App() {
             theme={darkTheme({
               accentColor: 'var(--brand-purple)',
             })}
+            avatar={CustomAvatar}
           >
             <Suspense fallback={<LoadingIndicator />}>
               <div className={clsx(bgColorForPage(location.pathname), 'wrapper')}>
