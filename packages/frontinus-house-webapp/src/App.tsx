@@ -21,8 +21,8 @@ import OpenGraphRoundCard from './components/OpenGraphRoundCard';
 import OpenGraphProposalCard from './components/OpenGraphProposalCard';
 import Proposal from './pages/Proposal';
 import { AvatarComponent, darkTheme, getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
-import { configureChains, createConfig, WagmiConfig } from 'wagmi';
-import { mainnet } from 'wagmi/chains';
+import { configureChains, createConfig, mainnet, WagmiConfig } from 'wagmi';
+import Application from './pages/Application';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
@@ -172,6 +172,7 @@ function App() {
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/faq" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
+                  <Route path="/application/:id" element={<Application />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   {/*<Route path="/:house" element={<House />} />*/}
                   {/*<Route path="/:title" element={<Round />} />*/}
