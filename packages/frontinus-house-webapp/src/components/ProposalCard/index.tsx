@@ -183,8 +183,8 @@ const ProposalCard: React.FC<{
                     <VotesDisplay proposal={proposal} />
                     {cardStatus === ProposalCardStatus.Voting && (
                       <div className={classes.votingArrows}>
-                        <span className={classes.plusArrow}>+</span>
-                        <VotingControls proposal={proposal} />
+                        {/*<span className={classes.plusArrow}>+</span>*/}
+                        {/*<VotingControls proposal={proposal} />*/}
                       </div>
                     )}
                   </div>
