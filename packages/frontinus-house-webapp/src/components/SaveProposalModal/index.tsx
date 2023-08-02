@@ -6,7 +6,7 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import refreshActiveProposal, { refreshActiveProposals } from '../../utils/refreshActiveProposal';
 import { NounImage } from '../../utils/getNounImage';
 import Modal from '../Modal';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 import { UpdatedProposal } from '@nouns/frontinus-house-wrapper/dist/builders';
 
 const SaveProposalModal: React.FC<{
@@ -30,11 +30,11 @@ const SaveProposalModal: React.FC<{
   const host = useAppSelector(state => state.configuration.backendHost);
   const round = useAppSelector(state => state.propHouse.activeRound);
   const client = useRef(new ApiWrapper(host));
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient()
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   const [hasBeenSaved, setHasBeenSaved] = useState(false);
   const [errorSaving, setErrorSaving] = useState(false);

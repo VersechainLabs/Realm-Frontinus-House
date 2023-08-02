@@ -1,7 +1,9 @@
 import { TypedDataField } from '@ethersproject/abstract-signer';
 
 export const DomainSeparator = {
-  name: 'Prop House',
+  name: 'Frontinus',
+  version: '1',
+  chainId: 1,
 };
 
 export const VoteMessageTypes: Record<string, TypedDataField[]> = {

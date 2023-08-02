@@ -3,8 +3,8 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useSigner } from 'wagmi';
-import { nameToSlug } from '../../utils/communitySlugs';
+import { useWalletClient } from 'wagmi';
+import { nameToSlug } from "../../utils/communitySlugs";
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
@@ -18,10 +18,10 @@ import { useDispatch, useSelector } from 'react-redux';
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
@@ -189,7 +189,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
             <div className={classes.desc}>
               Use this form to create a new delegation round. Please visit our Discord if you have
               any questions:{' '}
-              <a href="https://discord.gg/uQnjZhZPfu" target="_blank" className={classes.alink}>
+              <a href="https://discord.gg/uQnjZhZPfu" target="_blank" className={classes.alink} rel="noreferrer">
                 https://discord.gg/uQnjZhZPfu
               </a>
               .

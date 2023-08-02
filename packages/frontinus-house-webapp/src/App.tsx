@@ -1,9 +1,8 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../src/css/globals.css';
 import React, { Suspense, useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
-import Home from './pages/Home';
 import Create from './pages/Create';
 import ApplicationCreate from './pages/ApplicationCreate';
 import House from './pages/House';
@@ -21,61 +20,45 @@ import OpenGraphHouseCard from './components/OpenGraphHouseCard';
 import OpenGraphRoundCard from './components/OpenGraphRoundCard';
 import OpenGraphProposalCard from './components/OpenGraphProposalCard';
 import Proposal from './pages/Proposal';
+import { AvatarComponent, darkTheme, getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { configureChains, createConfig, mainnet, WagmiConfig } from 'wagmi';
 import Application from './pages/Application';
-import { createClient, mainnet, configureChains, WagmiConfig } from 'wagmi';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
-import {
-  AvatarComponent,
-  connectorsForWallets, darkTheme,
-  getDefaultWallets,
-  lightTheme,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
+
+
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
 import CommentsPage from './pages/CommentsPage';
-import { injectedWallet, metaMaskWallet, rainbowWallet } from '@rainbow-me/rainbowkit/wallets';
-import AddressAvatar from './components/AddressAvatar';
 import classes from './components/AddressAvatar/AddressAvatar.module.css';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
-import {useAppDispatch, useAppSelector} from "./hooks";
-import {
-  clearClick
-} from './state/slices/alert';
+import { useAppDispatch, useAppSelector } from './hooks';
+import { clearClick } from './state/slices/alert';
 
-const { chains, provider } = configureChains(
-  [mainnet],
-  [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
+const { chains, publicClient } = configureChains(
+    [mainnet],
+    [
+      infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }),
+      publicProvider()
+    ]
 );
 
-// const { connectors } = getDefaultWallets({
-//   appName: 'Frontinus House',
-//   chains,
-// });
+const { connectors } = getDefaultWallets({
+  appName: 'Frontinus',
+  projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID!,
+  chains
+});
 
-const connectors = connectorsForWallets([
-  {
-    groupName: 'Recommended',
-    wallets: [
-      injectedWallet({ chains }),
-      rainbowWallet({ chains }),
-      metaMaskWallet({ chains }),
-    ],
-  },
-]);
-
-
-const wagmiClient = createClient({
+const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  provider,
-});
+  publicClient
+})
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -149,7 +132,7 @@ function App() {
   };
   return (
     <>
-      <WagmiConfig client={wagmiClient}>
+      <WagmiConfig config={wagmiConfig}>
         {openGraphCardPath ? (
           <Routes>
             <Route path="/proposal/:id/card" element={<OpenGraphProposalCard />} />

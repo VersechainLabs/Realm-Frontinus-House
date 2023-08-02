@@ -14,7 +14,7 @@ import VoteAllotmentTooltip from '../VoteAllotmentTooltip';
 import { StoredProposalWithVotes } from '@nouns/frontinus-house-wrapper/dist/builders';
 import VotesDisplay from '../VotesDisplay';
 import { countNumVotes } from '../../utils/countNumVotes';
-import { useAccount, useProvider } from 'wagmi';
+import { useAccount, usePublicClient } from 'wagmi';
 import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
 import { countVotesRemainingForInfRound } from '../../utils/countVotesRemainingForInfRound';
 import { countNumVotesForProp } from '../../utils/countNumVotesForProp';
@@ -28,7 +28,7 @@ const ProposalModalVotingModule: React.FC<{
 }> = props => {
   const { proposal, setShowVotingModal, setShowVoteAllotmentModal, isWinner } = props;
 
-  const provider = useProvider();
+  const provider = usePublicClient();
   const { address: account } = useAccount();
 
   const dispatch = useDispatch();
