@@ -9,15 +9,10 @@ import {
 } from '@nestjs/common';
 import { ParseDate } from 'src/utils/date';
 import { Delegation } from './delegation.entity';
-import {
-  CreateDelegationDto,
-  DelegationState,
-  GetDelegationDto,
-} from './delegation.types';
+import { CreateDelegationDto, GetDelegationDto } from './delegation.types';
 import { DelegationService } from './delegation.service';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { AdminService } from 'src/admin/admin.service';
 import { ApiOkResponse } from '@nestjs/swagger';
+import { AdminService } from '../admin/admin.service';
 
 @Controller('delegations')
 export class DelegationController {
@@ -25,22 +20,13 @@ export class DelegationController {
 
   constructor(
     private readonly delegationService: DelegationService,
-    private readonly proposalService: ProposalsService,
     private readonly adminService: AdminService,
   ) {}
-
-  @Get('/:id/state')     
-  async getState(@Param('id') id: number): Promise<DelegationState> {
-    const testDate: Date = new Date('2023-08-15 00:00:04.000000');
-
-    // testDate is Optional:
-    return this.delegationService.getState(id, testDate);
-  }
 
   @Get('/list')
   @ApiOkResponse({
     type: [Delegation],
-  })  
+  })
   async getAll(@Body() dto: GetDelegationDto): Promise<Delegation[]> {
     return this.delegationService.findAll();
   }
@@ -48,7 +34,7 @@ export class DelegationController {
   @Post('/create')
   @ApiOkResponse({
     type: Delegation,
-  })    
+  })
   async create(@Body() dto: CreateDelegationDto): Promise<Delegation> {
     // Open this feature later:
     // if (await this.adminService.isAdmin(dto.address) !== true) {
@@ -101,7 +87,7 @@ export class DelegationController {
   @Post('/:id/delete')
   @ApiOkResponse({
     type: Boolean,
-  })      
+  })
   async delete(@Param('id') id: number): Promise<boolean> {
     await this.delegationService.remove(id);
     return true;

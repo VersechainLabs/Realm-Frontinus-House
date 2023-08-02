@@ -19,6 +19,7 @@ import { useAccount, useSigner } from 'wagmi';
 import Comments from '../../components/Comments';
 import Button, { ButtonColor } from '../../components/Button';
 import AddressAvatar from '../../components/AddressAvatar';
+import VoteListPopup from '../../components/VoteListPopup';
 
 const Proposal = () => {
   const params = useParams();
@@ -29,6 +30,13 @@ const Proposal = () => {
   const navigate = useNavigate();
 
   const [failedFetch, setFailedFetch] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const closePopup = () => {
+    setShowPopup(false)
+  };
+  const openPopop = () => {
+    setShowPopup(true)
+  };
 
   const dispatch = useDispatch();
   const proposal = useAppSelector(state => state.propHouse.activeProposal);
@@ -176,6 +184,9 @@ const Proposal = () => {
                   </div>
                 </div>
             ))}
+            {proposal && (<div className={classes.seeMore} onClick={() => openPopop()}>
+              See more
+            </div>)}
 
 
 
@@ -191,6 +202,14 @@ const Proposal = () => {
                   <Comments proposalId={Number(id)} />
                 </div>
             )}
+        {showPopup && (
+            <VoteListPopup
+                trigger={true}
+                onClose={closePopup}
+                voteList={proposal && proposal.votes}
+            />
+        )}
+
 
       </Container>
     </>

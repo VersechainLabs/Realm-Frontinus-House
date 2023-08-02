@@ -15,6 +15,8 @@ import { TasksModule } from 'src/task/tasks.module';
 import { VotesModule } from 'src/vote/votes.module';
 import config from '../../ormconfig';
 import { SnapshotModule } from 'src/voting-power-snapshot/snapshot.module';
+import { BlockchainModule } from 'src/blockchain/blockchain.module';
+// import { AudioModule } from 'src/queue/audio.module';
 
 /**
  * Import and provide base typeorm (mysql) related classes.
@@ -37,6 +39,8 @@ import { SnapshotModule } from 'src/voting-power-snapshot/snapshot.module';
     CommentsModule,
     AdminModule,
     SnapshotModule,
+    // AudioModule,
+    BlockchainModule,
     TypeOrmModule.forRoot(config),
   ],
 })

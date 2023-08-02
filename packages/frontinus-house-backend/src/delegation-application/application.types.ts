@@ -18,9 +18,6 @@ export class CreateApplicationDto {
   @IsString()
   address: string;
 
-  //   @IsString()
-  //   signedData: string;
-
   @ApiProperty({})
   @MinLength(3)
   @MaxLength(100)

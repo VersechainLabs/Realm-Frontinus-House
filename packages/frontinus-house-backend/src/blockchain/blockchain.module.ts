@@ -1,10 +1,30 @@
+import { BullModule } from '@nestjs/bull';
+import { BchainProcessor } from './blockchain.processor';
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { BlockchainService } from './blockchain.service';
-import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
+import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
+import { Delegate } from '../delegate/delegate.entity';
+import { DelegateService } from '../delegate/delegate.service';
+import { DelegationService } from '../delegation/delegation.service';
+import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
+import { Delegation } from '../delegation/delegation.entity';
+import { Application } from '../delegation-application/application.entity';
+import { ApplicationService } from '../delegation-application/application.service';
+import { BlockchainController } from './blockchain.controller';
 
 @Module({
-  imports: [ConfigModule.forRoot()],
-  providers: [BlockchainService, SnapshotService],
+  imports: [
+    TypeOrmModule.forFeature([Snapshot, Delegate, Delegation, Application]),
+    BullModule.registerQueue({
+      name: 'bchain',
+    }),
+  ],
+  controllers: [BlockchainController],
+  providers: [
+    BlockchainService,
+    DelegationService,
+    BchainProcessor
+    // ApplicationService,
+  ],
 })
 export class BlockchainModule {}

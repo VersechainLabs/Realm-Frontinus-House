@@ -17,7 +17,6 @@ import { DelegationService } from '../delegation/delegation.service';
 import { DelegateService } from '../delegate/delegate.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 
 @Injectable()
 export class VotesService {
@@ -27,7 +26,6 @@ export class VotesService {
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
     private readonly blockchainService: BlockchainService,
-    private readonly snapshotService: SnapshotService,
     private readonly delegationService: DelegationService,
     private readonly delegateService: DelegateService,
   ) {}
