@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Delegate } from './delegate.entity';
 import { CreateDelegateDto } from './delegate.types';
@@ -73,6 +74,22 @@ export class DelegateController {
     return this.delegateService.store(delegate);
   }
 
+  @Get('/checkExist')
+  @ApiOkResponse({
+    type: Boolean,
+  })
+  async checkDelegateExist(    
+    @Query('applicationId') applicationId: number,
+    @Query('address') fromAddress: string
+    ) {
+    const foundDelegate = await this.delegateService.checkDelegateExist(applicationId, fromAddress);
+
+    if (!foundDelegate)
+      return false;
+
+    return true;
+  }  
+
   @Get(':id')
   @ApiOkResponse({
     type: Delegate,
@@ -85,4 +102,5 @@ export class DelegateController {
 
     return foundDelegate;
   }
+
 }
