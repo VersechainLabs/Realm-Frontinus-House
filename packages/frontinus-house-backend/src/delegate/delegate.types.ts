@@ -22,7 +22,7 @@ export class CreateDelegateDto {
   applicationId: number;
 
   @IsString()
-  fromAddress: string;
+  address: string; // "From" Address
 
   // @IsString()
   // @IsOptional()
