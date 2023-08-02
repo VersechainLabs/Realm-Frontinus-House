@@ -355,7 +355,7 @@ export class ApiWrapper {
     try {
       const signedPayload = await proposal.signedPayload(
         this.signer,
-        'title',
+        'Proposal',
         TimedAuctionProposalMessageTypes,
       );
       return (await axios.post(`${this.host}/proposals`, signedPayload)).data;
@@ -369,7 +369,7 @@ export class ApiWrapper {
     try {
       const signedPayload = await proposal.signedPayload(
         this.signer,
-        'title',
+        'Proposal',
         proposal instanceof Proposal
           ? TimedAuctionProposalMessageTypes
           : InfiniteAuctionProposalMessageTypes,
@@ -389,7 +389,7 @@ export class ApiWrapper {
     try {
       const signedPayload = await updatedProposal.signedPayload(
         this.signer,
-        'title',
+        'Proposal',
         EditProposalMessageTypes,
       );
       return (await axios.patch(`${this.host}/proposals`, signedPayload)).data;
@@ -403,7 +403,7 @@ export class ApiWrapper {
     try {
       const signedPayload = await deleteProposal.signedPayload(
         this.signer,
-        'title',
+        'Proposal',
         DeleteProposalMessageTypes,
       );
       return (await axios.delete(`${this.host}/proposals`, { data: signedPayload })).data;
