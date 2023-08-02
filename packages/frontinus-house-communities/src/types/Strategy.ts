@@ -1,5 +1,4 @@
-import { Provider } from '@ethersproject/providers';
-import {PublicClient,getContract} from "viem";
+import { PublicClient } from 'viem';
 
 export type Strategy = (
   userAddress: string,

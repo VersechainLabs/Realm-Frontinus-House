@@ -1,6 +1,5 @@
 import { communities } from '../communities';
-// import { Provider } from '@ethersproject/providers';
-import {PublicClient} from "viem";
+import { PublicClient } from 'viem';
 
 /**
  * Looks up community where user has voting power
@@ -13,7 +12,6 @@ export const getRelevantComms = async (
   const allVotes = await Promise.all(
     Array.from(communities).map(async comm => {
       try {
-        // @ts-ignore
           return await comm[1](userAddress, comm[0], blockTag, provider);
       } catch (e) {
         console.log(`Error resolving voting power for community ${comm[0]}: ${e}`);
