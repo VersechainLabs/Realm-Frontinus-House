@@ -28,7 +28,7 @@ const VoteListPopup: React.FC<PopupProps> = (props: PopupProps) => {
 
                   </div>
                   <div className={classes.voteTotal}>
-                    {item.actualWeight} BIBLIO
+                    {item.weight} BIBLIO
                     {/*123 BIBLIO*/}
                   </div>
                 </div>
