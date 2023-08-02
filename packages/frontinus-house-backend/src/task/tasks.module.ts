@@ -9,7 +9,6 @@ import { VotesService } from 'src/vote/votes.service';
 import { Vote } from 'src/vote/vote.entity';
 import { Community } from 'src/community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
-import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
 import { DelegateService } from 'src/delegate/delegate.service';
 import { Delegate } from 'src/delegate/delegate.entity';
@@ -34,7 +33,6 @@ import { Delegation } from 'src/delegation/delegation.entity';
     VotesService,
     AuctionsService,
     BlockchainService,
-    SnapshotService,
     DelegateService,
     DelegationService,
   ],

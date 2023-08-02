@@ -10,14 +10,15 @@ import EthAddress from '../EthAddress';
 import AddressAvatar from '../AddressAvatar';
 import { serverDateToString } from '../../utils/detailedTime';
 import classes from './Comments.module.css';
-import LoadingIndicator from "../LoadingIndicator";
+import LoadingIndicator from '../LoadingIndicator';
 
 type CommentsProps = {
-  proposalId: number;
+  proposalId?: number;
+  applicationId?: number;
 }
 
 export default function Comments(props: CommentsProps) {
-  const { proposalId } = props;
+  const { proposalId, applicationId } = props;
 
   const [commentList, setCommentList] = useState<CommentModal[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
@@ -26,12 +27,12 @@ export default function Comments(props: CommentsProps) {
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
   const [showLoadMore, setShowLoadMore] = useState(true);
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadNextPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [proposalId]);
+  }, [proposalId, applicationId]);
 
   const loadNextPage = (skip: number) => {
 
@@ -45,7 +46,13 @@ export default function Comments(props: CommentsProps) {
       setShowTailLoading(true);
     }
 
-    client.current.getCommentList(Number(proposalId), skip).then(
+    let getCommentPromise;
+    if (proposalId) {
+      getCommentPromise = client.current.getCommentListByProposal(Number(proposalId), skip);
+    } else {
+      getCommentPromise = client.current.getCommentListByApplication(Number(applicationId), skip);
+    }
+    getCommentPromise.then(
       async (res) => {
         let list;
         if (skip === 0) {
@@ -54,7 +61,7 @@ export default function Comments(props: CommentsProps) {
           list = commentList.concat(res);
         }
 
-        if (list.length<=0){
+        if (list.length <= 0) {
           setShowLoadMore(false);
         }
 
@@ -81,27 +88,22 @@ export default function Comments(props: CommentsProps) {
       itemList.push(CommentListItem({ comment: comment }));
     });
 
-    if(  commentList.length % 10 === 0  ){
+    if (commentList.length % 10 === 0) {
       itemList.push(
-          <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
-            <LoadingButton
-                loading={showTailLoading}
-                onClick={() => loadNextPage(commentList.length)}
-                sx={{
-                  display: 'flex',
-                  textTransform: 'none',
-                }}
-            >
-              {showTailLoading ? <LoadingIndicator /> : 'Load More'}
-            </LoadingButton>
-          </ListItem>,
+        <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
+          <LoadingButton
+            loading={showTailLoading}
+            onClick={() => loadNextPage(commentList.length)}
+            sx={{
+              display: 'flex',
+              textTransform: 'none',
+            }}
+          >
+            {showTailLoading ? <LoadingIndicator /> : 'Load More'}
+          </LoadingButton>
+        </ListItem>,
       );
     }
-
-
-
-
-
   }
 
   return (<>
@@ -109,19 +111,23 @@ export default function Comments(props: CommentsProps) {
       <div style={{ marginTop: 20 }}>
       </div>
 
-      <CreateCommentWidget
-        proposalId={Number(proposalId)}
-        onCommentCreated={onCommentCreated}
-      />
+      {
+        proposalId ? <CreateCommentWidget
+          proposalId={Number(proposalId)}
+          onCommentCreated={onCommentCreated}
+        /> : <CreateCommentWidget
+          applicationId={Number(applicationId)}
+          onCommentCreated={onCommentCreated}
+        />
+      }
 
       <div className={classes.listBar}>
         <div className={classes.listTitle}>Comments</div>
         {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
-      {!loading ? <List>{itemList}</List> :(
-          <LoadingIndicator />
+      {!loading ? <List>{itemList}</List> : (
+        <LoadingIndicator />
       )}
-
 
     </Container>
   </>);
@@ -163,7 +169,7 @@ export function CommentListItem(props: CommentListItemProps) {
           </div>
         </div>
         <div className={classes.quillContent}>
-          <QuillViewer content={props.comment.content}/>
+          <QuillViewer content={props.comment.content} />
         </div>
 
       </div>

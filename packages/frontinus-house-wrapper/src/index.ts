@@ -1,6 +1,7 @@
 import { Wallet } from '@ethersproject/wallet';
 import axios from 'axios';
 import {
+  Comment,
   Community,
   CommunityWithAuctions,
   DeleteProposal,
@@ -20,7 +21,7 @@ import FormData from 'form-data';
 import * as fs from 'fs';
 
 import {
-  DeleteProposalMessageTypes, DomainSeparator,
+  DeleteProposalMessageTypes,
   EditProposalMessageTypes,
   InfiniteAuctionProposalMessageTypes,
   TimedAuctionProposalMessageTypes,
@@ -40,7 +41,18 @@ export class ApiWrapper {
   }
 
   async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
+    if (!this.signer) throw 'Please sign';
     try {
+      const signMessage = JSON.stringify(auction);
+
+      const signResult = await this.signer.signMessage(signMessage);
+      const owner = await this.signer.getAddress();
+      (auction as any).owner = owner;
+      (auction as any).signedData = {
+        'message': signMessage,
+        'signature': signResult,
+        'signer': owner,
+      };
       return (await axios.post(`${this.host}/auctions/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
@@ -48,7 +60,18 @@ export class ApiWrapper {
   }
 
   async createDelegateAuction(auction: any): Promise<any[]> {
+    if (!this.signer) throw 'Please sign';
     try {
+      const signMessage = JSON.stringify(auction);
+
+      const signResult = await this.signer.signMessage(signMessage);
+      const owner = await this.signer.getAddress();
+      (auction as any).owner = owner;
+      (auction as any).signedData = {
+        'message': signMessage,
+        'signature': signResult,
+        'signer': owner,
+      };
       return (await axios.post(`${this.host}/delegations/create`, auction)).data;
     } catch (e: any) {
       throw e.response.data.message;
@@ -84,9 +107,11 @@ export class ApiWrapper {
 
   async getAuctionsForCommunity(id: number): Promise<StoredAuctionBase[]> {
     try {
-      const [rawTimedAuctions, rawInfAuctions] = await Promise.allSettled([
+      const [rawTimedAuctions,
+        // , rawInfAuctions
+      ] = await Promise.allSettled([
         axios.get(`${this.host}/auctions/forCommunity/${id}`),
-        axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
+        // ,axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
       ]);
 
       const timed =
@@ -94,12 +119,13 @@ export class ApiWrapper {
           ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
           : [];
 
-      const infinite =
-        rawInfAuctions.status === 'fulfilled'
-          ? rawInfAuctions.value.data.map(StoredInfiniteAuction.FromResponse)
-          : [];
+      // const infinite =
+      //   rawInfAuctions.status === 'fulfilled'
+      //     ? rawInfAuctions.value.data.map(StoredInfiniteAuction.FromResponse)
+      //     : [];
 
-      return timed.concat(infinite);
+      // return timed.concat(infinite);
+      return timed;
     } catch (e: any) {
       throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
     }
@@ -221,25 +247,24 @@ export class ApiWrapper {
   }
 
   async getAuctionWithIDForCommunity(
-      auctionID: number
+    auctionID: number,
   ): Promise<StoredAuctionBase> {
     try {
       const rawTimedAuction = (
-          await axios.get(`${this.host}/auctions/pk/${auctionID}`)
+        await axios.get(`${this.host}/auctions/pk/${auctionID}`)
       ).data;
       return StoredTimedAuction.FromResponse(rawTimedAuction);
-    } catch (e:any) {
+    } catch (e: any) {
       // try {
       //   const rawInfAuction = (
       //       await axios.get(`${this.host}/infinite-auctions/${auctionName}/community/${communityId}`)
       //   ).data;
       //   return StoredInfiniteAuction.FromResponse(rawInfAuction);
       // } catch (e: any) {
-        throw e.response.data.message;
+      throw e.response.data.message;
       // }
     }
   }
-
 
 
   async getDelegateDetails(
@@ -270,9 +295,13 @@ export class ApiWrapper {
     }
   }
 
-  async getProposal(id: number) {
+  async getProposal(id: number, address?: string) {
     try {
-      return (await axios.get(`${this.host}/proposals/${id}`)).data;
+      return (await axios.get(`${this.host}/proposals/${id}`, {
+        params: {
+          address,
+        },
+      })).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -558,7 +587,7 @@ export class ApiWrapper {
     }
   }
 
-  async getCommentList(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
+  async getCommentListByProposal(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
     try {
       return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`, {
         params: {
@@ -572,20 +601,36 @@ export class ApiWrapper {
     }
   }
 
-  async createComment(proposalId: number, content: string, owner: string): Promise<CommentModal | undefined> {
+  async getCommentListByApplication(applicationId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
+    try {
+      return (await axios.get(`${this.host}/comments/byApplication/${applicationId}`, {
+        params: {
+          'skip': skip,
+          'limit': limit,
+          'order': order,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async createComment(comment: Comment): Promise<CommentModal | undefined> {
     if (!this.signer) return undefined;
+    if (!comment.proposalId && !comment.applicationId) return undefined;
     try {
       let payload = {
-        'proposalId': proposalId,
-        'content': content,
-        'owner': owner,
+        'proposalId': comment.proposalId,
+        'applicationId': comment.applicationId,
+        'content': comment.content,
       };
       const signMessage = JSON.stringify(payload);
       const signResult = await this.signer.signMessage(signMessage);
-
+      const owner = await this.signer.getAddress();
       return (await axios.post(`${this.host}/comments/create`, {
-          'proposalId': proposalId,
-          'content': content,
+          'proposalId': comment.proposalId,
+          'applicationId': comment.applicationId,
+          'content': comment.content,
           'owner': owner,
           'signedData': {
             'message': signMessage,

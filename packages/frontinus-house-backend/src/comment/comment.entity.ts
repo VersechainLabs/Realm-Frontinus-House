@@ -1,19 +1,16 @@
-import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Community } from 'src/community/community.entity';
 import { Proposal } from 'src/proposal/proposal.entity';
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
+  Column,
+  Entity,
+  JoinColumn,
   ManyToOne,
-  RelationId,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-// import { AuctionBase } from './auction-base.type';
+import { Application } from '../delegation-application/application.entity';
 
 @Entity()
 @ObjectType()
@@ -38,17 +35,21 @@ export class Comment {
   @Field(() => String)
   owner: string;
 
-  @ApiProperty({ type: () => Proposal, isArray: true })
-  @ManyToOne(() => Proposal, {
-    createForeignKeyConstraints: false,
+  @ApiProperty({
+    description: 'The unique ID of the related proposal',
+    required: false,
   })
-  @JoinColumn()
-  @Field(() => Proposal)
-  proposal: Proposal;
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  proposalId?: number;
 
-  @Column({})
-  //   @RelationId((comment: Comment) => comment.proposal)
-  proposalId: number;
+  @ApiProperty({
+    description: 'The unique ID of the related application',
+    required: false,
+  })
+  @Column({ nullable: true })
+  @Field(() => Int, { nullable: true })
+  applicationId?: number;
 
   @ApiProperty()
   @Column()
@@ -69,10 +70,4 @@ export class Comment {
   setUpdatedDate() {
     this.lastUpdatedDate = new Date();
   }
-
-  //   public isAcceptingProposals = (): boolean =>
-  //     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
-
-// @InputType()
-// export class AuctionInput extends Auction {}

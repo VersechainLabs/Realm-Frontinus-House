@@ -3,8 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Proposal } from './proposal.entity';
 import { GetProposalsDto } from './proposal.types';
-import { convertVoteListToDelegateVoteList } from '../vote/vote.entity';
-import { VotesService } from '../vote/votes.service';
 
 @Injectable()
 export class ProposalsService {
@@ -36,7 +34,7 @@ export class ProposalsService {
 
   async findOne(id: number) {
     const proposal = await this.proposalsRepository.findOne(id, {
-      relations: ['votes', 'auction'],
+      relations: ['votes', 'auction', 'auction.community'],
       where: { visible: true },
     });
 

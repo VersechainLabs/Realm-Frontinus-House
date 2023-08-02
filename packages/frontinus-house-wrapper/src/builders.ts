@@ -1,9 +1,4 @@
-import {
-  Signer,
-  TypedDataSigner,
-  TypedDataField,
-  TypedDataDomain,
-} from '@ethersproject/abstract-signer';
+import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from '@ethersproject/abstract-signer';
 import { Wallet } from '@ethersproject/wallet';
 import { DomainSeparator } from './types/eip712Types';
 
@@ -266,6 +261,9 @@ export interface StoredProposal extends Proposal {
   lastUpdatedDate: Date;
   deletedAt: Date;
   reqAmount: number | null;
+
+  canVote: boolean;
+  disallowedVoteReason: string | null;
 }
 
 export interface StoredProposalWithVotes extends StoredProposal {
@@ -368,6 +366,13 @@ export class Community extends Signable {
     };
   }
 }
+
+export interface Comment {
+  content: string;
+  proposalId?: number;
+  applicationId?: number;
+}
+
 export interface CommunityWithAuctions extends Community {
   auctions: StoredTimedAuction[];
 }

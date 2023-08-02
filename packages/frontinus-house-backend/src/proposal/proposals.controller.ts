@@ -253,6 +253,8 @@ export class ProposalsController {
       if (e instanceof HttpException) {
         foundProposal.canVote = false;
         foundProposal.disallowedVoteReason = e.message;
+      } else {
+        console.log(e);
       }
     }
   }

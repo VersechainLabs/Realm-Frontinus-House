@@ -14,7 +14,6 @@ export class CommunitiesService {
   constructor(
     @InjectRepository(Community)
     private communitiesRepository: Repository<Community>,
-    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
   findAll(): Promise<Community[]> {

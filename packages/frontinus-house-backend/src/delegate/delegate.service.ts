@@ -2,10 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Delegate } from './delegate.entity';
-import { Delegation } from 'src/delegation/delegation.entity';
-import { Community } from 'src/community/community.entity';
-import { Auction } from 'src/auction/auction.entity';
-import { CreateDelegateDto } from './delegate.types';
 
 export type AuctionWithProposalCount = Delegate & { numProposals: number };
 
@@ -14,11 +10,6 @@ export class DelegateService {
   constructor(
     @InjectRepository(Delegate)
     private delegateRepository: Repository<Delegate>,
-    @InjectRepository(Delegation)
-    private delegationRepository: Repository<Delegation>,
-    @InjectRepository(Community)
-    private communitiesRepository: Repository<Community>,
-    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
   ) {}
 
   findAll(): Promise<Delegate[]> {
@@ -62,13 +53,5 @@ export class DelegateService {
 
   async store(proposal: Delegate): Promise<Delegate> {
     return await this.delegateRepository.save(proposal, { reload: true });
-  }
-
-  findByDelegationId(delegationId: number): Promise<Delegate[]> {
-    const delegateList = this.delegateRepository.find({
-      where: { delegationId: delegationId },
-    });
-
-    return delegateList;
   }
 }

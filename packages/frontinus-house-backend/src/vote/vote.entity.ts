@@ -108,6 +108,7 @@ export class Vote {
 
   constructor(opts?: Partial<Vote>) {
     if (opts) {
+      this.address = opts.address;
       this.direction = opts.direction;
       this.proposal = opts.proposal;
       this.proposalId = opts.proposalId;
