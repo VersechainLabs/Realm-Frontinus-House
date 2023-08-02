@@ -214,7 +214,7 @@ const Proposal = () => {
 
                     </div>
                     <div className={classes.voteTotal}>
-                      {item.actualWeight} BIBLIO
+                      {item.weight} BIBLIO
                       {/*123 BIBLIO*/}
                     </div>
                   </div>
