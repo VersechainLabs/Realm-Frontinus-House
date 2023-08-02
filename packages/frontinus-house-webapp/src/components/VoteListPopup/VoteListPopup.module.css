@@ -1,6 +1,6 @@
 .popup {
     position: fixed;
-    top: calc(50% - 106px);
+    top: 20%;
     left: calc(50% - 316px); 
     width: 632px;
     border: 1px solid #2c2c2d;
@@ -39,8 +39,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #2c2c2d;
+    color: #D0A059;
+      font-weight: bold;
+      font-size: 20px;
     cursor: pointer;
+      background: #1A1A1B;
   }
   
   .buttongroup {
