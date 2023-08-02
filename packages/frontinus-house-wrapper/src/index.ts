@@ -18,13 +18,6 @@ import {
 } from './builders';
 import FormData from 'form-data';
 import * as fs from 'fs';
-
-import {
-  DeleteProposalMessageTypes,
-  EditProposalMessageTypes,
-  InfiniteAuctionProposalMessageTypes,
-  TimedAuctionProposalMessageTypes,
-} from './types/eip712Types';
 import { WalletClient } from 'viem';
 
 export class ApiWrapper {
@@ -362,11 +355,7 @@ export class ApiWrapper {
   async createProposal(proposal: Proposal) {
     if (!this.signer) return;
     try {
-      const signedPayload = await proposal.signedPayload(
-        this.signer,
-        'Proposal',
-        TimedAuctionProposalMessageTypes,
-      );
+      const signedPayload = await proposal.signedPayload(this.signer);
       return (await axios.post(`${this.host}/proposals`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
@@ -376,13 +365,7 @@ export class ApiWrapper {
   async createApplication(proposal: Proposal, isContract = false) {
     if (!this.signer) return;
     try {
-      const signedPayload = await proposal.signedPayload(
-        this.signer,
-        'Proposal',
-        proposal instanceof Proposal
-          ? TimedAuctionProposalMessageTypes
-          : InfiniteAuctionProposalMessageTypes,
-      );
+      const signedPayload = await proposal.signedPayload(this.signer);
 
       signedPayload.description = signedPayload.what;
       signedPayload.delegationId = signedPayload.parentAuctionId;
@@ -396,11 +379,7 @@ export class ApiWrapper {
   async updateProposal(updatedProposal: UpdatedProposal, isContract = false) {
     if (!this.signer) return;
     try {
-      const signedPayload = await updatedProposal.signedPayload(
-        this.signer,
-        'Proposal',
-        EditProposalMessageTypes,
-      );
+      const signedPayload = await updatedProposal.signedPayload(this.signer);
       return (await axios.patch(`${this.host}/proposals`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
@@ -410,11 +389,7 @@ export class ApiWrapper {
   async deleteProposal(deleteProposal: DeleteProposal, isContract = false) {
     if (!this.signer) return;
     try {
-      const signedPayload = await deleteProposal.signedPayload(
-        this.signer,
-        'Proposal',
-        DeleteProposalMessageTypes,
-      );
+      const signedPayload = await deleteProposal.signedPayload(this.signer);
       return (await axios.delete(`${this.host}/proposals`, { data: signedPayload })).data;
     } catch (e: any) {
       throw e;

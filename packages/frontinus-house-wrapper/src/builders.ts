@@ -1,4 +1,3 @@
-import { DomainSeparator } from './types/eip712Types';
 import { TypedDataDomain, WalletClient } from 'viem';
 import { TypedDataField } from '@ethersproject/abstract-signer';
 
@@ -27,27 +26,27 @@ export abstract class Signable {
   /** sign typed data */
   async signedPayload(
     signer: WalletClient,
-    primaryType: string,
-    eip712MessageTypes: Record<string, TypedDataField[]>,
   ) {
     const jsonPayload = this.jsonPayload();
     const address = (await signer.getAddresses())[0];
 
-    const signature = await this.typedSignature(signer, DomainSeparator, eip712MessageTypes, primaryType, address);
-
+    let payload = {
+      address: address,
+      ...this.toPayload(),
+    };
+    const signMessage = JSON.stringify(payload);
+    const signature = await signer.signMessage({
+      account: address,
+      message: signMessage,
+    });
     if (!signature) throw new Error(`Error signing payload.`);
-
     return {
       signedData: {
-        message: Buffer.from(jsonPayload).toString('base64'),
+        message: Buffer.from(signMessage).toString('base64'),
         signature: signature,
         signer: address,
       },
-      address,
-      messageTypes: eip712MessageTypes,
-      domainSeparator: DomainSeparator,
-      primaryType: primaryType,
-      ...this.toPayload(),
+      ...payload,
     };
   }
 

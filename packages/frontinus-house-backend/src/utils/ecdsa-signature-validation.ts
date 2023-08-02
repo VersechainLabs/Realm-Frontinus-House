@@ -6,7 +6,7 @@ import { SignedDataPayload, SignedEntity } from 'src/entities/signed';
  * @param message The signed message
  * @param value The signed data payload
  */
-export const verifyAccountSignature = (
+export const verifyTypedDataSignature = (
   message: string,
   value: SignedEntity,
 ) => {
@@ -43,15 +43,12 @@ export const verifyAccountSignature = (
 };
 
 export const verifyPersonalMessageSignature = (
-  signDataPayload: SignedDataPayload,
-  actualMsg?: string,
+  message: string,
+  value: SignedEntity,
 ) => {
   let actualSigner: string | undefined;
   try {
-    actualSigner = verifyMessage(
-      actualMsg ?? signDataPayload.message,
-      signDataPayload.signature,
-    );
+    actualSigner = verifyMessage(message, value.signedData.signature);
   } catch (error) {
     return {
       isValidAccountSig: false,
@@ -59,10 +56,10 @@ export const verifyPersonalMessageSignature = (
     };
   }
 
-  if (actualSigner.toLowerCase() !== signDataPayload.signer.toLowerCase()) {
+  if (actualSigner.toLowerCase() !== value.signedData.signer.toLowerCase()) {
     return {
       isValidAccountSig: false,
-      accountSigError: `Incorrect EOA signer. Actual: ${actualSigner}. Expected: ${signDataPayload.signer}.`,
+      accountSigError: `Incorrect EOA signer. Actual: ${actualSigner}. Expected: ${value.signedData.signer}.`,
     };
   }
   return {
