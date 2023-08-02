@@ -1,10 +1,7 @@
 import { TypedDataField } from '@ethersproject/abstract-signer';
 
-
-export const PrimaryType = 'frontinus';
-
 export const DomainSeparator = {
-  name: 'Prop House',
+  name: 'Frontinus',
   version: '1',
   chainId: 1,
 };

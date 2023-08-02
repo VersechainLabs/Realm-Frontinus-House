@@ -11,6 +11,7 @@ import AddressAvatar from '../AddressAvatar';
 import { serverDateToString } from '../../utils/detailedTime';
 import classes from './Comments.module.css';
 import LoadingIndicator from '../LoadingIndicator';
+import { CommentModal } from '@nouns/frontinus-house-wrapper/dist/builders';
 
 type CommentsProps = {
   proposalId?: number;
@@ -176,16 +177,5 @@ export function CommentListItem(props: CommentListItemProps) {
 
     </ListItem>
   );
-}
-
-// CommentModal
-
-export type CommentModal = {
-  id: number;
-  proposalId: number;
-  content: string;
-  visible: boolean;
-  owner: string;
-  createdDate: string;
 }
 

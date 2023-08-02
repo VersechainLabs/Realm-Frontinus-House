@@ -1,11 +1,10 @@
-import { Wallet } from '@ethersproject/wallet';
 import axios from 'axios';
 import {
   Comment,
+  CommentModal,
   Community,
   CommunityWithAuctions,
   DeleteProposal,
-  InfiniteAuctionProposal,
   Proposal,
   StoredAuctionBase,
   StoredFile,
@@ -25,19 +24,13 @@ import {
   EditProposalMessageTypes,
   InfiniteAuctionProposalMessageTypes,
   TimedAuctionProposalMessageTypes,
-  VoteMessageTypes,
 } from './types/eip712Types';
-import { multiVoteSignature } from './utils/multiVoteSignature';
-import { multiVotePayload } from './utils/multiVotePayload';
-// import { Signer } from 'ethers';
-import {WalletClient} from 'viem';
-// @ts-ignore
-import { CommentModal } from '../../frontinus-house-webapp/src/components/Comments';
+import { WalletClient } from 'viem';
 
 export class ApiWrapper {
   constructor(
     private readonly host: string,
-    private readonly signer: WalletClient  | null | undefined = undefined,
+    private readonly signer: WalletClient | null | undefined = undefined,
   ) {
   }
 
@@ -47,8 +40,8 @@ export class ApiWrapper {
       const signMessage = JSON.stringify(auction);
       const owner = (await this.signer.getAddresses())[0];
       const signResult = await this.signer.signMessage({
-        account:owner,
-        message:signMessage,
+        account: owner,
+        message: signMessage,
       });
       (auction as any).owner = owner;
       (auction as any).signedData = {
@@ -68,8 +61,8 @@ export class ApiWrapper {
       const signMessage = JSON.stringify(auction);
       const owner = (await this.signer.getAddresses())[0];
       const signResult = await this.signer.signMessage({
-        account:owner,
-        message:signMessage,
+        account: owner,
+        message: signMessage,
       });
       (auction as any).owner = owner;
       (auction as any).signedData = {
@@ -328,15 +321,13 @@ export class ApiWrapper {
     }
   }
 
-  async createProposal(proposal: Proposal | InfiniteAuctionProposal, isContract = false) {
+  async createProposal(proposal: Proposal) {
     if (!this.signer) return;
     try {
       const signedPayload = await proposal.signedPayload(
         this.signer,
-        isContract,
-        proposal instanceof Proposal
-          ? TimedAuctionProposalMessageTypes
-          : InfiniteAuctionProposalMessageTypes,
+        'title',
+        TimedAuctionProposalMessageTypes,
       );
       return (await axios.post(`${this.host}/proposals`, signedPayload)).data;
     } catch (e: any) {
@@ -344,12 +335,12 @@ export class ApiWrapper {
     }
   }
 
-  async createApplication(proposal: Proposal | InfiniteAuctionProposal, isContract = false) {
+  async createApplication(proposal: Proposal, isContract = false) {
     if (!this.signer) return;
     try {
       const signedPayload = await proposal.signedPayload(
         this.signer,
-        isContract,
+        'title',
         proposal instanceof Proposal
           ? TimedAuctionProposalMessageTypes
           : InfiniteAuctionProposalMessageTypes,
@@ -369,7 +360,7 @@ export class ApiWrapper {
     try {
       const signedPayload = await updatedProposal.signedPayload(
         this.signer,
-        isContract,
+        'title',
         EditProposalMessageTypes,
       );
       return (await axios.patch(`${this.host}/proposals`, signedPayload)).data;
@@ -383,7 +374,7 @@ export class ApiWrapper {
     try {
       const signedPayload = await deleteProposal.signedPayload(
         this.signer,
-        isContract,
+        'title',
         DeleteProposalMessageTypes,
       );
       return (await axios.delete(`${this.host}/proposals`, { data: signedPayload })).data;
@@ -432,8 +423,8 @@ export class ApiWrapper {
       const owner = (await this.signer.getAddresses())[0];
 
       const signature = await this.signer.signMessage({
-        account:owner,
-        message:signMessage,
+        account: owner,
+        message: signMessage,
       });
       const signedPayload = {
         signedData: {
@@ -446,38 +437,6 @@ export class ApiWrapper {
       };
 
       return (await axios.post(`${this.host}/votes`, signedPayload)).data;
-    } catch (e: any) {
-      throw e.response.data.message;
-    }
-  }
-
-  async logVotes(votes: Vote[], isContract = false) {
-    if (!this.signer) return;
-
-    try {
-      // sign payload and use for all votes, awaiting if the signer is not a contract
-      let signature = '0x';
-      const payload = multiVotePayload(votes);
-      const address = (await this.signer.getAddresses())[0];
-
-      const signaturePromise = multiVoteSignature(this.signer, isContract, payload,address);
-      if (!isContract) {
-        signature = await signaturePromise;
-      }
-
-      let responses = [];
-
-      // POST each vote with the signature of the payload of all votes
-      for (const vote of votes) {
-        const signedPayload = await vote.presignedPayload(
-          this.signer,
-          signature,
-          JSON.stringify(payload),
-          VoteMessageTypes,
-        );
-        responses.push((await axios.post(`${this.host}/votes`, signedPayload)).data);
-      }
-      return responses;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -525,8 +484,8 @@ export class ApiWrapper {
         const address = (await this.signer.getAddresses())[0];
 
         const signature = await this.signer.signMessage({
-          account:address,
-          message:fileBuffer.toString()
+          account: address,
+          message: fileBuffer.toString(),
         });
         form.append('signature', signature);
       }
@@ -645,8 +604,8 @@ export class ApiWrapper {
       const address = (await this.signer.getAddresses())[0];
 
       const signResult = await this.signer.signMessage({
-        account:address,
-        message:signMessage
+        account: address,
+        message: signMessage,
       });
 
       return (await axios.post(`${this.host}/comments/create`, {
