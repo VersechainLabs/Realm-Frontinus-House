@@ -142,7 +142,7 @@ const Application = () => {
         {proposal && (
             <div style={{ marginTop: '30px', marginBottom: '30px' ,display:'flex'}}>
               <Button text={'　　delegate　　'} bgColor={ButtonColor.Purple}
-                      // disabled={!canVote}
+                      disabled={!canVote}
                       onClick={async () => {
                         try {
                           const voteResult = await backendClient.current.createDelegate(proposal.id);
