@@ -26,13 +26,13 @@ import NavBar from '../../components/NavBar';
 import { isValidPropData } from '../../utils/isValidPropData';
 import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
 import ConnectButton from '../../components/ConnectButton';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { infRoundBalance } from '../../utils/infRoundBalance';
 
 const ApplicationCreate: React.FC<{}> = () => {
   const { address: account } = useAccount();
-  const { data: signer } = useSigner();
-
+  // const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient()
   const { t } = useTranslation();
 
   // auction to submit prop to is passed via react-router from propse btn
@@ -50,11 +50,11 @@ const ApplicationCreate: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
 
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const backendClient = useRef(new ApiWrapper(backendHost, signer));
+  const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
 
   useEffect(() => {
-    backendClient.current = new ApiWrapper(backendHost, signer);
-  }, [signer, backendHost]);
+    backendClient.current = new ApiWrapper(backendHost, walletClient);
+  }, [walletClient, backendHost]);
 
   const onDataChange = (data: Partial<ProposalFields>) => {
     dispatch(patchProposal(data));

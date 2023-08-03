@@ -4,8 +4,10 @@ import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
 import { CommentModal } from '../Comments';
 import { useAppSelector } from '../../hooks';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
-import { useAccount, useSigner } from 'wagmi';
 import { Comment } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { useAccount, useWalletClient } from 'wagmi';
+import ConnectButton from '../ConnectButton';
+import classes from '../../pages/Create/Create.module.css';
 
 type CreateCommentWidgetProps = {
   proposalId?: number;
@@ -19,13 +21,13 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
 
   const { address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new ApiWrapper(host, signer));
+  const client = useRef(new ApiWrapper(host, walletClient));
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
     if (plainText.trim().length === 0) {

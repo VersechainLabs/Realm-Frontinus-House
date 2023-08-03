@@ -7,7 +7,7 @@ import CommunityProfImg from '../CommunityProfImg';
 import { Community } from '@nouns/frontinus-house-wrapper/dist/builders';
 import getHouseCurrency from '../../utils/getHouseCurrency';
 import TruncateThousands from '../TruncateThousands';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 
 const OpenGraphHouseCard: React.FC = () => {
   const params = useParams();
@@ -15,15 +15,15 @@ const OpenGraphHouseCard: React.FC = () => {
 
   const [community, setCommunity] = useState<Community>();
 
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
   const houseCurrency = community && getHouseCurrency(community.contractAddress);
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   useEffect(() => {
     if (!id) return;

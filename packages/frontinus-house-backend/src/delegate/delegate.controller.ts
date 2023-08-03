@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Delegate } from './delegate.entity';
 import { CreateDelegateDto } from './delegate.types';
@@ -44,7 +45,7 @@ export class DelegateController {
 
     const existDelegate = await this.delegateService.findByFromAddress(
       application.delegationId,
-      dto.fromAddress,
+      dto.address,
     );
     if (existDelegate) {
       throw new HttpException(
@@ -55,7 +56,7 @@ export class DelegateController {
 
     const createdApplication = await this.applicationService.findByAddress(
       application.delegationId,
-      dto.fromAddress,
+      dto.address,
     );
     if (createdApplication) {
       throw new HttpException(
@@ -67,11 +68,27 @@ export class DelegateController {
     const delegate = new Delegate();
     delegate.delegationId = application.delegationId;
     delegate.applicationId = dto.applicationId;
-    delegate.fromAddress = dto.fromAddress;
+    delegate.fromAddress = dto.address;
     delegate.toAddress = application.address;
 
     return this.delegateService.store(delegate);
   }
+
+  @Get('/checkExist')
+  @ApiOkResponse({
+    type: Boolean,
+  })
+  async checkDelegateExist(    
+    @Query('applicationId') applicationId: number,
+    @Query('address') fromAddress: string
+    ) {
+    const foundDelegate = await this.delegateService.checkDelegateExist(applicationId, fromAddress);
+
+    if (!foundDelegate)
+      return false;
+
+    return true;
+  }  
 
   @Get(':id')
   @ApiOkResponse({
@@ -85,4 +102,5 @@ export class DelegateController {
 
     return foundDelegate;
   }
+
 }

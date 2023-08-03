@@ -11,7 +11,7 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../DelegateEditor';
-import {useAccount, useSigner} from 'wagmi';
+import {useAccount, useWalletClient} from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
 import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
 import {DeltaStatic, Quill} from "quill";
@@ -81,13 +81,15 @@ const ProposalInputs: React.FC<{
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
   const dispatch = useAppDispatch();
   const { address: account } = useAccount();
-  const { data: signer } = useSigner();
+
+  const { data: walletClient } = useWalletClient();
+
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new ApiWrapper(host, signer));
+  const client = useRef(new ApiWrapper(host, walletClient));
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
     if (plainText.trim().length === 0) {

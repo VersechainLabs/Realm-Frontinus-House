@@ -15,16 +15,16 @@ import { buildRoundPath } from '../../utils/buildRoundPath';
 import { cardServiceUrl, CardType } from '../../utils/cardServiceUrl';
 import OpenGraphElements from '../../components/OpenGraphElements';
 import RenderedProposalFields from '../../components/RenderedProposalFields';
-import { useSigner } from 'wagmi';
 import Comments from '../../components/Comments';
 import Button, {ButtonColor} from "../../components/Button";
 import { setAlert } from '../../state/slices/alert';
+import { useWalletClient } from 'wagmi';
 
 const Application = () => {
   const params = useParams();
   const { id } = params;
 
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const navigate = useNavigate();
 
   const [failedFetch, setFailedFetch] = useState(false);
@@ -34,7 +34,7 @@ const Application = () => {
   const community = useAppSelector(state => state.delegate.activeCommunity);
   const round = useAppSelector(state => state.delegate.activeRound);
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const backendClient = useRef(new ApiWrapper(backendHost, signer));
+  const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
   const [loading,setLoading] = useState(true);
 
   const [canVote, setCanVote] = useState(false);
@@ -48,8 +48,8 @@ const Application = () => {
   };
 
   useEffect(() => {
-    backendClient.current = new ApiWrapper(backendHost, signer);
-  }, [signer, backendHost]);
+    backendClient.current = new ApiWrapper(backendHost, walletClient);
+  }, [walletClient, backendHost]);
 
   // fetch proposal
   useEffect(() => {
@@ -94,7 +94,7 @@ const Application = () => {
   }, [id, dispatch, proposal]);
 
   useEffect(() => {
-    if (!proposal || !signer) return;
+    if (!proposal || !walletClient) return;
     const fetchVoteStatus = async () => {
 
       const status = await backendClient.current.getDelegateStatus(proposal.id);
@@ -108,7 +108,7 @@ const Application = () => {
     };
 
     fetchVoteStatus();
-  }, [id, dispatch, proposal, signer]);
+  }, [id, dispatch, proposal, walletClient]);
 
   return (
     <>
