@@ -91,6 +91,64 @@ export class DelegateController {
   }  
 
 
+  @Get('/canVote')
+  @ApiOkResponse({
+    type: Boolean,
+  })
+  async checkDelegateCanVote(    
+    @Query('applicationId') applicationId: number,
+    @Query('address') fromAddress: string
+    ) {
+      if (await this.checkDelegateExist(applicationId, fromAddress) === false) {
+        throw new HttpException(
+          'Delegate not exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      // Similar to /create:
+      const application = await this.applicationService.findOne(
+        applicationId,
+      );
+
+      const currentTime = new Date();
+      if (
+        currentTime < application.delegation.proposalEndTime ||
+        currentTime > application.delegation.votingEndTime
+      ) {
+        throw new HttpException(
+          'Not in the eligible voting period.',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+  
+      const existDelegate = await this.delegateService.findByFromAddress(
+        application.delegationId,
+        fromAddress,
+      );
+      if (existDelegate) {
+        throw new HttpException(
+          `Already delegate to ${existDelegate.toAddress}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+  
+      const createdApplication = await this.applicationService.findByAddress(
+        application.delegationId,
+        fromAddress,
+      );
+      if (createdApplication) {
+        throw new HttpException(
+          `Already created application. Can not delegate to ${application.address}`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      throw new HttpException(
+        `Can vote!`,
+        HttpStatus.OK,
+      );      
+  }  
+
   @Get('/list')
   @ApiOkResponse({
     type: [Delegate],
