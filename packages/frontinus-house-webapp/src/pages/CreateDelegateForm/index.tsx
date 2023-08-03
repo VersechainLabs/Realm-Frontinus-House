@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useWalletClient } from 'wagmi';
-import { nameToSlug } from "../../utils/communitySlugs";
+import { nameToSlug } from '../../utils/communitySlugs';
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
@@ -28,7 +28,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
   const dispatch = useDispatch();
 
   const MAX_TITLE_LENGTH = 50;
-  const MAX_DESCRIPTION_LENGTH = 300;
+  const MAX_DESCRIPTION_LENGTH = 1000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const [showError, setShowError] = useState(false);
@@ -47,7 +47,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
   const [isVotingTimeFilled, setIsVotingTimeFilled] = useState(false);
   const [isEndTimeFilled, setIsEndTimeFilled] = useState(false);
 
-  const [isStartDatePickerOpen, setIsStartDatePickerOpen] = useState(false);
+  // const [isStartDatePickerOpen, setIsStartDatePickerOpen] = useState(false);
 
   // const alertType = useSelector(state => state.alert.type);
   // const alertMessage = useSelector(state => state.alert.message);
@@ -82,6 +82,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
       }));
       setRoundStartTime(value);
       setIsStartTimeFilled(true);
+    } else {
+      setRoundStartTime(null);
+      setIsStartTimeFilled(false);
     }
   };
 
@@ -93,6 +96,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
       }));
       setGrantStartTime(value);
       setIsProposalTimeFilled(true);
+    } else {
+      setGrantStartTime(null);
+      setIsProposalTimeFilled(false);
     }
   };
 
@@ -104,6 +110,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
       }));
       setGrantEndTime(value);
       setIsVotingTimeFilled(true);
+    } else {
+      setGrantEndTime(null);
+      setIsVotingTimeFilled(false);
     }
   };
 
@@ -115,14 +124,17 @@ const CreateDelegateForm: React.FC<{}> = () => {
       }));
       setRoundEndTime(value);
       setIsEndTimeFilled(true);
+    } else {
+      setRoundEndTime(null);
+      setIsEndTimeFilled(false);
     }
   };
   const hideAlert = () => {
     setIsAlertVisible(false); // 隐藏警告
   };
-  const openStartDatePicker = () => {
-    setIsStartDatePickerOpen(true);
-  };
+  // const openStartDatePicker = () => {
+  //   setIsStartDatePickerOpen(true);
+  // };
 
   const handleSubmit = async (e: any) => {
     //该方法阻止表单的提交
@@ -131,10 +143,10 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (
       !state.description.trim() ||
       !state.title.trim() ||
-      !state.startTime ||
-      !state.proposalEndTime ||
-      !state.votingEndTime ||
-      !state.endTime
+      !isStartTimeFilled ||
+      !isProposalTimeFilled ||
+      !isVotingTimeFilled ||
+      !isEndTimeFilled
     ) {
       const errorMessage = 'You must complete all the fields before submit!';
       console.log('Error message to be dispatched:', errorMessage);
@@ -184,15 +196,16 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
     console.log(state);
 
-
-    client.current.createDelegateAuction(state).then((round:any)=>{
-        navigate('/delegateDetails/'+round.id);
-    }).catch(e => {
+    client.current
+      .createDelegateAuction(state)
+      .then((round: any) => {
+        navigate('/delegateDetails/' + round.id);
+      })
+      .catch(e => {
         dispatch(setAlert({ type: 'error', message: e }));
         setIsAlertVisible(true); // 显示alert弹出框
         return;
-    });
-
+      });
   };
 
   return (
@@ -204,7 +217,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
             <div className={classes.desc}>
               Use this form to create a new delegation round. Please visit our Discord if you have
               any questions:{' '}
-              <a href="https://discord.gg/uQnjZhZPfu" target="_blank" className={classes.alink} rel="noreferrer">
+              <a
+                href="https://discord.gg/uQnjZhZPfu"
+                target="_blank"
+                className={classes.alink}
+                rel="noreferrer"
+              >
                 https://discord.gg/uQnjZhZPfu
               </a>
               .
@@ -265,7 +283,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                 <div className={classes.labelMargin}>
                   <div className={classes.desc}>
-                    When can community members start granting voting power to delegate applicants?(exact date and time in UTC)*
+                    When can community members start granting voting power to delegate
+                    applicants?(exact date and time in UTC)*
                   </div>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>

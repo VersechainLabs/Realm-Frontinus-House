@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useWalletClient } from 'wagmi';
-import {nameToSlug} from "../../utils/communitySlugs";
+import { nameToSlug } from '../../utils/communitySlugs';
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -35,7 +35,7 @@ const CreateRound: React.FC<{}> = () => {
   const [votingEndTime, setVotingEndTime] = useState<Dayjs | null>(currentTime);
 
   const MAX_TITLE_LENGTH = 50;
-  const MAX_DESCRIPTION_LENGTH = 300;
+  const MAX_DESCRIPTION_LENGTH = 1000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const dispatch = useDispatch();
@@ -90,6 +90,9 @@ const CreateRound: React.FC<{}> = () => {
       }));
       setProposingStartTime(value);
       setIsStartTimeFilled(true);
+    } else {
+      setProposingStartTime(null); // 清空开始时间
+      setIsStartTimeFilled(false); // 将条件变量设为未填充状态
     }
   };
 
@@ -103,6 +106,11 @@ const CreateRound: React.FC<{}> = () => {
       setProposalEndTime(value);
       setVotingEndTime(value);
       setIsProposalTimeFilled(true);
+    } else {
+      setProposalEndTime(null); // 清空提案结束时间
+      setVotingEndTime(null); // 清空投票结束时间
+      setIsProposalTimeFilled(false); // 将条件变量设为未填充状态
+      setIsEndTimeFilled(false); // 同时将投票结束时间的条件变量设为未填充状态
     }
   };
 
@@ -114,6 +122,9 @@ const CreateRound: React.FC<{}> = () => {
       }));
       setVotingEndTime(value);
       setIsEndTimeFilled(true);
+    } else {
+      setVotingEndTime(null); // 清空投票结束时间
+      setIsEndTimeFilled(false); // 将条件变量设为未填充状态
     }
   };
   const saveFormType = (value: string) => {
@@ -140,9 +151,9 @@ const CreateRound: React.FC<{}> = () => {
     if (
       !state.title ||
       !state.description ||
-      !state.proposingStartTime ||
-      !state.proposalEndTime ||
-      !state.votingEndTime ||
+      !isStartTimeFilled ||
+      !isProposalTimeFilled ||
+      !isEndTimeFilled ||
       !state.numWinners ||
       !state.currencyType ||
       !state.fundingAmount
@@ -156,7 +167,11 @@ const CreateRound: React.FC<{}> = () => {
 
     // Check if proposingStartTime is earlier than the current time
     const currentTime = dayjs();
-    if (proposingStartTime && proposingStartTime.isBefore(currentTime)) {
+    if (
+      (proposingStartTime && proposingStartTime.isBefore(currentTime)) ||
+      (proposalEndTime && proposalEndTime.isBefore(currentTime)) ||
+      (votingEndTime && votingEndTime.isBefore(currentTime))
+    ) {
       const errorMessage =
         'Proposal submissions should commence at the current time or later, not earlier.';
       console.log('Error message to be dispatched:', errorMessage);
@@ -167,7 +182,8 @@ const CreateRound: React.FC<{}> = () => {
 
     // Check if proposalEndTime is greater than or equal to proposingStartTime
     if (proposalEndTime && proposalEndTime.isBefore(proposingStartTime)) {
-      const errorMessage = 'Time set did not follow the required order!';
+      const errorMessage =
+        'The voting period should begin no earlier than the start time of proposal submissions.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -176,7 +192,7 @@ const CreateRound: React.FC<{}> = () => {
 
     // Check if votingEndTime is greater than or equal to proposalEndTime
     if (votingEndTime && votingEndTime.isBefore(proposalEndTime)) {
-      const errorMessage = 'Time set did not follow the required order!';
+      const errorMessage = 'The voting end time must be later than the voting start time.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
