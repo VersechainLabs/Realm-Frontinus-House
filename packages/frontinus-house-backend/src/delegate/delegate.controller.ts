@@ -95,13 +95,19 @@ export class DelegateController {
   @ApiOkResponse({
     type: [Delegate],
   })
-  async listByAppliactionID(@Query('applicationId') applicationId: number): Promise<Delegate[]> {
+  async listByAppliactionID(@Query('applicationId') applicationId: number): Promise<object> {
+
     const foundDelegate = await this.delegateService.getDelegateListByApplicationId(applicationId);
 
     if (!foundDelegate)
       throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
 
-    return foundDelegate;
+    var results = {
+      total:  foundDelegate.length,
+      delegates: foundDelegate,
+    };
+
+    return results;
   }
 
   @Get(':id')
