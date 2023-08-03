@@ -1,12 +1,12 @@
 import axios from 'axios';
 import {
   Comment,
-  CommentModal,
   Community,
   CommunityWithAuctions,
   DeleteProposal,
   Proposal,
   StoredAuctionBase,
+  StoredComment,
   StoredFile,
   StoredInfiniteAuction,
   StoredTimedAuction,
@@ -428,32 +428,14 @@ export class ApiWrapper {
   async createVote(vote: Vote) {
     if (!this.signer) return;
     try {
-      let payload = {
-        'proposalId': vote.proposalId,
-      };
-      const signMessage = JSON.stringify(payload);
-      const owner = (await this.signer.getAddresses())[0];
-      const signature = await this.signer.signMessage({
-        account: owner,
-        message: signMessage,
-      });
-      const signedPayload = {
-        signedData: {
-          message: Buffer.from(signMessage).toString('base64'),
-          signature,
-          signer: owner,
-        },
-        address: owner,
-        proposalId: vote.proposalId,
-      };
-
+      const signedPayload = await vote.signedPayload(this.signer);
       return (await axios.post(`${this.host}/votes`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
   }
 
-  async createDelegate(applicationId : any) {
+  async createDelegate(applicationId: any) {
     if (!this.signer) return;
     try {
       let payload = {
@@ -602,7 +584,7 @@ export class ApiWrapper {
     }
   }
 
-  async getCommentListByProposal(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
+  async getCommentListByProposal(proposalId: number, skip: number, limit = 10, order = 'DESC'): Promise<StoredComment[]> {
     try {
       return (await axios.get(`${this.host}/comments/byProposal/${proposalId}`, {
         params: {
@@ -616,7 +598,7 @@ export class ApiWrapper {
     }
   }
 
-  async getCommentListByApplication(applicationId: number, skip: number, limit = 10, order = 'DESC'): Promise<CommentModal[]> {
+  async getCommentListByApplication(applicationId: number, skip: number, limit = 10, order = 'DESC'): Promise<StoredComment[]> {
     try {
       return (await axios.get(`${this.host}/comments/byApplication/${applicationId}`, {
         params: {
@@ -630,36 +612,14 @@ export class ApiWrapper {
     }
   }
 
-  async createComment(comment: Comment): Promise<CommentModal | undefined> {
+  async createComment(comment: Comment): Promise<StoredComment | undefined> {
     if (!this.signer) return undefined;
     if (!comment.proposalId && !comment.applicationId) return undefined;
     try {
-      let payload = {
-        'proposalId': comment.proposalId,
-        'applicationId': comment.applicationId,
-        'content': comment.content,
-      };
-      const signMessage = JSON.stringify(payload);
-      const address = (await this.signer.getAddresses())[0];
-
-      const signResult = await this.signer.signMessage({
-        account: address,
-        message: signMessage,
-      });
-
-      return (await axios.post(`${this.host}/comments/create`, {
-          'proposalId': comment.proposalId,
-          'applicationId': comment.applicationId,
-          'content': comment.content,
-          'owner': address,
-          'signedData': {
-            'message': signMessage,
-            'signature': signResult,
-            'signer': address,
-          },
-        })
-      ).data;
+      const signedPayload = await comment.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/comments/create`, signedPayload)).data;
     } catch (e: any) {
+      console.log(e);
       throw e.response.data.message;
     }
   }

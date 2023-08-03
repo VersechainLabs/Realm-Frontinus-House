@@ -1,18 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DeltaStatic, Quill } from 'quill';
 import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
-import { CommentModal } from '../Comments';
 import { useAppSelector } from '../../hooks';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
-import { Comment } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { Comment, StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { useAccount, useWalletClient } from 'wagmi';
-import ConnectButton from '../ConnectButton';
-import classes from '../../pages/Create/Create.module.css';
-
 type CreateCommentWidgetProps = {
   proposalId?: number;
   applicationId?: number;
-  onCommentCreated: (comment: CommentModal) => void;
+  onCommentCreated: (comment: StoredComment) => void;
 }
 
 export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
@@ -46,11 +42,8 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
     setLoading(true);
 
-    const commentCreateResponse = await client.current.createComment({
-      content: content,
-      applicationId: props.applicationId,
-      proposalId: props.proposalId,
-    } as Comment);
+    const newComment = new Comment(content, props.proposalId, props.applicationId);
+    const commentCreateResponse = await client.current.createComment(newComment);
     if (commentCreateResponse) {
       props.onCommentCreated(commentCreateResponse);
       if (quill) {

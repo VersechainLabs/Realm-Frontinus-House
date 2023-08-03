@@ -283,7 +283,8 @@ export class Vote extends Signable {
 
   toPayload() {
     return {
-      direction: this.direction,
+      // No need direction
+      // direction: this.direction,
       proposalId: this.proposalId,
     };
   }
@@ -346,21 +347,30 @@ export class Community extends Signable {
   }
 }
 
-export interface Comment {
-  content: string;
-  proposalId?: number;
-  applicationId?: number;
+export class Comment extends Signable {
+  constructor(
+    public readonly content: string,
+    public readonly proposalId?: number,
+    public readonly applicationId?: number,
+  ) {
+    super();
+  }
+
+  toPayload(): any {
+    return {
+      content: this.content,
+      proposalId: this.proposalId,
+      applicationId: this.applicationId,
+    };
+  }
+}
+
+export interface StoredComment extends Comment {
+  id: number;
+  owner: string;
+  createdDate: string;
 }
 
 export interface CommunityWithAuctions extends Community {
   auctions: StoredTimedAuction[];
-}
-
-export type CommentModal = {
-  id: number;
-  proposalId: number;
-  content: string;
-  visible: boolean;
-  owner: string;
-  createdDate: string;
 }
