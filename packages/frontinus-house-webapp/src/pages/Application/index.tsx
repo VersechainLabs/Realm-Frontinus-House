@@ -122,7 +122,7 @@ const Application = () => {
   };
 
   useEffect(() => {
-    if (!proposal || !walletClient) return;
+    if (!proposal) return;
     fetchVotes();
   }, [id, dispatch, proposal]);
 
