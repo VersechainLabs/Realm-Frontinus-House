@@ -90,7 +90,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (value !== null) {
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        proposalEndTime: value.toDate(),
       }));
       setGrantStartTime(value);
       setIsProposalTimeFilled(true);
@@ -101,7 +101,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (value !== null) {
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        votingEndTime: value.toDate(),
       }));
       setGrantEndTime(value);
       setIsVotingTimeFilled(true);
@@ -112,7 +112,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (value !== null) {
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        endTime: value.toDate(),
       }));
       setRoundEndTime(value);
       setIsEndTimeFilled(true);
@@ -178,6 +178,18 @@ const CreateDelegateForm: React.FC<{}> = () => {
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
+
+    console.log(state);
+
+
+    client.current.createDelegateAuction(state).then((round:any)=>{
+        navigate('/delegateDetails/'+round.id);
+    }).catch(e => {
+        dispatch(setAlert({ type: 'error', message: e }));
+        setIsAlertVisible(true); // 显示alert弹出框
+        return;
+    });
+
   };
 
   return (
@@ -250,17 +262,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                 <div className={classes.labelMargin}>
                   <div className={classes.desc}>
-                    Use this form to create a new delegation round. Please visit our Discord if you
-                    have any questions:{' '}
-                    <a
-                      href="https://discord.gg/uQnjZhZPfu"
-                      target="_blank"
-                      className={classes.alink}
-                      rel="noreferrer"
-                    >
-                      https://discord.gg/uQnjZhZPfu
-                    </a>
-                    .
+                    When can community members start granting voting power to delegate applicants?(exact date and time in UTC)*
                   </div>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
