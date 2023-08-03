@@ -232,7 +232,7 @@ const CreateRound: React.FC<{}> = () => {
 
   const close = () => {
     setFlag(false);
-    navigate('/frontinus');
+    navigate('/');
   };
 
   return (
