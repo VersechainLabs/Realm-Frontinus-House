@@ -2,6 +2,7 @@ import React from 'react';
 import classes from './VoteListPopup.module.css';
 import {StoredVote} from "@nouns/frontinus-house-wrapper/dist/builders";
 import AddressAvatar from "../AddressAvatar";
+import EthAddress from "../EthAddress";
 
 interface PopupProps {
   trigger: boolean;
@@ -23,8 +24,10 @@ const VoteListPopup: React.FC<PopupProps> = (props: PopupProps) => {
                 <div className={classes.voteContent}>
                   <div className={classes.voteListChild}>
                     <AddressAvatar address={item.address} size={20} />
-                    <div className={classes.voteUserAddress}>{item.address} </div>
+                    {/*<div className={classes.voteUserAddress}>{item.address} </div>*/}
                     {/*<div>X3 vote</div>*/}
+                    <div className={classes.voteUserAddress}></div>
+                    <EthAddress address={item.address} />
 
                   </div>
                   <div className={classes.voteTotal}>
@@ -37,8 +40,10 @@ const VoteListPopup: React.FC<PopupProps> = (props: PopupProps) => {
                     <div key={child.id} className={classes.voteContent2}>
                       <div className={classes.voteListChild}>
                         <AddressAvatar address={child.address} size={20} />
-                        <div className={classes.voteUserAddress}>{child.address} </div>
+                        {/*<div className={classes.voteUserAddress}>{child.address} </div>*/}
                         {/*<div>X3 vote</div>*/}
+                        <div className={classes.voteUserAddress}></div>
+                        <EthAddress address={child.address} />
                       </div>
                       <div className={classes.voteTotal}>
                         {child.actualWeight} BIBLIO
