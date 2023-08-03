@@ -68,7 +68,7 @@ export class AuctionsController {
   @Get(':id')
   @ApiOkResponse({
     type: Auction,
-  })  
+  })
   async findOne(@Param('id') id: number): Promise<Auction> {
     const foundAuction = await this.auctionsService.findOne(id);
     if (!foundAuction)
@@ -90,7 +90,7 @@ export class AuctionsController {
   @Get('/:name/community/:id')
   @ApiOkResponse({
     type: Auction,
-  })  
+  })
   async findWithNameForCommunity(
     @Param('id') id: number,
     @Param('name') name: string,
@@ -107,7 +107,7 @@ export class AuctionsController {
   @Get('/pk/:id')
   @ApiOkResponse({
     type: Auction,
-  })  
+  })
   async findWithIDForCommunity(@Param('id') id: number): Promise<Auction> {
     const auction = await this.auctionsService.findWithIDForCommunity(id);
     if (!auction)
@@ -133,7 +133,7 @@ export class AuctionsController {
   @Get(':id/rollUpProposals')
   @ApiOkResponse({
     type: [Proposal],
-  })    
+  })
   async findAll(@Param('id') id: number): Promise<Proposal[]> {
     const foundProposals = await this.proposalService.findAllWithAuctionId(id);
     if (!foundProposals)
@@ -147,7 +147,7 @@ export class AuctionsController {
   @Get('allActive/:n')
   @ApiOkResponse({
     type: [Auction],
-  })      
+  })
   async findAllActive(@Query() dto: GetAuctionsDto): Promise<Auction[]> {
     const auctions = await this.auctionsService.findAllActive(dto);
     if (!auctions)
@@ -158,7 +158,7 @@ export class AuctionsController {
   @Get('active/:n')
   @ApiOkResponse({
     type: [Auction],
-  })   
+  })
   async findAllActiveForCommunities(
     @Query() dto: GetAuctionsDto,
   ): Promise<Auction[]> {

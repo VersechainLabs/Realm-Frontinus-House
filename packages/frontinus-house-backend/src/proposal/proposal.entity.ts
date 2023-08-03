@@ -76,6 +76,12 @@ export class Proposal {
     }, 0);
   }
 
+  @ApiProperty({
+    description: 'The comment count about this proposal',
+  })
+  @Column({ type: 'integer', default: 0 })
+  commentCount: number;
+
   @ApiProperty()
   @Column()
   @Field(() => Date)

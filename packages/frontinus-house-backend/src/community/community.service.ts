@@ -7,7 +7,6 @@ import { BigNumberish } from '@ethersproject/bignumber';
 import config from 'src/config/configuration';
 import { getVotingPower } from 'frontinus-house-communities';
 import { ExtendedCommunity } from './community.types';
-import { Auction } from 'src/auction/auction.entity';
 
 @Injectable()
 export class CommunitiesService {

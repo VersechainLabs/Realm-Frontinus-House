@@ -11,8 +11,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-// import { AuctionBase } from './auction-base.type';
-
 @Entity()
 @ObjectType()
 export class Application {
@@ -61,6 +59,12 @@ export class Application {
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   delegatorCount: number;
+
+  @ApiProperty({
+    description: 'The comment count about this proposal',
+  })
+  @Column({ type: 'integer', default: 0 })
+  commentCount: number;
 
   @ApiProperty()
   @Column()
