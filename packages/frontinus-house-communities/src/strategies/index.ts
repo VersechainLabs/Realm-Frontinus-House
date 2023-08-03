@@ -1,0 +1,1 @@
+export { snapshotMultiple } from './snapshotMultiple';
