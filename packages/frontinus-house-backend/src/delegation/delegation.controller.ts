@@ -7,7 +7,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { ParseDate } from 'src/utils/date';
+import { ParseDate } from '../utils/date';
 import { Delegation } from './delegation.entity';
 import { CreateDelegationDto, GetDelegationDto } from './delegation.types';
 import { DelegationService } from './delegation.service';

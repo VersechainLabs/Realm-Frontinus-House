@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { SignedEntity } from './signed';
 import { ethers } from 'ethers';
-import config from 'src/config/configuration';
-import { SignatureState } from 'src/types/signature';
+import config from '../config/configuration';
+import { SignatureState } from '../types/signature';
 import {
   verifyTypedDataSignature,
   verifyContractSignature,
   verifyPersonalMessageSignature,
-} from 'src/utils';
+} from '../utils';
 
 @Injectable()
 export class SignedPayloadValidationPipe implements PipeTransform {

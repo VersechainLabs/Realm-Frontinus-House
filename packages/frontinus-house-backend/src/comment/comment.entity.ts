@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { Proposal } from '../proposal/proposal.entity';
 import {
   BeforeInsert,
   BeforeUpdate,

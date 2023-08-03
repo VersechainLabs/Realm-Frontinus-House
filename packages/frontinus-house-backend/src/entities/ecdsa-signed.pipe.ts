@@ -1,6 +1,6 @@
 import { PipeTransform, Injectable } from '@nestjs/common';
 import { SignatureState } from '../types/signature';
-import { verifyPersonalMessageSignature } from 'src/utils';
+import { verifyPersonalMessageSignature } from '../utils';
 import { SignedEntity } from './signed';
 
 @Injectable()

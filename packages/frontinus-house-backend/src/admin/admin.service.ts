@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Delegation } from 'src/delegation/delegation.entity';
+import { Delegation } from '../delegation/delegation.entity';
 import { Admin } from './admin.entity';
 import { CreateAdminDto } from './admin.types';
 

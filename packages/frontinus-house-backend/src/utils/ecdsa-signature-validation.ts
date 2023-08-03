@@ -1,5 +1,5 @@
 import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
-import { SignedDataPayload, SignedEntity } from 'src/entities/signed';
+import { SignedDataPayload, SignedEntity } from '../entities/signed';
 
 /**
  * Verify the validity of an EOA signature
