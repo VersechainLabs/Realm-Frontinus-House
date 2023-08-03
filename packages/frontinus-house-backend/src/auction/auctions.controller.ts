@@ -11,8 +11,8 @@ import {
 import { Auction } from './auction.entity';
 import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
 import { AuctionsService, AuctionWithProposalCount } from './auctions.service';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { ProposalsService } from '../proposal/proposals.service';
+import { Proposal } from '../proposal/proposal.entity';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
 import {

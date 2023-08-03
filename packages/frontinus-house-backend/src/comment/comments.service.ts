@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 import { CreateCommentDto, GetCommentsDto } from './comment.types';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { Proposal } from '../proposal/proposal.entity';
 import { Application } from '../delegation-application/application.entity';
 
 @Injectable()

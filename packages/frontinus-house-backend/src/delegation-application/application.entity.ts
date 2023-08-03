@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Delegation } from 'src/delegation/delegation.entity';
+import { Delegation } from '../delegation/delegation.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
