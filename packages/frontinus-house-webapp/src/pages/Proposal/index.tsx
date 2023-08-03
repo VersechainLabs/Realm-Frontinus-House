@@ -47,6 +47,7 @@ const Proposal = () => {
   const backendClient = useRef(new ApiWrapper(backendHost, signer));
   const [loading,setLoading] = useState(true);
   const [canVote,setCanVote] = useState(false);
+  const [showChild,setShowChild] = useState([]);
 
 
   const handleBackClick = () => {
@@ -214,7 +215,20 @@ const Proposal = () => {
                       {/*<div className={classes.voteUserAddress}>{item.address} </div>*/}
                       <div className={classes.voteUserAddress}></div>
                       <EthAddress address={item.address} />
-                      {/*<div>X3 vote</div>*/}
+                      {item.delegateList && item.delegateList.length>0 && (<div onClick={()=> {
+                        const index = showChild.indexOf(item.id);
+                        if (index !== -1) {
+                          const newShowChild = showChild.filter(employee => {
+                            // 👇️ remove object that has id equal to 2
+                            if (employee != item.id) {
+                              return employee;
+                            }
+                          })
+                          setShowChild(newShowChild);
+                        } else {
+                          setShowChild(current => [...current, item.id]);
+                        }
+                      }}>X{item.delegateList.length} vote</div>)}
 
                     </div>
                     <div className={classes.voteTotal}>
@@ -223,7 +237,7 @@ const Proposal = () => {
                     </div>
                   </div>
 
-                  {item.delegateList && item.delegateList.map(child => (
+                  {item.delegateList && showChild.indexOf(item.id) !== -1 && item.delegateList.map(child => (
                       <div key={child.id} className={classes.voteContent2}>
                         <div className={classes.voteListChild}>
                           <AddressAvatar address={child.address} size={20} />
