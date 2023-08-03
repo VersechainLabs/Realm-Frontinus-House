@@ -107,7 +107,7 @@ export class ApiWrapper {
     if (!this.signer) throw 'Please sign';
     try {
       const owner = (await this.signer.getAddresses())[0];
-      const raw = (await axios.get(`${this.host}/delegates/checkExist?address=${owner}&applicationId=${id}`)).data;
+      const raw = (await axios.get(`${this.host}/delegates/canVote?address=${owner}&applicationId=${id}`)).data;
       return raw;
     } catch (e: any) {
       throw e.response.data.message;
