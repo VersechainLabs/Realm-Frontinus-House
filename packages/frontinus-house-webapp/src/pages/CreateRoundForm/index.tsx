@@ -43,7 +43,7 @@ const CreateRound: React.FC<{}> = () => {
   const [state, setState] = useState({
     description: '',
     title: '',
-    startTime: new Date(),
+    proposingStartTime: new Date(),
     proposalEndTime: new Date(),
     votingEndTime: new Date(),
     numWinners: 0,
@@ -86,7 +86,7 @@ const CreateRound: React.FC<{}> = () => {
     if (value !== null) {
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        proposingStartTime: value.toDate(),
       }));
       setProposingStartTime(value);
       setIsStartTimeFilled(true);
@@ -140,11 +140,14 @@ const CreateRound: React.FC<{}> = () => {
     if (
       !state.title ||
       !state.description ||
+      !state.proposingStartTime ||
+      !state.proposalEndTime ||
+      !state.votingEndTime ||
       !state.numWinners ||
       !state.currencyType ||
       !state.fundingAmount
     ) {
-      const errorMessage = 'Input fields should not be blank!';
+      const errorMessage = 'You must complete all the fields before submit!';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -154,7 +157,8 @@ const CreateRound: React.FC<{}> = () => {
     // Check if proposingStartTime is earlier than the current time
     const currentTime = dayjs();
     if (proposingStartTime && proposingStartTime.isBefore(currentTime)) {
-      const errorMessage = 'Time set should not be earlier than present time!';
+      const errorMessage =
+        'Proposal submissions should commence at the current time or later, not earlier.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -185,7 +189,7 @@ const CreateRound: React.FC<{}> = () => {
         new TimedAuction(
           true,
           state.title,
-          state.startTime,
+          state.proposingStartTime,
           state.proposalEndTime,
           state.votingEndTime,
           state.fundingAmount,
