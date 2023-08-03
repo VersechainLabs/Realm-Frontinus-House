@@ -19,6 +19,7 @@ import Comments from '../../components/Comments';
 import Button, {ButtonColor} from "../../components/Button";
 import { setAlert } from '../../state/slices/alert';
 import { useWalletClient } from 'wagmi';
+import AddressAvatar from "../../components/AddressAvatar";
 
 const Application = () => {
   const params = useParams();
@@ -36,8 +37,9 @@ const Application = () => {
   const backendHost = useAppSelector(state => state.configuration.backendHost);
   const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
   const [loading,setLoading] = useState(true);
-
   const [canVote, setCanVote] = useState(false);
+  const [voteCount, setVoteCount] = useState(0);
+  const [voteList, setvoteList] = useState([]);
 
   const handleBackClick = () => {
     console.log();
@@ -63,9 +65,6 @@ const Application = () => {
         document.title = `${proposal.title}`;
         dispatch(setActiveProposal(proposal));
         setLoading(false);
-
-        console.log('proposal',proposal)
-
       } catch (e) {
         setLoading(false);
         setFailedFetch(true);
@@ -101,7 +100,7 @@ const Application = () => {
 
       const status = await backendClient.current.getDelegateStatus(proposal.id);
 
-      if(status === 'true'){
+      if(status === false){
         setCanVote(true);
       } else {
         setCanVote(false);
@@ -111,6 +110,21 @@ const Application = () => {
 
     fetchVoteStatus();
   }, [id, dispatch, proposal, walletClient]);
+
+  const fetchVotes = async () => {
+
+    const raw = await backendClient.current.getDelegatesVotes(proposal.id);
+    console.log('list',raw);
+
+    setVoteCount(raw.total);
+
+    setvoteList(raw.delegates);
+  };
+
+  useEffect(() => {
+    if (!proposal || !walletClient) return;
+    fetchVotes();
+  }, [id, dispatch, proposal]);
 
   return (
     <>
@@ -161,6 +175,32 @@ const Application = () => {
                       }} />
             </div>
         )}
+
+        <div className={classes.voteMain}>
+          <div className={classes.voteHeader}>
+            <div className={classes.voteHeaderText}>
+              Delegates
+            </div>
+            <div className={classes.voteHeaderNum}>
+              {voteCount}
+            </div>
+          </div>
+          <div className={classes.voteList}>
+            {voteList.map(item => (
+                <div key={item.id}>
+                  <div className={classes.voteContent}>
+                    <div className={classes.voteListChild}>
+                      <AddressAvatar address={item.fromAddress} size={20} />
+                      <div className={classes.voteUserAddress}>{item.fromAddress} </div>
+                      {/*<div>X3 vote</div>*/}
+                    </div>
+                  </div>
+
+                </div>
+            ))}
+          </div>
+
+        </div>
 
         {proposal && (
                 <div>

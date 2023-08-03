@@ -94,6 +94,15 @@ export class ApiWrapper {
     }
   }
 
+  async getDelegatesVotes(id: number): Promise<any> {
+    try {
+      const raw = (await axios.get(`${this.host}/delegates/list?applicationId=${id}`)).data;
+      return raw;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getDelegateStatus(id: any): Promise<any> {
     if (!this.signer) throw 'Please sign';
     try {
