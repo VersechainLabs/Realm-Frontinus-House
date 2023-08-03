@@ -71,9 +71,13 @@ export class Proposal {
 
   @BeforeUpdate()
   updateVoteCount() {
-    this.voteCount = this.votes.reduce((acc, vote) => {
-      return Number(acc) + Number(vote.weight);
-    }, 0);
+    if (this.votes) {
+      this.voteCount = this.votes.reduce((acc, vote) => {
+        return Number(acc) + Number(vote.weight);
+      }, 0);
+    } else {
+      this.voteCount = 0;
+    }
   }
 
   @ApiProperty({
