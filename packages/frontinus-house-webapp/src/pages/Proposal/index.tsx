@@ -20,6 +20,7 @@ import Comments from '../../components/Comments';
 import Button, { ButtonColor } from '../../components/Button';
 import AddressAvatar from '../../components/AddressAvatar';
 import VoteListPopup from '../../components/VoteListPopup';
+import EthAddress from '../../components/EthAddress';
 
 const Proposal = () => {
   const params = useParams();
@@ -209,7 +210,9 @@ const Proposal = () => {
                   <div className={classes.voteContent}>
                     <div className={classes.voteListChild}>
                       <AddressAvatar address={item.address} size={20} />
-                      <div className={classes.voteUserAddress}>{item.address} </div>
+                      {/*<div className={classes.voteUserAddress}>{item.address} </div>*/}
+                      <div className={classes.voteUserAddress}></div>
+                      <EthAddress address={item.address} />
                       {/*<div>X3 vote</div>*/}
 
                     </div>
@@ -223,7 +226,9 @@ const Proposal = () => {
                       <div key={child.id} className={classes.voteContent2}>
                         <div className={classes.voteListChild}>
                           <AddressAvatar address={child.address} size={20} />
-                          <div className={classes.voteUserAddress}>{child.address} </div>
+                          {/*<div className={classes.voteUserAddress}>{child.address} </div>*/}
+                          <div className={classes.voteUserAddress}></div>
+                          <EthAddress address={child.address} />
                           {/*<div>X3 vote</div>*/}
                         </div>
                         <div className={classes.voteTotal}>
