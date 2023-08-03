@@ -25,7 +25,7 @@ import OpenGraphElements from '../../components/OpenGraphElements';
 import { markdownComponentToPlainText } from '../../utils/markdownToPlainText';
 import ReactMarkdown from 'react-markdown';
 import ProposalModal from '../../components/ProposalModal';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import NotFound from '../../components/NotFound';
 import { isMobile } from 'web3modal';
@@ -43,7 +43,7 @@ const DelegateDetails = () => {
   const id = location.pathname.substring(1).split('/')[1];
 
   const dispatch = useAppDispatch();
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const community = useAppSelector(state => state.delegate.activeCommunity);
   const round = useAppSelector(state => state.delegate.activeRound);
   const proposals = useAppSelector(state => state.delegate.activeProposals);
@@ -66,8 +66,8 @@ const DelegateDetails = () => {
   const [propsFailedFetch, setPropsFailedFetch] = useState(false);
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   // if no data is found in store (ie round page is entry point), fetch data
   useEffect(() => {
@@ -100,9 +100,6 @@ const DelegateDetails = () => {
         const round = await client.current.getDelegateDetails(
             parseInt( id ),
         );
-
-        console.log(round);
-
         dispatch(setActiveRound(round));
         setLoadingRound(false);
       } catch (e) {

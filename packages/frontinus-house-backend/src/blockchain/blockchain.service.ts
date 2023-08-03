@@ -1,29 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { ethers } from 'ethers';
 import config from '../config/configuration';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { getCurrentBlockNum } from 'frontinus-house-communities/dist/actions/getBlockNum';
 import { getVotingPower } from 'frontinus-house-communities';
-import { SnapshotService } from 'src/voting-power-snapshot/snapshot.service';
 import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
-import { DelegateService } from 'src/delegate/delegate.service';
 import { DelegationService } from 'src/delegation/delegation.service';
 import { DelegationState } from 'src/delegation/delegation.types';
+import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
+import { Repository } from 'typeorm';
+import { Delegate } from '../delegate/delegate.entity';
+import { createPublicClient, http, PublicClient } from 'viem';
+import { mainnet } from 'viem/chains';
 
 @Injectable()
 export class BlockchainService {
-  private readonly provider: JsonRpcProvider;
+  private readonly provider: PublicClient;
 
   constructor(
-    private readonly snapshotService: SnapshotService,
-    private readonly delegateService: DelegateService,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
     private readonly delegationService: DelegationService,
+
+    @InjectRepository(Snapshot)
+    private snapshotRepository: Repository<Snapshot>,
   ) {
-    this.provider = new ethers.providers.JsonRpcProvider(config().Web3RpcUrl);
+    this.provider = createPublicClient({
+      chain: mainnet,
+      transport: http(config().Web3RpcUrl),
+    });
   }
 
   async getCurrentBlockNum(): Promise<number> {
-    await this.provider.ready;
     return getCurrentBlockNum(this.provider);
   }
 
@@ -33,18 +39,14 @@ export class BlockchainService {
     blockTag: number,
   ): Promise<number> {
     // First, search DB for snapshot:
-    const existSnapshot = await this.snapshotService.findBy(
-      communityAddress,
-      blockTag,
-      userAddress,
-    );
-
+    const existSnapshot = await this.snapshotRepository.findOne({
+      where: { communityAddress, address: userAddress, blockNum: blockTag },
+    });
     if (existSnapshot) {
       return existSnapshot.votingPower;
     }
 
     // Second, snapshot not found, search on chain:
-    await this.provider.ready;
     const votingPowerOnChain = await getVotingPower(
       userAddress,
       communityAddress,
@@ -59,7 +61,7 @@ export class BlockchainService {
     newSnapshot.address = userAddress;
     newSnapshot.votingPower = votingPowerOnChain;
     // noinspection ES6MissingAwait . just a cache
-    this.snapshotService.store(newSnapshot);
+    this.snapshotRepository.save(newSnapshot);
 
     return newSnapshot.votingPower;
   }
@@ -69,7 +71,6 @@ export class BlockchainService {
     communityAddress: string,
     blockTag: number,
   ): Promise<number> {
-    await this.provider.ready;
     return getVotingPower(
       userAddress,
       communityAddress,
@@ -103,9 +104,9 @@ export class BlockchainService {
     let allDelegates = [];
 
     for (const delegation of activeDelegations) {
-      const delegates = await this.delegateService.findByDelegationId(
-        delegation.id,
-      );
+      const delegates = await this.delegateRepository.find({
+        where: { delegationId: delegation.id },
+      });
       allDelegates = allDelegates.concat(delegates);
     }
 
@@ -142,7 +143,7 @@ export class BlockchainService {
         console.log('[getVotingPower error]', address, error.message);
       }
     }
-    await this.snapshotService.storeMany(snapshotList);
+    await this.snapshotRepository.save(snapshotList);
 
     return 'all done';
   }

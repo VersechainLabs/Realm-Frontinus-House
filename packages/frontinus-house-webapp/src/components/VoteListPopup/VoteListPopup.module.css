@@ -1,0 +1,110 @@
+.popup {
+    position: fixed;
+    top: 20%;
+    left: calc(50% - 316px); 
+    width: 632px;
+    border: 1px solid #2c2c2d;
+    border-radius: 24px;
+    background-color: #1A1A1B;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Garamond', serif;
+    font-weight: 700;
+    color: #f5eee6;
+    text-align: center;
+  }
+  
+  
+  .popupinner {
+    width: 592px;
+    background-color: #1A1A1B;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  
+  
+  .closebtn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 32px;
+    height: 32px;
+    border: 1px solid #2c2c2d;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #D0A059;
+      font-weight: bold;
+      font-size: 20px;
+    cursor: pointer;
+      background: #1A1A1B;
+  }
+  
+  .buttongroup {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .ok-btn {
+    width: 96px;
+    height: 40px;
+    padding: 0 16px;
+    background-color: #d0a059;
+    border: 1px solid #2c2c2d;
+    border-radius: 8px;
+    font-family: 'Inconsolata', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111111;
+    cursor: pointer;
+    margin-top: 20px; 
+  }
+
+.voteListChild {
+    display: flex;
+}
+
+.listTitle {
+    padding-bottom: 30px;
+    width: 100%;
+}
+
+.voteList {
+    border-top: 1px solid #2C2C2D;
+
+}
+
+.voteContent {
+    display: flex;
+    padding: 10px 20px;
+    border-bottom: 1px solid #2C2C2D;
+    justify-content: space-between
+}
+.voteContent2 {
+    display: flex;
+    padding: 10px 20px;
+    padding-left: 40px;
+    justify-content: space-between
+}
+.voteContent2:last-child{
+    border-bottom: 1px solid #2C2C2D;
+}
+.voteListChild {
+    display: flex;
+}
+.voteUserAvatar {
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+}
+.voteUserAddress {
+    display: inline-block;
+    margin-left: 8px;
+}
+  

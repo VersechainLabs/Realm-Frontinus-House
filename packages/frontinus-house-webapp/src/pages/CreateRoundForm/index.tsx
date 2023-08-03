@@ -3,8 +3,8 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useSigner } from 'wagmi';
-import { nameToSlug } from '../../utils/communitySlugs';
+import { useWalletClient } from 'wagmi';
+import {nameToSlug} from "../../utils/communitySlugs";
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
@@ -22,10 +22,10 @@ dayjs.extend(isToday);
 const CreateRound: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
   const navigate = useNavigate();
   const currentTime = dayjs();
   const minDateTime = dayjs().subtract(1, 'minute');

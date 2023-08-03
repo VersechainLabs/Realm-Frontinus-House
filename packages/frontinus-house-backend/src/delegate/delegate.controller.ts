@@ -6,12 +6,11 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Delegate } from './delegate.entity';
-import { CreateDelegateDto, GetDelegateDto } from './delegate.types';
+import { CreateDelegateDto } from './delegate.types';
 import { DelegateService } from './delegate.service';
-import { DelegationService } from 'src/delegation/delegation.service';
-import { AdminService } from 'src/admin/admin.service';
 import { ApplicationService } from '../delegation-application/application.service';
 import { ApiOkResponse } from '@nestjs/swagger';
 
@@ -21,23 +20,13 @@ export class DelegateController {
 
   constructor(
     private readonly delegateService: DelegateService,
-    private readonly delegationService: DelegationService,
-    private readonly adminService: AdminService,
     private readonly applicationService: ApplicationService,
   ) {}
-
-  @Get('/list')
-  @ApiOkResponse({
-    type: [Delegate],
-  })     
-  async getAll(@Body() dto: GetDelegateDto): Promise<Delegate[]> {
-    return this.delegateService.findAll();
-  }
 
   @Post('/create')
   @ApiOkResponse({
     type: Delegate,
-  })   
+  })
   async create(@Body() dto: CreateDelegateDto): Promise<Delegate> {
     const application = await this.applicationService.findOne(
       dto.applicationId,
@@ -56,7 +45,7 @@ export class DelegateController {
 
     const existDelegate = await this.delegateService.findByFromAddress(
       application.delegationId,
-      dto.fromAddress,
+      dto.address,
     );
     if (existDelegate) {
       throw new HttpException(
@@ -67,7 +56,7 @@ export class DelegateController {
 
     const createdApplication = await this.applicationService.findByAddress(
       application.delegationId,
-      dto.fromAddress,
+      dto.address,
     );
     if (createdApplication) {
       throw new HttpException(
@@ -79,16 +68,32 @@ export class DelegateController {
     const delegate = new Delegate();
     delegate.delegationId = application.delegationId;
     delegate.applicationId = dto.applicationId;
-    delegate.fromAddress = dto.fromAddress;
+    delegate.fromAddress = dto.address;
     delegate.toAddress = application.address;
 
     return this.delegateService.store(delegate);
   }
 
+  @Get('/checkExist')
+  @ApiOkResponse({
+    type: Boolean,
+  })
+  async checkDelegateExist(    
+    @Query('applicationId') applicationId: number,
+    @Query('address') fromAddress: string
+    ) {
+    const foundDelegate = await this.delegateService.checkDelegateExist(applicationId, fromAddress);
+
+    if (!foundDelegate)
+      return false;
+
+    return true;
+  }  
+
   @Get(':id')
   @ApiOkResponse({
     type: Delegate,
-  })     
+  })
   async findOne(@Param('id') id: number): Promise<Delegate> {
     const foundDelegate = await this.delegateService.findOne(id);
 
@@ -97,4 +102,5 @@ export class DelegateController {
 
     return foundDelegate;
   }
+
 }
