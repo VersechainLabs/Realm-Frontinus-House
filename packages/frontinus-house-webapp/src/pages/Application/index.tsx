@@ -17,6 +17,7 @@ import OpenGraphElements from '../../components/OpenGraphElements';
 import RenderedProposalFields from '../../components/RenderedProposalFields';
 import Comments from '../../components/Comments';
 import Button, {ButtonColor} from "../../components/Button";
+import { setAlert } from '../../state/slices/alert';
 import { useWalletClient } from 'wagmi';
 
 const Application = () => {
@@ -141,13 +142,17 @@ const Application = () => {
         {proposal && (
             <div style={{ marginTop: '30px', marginBottom: '30px' ,display:'flex'}}>
               <Button text={'　　delegate　　'} bgColor={ButtonColor.Purple}
-                      disabled={!canVote}
+                      // disabled={!canVote}
                       onClick={async () => {
                         try {
                           const voteResult = await backendClient.current.createDelegate(proposal.id);
-                          console.log('voteResult: ', voteResult);
+
+                          if(voteResult.hasOwnProperty('delegationId') && voteResult.delegationId > 0){
+                            dispatch(setAlert({ type: 'success', message: 'success' }));
+                          }
+
                         } catch (e) {
-                          //
+                          dispatch(setAlert({ type: 'error', message: e }));
                         } finally {
 
                         }
