@@ -204,8 +204,8 @@ const Proposal = () => {
               {proposal && proposal.voteCount}
             </div>
           </div>
-          <div className={classes.voteList}>
-            {proposal && proposal.votes.map(item => (
+          <div >
+            {proposal && proposal.votes && proposal.votes.map(item => (
                 <div key={item.id}>
                   <div className={classes.voteContent}>
                     <div className={classes.voteListChild}>
