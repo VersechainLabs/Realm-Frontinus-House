@@ -60,6 +60,14 @@ export class DelegateService {
     });
   }
 
+  getDelegateListByApplicationId(
+    applicationId: number,
+  ): Promise<Delegate[]> {
+    return this.delegateRepository.find({
+      where: { applicationId },
+    });
+  }
+
   async store(proposal: Delegate): Promise<Delegate> {
     return await this.delegateRepository.save(proposal, { reload: true });
   }
