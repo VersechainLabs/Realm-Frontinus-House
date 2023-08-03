@@ -167,6 +167,7 @@ const Proposal = () => {
                       try {
                         const voteResult = await backendClient.current.createVote({ proposalId: proposal.id } as Vote);
                         setCanVote(false);
+                        window.location.reload();
                         console.log('voteResult: ', voteResult);
                       } catch (e) {
                         //
