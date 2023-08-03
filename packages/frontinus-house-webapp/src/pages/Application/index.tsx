@@ -64,6 +64,8 @@ const Application = () => {
         dispatch(setActiveProposal(proposal));
         setLoading(false);
 
+        console.log('proposal',proposal)
+
       } catch (e) {
         setLoading(false);
         setFailedFetch(true);
@@ -116,7 +118,7 @@ const Application = () => {
         {proposal && (
           <OpenGraphElements
             title={proposal.title}
-            description={proposal.tldr}
+            description={proposal.description}
             imageUrl={cardServiceUrl(CardType.proposal, proposal.id).href}
           />
         )}

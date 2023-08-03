@@ -9,8 +9,8 @@ export interface ProposalFields {
 
 const proposalFields = (proposal: any): ProposalFields => ({
   title: proposal.title,
-  what: proposal.what,
-  tldr: proposal.tldr,
+  what: proposal.what ? proposal.what : proposal.description,
+  tldr: proposal.tldr ,
   reqAmount: proposal.reqAmount,
 });
 
