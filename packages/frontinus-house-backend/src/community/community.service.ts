@@ -2,12 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Community } from './community.entity';
-import * as ethers from 'ethers';
-import { BigNumberish } from '@ethersproject/bignumber';
-import config from 'src/config/configuration';
-import { getVotingPower } from 'frontinus-house-communities';
 import { ExtendedCommunity } from './community.types';
-import { Auction } from 'src/auction/auction.entity';
 
 @Injectable()
 export class CommunitiesService {
@@ -60,20 +55,6 @@ export class CommunitiesService {
 
   async store(community: Community): Promise<Community> {
     return await this.communitiesRepository.save(community, { reload: true });
-  }
-
-  async votesAtBlockTag(
-    community: Community,
-    blockTag: number,
-    address: string,
-  ): Promise<BigNumberish> {
-    const provider = new ethers.providers.JsonRpcProvider(config().JSONRPC);
-    return getVotingPower(
-      address,
-      community.contractAddress,
-      provider,
-      blockTag,
-    );
   }
 
   private extendedAuctionQuery(qb: SelectQueryBuilder<Community>) {

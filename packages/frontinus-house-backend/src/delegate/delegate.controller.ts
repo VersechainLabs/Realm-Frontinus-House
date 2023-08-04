@@ -90,6 +90,84 @@ export class DelegateController {
     return true;
   }  
 
+
+  @Get('/canVote')
+  @ApiOkResponse({
+    type: Boolean,
+  })
+  async checkDelegateCanVote(    
+    @Query('applicationId') applicationId: number,
+    @Query('address') fromAddress: string
+    ): Promise<object> {
+      if (await this.checkDelegateExist(applicationId, fromAddress) === false) {
+        return {
+          message:  'Delegate not exists',
+          status: false,
+        }
+      }
+      // Similar to /create:
+      const application = await this.applicationService.findOne(
+        applicationId,
+      );
+
+      const currentTime = new Date();
+      if (
+        currentTime < application.delegation.proposalEndTime ||
+        currentTime > application.delegation.votingEndTime
+      ) {
+        return {
+          message:  'Not in the eligible voting period.',
+          status: false,
+        }
+      }
+  
+      const existDelegate = await this.delegateService.findByFromAddress(
+        application.delegationId,
+        fromAddress,
+      );
+      if (existDelegate) {
+        return {
+          message:  `Already delegate to ${existDelegate.toAddress}`,
+          status: false,
+        }        
+      }
+  
+      const createdApplication = await this.applicationService.findByAddress(
+        application.delegationId,
+        fromAddress,
+      );
+      if (createdApplication) {
+        return {
+          message:  `Already created application. Can not delegate to ${application.address}`,
+          status: false,
+        }
+      }
+
+      return {
+        message:  `Can vote!`,
+        status: true,
+      }     
+  }  
+
+  @Get('/list')
+  @ApiOkResponse({
+    type: [Delegate],
+  })
+  async listByAppliactionID(@Query('applicationId') applicationId: number): Promise<object> {
+
+    const foundDelegate = await this.delegateService.getDelegateListByApplicationId(applicationId);
+
+    if (!foundDelegate)
+      throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
+
+    var results = {
+      total:  foundDelegate.length,
+      delegates: foundDelegate,
+    };
+
+    return results;
+  }
+
   @Get(':id')
   @ApiOkResponse({
     type: Delegate,
