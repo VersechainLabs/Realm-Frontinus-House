@@ -293,6 +293,13 @@ export class ApiWrapper {
     }
   }
 
+  async getUserType( address: string) {
+    try {
+      return (await axios.post(`${this.host}/admins/getUserType?address=/${address}`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
 
   async getDelegateDetails(
     id: number,
