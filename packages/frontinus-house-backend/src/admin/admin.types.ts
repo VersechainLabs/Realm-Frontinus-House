@@ -14,6 +14,12 @@ export class CreateAdminDto {
   address: string;
 }
 
+export enum UserType {
+  Admin = 'Admin',
+  User = 'User',
+}
+
+
 export enum Order {
   ASC = 'ASC',
   DESC = 'DESC',
