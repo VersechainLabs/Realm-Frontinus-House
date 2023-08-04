@@ -51,7 +51,7 @@ export class SignedPayloadValidationPipe implements PipeTransform {
     // If the signer is not a contract, then we have an invalid EOA signature
     const code = await this._provider.getCode(value.address);
     if (code === '0x') {
-      throw new Error(sigErr);
+      throw new BadRequestException('Failed to valid signature');
     }
 
     // prettier-ignore

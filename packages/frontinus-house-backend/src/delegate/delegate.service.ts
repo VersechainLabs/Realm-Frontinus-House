@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Delegate } from './delegate.entity';
-
-export type AuctionWithProposalCount = Delegate & { numProposals: number };
 
 @Injectable()
 export class DelegateService {
@@ -31,6 +29,10 @@ export class DelegateService {
       // },
       //   where: { visible: true },
     });
+  }
+
+  findOneBy(opt?: FindOneOptions<Delegate>): Promise<Delegate> {
+    return this.delegateRepository.findOne(opt);
   }
 
   async remove(id: number): Promise<void> {
