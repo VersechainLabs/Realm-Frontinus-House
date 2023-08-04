@@ -189,12 +189,12 @@ const DelegateContent: React.FC<{
                   ))}
               </Col>
 
-              {/*<DelegateModules*/}
-              {/*  auction={auction}*/}
-              {/*  proposals={proposals}*/}
-              {/*  community={community}*/}
-              {/*  setShowVotingModal={setShowVoteConfirmationModal}*/}
-              {/*/>*/}
+              <DelegateModules
+                auction={auction}
+                proposals={proposals}
+                community={community}
+                setShowVotingModal={setShowVoteConfirmationModal}
+              />
 
             </Row>
           )}
