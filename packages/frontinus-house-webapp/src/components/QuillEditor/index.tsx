@@ -66,6 +66,9 @@ export default function QuillEditor(props: QuillEditorProps) {
 
 
       if (file) {
+        // quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/QmRZoJNYQ65oPTgpcLR5gcHfDsdfvdCXQscfgvJaq8tqdW','user');
+        // quillObj.setSelection(range.index + 1);
+        // return false;
 
         setShowLoading(true);
         quillObj.disable();
@@ -84,11 +87,12 @@ export default function QuillEditor(props: QuillEditorProps) {
           return;
         }
 
-        setShowLoading(false);
-        quillObj.enable();
+
 
         quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
-        quillObj.setSelection(range.index + 1)
+        quillObj.setSelection(range.index + 1);
+        setShowLoading(false);
+        quillObj.enable();
       }
     };
   };
@@ -145,9 +149,9 @@ export default function QuillEditor(props: QuillEditorProps) {
     // });
 
     quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
-      if (source === 'user') {
+      // if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-      }
+      // }
     });
 
 

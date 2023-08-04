@@ -60,6 +60,7 @@ const Proposal = () => {
 
   // fetch proposal
   useEffect(() => {
+
     if (!id) return;
 
     const fetch = async () => {
@@ -102,6 +103,8 @@ const Proposal = () => {
     };
 
     fetchCommunity();
+    window.scrollTo(0, 0);
+
   }, [id, dispatch, proposal]);
 
   return (

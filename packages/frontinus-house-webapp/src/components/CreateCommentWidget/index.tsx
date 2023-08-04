@@ -27,7 +27,11 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
   const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
     if (plainText.trim().length === 0) {
-      setContent('');
+      if( !htmlContent ){
+        setContent('');
+      }else{
+        setContent(JSON.stringify(deltaContent.ops));
+      }
     } else {
       setContent(JSON.stringify(deltaContent.ops));
     }
@@ -35,7 +39,6 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
   const submit = async () => {
 
-    console.log(content);
     if (content.length === 0 || !account) {
       return;
     }
