@@ -3,7 +3,7 @@ import {
   Comment,
   Community,
   CommunityWithAuctions,
-  DeleteProposal,
+  DeleteProposal, DeleteVote,
   Proposal,
   StoredAuctionBase,
   StoredComment,
@@ -437,6 +437,16 @@ export class ApiWrapper {
     try {
       const signedPayload = await vote.signedPayload(this.signer);
       return (await axios.post(`${this.host}/votes`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async deleteVote(deleteVote: DeleteVote) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await deleteVote.signedPayload(this.signer);
+      return (await axios.delete(`${this.host}/votes`, { data: signedPayload })).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
