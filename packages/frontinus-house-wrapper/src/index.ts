@@ -3,7 +3,7 @@ import {
   Comment,
   CommentModal,
   Community,
-  CommunityWithAuctions,
+  CommunityWithAuctions, DeleteApplication,
   DeleteProposal,
   Proposal,
   StoredAuctionBase,
@@ -20,6 +20,7 @@ import FormData from 'form-data';
 import * as fs from 'fs';
 
 import {
+  DeleteApplicationMessageTypes,
   DeleteProposalMessageTypes,
   EditProposalMessageTypes,
   InfiniteAuctionProposalMessageTypes,
@@ -423,6 +424,20 @@ export class ApiWrapper {
         DeleteProposalMessageTypes,
       );
       return (await axios.delete(`${this.host}/proposals`, { data: signedPayload })).data;
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async deleteDelegate(deleteApplication: DeleteApplication, isContract = false) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await deleteApplication.signedPayload(
+        this.signer,
+        'Application',
+          DeleteApplicationMessageTypes,
+      );
+      return (await axios.delete(`${this.host}/delegates`, { data: signedPayload })).data;
     } catch (e: any) {
       throw e;
     }
