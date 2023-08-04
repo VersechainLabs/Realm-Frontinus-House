@@ -46,6 +46,7 @@ export abstract class Signable {
         signature: signature,
         signer: address,
       },
+      owner: address,
       ...payload,
     };
   }
