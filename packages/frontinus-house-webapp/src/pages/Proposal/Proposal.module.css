@@ -47,6 +47,14 @@
 .voteList {
 
 }
+.voteCount {
+  color: #676B6D;
+  margin-left: 8px;
+  font-size: 14px;
+}
+.voteSvg {
+  margin-left: 4px;
+}
 .seeMore {
   padding: 10px 20px;
   text-align: center;
