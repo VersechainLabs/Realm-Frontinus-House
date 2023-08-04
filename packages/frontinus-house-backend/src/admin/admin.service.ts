@@ -21,6 +21,14 @@ export class AdminService {
     });
   }
 
+  searchByAddress(address: string): Promise<Admin[]> {
+    return this.adminRepository.find({
+        where: {
+          address: address,
+        },
+    });
+  }
+
   async createAdmin(createAdminDto: CreateAdminDto): Promise<Admin> {
     const admin = await this.adminRepository.findOne({
       address: createAdminDto.address,
