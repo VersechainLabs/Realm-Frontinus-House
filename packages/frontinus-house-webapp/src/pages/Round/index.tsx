@@ -39,14 +39,10 @@ const Round = () => {
 
   const communityName = 'frontinus';
 
-  const roundName = location.pathname.substring(1).split('/')[0];
+  const roundName = location.pathname.substring(1).split('/')[1];
 
   const params = useParams();
   const { id } = params;
-
-
-
-  console.log(roundName);
 
   const dispatch = useAppDispatch();
   const { data: walletClient } = useWalletClient()
