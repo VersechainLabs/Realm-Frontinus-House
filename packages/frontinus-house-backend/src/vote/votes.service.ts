@@ -4,6 +4,7 @@ import {
   DeepPartial,
   FindConditions,
   FindManyOptions,
+  FindOneOptions,
   Repository,
 } from 'typeorm';
 import { Vote } from './vote.entity';
@@ -70,8 +71,8 @@ export class VotesService {
       .getMany();
   }
 
-  findOne(id: number): Promise<Vote> {
-    return this.votesRepository.findOne(id);
+  findOne(opt?: FindOneOptions<Vote>): Promise<Vote> {
+    return this.votesRepository.findOne(opt);
   }
 
   findBy(auctionId: number, address: string): Promise<Vote> {

@@ -28,7 +28,13 @@ export class CreateVoteDto extends SignedEntity {
 export class DeleteVoteDto extends SignedEntity {
   @ApiProperty({ description: 'The vote ID to delete' })
   @IsNumber()
+  @IsOptional()
   id: number;
+
+  @ApiProperty({ description: 'The proposal ID to delete vote' })
+  @IsNumber()
+  @IsOptional()
+  proposalId: number;
 }
 
 export class DelegatedVoteDto extends CreateVoteDto {

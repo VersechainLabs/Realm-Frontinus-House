@@ -199,11 +199,25 @@ export class DelegateController {
   async deleteOne(
     @Body(SignedPayloadValidationPipe) deleteDelegateDto: DeleteDelegateDto,
   ): Promise<boolean> {
-    verifySignPayload(deleteDelegateDto, ['id']);
+    verifySignPayload(deleteDelegateDto, ['id', 'applicationId']);
 
-    const foundDelegate = await this.delegateService.findOne(
-      deleteDelegateDto.id,
-    );
+    let foundDelegate;
+    if (deleteDelegateDto.id) {
+      foundDelegate = await this.delegateService.findOne(deleteDelegateDto.id);
+    } else if (deleteDelegateDto.applicationId) {
+      foundDelegate = await this.delegateService.findOneBy({
+        where: {
+          fromAddress: deleteDelegateDto.address,
+          applicationId: deleteDelegateDto.applicationId,
+        },
+      });
+    } else {
+      throw new HttpException(
+        'Missing id or applicationId',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     if (!foundDelegate) {
       throw new HttpException('No Delegate with that ID', HttpStatus.NOT_FOUND);
     }

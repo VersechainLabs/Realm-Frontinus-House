@@ -30,7 +30,13 @@ export class CreateDelegateDto {
 export class DeleteDelegateDto extends SignedEntity {
   @ApiProperty({ description: 'The delegate ID to delete' })
   @IsNumber()
+  @IsOptional()
   id: number;
+
+  @ApiProperty({ description: 'The application ID to delete delegate' })
+  @IsNumber()
+  @IsOptional()
+  applicationId: number;
 }
 
 export enum Order {

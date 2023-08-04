@@ -254,7 +254,11 @@ export class VotesController {
 
   @Get(':id')
   findOne(@Param('id') id: number): Promise<Vote> {
-    return this.votesService.findOne(id);
+    return this.votesService.findOne({
+      where: {
+        id: id,
+      },
+    });
   }
 
   @ApiOperation({
@@ -268,12 +272,27 @@ export class VotesController {
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @Delete()
-  async deleteOne(
-    @Body(SignedPayloadValidationPipe) deleteVoteDto: DeleteVoteDto,
-  ): Promise<boolean> {
-    verifySignPayload(deleteVoteDto, ['id']);
+  async deleteOne(@Body() deleteVoteDto: DeleteVoteDto): Promise<boolean> {
+    verifySignPayload(deleteVoteDto, ['id', 'proposalId']);
 
-    const foundVote = await this.votesService.findOne(deleteVoteDto.id);
+    let foundVote;
+    if (deleteVoteDto.id) {
+      foundVote = await this.votesService.findOne({
+        where: { id: deleteVoteDto.id },
+      });
+    } else if (deleteVoteDto.proposalId) {
+      foundVote = await this.votesService.findOne({
+        where: {
+          address: deleteVoteDto.address,
+          proposalId: deleteVoteDto.proposalId,
+        },
+      });
+    } else {
+      throw new HttpException(
+        'Missing id or proposalId',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     if (!foundVote) {
       throw new HttpException('No Vote with that ID', HttpStatus.NOT_FOUND);
     }
@@ -305,7 +324,7 @@ export class VotesController {
     }
 
     // Start remove vote.
-    const ids = [deleteVoteDto.id];
+    const ids = [foundVote.id];
     const delegateVoteList = await this.votesService.findAll({
       where: {
         proposalId: foundVote.proposalId,
