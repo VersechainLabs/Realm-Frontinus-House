@@ -3,27 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Comment } from './comment.entity';
 import { CreateCommentDto, GetCommentsDto } from './comment.types';
-import { Community } from 'src/community/community.entity';
-import { Auction } from 'src/auction/auction.entity';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { Proposal } from '../proposal/proposal.entity';
 import { Application } from '../delegation-application/application.entity';
-import { Delegation } from '../delegation/delegation.entity';
-
-// export type AuctionWithProposalCount = Comment & { numProposals: number };
 
 @Injectable()
 export class CommentsService {
   constructor(
     @InjectRepository(Comment) private commentsRepository: Repository<Comment>,
-    @InjectRepository(Community)
-    private communitiesRepository: Repository<Community>,
-    @InjectRepository(Auction) private auctionsRepository: Repository<Auction>,
     @InjectRepository(Proposal)
     private proposalsRepository: Repository<Proposal>,
     @InjectRepository(Application)
     private applicationRepository: Repository<Application>,
-    @InjectRepository(Delegation)
-    private delegationRepository: Repository<Delegation>,
   ) {}
 
   async findByProposal(
@@ -76,6 +66,8 @@ export class CommentsService {
           HttpStatus.BAD_REQUEST,
         );
       }
+      proposal.commentCount++;
+      await this.proposalsRepository.save(proposal);
     } else if (createCommentDetails.applicationId > 0) {
       const application = await this.applicationRepository.findOne(
         createCommentDetails.applicationId,
@@ -93,6 +85,9 @@ export class CommentsService {
           HttpStatus.BAD_REQUEST,
         );
       }
+
+      application.commentCount++;
+      await this.applicationRepository.save(application);
     } else {
       throw new HttpException(
         'At least one of the following properties must be non-empty: proposalId, applicationId',

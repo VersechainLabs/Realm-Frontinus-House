@@ -3,7 +3,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 import { nameToSlug } from '../../utils/communitySlugs';
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,24 +14,21 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { setAlert, clearClick, alertSlice } from '../../state/slices/alert';
 import { useDispatch, useSelector } from 'react-redux';
+import TextField from '@mui/material/TextField';
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
 
-  const timeWarningMessage = 'Time set should not be earlier than present time!';
-  const orderWarningMessage = 'Time set did not follow the required order!';
-  const blankWarningMessage = 'Input bar should not be blank!';
-
   const MAX_TITLE_LENGTH = 50;
-  const MAX_DESCRIPTION_LENGTH = 300;
+  const MAX_DESCRIPTION_LENGTH = 1000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const [showError, setShowError] = useState(false);
@@ -42,13 +39,15 @@ const CreateDelegateForm: React.FC<{}> = () => {
   const [grantStartTime, setGrantStartTime] = useState<Dayjs | null>(currentTime);
   const [grantEndTime, setGrantEndTime] = useState<Dayjs | null>(currentTime);
   const [roundEndTime, setRoundEndTime] = useState<Dayjs | null>(currentTime);
-  const [showOrderWarning, setShowOrderWarning] = useState(false);
-  const [showBlankWarning, setShowBlankWarning] = useState(false);
+  // const [showOrderWarning, setShowOrderWarning] = useState(false);
+  // const [showBlankWarning, setShowBlankWarning] = useState(false);
 
   const [isStartTimeFilled, setIsStartTimeFilled] = useState(false);
   const [isProposalTimeFilled, setIsProposalTimeFilled] = useState(false);
   const [isVotingTimeFilled, setIsVotingTimeFilled] = useState(false);
   const [isEndTimeFilled, setIsEndTimeFilled] = useState(false);
+
+  // const [isStartDatePickerOpen, setIsStartDatePickerOpen] = useState(false);
 
   // const alertType = useSelector(state => state.alert.type);
   // const alertMessage = useSelector(state => state.alert.message);
@@ -83,6 +82,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
       }));
       setRoundStartTime(value);
       setIsStartTimeFilled(true);
+    } else {
+      setRoundStartTime(null);
+      setIsStartTimeFilled(false);
     }
   };
 
@@ -90,10 +92,13 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (value !== null) {
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        proposalEndTime: value.toDate(),
       }));
       setGrantStartTime(value);
       setIsProposalTimeFilled(true);
+    } else {
+      setGrantStartTime(null);
+      setIsProposalTimeFilled(false);
     }
   };
 
@@ -101,10 +106,13 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (value !== null) {
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        votingEndTime: value.toDate(),
       }));
       setGrantEndTime(value);
       setIsVotingTimeFilled(true);
+    } else {
+      setGrantEndTime(null);
+      setIsVotingTimeFilled(false);
     }
   };
 
@@ -112,15 +120,21 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (value !== null) {
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        endTime: value.toDate(),
       }));
       setRoundEndTime(value);
       setIsEndTimeFilled(true);
+    } else {
+      setRoundEndTime(null);
+      setIsEndTimeFilled(false);
     }
   };
   const hideAlert = () => {
     setIsAlertVisible(false); // 隐藏警告
   };
+  // const openStartDatePicker = () => {
+  //   setIsStartDatePickerOpen(true);
+  // };
 
   const handleSubmit = async (e: any) => {
     //该方法阻止表单的提交
@@ -129,12 +143,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
     if (
       !state.description.trim() ||
       !state.title.trim() ||
-      !state.startTime ||
-      !state.proposalEndTime ||
-      !state.votingEndTime ||
-      !state.endTime
+      !isStartTimeFilled ||
+      !isProposalTimeFilled ||
+      !isVotingTimeFilled ||
+      !isEndTimeFilled
     ) {
-      const errorMessage = 'Input fields should not be blank!';
+      const errorMessage = 'You must complete all the fields before submit!';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -148,7 +162,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
       state.votingEndTime < currentDate.current ||
       state.endTime < currentDate.current
     ) {
-      const errorMessage = 'Time set should not be earlier than present time!';
+      const errorMessage =
+        'Proposal submissions should commence at the current time or later, not earlier.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -178,6 +193,19 @@ const CreateDelegateForm: React.FC<{}> = () => {
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
+
+    console.log(state);
+
+    client.current
+      .createDelegateAuction(state)
+      .then((round: any) => {
+        navigate('/delegateDetails/' + round.id);
+      })
+      .catch(e => {
+        dispatch(setAlert({ type: 'error', message: e }));
+        setIsAlertVisible(true); // 显示alert弹出框
+        return;
+      });
   };
 
   return (
@@ -189,7 +217,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
             <div className={classes.desc}>
               Use this form to create a new delegation round. Please visit our Discord if you have
               any questions:{' '}
-              <a href="https://discord.gg/uQnjZhZPfu" target="_blank" className={classes.alink}>
+              <a
+                href="https://discord.gg/uQnjZhZPfu"
+                target="_blank"
+                className={classes.alink}
+                rel="noreferrer"
+              >
                 https://discord.gg/uQnjZhZPfu
               </a>
               .
@@ -250,17 +283,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                 <div className={classes.labelMargin}>
                   <div className={classes.desc}>
-                    Use this form to create a new delegation round. Please visit our Discord if you
-                    have any questions:{' '}
-                    <a
-                      href="https://discord.gg/uQnjZhZPfu"
-                      target="_blank"
-                      className={classes.alink}
-                      rel="noreferrer"
-                    >
-                      https://discord.gg/uQnjZhZPfu
-                    </a>
-                    .
+                    When can community members start granting voting power to delegate
+                    applicants?(exact date and time in UTC)*
                   </div>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>

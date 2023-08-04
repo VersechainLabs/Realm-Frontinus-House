@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     font-size: 24px;
-    font-weight: 700;
+    /*font-weight: 700;*/
 }
 
 .listItem{
@@ -15,8 +15,10 @@
     font-size: 16px;
     margin-left: 8px;
     color: #676B6D;
-    font-weight: 700;
+    /*font-weight: 700;*/
 }
+
+
 
 .quill-viewer .ql-container{
     background: unset !important;
@@ -26,7 +28,7 @@
 .listBar{
     display: flex;
     justify-content: space-between;
-    margin-bottom: 24px;
+    margin-bottom: 8px;
 }
 
 

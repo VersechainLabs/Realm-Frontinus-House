@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { DeltaStatic, Quill } from 'quill';
 import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
-import { CommentModal } from '../Comments';
 import { useAppSelector } from '../../hooks';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
-import { useAccount, useSigner } from 'wagmi';
-import { Comment } from '@nouns/frontinus-house-wrapper/dist/builders';
-
+import { Comment, StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { useAccount, useWalletClient } from 'wagmi';
 type CreateCommentWidgetProps = {
   proposalId?: number;
   applicationId?: number;
-  onCommentCreated: (comment: CommentModal) => void;
+  onCommentCreated: (comment: StoredComment) => void;
 }
 
 export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
@@ -19,13 +17,13 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
 
   const { address: account } = useAccount();
-  const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const host = useAppSelector(state => state.configuration.backendHost);
-  const client = useRef(new ApiWrapper(host, signer));
+  const client = useRef(new ApiWrapper(host, walletClient));
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
     if (plainText.trim().length === 0) {
@@ -44,11 +42,8 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
     setLoading(true);
 
-    const commentCreateResponse = await client.current.createComment({
-      content: content,
-      applicationId: props.applicationId,
-      proposalId: props.proposalId,
-    } as Comment);
+    const newComment = new Comment(content, props.proposalId, props.applicationId);
+    const commentCreateResponse = await client.current.createComment(newComment);
     if (commentCreateResponse) {
       props.onCommentCreated(commentCreateResponse);
       if (quill) {
@@ -69,7 +64,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       onQuillInit={(q) => setQuill(q)}
       btnText='Submit'
       onButtonClick={submit}
-      placeholderText=''
+      placeholderText='What are your thoughts?'
     />
     {/*{account ? (*/}
     {/*  <Button text={'submit'} bgColor={ButtonColor.Purple} onClick={submit} />*/}

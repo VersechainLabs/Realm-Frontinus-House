@@ -15,7 +15,7 @@ import { buildRoundPath } from '../../utils/buildRoundPath';
 import { cardServiceUrl, CardType } from '../../utils/cardServiceUrl';
 import OpenGraphElements from '../../components/OpenGraphElements';
 import RenderedProposalFields from '../../components/RenderedProposalFields';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import Comments from '../../components/Comments';
 import Button, { ButtonColor } from '../../components/Button';
 import AddressAvatar from '../../components/AddressAvatar';
@@ -26,8 +26,8 @@ const Proposal = () => {
   const params = useParams();
   const { id } = params;
 
-  const { data: signer } = useSigner();
-  const { address: account } = useAccount();
+  const { data: walletClient } = useWalletClient();
+  const {address: account} = useAccount();
   const navigate = useNavigate();
 
   const [failedFetch, setFailedFetch] = useState(false);
@@ -44,7 +44,7 @@ const Proposal = () => {
   const community = useAppSelector(state => state.propHouse.activeCommunity);
   const round = useAppSelector(state => state.propHouse.activeRound);
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const backendClient = useRef(new ApiWrapper(backendHost, signer));
+  const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
   const [loading,setLoading] = useState(true);
   const [canVote,setCanVote] = useState(false);
   const [showChild,setShowChild] = useState([]);
@@ -56,8 +56,8 @@ const Proposal = () => {
   };
 
   useEffect(() => {
-    backendClient.current = new ApiWrapper(backendHost, signer);
-  }, [signer, backendHost]);
+    backendClient.current = new ApiWrapper(backendHost, walletClient);
+  }, [walletClient, backendHost]);
 
   // fetch proposal
   useEffect(() => {
@@ -206,8 +206,8 @@ const Proposal = () => {
               {proposal && proposal.voteCount}
             </div>
           </div>
-          <div className={classes.voteList}>
-            {proposal && proposal.votes.map(item => (
+          <div >
+            {proposal && proposal.votes && proposal.votes.map(item => (
                 <div key={item.id}>
                   <div className={classes.voteContent}>
                     <div className={classes.voteListChild}>
@@ -281,7 +281,7 @@ const Proposal = () => {
                 <div>
                   <div style={{ height: 30 }}></div>
                   {/*<h2>Comments</h2>*/}
-                  <Comments proposalId={Number(id)} />
+                  <Comments proposalId={Number(id)} commentCount={Number(proposal.commentCount)}/>
                 </div>
             )}
         {showPopup && (

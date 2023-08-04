@@ -42,12 +42,29 @@ export class DelegateService {
     });
   }
 
+  checkDelegateExist(
+    applicationId: number,
+    fromAddress: string,
+  ): Promise<Delegate> {
+    return this.delegateRepository.findOne({
+      where: { applicationId, fromAddress },
+    });
+  }
+
   getDelegateListByAddress(
     delegationId: number,
     toAddress: string,
   ): Promise<Delegate[]> {
     return this.delegateRepository.find({
       where: { delegationId, toAddress },
+    });
+  }
+
+  getDelegateListByApplicationId(
+    applicationId: number,
+  ): Promise<Delegate[]> {
+    return this.delegateRepository.find({
+      where: { applicationId },
     });
   }
 

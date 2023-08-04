@@ -1,21 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { ethers } from 'ethers';
 import config from '../config/configuration';
-import { JsonRpcProvider } from '@ethersproject/providers';
 import { getCurrentBlockNum } from 'frontinus-house-communities/dist/actions/getBlockNum';
 import { getVotingPower } from 'frontinus-house-communities';
-import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
-import { DelegateService } from 'src/delegate/delegate.service';
-import { DelegationService } from 'src/delegation/delegation.service';
-import { DelegationState } from 'src/delegation/delegation.types';
+import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
+import { DelegationService } from '../delegation/delegation.service';
+import { DelegationState } from '../delegation/delegation.types';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
 import { Repository } from 'typeorm';
 import { Delegate } from '../delegate/delegate.entity';
-import { Delegation } from '../delegation/delegation.entity';
+import { createPublicClient, http, PublicClient } from 'viem';
+import { mainnet } from 'viem/chains';
 
 @Injectable()
 export class BlockchainService {
-  private readonly provider: JsonRpcProvider;
+  private readonly provider: PublicClient;
 
   constructor(
     @InjectRepository(Delegate)
@@ -25,11 +23,13 @@ export class BlockchainService {
     @InjectRepository(Snapshot)
     private snapshotRepository: Repository<Snapshot>,
   ) {
-    this.provider = new ethers.providers.JsonRpcProvider(config().Web3RpcUrl);
+    this.provider = createPublicClient({
+      chain: mainnet,
+      transport: http(config().Web3RpcUrl),
+    });
   }
 
   async getCurrentBlockNum(): Promise<number> {
-    await this.provider.ready;
     return getCurrentBlockNum(this.provider);
   }
 
@@ -47,7 +47,6 @@ export class BlockchainService {
     }
 
     // Second, snapshot not found, search on chain:
-    await this.provider.ready;
     const votingPowerOnChain = await getVotingPower(
       userAddress,
       communityAddress,
@@ -72,7 +71,6 @@ export class BlockchainService {
     communityAddress: string,
     blockTag: number,
   ): Promise<number> {
-    await this.provider.ready;
     return getVotingPower(
       userAddress,
       communityAddress,

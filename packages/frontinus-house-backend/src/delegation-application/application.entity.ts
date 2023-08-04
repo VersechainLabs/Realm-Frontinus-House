@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Delegation } from 'src/delegation/delegation.entity';
+import { Delegation } from '../delegation/delegation.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -10,8 +10,6 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
-// import { AuctionBase } from './auction-base.type';
 
 @Entity()
 @ObjectType()
@@ -61,6 +59,12 @@ export class Application {
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   delegatorCount: number;
+
+  @ApiProperty({
+    description: 'The comment count about this proposal',
+  })
+  @Column({ type: 'integer', default: 0 })
+  commentCount: number;
 
   @ApiProperty()
   @Column()

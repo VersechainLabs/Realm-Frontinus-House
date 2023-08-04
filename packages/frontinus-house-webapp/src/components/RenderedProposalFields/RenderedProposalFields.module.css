@@ -12,7 +12,7 @@
 .proposalBody h2{
   font-size: 22px !important;
   margin-top: 8px !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 14px !important;
   font-weight: 700 !important;
 }
 
@@ -28,12 +28,12 @@
 
 
 .headerBottomContainer {
-  margin-top: 1.5rem;
+  /*margin-top: 1.5rem;*/
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--brand-gray-border);
 }
 
@@ -52,7 +52,7 @@ hr {
 .subinfo {
   display: flex;
   color: var(--brand-black);
-  font-weight: 700;
+  font-weight: 500;
   flex-direction: row;
 }
 

@@ -1,4 +1,4 @@
-import { Auction } from 'src/auction/auction.entity';
+import { Auction } from '../auction/auction.entity';
 import { Community } from './community.entity';
 import { ExtendedCommunity } from './community.types';
 

@@ -115,10 +115,11 @@ export default function QuillEditor(props: QuillEditorProps) {
     },
   };
 
-  const placeholder =  props.placeholderText;
 
 
   const theme = 'snow';
+  const placeholder = props.placeholderText;
+
 
   const { quill, quillRef, Quill } = useQuill({ theme, modules,placeholder,formats});
   if (Quill && !quill) {
@@ -174,6 +175,13 @@ export default function QuillEditor(props: QuillEditorProps) {
     return     props.onButtonClick?.(props.widgetKey);
   }
 
+
+  const handleClick =  () => {
+    const quillObj = quillRef.current.__quill;
+    quillObj.focus();
+  }
+
+
   return (
     <Form>
       <Form.Group className={clsx(classes.inputGroup)}>
@@ -183,7 +191,7 @@ export default function QuillEditor(props: QuillEditorProps) {
           {/*  <Form.Label className={classes.iwnputChars}>{quill && quill.getText().length - 1}</Form.Label>*/}
           {/*</div>*/}
           <>
-            <div  style={{minHeight:(props.minHeightStr)}} ref={quillRef} />
+            <div  style={{minHeight:(props.minHeightStr)}} ref={quillRef} onClick={() => handleClick()}/>
             {
               showLoading && (
                   <div className={'loadingImg'}>

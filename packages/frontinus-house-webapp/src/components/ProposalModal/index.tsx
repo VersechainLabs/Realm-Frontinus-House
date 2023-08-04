@@ -27,7 +27,7 @@ import getWinningIds from '../../utils/getWinningIds';
 import VoteAllotmentModal from '../VoteAllotmentModal';
 import SaveProposalModal from '../SaveProposalModal';
 import DeleteProposalModal from '../DeleteProposalModal';
-import { useAccount, useSigner, useProvider } from 'wagmi';
+import { useAccount, useWalletClient, usePublicClient } from 'wagmi';
 import { fetchBlockNumber } from '@wagmi/core';
 import { isTimedAuction } from '../../utils/auctionType';
 
@@ -38,7 +38,9 @@ const ProposalModal = () => {
   const { id } = params;
   const navigate = useNavigate();
 
-  const { data: signer } = useSigner();
+  // const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
+
   const { address: account } = useAccount();
 
   const dispatch = useDispatch();
@@ -51,7 +53,7 @@ const ProposalModal = () => {
   const proposals = round && isTimedAuction(round) ? activeProposals : infRoundProposals;
 
   const backendHost = useAppSelector(state => state.configuration.backendHost);
-  const backendClient = useRef(new ApiWrapper(backendHost, signer));
+  const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
 
   const [propModalEl, setPropModalEl] = useState<Element | null>();
   const [currentPropIndex, setCurrentPropIndex] = useState<number | undefined>();
@@ -68,7 +70,8 @@ const ProposalModal = () => {
 
   const [hideScrollButton, setHideScrollButton] = useState(false);
   const winningIds = round && proposals && getWinningIds(proposals, round);
-  const provider = useProvider();
+
+  const provider = usePublicClient();
 
   const handleClosePropModal = () => {
     if (!community || !round) return;
@@ -84,8 +87,8 @@ const ProposalModal = () => {
 
   // provider
   useEffect(() => {
-    backendClient.current = new ApiWrapper(backendHost, signer);
-  }, [signer, backendHost]);
+    backendClient.current = new ApiWrapper(backendHost, walletClient);
+  }, [walletClient, backendHost]);
 
   useEffect(() => {
     if (activeProposal) document.title = `${activeProposal.title}`;
@@ -146,7 +149,7 @@ const ProposalModal = () => {
   };
 
   const _signerIsContract = async () => {
-    if (!signer || !provider || !account) {
+    if (!walletClient || !provider || !account) {
       return false;
     }
     const code = await provider.getCode(account);

@@ -1,73 +1,53 @@
-import { Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from '@ethersproject/abstract-signer';
-import { Wallet } from '@ethersproject/wallet';
-import { DomainSeparator } from './types/eip712Types';
+import { TypedDataDomain, WalletClient } from 'viem';
+import { TypedDataField } from '@ethersproject/abstract-signer';
 
 export abstract class Signable {
   abstract toPayload(): any;
 
   async typedSignature(
-    signer: Signer,
+    signer: WalletClient,
     domainSeparator: TypedDataDomain,
     eip712MessageType: Record<string, TypedDataField[]>,
+    primaryType: string,
+    account: any,
   ) {
-    const typedSigner = signer as Signer & TypedDataSigner;
-
-    // parse reqAmount to support decimal values when signing an uint256 type
     let payload = this.toPayload();
     if (payload.hasOwnProperty('reqAmount')) payload.reqAmount = payload.reqAmount.toString();
 
-    return await typedSigner._signTypedData(domainSeparator, eip712MessageType, payload);
+    return await signer.signTypedData({
+      account,
+      domain: domainSeparator,
+      types: eip712MessageType,
+      message: payload,
+      primaryType: primaryType,
+    });
   }
 
+  /** sign typed data */
   async signedPayload(
-    signer: Signer | Wallet,
-    isContract: boolean,
-    eip712MessageTypes?: Record<string, TypedDataField[]>,
+    signer: WalletClient,
   ) {
     const jsonPayload = this.jsonPayload();
-    const address = await signer.getAddress();
+    const address = (await signer.getAddresses())[0];
 
-    let signature: string | undefined;
-
-    if (isContract) signature = await signer.signMessage(jsonPayload);
-    if (eip712MessageTypes)
-      signature = await this.typedSignature(signer, DomainSeparator, eip712MessageTypes);
-
+    let payload = {
+      address: address,
+      ...this.toPayload(),
+    };
+    const signMessage = JSON.stringify(payload);
+    const signature = await signer.signMessage({
+      account: address,
+      message: signMessage,
+    });
     if (!signature) throw new Error(`Error signing payload.`);
-
     return {
       signedData: {
-        message: Buffer.from(jsonPayload).toString('base64'),
+        message: Buffer.from(signMessage).toString('base64'),
         signature: signature,
         signer: address,
       },
-      address,
-      messageTypes: eip712MessageTypes,
-      domainSeparator: DomainSeparator,
-      ...this.toPayload(),
-    };
-  }
-
-  /**
-   * Signed payload with supplied signature
-   */
-  async presignedPayload(
-    signer: Signer | Wallet,
-    signature: string,
-    jsonPayload?: string,
-    eip712MessageTypes?: Record<string, TypedDataField[]>,
-  ) {
-    const address = await signer.getAddress();
-    return {
-      signedData: {
-        message: Buffer.from(jsonPayload ? jsonPayload : this.jsonPayload()).toString('base64'),
-        signature,
-        signer: address,
-      },
-      address,
-      messageTypes: eip712MessageTypes,
-      domainSeparator: DomainSeparator,
-      ...this.toPayload(),
+      owner: address,
+      ...payload,
     };
   }
 
@@ -304,7 +284,8 @@ export class Vote extends Signable {
 
   toPayload() {
     return {
-      direction: this.direction,
+      // No need direction
+      // direction: this.direction,
       proposalId: this.proposalId,
     };
   }
@@ -367,15 +348,30 @@ export class Community extends Signable {
   }
 }
 
-export interface Comment {
-  content: string;
-  proposalId?: number;
-  applicationId?: number;
+export class Comment extends Signable {
+  constructor(
+    public readonly content: string,
+    public readonly proposalId?: number,
+    public readonly applicationId?: number,
+  ) {
+    super();
+  }
+
+  toPayload(): any {
+    return {
+      content: this.content,
+      proposalId: this.proposalId,
+      applicationId: this.applicationId,
+    };
+  }
+}
+
+export interface StoredComment extends Comment {
+  id: number;
+  owner: string;
+  createdDate: string;
 }
 
 export interface CommunityWithAuctions extends Community {
   auctions: StoredTimedAuction[];
 }
-
-export const signPayload = async (signer: Signer | Wallet, payload: string) =>
-  await signer.signMessage(payload);

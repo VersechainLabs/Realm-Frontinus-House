@@ -1,5 +1,5 @@
-import { AuctionBase } from 'src/auction/auction-base.type';
-import { Auction } from 'src/auction/auction.entity';
+import { AuctionBase } from '../auction/auction-base.type';
+import { Auction } from '../auction/auction.entity';
 
 export const ParseDate = (str) => new Date(str);
 

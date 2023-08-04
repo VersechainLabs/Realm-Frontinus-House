@@ -10,7 +10,7 @@ import { sortByVotesAndHandleTies } from '../../utils/sortByVotesAndHandleTies';
 
 export interface DelegateSlice {
   activeRound?: any;
-  activeProposal?: StoredProposalWithVotes;
+  activeProposal?: any;
   activeProposals?: StoredProposalWithVotes[];
   activeCommunity?: Community;
   modalActive: boolean;

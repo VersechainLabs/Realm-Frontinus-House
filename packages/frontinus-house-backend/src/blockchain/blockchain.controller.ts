@@ -5,9 +5,10 @@ import { BlockchainService } from './blockchain.service';
 
 @Controller('audio')
 export class BlockchainController {
-  constructor(@InjectQueue('bchain') private readonly audioQueue: Queue,
+  constructor(
+    @InjectQueue('bchain') private readonly audioQueue: Queue,
     private readonly blockchainService: BlockchainService,
-    ) {}
+  ) {}
 
   @Post('transcode')
   async transcode() {
@@ -16,14 +17,19 @@ export class BlockchainController {
     });
   }
 
+  @Get('vp')
+  async getVp() {
+    return await this.blockchainService.getCurrentBlockNum();
+  }
+
   @Get('test')
   async test() {
-    console.log("enter test");
+    console.log('enter test');
     // return this.blockchainService.getCurrentBlockNum();
     return this.blockchainService.getVotingPowerOnChain(
-        "0x1a5E02A0a85118C3382fa3c161cb78110F97299a",
-        process.env.COMMUNITY_ADDRESS,
-        17781403
-        );
-  }  
+      '0x1a5E02A0a85118C3382fa3c161cb78110F97299a',
+      process.env.COMMUNITY_ADDRESS,
+      17781403,
+    );
+  }
 }
