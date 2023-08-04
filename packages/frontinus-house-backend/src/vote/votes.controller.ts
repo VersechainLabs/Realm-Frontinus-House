@@ -257,6 +257,16 @@ export class VotesController {
     return this.votesService.findOne(id);
   }
 
+  @ApiOperation({
+    summary: 'Remove vote',
+    description:
+      'At the same time, it will remove the votes of others that it delegated.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The vote has been successfully deleted.',
+  })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
   @Delete()
   async deleteOne(
     @Body(SignedPayloadValidationPipe) deleteVoteDto: DeleteVoteDto,
@@ -272,16 +282,17 @@ export class VotesController {
     ) {
       throw new HttpException(
         'Can not unapproved this Vote',
-        HttpStatus.NOT_FOUND,
+        HttpStatus.BAD_REQUEST,
       );
     }
 
     const foundProposal = await this.proposalService.findOne(
       foundVote.proposalId,
     );
-    if (!foundProposal) {
-      throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
-    }
+    // Should never happen ( Unless Chao manually modifies the database )
+    // if (!foundProposal) {
+    //   throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+    // }
     const currentTime = new Date();
     if (currentTime > foundProposal.auction.votingEndTime) {
       throw new HttpException('Round had been ended.', HttpStatus.BAD_REQUEST);

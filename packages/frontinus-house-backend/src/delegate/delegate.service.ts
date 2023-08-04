@@ -33,6 +33,10 @@ export class DelegateService {
     });
   }
 
+  async remove(id: number): Promise<void> {
+    await this.delegateRepository.softDelete(id);
+  }
+
   findByFromAddress(
     delegationId: number,
     fromAddress: string,
@@ -60,9 +64,7 @@ export class DelegateService {
     });
   }
 
-  getDelegateListByApplicationId(
-    applicationId: number,
-  ): Promise<Delegate[]> {
+  getDelegateListByApplicationId(applicationId: number): Promise<Delegate[]> {
     return this.delegateRepository.find({
       where: { applicationId },
     });
