@@ -108,33 +108,28 @@ const DelegateModules: React.FC<{
     />
   );
 
-  // const userPropCardModule = (isInfAuction(auction)
-  //   ? infRoundFilter === InfRoundFilterType.Active
-  //   : true) &&
-  //   !auctionNotStarted &&
-  //   account &&
-  //   userProposals &&
-  //   userProposals.length > 0 &&
-  //   fetchedUserProps && (
-  //     <DelegateUserPropCard
-  //       userProps={userProposals}
-  //       proposals={proposals}
-  //       numOfWinners={0}
-  //       status={delegateStatus(auction)}
-  //       winningIds={winningIds && winningIds}
-  //     />
-  //   );
+  const userPropCardModule = (isInfAuction(auction)
+    ? infRoundFilter === InfRoundFilterType.Active
+    : true) &&
+    !auctionNotStarted &&
+    account &&
+    userProposals &&
+    userProposals.length > 0 &&
+    fetchedUserProps && (
+      <DelegateUserPropCard
+        userProps={userProposals}
+        proposals={proposals}
+        numOfWinners={0}
+        status={delegateStatus(auction)}
+        winningIds={winningIds && winningIds}
+      />
+    );
 
-  const userPropCardModule = <div></div>;
 
   const modules = [
     acceptingPropsModule,
-    timedRoundVotingModule,
-    infRoundVotingModule,
-    roundWinnerModule,
     roundStaleModule,
     roundOverModule,
-    userPropCardModule,
   ];
 
   return (
