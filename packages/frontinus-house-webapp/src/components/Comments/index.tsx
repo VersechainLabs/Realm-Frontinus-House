@@ -16,10 +16,11 @@ import { StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
 type CommentsProps = {
   proposalId?: number;
   applicationId?: number;
+  commentCount?:number;
 }
 
 export default function Comments(props: CommentsProps) {
-  const { proposalId, applicationId } = props;
+  const { proposalId, applicationId,commentCount } = props;
 
   const [commentList, setCommentList] = useState<StoredComment[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
@@ -123,7 +124,7 @@ export default function Comments(props: CommentsProps) {
       }
 
       <div className={classes.listBar}>
-        <div className={classes.listTitle}>Comments</div>
+        <div className={classes.listTitle}>Comments {props.commentCount}</div>
         {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
       {!loading ? <List>{itemList}</List> : (
@@ -160,8 +161,9 @@ export function CommentListItem(props: CommentListItemProps) {
           display: 'flex',
           alignItems: 'baseline',
           marginBottom: '8px',
+          marginTop:'-2px'
         }}>
-          <EthAddress address={props.comment.owner} />
+          <EthAddress address={props.comment.owner} className={'commentName'} />
 
           <div className={classes.date}>
             <span style={{

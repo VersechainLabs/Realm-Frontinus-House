@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { StoredAuctionBase, StoredProposal } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { BiAward } from 'react-icons/bi';
 import clsx from "clsx";
-import { serverDateToString } from '../../utils/detailedTime';
+import formatTime from '../../utils/formatTime';
 
 
 export interface RenderedProposalProps {
@@ -43,7 +43,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                       <div className={classes.submittedBy}>
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
-                      <span>{' • '} {proposal.createdDate}</span>
+                      <span>{' • '} {formatTime(proposal.createdDate)}</span>
                     </div>
                   </div>
                 )}
