@@ -1,19 +1,19 @@
 import { Module } from '@nestjs/common';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Auction } from 'src/auction/auction.entity';
-import { AuctionsService } from 'src/auction/auctions.service';
-import { Proposal } from 'src/proposal/proposal.entity';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { VotesService } from 'src/vote/votes.service';
-import { Vote } from 'src/vote/vote.entity';
-import { Community } from 'src/community/community.entity';
+import { Auction } from '../auction/auction.entity';
+import { AuctionsService } from '../auction/auctions.service';
+import { Proposal } from '../proposal/proposal.entity';
+import { ProposalsService } from '../proposal/proposals.service';
+import { VotesService } from '../vote/votes.service';
+import { Vote } from '../vote/vote.entity';
+import { Community } from '../community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
-import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
-import { DelegateService } from 'src/delegate/delegate.service';
-import { Delegate } from 'src/delegate/delegate.entity';
-import { DelegationService } from 'src/delegation/delegation.service';
-import { Delegation } from 'src/delegation/delegation.entity';
+import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
+import { DelegateService } from '../delegate/delegate.service';
+import { Delegate } from '../delegate/delegate.entity';
+import { DelegationService } from '../delegation/delegation.service';
+import { Delegation } from '../delegation/delegation.entity';
 
 @Module({
   imports: [

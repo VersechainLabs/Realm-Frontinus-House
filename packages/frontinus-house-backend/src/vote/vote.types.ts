@@ -7,7 +7,7 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
-import { SignedEntity } from 'src/entities/signed';
+import { SignedEntity } from '../entities/signed';
 import { Delegate } from '../delegate/delegate.entity';
 import {
   ApiProperty,
@@ -22,6 +22,18 @@ export class CreateVoteDto extends SignedEntity {
 
   @ApiProperty({ description: 'The proposal ID for vote' })
   @IsNumber()
+  proposalId: number;
+}
+
+export class DeleteVoteDto extends SignedEntity {
+  @ApiProperty({ description: 'The vote ID to delete' })
+  @IsNumber()
+  @IsOptional()
+  id: number;
+
+  @ApiProperty({ description: 'The proposal ID to delete vote' })
+  @IsNumber()
+  @IsOptional()
   proposalId: number;
 }
 

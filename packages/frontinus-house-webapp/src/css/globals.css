@@ -110,6 +110,7 @@ p {
   --shadow-high: 0px 2px 8px rgba(0, 0, 0, 0.08);
 
   --card-transition: 0.15s cubic-bezier(0, 0.41, 0.6, 1.02);
+  --link-color:#1876d1;
 }
 
 /* breaks div out of the bootstrap .container to become full width with the viewport */
@@ -308,7 +309,7 @@ p {
   font-weight: 400 !important;
   font-size: 16px !important;
   color: #F5EEE6;
-  line-height: 21px !important;
+  line-height: 24px !important;
   letter-spacing: 0.02em !important;
   margin-bottom: 0 !important;
 }
@@ -330,7 +331,7 @@ p {
   padding-left: 16px !important;
 }
 .proposalCopy a {
-  color: var(--brand-purple) !important;
+  color: var(--link-color) !important;
   text-decoration: underline !important;
 }
 .proposalCopy a:hover {
@@ -353,8 +354,14 @@ p {
 
 
 .ql-container{
+  background: unset !important;
   border-bottom-left-radius:unset !important;
   border-bottom-right-radius:unset !important;
+  border: 1px solid var(--container-bg) !important;
+}
+
+.commentName{
+  font-size: 16px !important;
 }
 
 
@@ -362,6 +369,8 @@ p {
 #toolbar{
   border-top-left-radius:unset !important;
   border-top-right-radius:unset !important;
+  border-top: unset !important;
+  padding-bottom:10px !important;
 }
 
 #custom-button{
@@ -382,8 +391,15 @@ p {
   font-weight: 700;
 
   color: var(--bg-dark);
-
 }
+
+
+.btnDisabled{
+  border: 1px solid gray !important;
+  background: gray !important;
+  color: white !important;
+}
+
 
 
 .ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button{
@@ -400,7 +416,7 @@ p {
 
 
 .ql-toolbar{
-  background:var(--bg-dark) !important;
+  background:unset !important;
   border: 1px solid var(--container-bg) !important;
 }
 
@@ -442,9 +458,10 @@ p {
 .quill-viewer .ql-container{
   background: unset !important;
   padding-left: unset !important;
-  padding-top: 8px !important;
-  padding-bottom: 24px !important;
-  border-bottom: 1px solid #272728 !important;
+  padding-top: 2px !important;
+  padding-bottom: 22px !important;
+  border: unset !important;
+  border-bottom: 1px solid var(--container-bg) !important;
   font-size: 16px !important;
   color: #F5EEE6 !important;
 }

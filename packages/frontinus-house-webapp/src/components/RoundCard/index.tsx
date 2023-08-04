@@ -52,7 +52,7 @@ const RoundCard: React.FC<{
             openInNewTab(`${window.location.href}/${nameToSlug(round.title)}`);
             return;
           }
-          navigate(`${nameToSlug(round.title)}/${round.id}`);
+          navigate(`${round.id}/${nameToSlug(round.title)}`);
         }}
       >
         <Card

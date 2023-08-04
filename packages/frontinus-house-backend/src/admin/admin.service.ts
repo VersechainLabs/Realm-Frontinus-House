@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Delegation } from 'src/delegation/delegation.entity';
+import { Delegation } from '../delegation/delegation.entity';
 import { Admin } from './admin.entity';
 import { CreateAdminDto } from './admin.types';
 
@@ -18,6 +18,14 @@ export class AdminService {
       //   where: {
       //     visible: true,
       //   },
+    });
+  }
+
+  searchByAddress(address: string): Promise<Admin[]> {
+    return this.adminRepository.find({
+        where: {
+          address: address,
+        },
     });
   }
 

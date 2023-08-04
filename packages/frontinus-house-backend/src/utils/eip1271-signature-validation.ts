@@ -1,4 +1,4 @@
-import { SignedEntity } from 'src/entities/signed';
+import { SignedEntity } from '../entities/signed';
 import { Contract, providers, utils } from 'ethers';
 
 const EIP1271_ABI = [

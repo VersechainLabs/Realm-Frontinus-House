@@ -1,14 +1,14 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-
-// import { AuctionBase } from './auction-base.type';
+import { Exclude, instanceToPlain } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -41,22 +41,22 @@ export class Delegate {
   toAddress: string;
 
   @ApiProperty()
-  @Column()
+  @CreateDateColumn()
   @Field(() => Date)
   createdDate: Date;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @UpdateDateColumn()
   @Field(() => Date)
   lastUpdatedDate: Date;
 
-  @BeforeInsert()
-  setCreatedDate() {
-    this.createdDate = new Date();
-  }
+  @Exclude({ toPlainOnly: true })
+  @DeleteDateColumn()
+  @Field(() => Date)
+  deletedDate?: Date;
 
-  @BeforeUpdate()
-  setUpdatedDate() {
-    this.lastUpdatedDate = new Date();
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
+  toJSON() {
+    return instanceToPlain(this);
   }
 }
