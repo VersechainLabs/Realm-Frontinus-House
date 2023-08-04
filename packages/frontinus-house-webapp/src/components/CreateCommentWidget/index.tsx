@@ -5,6 +5,7 @@ import { useAppSelector } from '../../hooks';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { Comment, StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { useAccount, useWalletClient } from 'wagmi';
+import {setActiveCommunity} from "../../state/slices/propHouse";
 type CreateCommentWidgetProps = {
   proposalId?: number;
   applicationId?: number;
@@ -38,23 +39,28 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
   };
 
   const submit = async () => {
-
-    if (content.length === 0 || !account) {
-      return;
-    }
-
-    setLoading(true);
-
-    const newComment = new Comment(content, props.proposalId, props.applicationId);
-    const commentCreateResponse = await client.current.createComment(newComment);
-    if (commentCreateResponse) {
-      props.onCommentCreated(commentCreateResponse);
-      if (quill) {
-        quill.setContents(EMPTY_DELTA);
+    try {
+      if (content.length === 0 || !account) {
+        return;
       }
+
+      setLoading(true);
+
+      const newComment = new Comment(content, props.proposalId, props.applicationId);
+      const commentCreateResponse = await client.current.createComment(newComment);
+      if (commentCreateResponse) {
+        props.onCommentCreated(commentCreateResponse);
+        if (quill) {
+          quill.setContents(EMPTY_DELTA);
+        }
+      }
+
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      console.log(e);
     }
 
-    setLoading(false);
   };
 
   return (<>

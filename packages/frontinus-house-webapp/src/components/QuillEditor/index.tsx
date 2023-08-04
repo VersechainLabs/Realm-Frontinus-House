@@ -3,11 +3,15 @@ import React, {useEffect, useRef, useState} from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
 import BlotFormatter from 'quill-blot-formatter';
-import { Form } from 'react-bootstrap';
+import {Container, Form} from 'react-bootstrap';
 import clsx from 'clsx';
 import classes from './QuillEditor.module.css';
 import {useConnectModal} from "@rainbow-me/rainbowkit";
 import {useAccount} from "wagmi";
+import RenderedProposalFields from "../RenderedProposalFields";
+import {IoArrowBackCircleOutline} from "react-icons/io5";
+import NotFound from "../NotFound";
+import LoadingIndicator from "../LoadingIndicator";
 
 type QuillEditorProps = {
   widgetKey: string;
@@ -229,13 +233,24 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               <button className="ql-image"></button>
 
-              <div
-                  id="custom-button"
-                  onClick={clickBtn}
-              >
-                <span>{ props.btnText }</span>
-              </div>
 
+
+              {props.loading ? (
+                  <div
+                      id="custom-button"
+                      className={'btnDisabled'}
+
+                  >
+                    <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                  </div>
+              ) :  (
+                  <div
+                      id="custom-button"
+                      onClick={clickBtn}
+                  >
+                    <span>{ props.btnText }</span>
+                  </div>
+              )}
 
 
             </div>

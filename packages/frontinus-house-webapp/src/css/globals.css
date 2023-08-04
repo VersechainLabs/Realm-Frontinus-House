@@ -391,8 +391,15 @@ p {
   font-weight: 700;
 
   color: var(--bg-dark);
-
 }
+
+
+.btnDisabled{
+  border: 1px solid gray !important;
+  background: gray !important;
+  color: white !important;
+}
+
 
 
 .ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button{

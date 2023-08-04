@@ -176,7 +176,7 @@ function App() {
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   {/*<Route path="/:house" element={<House />} />*/}
                   {/*<Route path="/:title" element={<Round />} />*/}
-                  <Route path="/:title/:id" element={<Round />} />
+                  <Route path="/:id/:title" element={<Round />} />
                   <Route path="/comment/:proposalId" element={<CommentsPage />} />
 
                   <Route path="*" element={<NotFound />} />
