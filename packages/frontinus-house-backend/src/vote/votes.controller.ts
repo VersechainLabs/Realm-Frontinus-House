@@ -9,11 +9,15 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProposalsService } from '../proposal/proposals.service';
-import { verifySignPayloadForVote } from '../utils/verifySignedPayload';
+import {
+  verifySignPayload,
+  verifySignPayloadForVote,
+} from '../utils/verifySignedPayload';
 import { convertVoteListToDelegateVoteList, Vote } from './vote.entity';
 import {
   CreateVoteDto,
   DelegatedVoteDto,
+  DeleteVoteDto,
   GetVoteDto,
   VotingPower,
 } from './vote.types';
@@ -28,6 +32,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { ApiQuery } from '@nestjs/swagger/dist/decorators/api-query.decorator';
+import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 
 @Controller('votes')
 export class VotesController {
@@ -250,5 +255,57 @@ export class VotesController {
   @Get(':id')
   findOne(@Param('id') id: number): Promise<Vote> {
     return this.votesService.findOne(id);
+  }
+
+  @Delete()
+  async deleteOne(
+    @Body(SignedPayloadValidationPipe) deleteVoteDto: DeleteVoteDto,
+  ): Promise<boolean> {
+    verifySignPayload(deleteVoteDto, ['id']);
+
+    const foundVote = await this.votesService.findOne(deleteVoteDto.id);
+    if (!foundVote) {
+      throw new HttpException('No Vote with that ID', HttpStatus.NOT_FOUND);
+    }
+    if (
+      foundVote.address.toLowerCase() !== deleteVoteDto.address.toLowerCase()
+    ) {
+      throw new HttpException(
+        'Can not unapproved this Vote',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const foundProposal = await this.proposalService.findOne(
+      foundVote.proposalId,
+    );
+    if (!foundProposal) {
+      throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+    }
+    const currentTime = new Date();
+    if (currentTime > foundProposal.auction.votingEndTime) {
+      throw new HttpException('Round had been ended.', HttpStatus.BAD_REQUEST);
+    }
+    if (foundVote.delegateId && foundVote.delegateId > 0) {
+      throw new HttpException(
+        'Unable to undo votes delegated by others.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Start remove vote.
+    const ids = [deleteVoteDto.id];
+    const delegateVoteList = await this.votesService.findAll({
+      where: {
+        proposalId: foundVote.proposalId,
+        delegateAddress: foundVote.address,
+      },
+    });
+    if (delegateVoteList.length > 0) {
+      ids.push(...delegateVoteList.map((v) => v.id));
+    }
+    await this.votesService.removeMany(ids);
+    await this.proposalService.rollupVoteCount(foundProposal.id);
+    return true;
   }
 }

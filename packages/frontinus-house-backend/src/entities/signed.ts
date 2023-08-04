@@ -83,6 +83,7 @@ export abstract class SignedEntity extends BaseEntity {
     }
   }
 
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
   toJSON() {
     return instanceToPlain(this);
   }

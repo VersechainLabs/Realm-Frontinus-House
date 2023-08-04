@@ -80,8 +80,12 @@ export class VotesService {
     });
   }
 
-  async remove(id: string): Promise<void> {
-    await this.votesRepository.delete(id);
+  async remove(id: number): Promise<void> {
+    await this.votesRepository.softDelete(id);
+  }
+
+  async removeMany(ids: number[]): Promise<void> {
+    await this.votesRepository.softDelete(ids);
   }
 
   async store(vote: DeepPartial<Vote>) {
