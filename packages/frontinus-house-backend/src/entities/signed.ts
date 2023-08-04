@@ -58,7 +58,7 @@ export abstract class SignedEntity extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   signatureState: SignatureState;
 
-  // @ApiProperty({ description: 'Sign Data' })
+  @ApiProperty({ description: 'Sign Data' })
   @Column({ type: 'jsonb' })
   @Field(() => SignedDataPayload)
   @Exclude({ toPlainOnly: true })
