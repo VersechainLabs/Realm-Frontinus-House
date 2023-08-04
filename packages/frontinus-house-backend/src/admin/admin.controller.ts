@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Admin } from './admin.entity';
 import { AdminService } from './admin.service';
-import { ProposalsService } from 'src/proposal/proposals.service';
+import { ProposalsService } from '../proposal/proposals.service';
 import { CreateAdminDto } from './admin.types';
 import { ApiOkResponse } from '@nestjs/swagger';
 

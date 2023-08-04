@@ -42,8 +42,6 @@ const Application = () => {
   const [voteList, setvoteList] = useState([]);
 
   const handleBackClick = () => {
-    console.log();
-
     if (!proposal || !proposal.delegationId ) return;
     // navigate(buildRoundPath(community, round)+`/${round.id}`, { replace: false });
     navigate(`/delegateDetails/` + proposal.delegationId , { replace: false });
@@ -100,10 +98,9 @@ const Application = () => {
 
       const status = await backendClient.current.getDelegateStatus(proposal.id);
 
-      if(status === false){
-        setCanVote(true);
-      } else {
-        setCanVote(false);
+      setCanVote(false);
+      if(typeof status === 'object' && status.hasOwnProperty('status')){
+        setCanVote(status.status);
       }
 
     };

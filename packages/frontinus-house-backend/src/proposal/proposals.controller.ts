@@ -10,9 +10,9 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { AuctionsService } from 'src/auction/auctions.service';
-import { ECDSASignedPayloadValidationPipe } from 'src/entities/ecdsa-signed.pipe';
-import { canSubmitProposals } from 'src/utils';
+import { AuctionsService } from '../auction/auctions.service';
+import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
+import { canSubmitProposals } from '../utils';
 import { Proposal } from './proposal.entity';
 import {
   CreateProposalDto,
@@ -28,7 +28,7 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
-import getProposalByIdResponse from 'examples/getProposalById.json';
+import getProposalByIdResponse from '../../examples/getProposalById.json';
 import { VotesService } from '../vote/votes.service';
 
 @Controller('proposals')

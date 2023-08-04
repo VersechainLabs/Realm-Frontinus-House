@@ -7,7 +7,7 @@ import {
   IsOptional,
   Min,
 } from 'class-validator';
-import { SignedEntity } from 'src/entities/signed';
+import { SignedEntity } from '../entities/signed';
 import { Delegate } from '../delegate/delegate.entity';
 import {
   ApiProperty,

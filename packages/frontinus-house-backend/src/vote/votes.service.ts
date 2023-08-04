@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { Vote } from './vote.entity';
 import { DelegatedVoteDto, GetVoteDto, VotingPower } from './vote.types';
-import { Proposal } from 'src/proposal/proposal.entity';
-import config from 'src/config/configuration';
+import { Proposal } from '../proposal/proposal.entity';
+import config from '../config/configuration';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Auction } from '../auction/auction.entity';
 import { DelegationState } from '../delegation/delegation.types';

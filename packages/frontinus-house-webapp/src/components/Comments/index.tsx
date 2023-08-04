@@ -11,7 +11,7 @@ import AddressAvatar from '../AddressAvatar';
 import { serverDateToString } from '../../utils/detailedTime';
 import classes from './Comments.module.css';
 import LoadingIndicator from '../LoadingIndicator';
-import { CommentModal } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
 
 type CommentsProps = {
   proposalId?: number;
@@ -22,7 +22,7 @@ type CommentsProps = {
 export default function Comments(props: CommentsProps) {
   const { proposalId, applicationId,commentCount } = props;
 
-  const [commentList, setCommentList] = useState<CommentModal[]>([]);
+  const [commentList, setCommentList] = useState<StoredComment[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
   const [showTailLoading, setShowTailLoading] = useState(false);
 
@@ -76,7 +76,7 @@ export default function Comments(props: CommentsProps) {
     });
   };
 
-  const onCommentCreated = (newComment: CommentModal) => {
+  const onCommentCreated = (newComment: StoredComment) => {
     setCommentList([newComment].concat(commentList));
   };
 
@@ -138,7 +138,7 @@ export default function Comments(props: CommentsProps) {
 /// CommentListItem
 
 type CommentListItemProps = {
-  comment: CommentModal;
+  comment: StoredComment;
 };
 
 export function CommentListItem(props: CommentListItemProps) {

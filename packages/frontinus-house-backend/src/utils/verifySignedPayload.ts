@@ -1,5 +1,5 @@
-import { Proposal } from 'src/proposal/proposal.entity';
-import { CreateVoteDto } from 'src/vote/vote.types';
+import { Proposal } from '../proposal/proposal.entity';
+import { CreateVoteDto } from '../vote/vote.types';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 

@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { SignedEntity } from './signed';
 import { ethers } from 'ethers';
-import config from 'src/config/configuration';
-import { SignatureState } from 'src/types/signature';
+import config from '../config/configuration';
+import { SignatureState } from '../types/signature';
 import {
-  verifyAccountSignature,
+  verifyTypedDataSignature,
   verifyContractSignature,
   verifyPersonalMessageSignature,
-} from 'src/utils';
+} from '../utils';
 
 @Injectable()
 export class SignedPayloadValidationPipe implements PipeTransform {
@@ -28,7 +28,7 @@ export class SignedPayloadValidationPipe implements PipeTransform {
 
     let isValid, sigErr;
     if (value.messageTypes) {
-      const { isValidAccountSig, accountSigError } = verifyAccountSignature(
+      const { isValidAccountSig, accountSigError } = verifyTypedDataSignature(
         message,
         value,
       );
@@ -36,7 +36,7 @@ export class SignedPayloadValidationPipe implements PipeTransform {
       sigErr = accountSigError;
     } else {
       const { isValidAccountSig, accountSigError } =
-        verifyPersonalMessageSignature(value.signedData, message);
+        verifyPersonalMessageSignature(message, value);
       isValid = isValidAccountSig;
       sigErr = accountSigError;
     }

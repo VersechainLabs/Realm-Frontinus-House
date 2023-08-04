@@ -1,8 +1,8 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Community } from 'src/community/community.entity';
-import { Application } from 'src/delegation-application/application.entity';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { Community } from '../community/community.entity';
+import { Application } from '../delegation-application/application.entity';
+import { Proposal } from '../proposal/proposal.entity';
 import {
   Entity,
   Column,

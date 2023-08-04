@@ -1,6 +1,6 @@
 import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
-import { Community } from 'src/community/community.entity';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { Community } from '../community/community.entity';
+import { Proposal } from '../proposal/proposal.entity';
 import {
   BeforeInsert,
   BeforeUpdate,

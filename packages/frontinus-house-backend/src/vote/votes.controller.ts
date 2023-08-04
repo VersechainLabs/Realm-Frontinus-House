@@ -8,8 +8,8 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { verifySignPayloadForVote } from 'src/utils/verifySignedPayload';
+import { ProposalsService } from '../proposal/proposals.service';
+import { verifySignPayloadForVote } from '../utils/verifySignedPayload';
 import { convertVoteListToDelegateVoteList, Vote } from './vote.entity';
 import {
   CreateVoteDto,
@@ -18,7 +18,7 @@ import {
   VotingPower,
 } from './vote.types';
 import { VotesService } from './votes.service';
-import { AuctionsService } from 'src/auction/auctions.service';
+import { AuctionsService } from '../auction/auctions.service';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';

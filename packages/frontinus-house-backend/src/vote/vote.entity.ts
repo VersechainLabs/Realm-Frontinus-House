@@ -1,5 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { Proposal } from '../proposal/proposal.entity';
 import {
   BeforeInsert,
   Column,
