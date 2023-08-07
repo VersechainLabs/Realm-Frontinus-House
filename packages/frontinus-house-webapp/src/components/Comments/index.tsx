@@ -35,7 +35,7 @@ export default function Comments(props: CommentsProps) {
   useEffect(() => {
     loadNextPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [proposalId, applicationId]);
+  }, [proposalId, applicationId,commentCount]);
 
   const loadNextPage = (skip: number) => {
 
