@@ -39,6 +39,7 @@ export class CreateAuctionDto {
   @ApiProperty()
   @IsNumber()
   @IsPositive()
+  @IsInt()
   numWinners: number;
 
   @ApiProperty()
