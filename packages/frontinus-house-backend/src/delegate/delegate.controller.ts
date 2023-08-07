@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { Delegate } from './delegate.entity';
-import { CreateDelegateDto, DelegateAPIResponses, DeleteDelegateDto } from './delegate.types';
+import { CreateDelegateDto, DeleteDelegateDto } from './delegate.types';
 import { DelegateService } from './delegate.service';
 import { ApplicationService } from '../delegation-application/application.service';
 import { ApiOkResponse } from '@nestjs/swagger';
@@ -18,6 +18,7 @@ import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.deco
 import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { verifySignPayload } from '../utils/verifySignedPayload';
+import { APIResponses, APITransformer } from '../utils/error-codes';
 
 @Controller('delegates')
 export class DelegateController {
@@ -103,27 +104,20 @@ export class DelegateController {
   async checkDelegateCanVote(
     @Query('applicationId') applicationId: number,
     @Query('address') fromAddress: string,
-  ): Promise<object> {
-
+  ) {
     // Similar to /create:
     const application = await this.applicationService.findOne(applicationId);
     if (!application) {
-      return APITransformer(DelegateAPIResponses.NO_APPLICATION, `Can not find application ${applicationId}`);
-      // return {
-      //   message: `Can not find application ${applicationId}`,
-      //   status: false,
-      // };
+      return APITransformer(APIResponses.DELEGATE.NO_APPLICATION, `Can not find application ${applicationId}`);
+    // return APITransformer(DelegateAPIResponses.NO_APPLICATION, `Can not find application ${applicationId}`);
     }
+
     const currentTime = new Date();
     if (
       currentTime < application.delegation.proposalEndTime ||
       currentTime > application.delegation.votingEndTime
     ) {
-      return APITransformer(DelegateAPIResponses.NOT_VOTING);
-      // return {
-      //   message: 'Not in the eligible voting period.',
-      //   status: false,
-      // };
+      return APITransformer(APIResponses.DELEGATE.NOT_VOTING);
     }
 
     const existDelegate = await this.delegateService.findByFromAddress(
@@ -131,11 +125,7 @@ export class DelegateController {
       fromAddress,
     );
     if (existDelegate) {
-      return APITransformer(DelegateAPIResponses.DELEGATED, `Already delegate to ${existDelegate.toAddress}`);
-      // return {
-      //   message: `Already delegate to ${existDelegate.toAddress}`,
-      //   status: false,
-      // };
+      return APITransformer(APIResponses.DELEGATE.DELEGATED, `Already delegate to ${existDelegate.toAddress}`);
     }
 
     const createdApplication = await this.applicationService.findByAddress(
@@ -143,18 +133,10 @@ export class DelegateController {
       fromAddress,
     );
     if (createdApplication) {
-      return APITransformer(DelegateAPIResponses.OCCUPIED, `Already created application. Can not delegate to ${application.address}`);
-      // return {
-      //   message: `Already created application. Can not delegate to ${application.address}`,
-      //   status: false,
-      // };
+      return APITransformer(APIResponses.DELEGATE.OCCUPIED, `Already created application. Can not delegate to ${application.address}`);
     }
 
-    return APITransformer(DelegateAPIResponses.OK);
-    // return {
-    //   message: `Can vote!`,
-    //   status: true,
-    // };
+    return APITransformer(APIResponses.OK);
   }
 
   @Get('/list')
@@ -251,18 +233,33 @@ export class DelegateController {
     return true;
   }
 }
-function APITransformer(description: DelegateAPIResponses, detail ?: string): object | PromiseLike<object> {
-  let status = false;
-  if (!detail) detail = null; 
 
-  if (description === DelegateAPIResponses.OK) {
-    status = true;
-  }
+// function APITransformer(dataObj: object, customDetail ?: string): object | PromiseLike<object> {
+//   let status = false;
 
-  return {
-    detail: detail,
-    description: description,
-    status: status,
-  };
-}
+//   if (dataObj === APIResponses.OK) {
+//     status = true;
+//   }
+
+//   return {
+//     description: customDetail ?? dataObj["Detail"],
+//     status: status,
+//     code: dataObj["Code"],
+//   };
+// }
+
+// function APITransformer(description: DelegateAPIResponses, detail ?: string): object | PromiseLike<object> {
+//   let status = false;
+//   if (!detail) detail = null; 
+
+//   if (description === DelegateAPIResponses.OK) {
+//     status = true;
+//   }
+
+//   return {
+//     detail: detail,
+//     description: description,
+//     status: status,
+//   };
+// }
 
