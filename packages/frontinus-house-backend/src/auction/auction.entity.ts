@@ -162,7 +162,7 @@ export class Auction implements AuctionBase {
     } else if (this.proposals) {
       this.numProposals = this.proposals.length;
     } else {
-      this.numProposals = this.proposals.length;
+      this.numProposals = 0;
     }
   }
 }
