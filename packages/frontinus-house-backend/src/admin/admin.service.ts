@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Delegation } from '../delegation/delegation.entity';
 import { Admin } from './admin.entity';
 import { CreateAdminDto } from './admin.types';
+import config from '../config/configuration';
 
 export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
@@ -23,9 +24,9 @@ export class AdminService {
 
   searchByAddress(address: string): Promise<Admin[]> {
     return this.adminRepository.find({
-        where: {
-          address: address,
-        },
+      where: {
+        address: address,
+      },
     });
   }
 
@@ -47,6 +48,13 @@ export class AdminService {
   }
 
   async isAdmin(address: string): Promise<boolean> {
+    if (!config().enableAdmin) {
+      console.log(
+        'disable admin check. change `ENABLE_ADMIN` to true to enable admin check.',
+      );
+      return true;
+    }
+
     const adminList = await this.adminRepository.find();
 
     const isAdmin = adminList.find((v) => v.address === address);

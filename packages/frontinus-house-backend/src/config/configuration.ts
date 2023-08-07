@@ -19,6 +19,7 @@ export interface Config {
   Web3RpcUrl: string;
   file: FileConfig;
   communityAddress: string;
+  enableAdmin: boolean;
 }
 
 const config = (): Config => ({
@@ -36,6 +37,7 @@ const config = (): Config => ({
     basePath: process.env.FILE_BASE_PATH ?? '/data',
   },
   communityAddress: process.env.COMMUNITY_ADDRESS,
+  enableAdmin: process.env.ENABLE_ADMIN == 'ture' ?? false,
 });
 
 export const subgraphApiUri =
