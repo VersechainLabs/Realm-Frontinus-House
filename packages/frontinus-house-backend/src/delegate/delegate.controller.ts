@@ -104,7 +104,7 @@ export class DelegateController {
   async checkDelegateCanVote(
     @Query('applicationId') applicationId: number,
     @Query('address') fromAddress: string,
-  ) {
+  ): Promise<object> {
     // Similar to /create:
     const application = await this.applicationService.findOne(applicationId);
     if (!application) {
