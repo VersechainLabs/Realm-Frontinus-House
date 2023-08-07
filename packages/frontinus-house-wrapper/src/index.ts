@@ -20,6 +20,8 @@ import FormData from 'form-data';
 import * as fs from 'fs';
 import { WalletClient } from 'viem';
 
+export * from './enums';
+
 export class ApiWrapper {
   constructor(
     private readonly host: string,

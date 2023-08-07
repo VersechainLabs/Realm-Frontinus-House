@@ -2,6 +2,7 @@ import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { Community } from '../community/community.entity';
 import { Proposal } from '../proposal/proposal.entity';
 import {
+  AfterLoad,
   BeforeInsert,
   BeforeUpdate,
   Column,
@@ -14,6 +15,8 @@ import {
 } from 'typeorm';
 import { AuctionBase } from './auction-base.type';
 import { ApiProperty } from '@nestjs/swagger';
+import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -97,6 +100,14 @@ export class Auction implements AuctionBase {
   @RelationId((auction: Auction) => auction.proposals)
   proposalIds: number[];
 
+  @ApiProperty({
+    type: Number,
+    description: 'The number of proposals related to the auction',
+  })
+  @Exclude()
+  // This attribute was previously defined in the API layer, which is quite strange - -
+  numProposals: number;
+
   @ApiProperty({ type: () => Community, isArray: true })
   @ManyToOne(() => Community, (community) => community.auctions, {
     createForeignKeyConstraints: false,
@@ -120,6 +131,15 @@ export class Auction implements AuctionBase {
   @Field(() => String)
   balanceBlockTag: number;
 
+  @ApiProperty()
+  @Column({
+    type: 'int',
+    enum: AuctionVisibleStatus,
+    default: AuctionVisibleStatus.NORMAL,
+    comment: '0 means pending, 1 means normal',
+  })
+  visibleStatus: AuctionVisibleStatus;
+
   @BeforeInsert()
   setCreatedDate() {
     this.createdDate = new Date();
@@ -131,7 +151,18 @@ export class Auction implements AuctionBase {
   }
 
   public isAcceptingProposals = (): boolean =>
-    new Date() > this.startTime && new Date() <= this.proposalEndTime;
+    new Date() > this.startTime &&
+    new Date() <= this.proposalEndTime &&
+    this.visibleStatus == AuctionVisibleStatus.NORMAL;
+
+  @AfterLoad()
+  public countProposals() {
+    if (this.proposalIds.length > 0) {
+      this.numProposals = this.proposalIds.length;
+    } else {
+      this.numProposals = this.proposals.length;
+    }
+  }
 }
 
 @InputType()
