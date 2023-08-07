@@ -179,10 +179,8 @@ export class AuctionsService {
   }
 
   // Chao
-  async createAuctionByCommunity(createAuctionDetails: CreateAuctionDto) {
-    const community = await this.communitiesRepository.findOne(
-      createAuctionDetails.communityId,
-    );
+  async createAuctionByCommunity(dto: CreateAuctionDto) {
+    const community = await this.communitiesRepository.findOne(dto.communityId);
 
     if (!community) {
       throw new HttpException(
@@ -191,8 +189,20 @@ export class AuctionsService {
       );
     }
 
+    const currentTime = new Date();
+    if (!dto.startTime || dto.startTime < currentTime) {
+      dto.startTime = currentTime;
+    }
+
+    if (
+      dto.startTime >= dto.proposalEndTime ||
+      dto.proposalEndTime >= dto.votingEndTime
+    ) {
+      throw new HttpException('Time order incorrect!', HttpStatus.BAD_REQUEST);
+    }
+
     const newAuction = this.auctionsRepository.create({
-      ...createAuctionDetails,
+      ...dto,
       community,
     });
     newAuction.balanceBlockTag =
