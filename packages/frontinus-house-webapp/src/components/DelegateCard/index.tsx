@@ -97,11 +97,11 @@ const DelegateCard: React.FC<{
               <p className={classes.title}>Delegation Period</p>
               <p className={classes.info}>
                 <span className="">
-                  {dayjs(round.startTime).tz().format('MMM D,YYYY')}
+                  {dayjs(round.startTime).tz().format('MMM D, YYYY')}
                 </span>
                 ~
                 <span>
-                   {dayjs(round.endTime).tz().format('MMM D,YYYY')}
+                   {dayjs(round.endTime).tz().format('MMM D, YYYY')}
                 </span>
               </p>
             </div>
