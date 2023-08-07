@@ -13,10 +13,13 @@ import { DelegateService } from '../delegate/delegate.service';
 import { Delegate } from '../delegate/delegate.entity';
 import { DelegationService } from '../delegation/delegation.service';
 import { Delegation } from '../delegation/delegation.entity';
+import { AdminService } from '../admin/admin.service';
+import { Admin } from '../admin/admin.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      Admin,
       Auction,
       Proposal,
       Community,
@@ -27,6 +30,7 @@ import { Delegation } from '../delegation/delegation.entity';
   ],
   controllers: [AuctionsController],
   providers: [
+    AdminService,
     AuctionsService,
     ProposalsService,
     CommunitiesService,

@@ -11,8 +11,9 @@ import {
   IsString,
   Min,
 } from 'class-validator';
+import { SignedEntity } from '../entities/signed';
 
-export class CreateAuctionDto {
+export class CreateAuctionDto extends SignedEntity {
   @ApiProperty()
   @IsString()
   @IsOptional()
@@ -50,6 +51,13 @@ export class CreateAuctionDto {
   @IsNumber()
   @IsPositive()
   communityId: number;
+}
+
+export class ApproveAuctionDto extends SignedEntity {
+  @ApiProperty({ description: 'The auction ID to approve' })
+  @IsNumber()
+  @IsOptional()
+  id: number;
 }
 
 export enum Order {

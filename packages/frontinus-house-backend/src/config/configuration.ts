@@ -37,7 +37,7 @@ const config = (): Config => ({
     basePath: process.env.FILE_BASE_PATH ?? '/data',
   },
   communityAddress: process.env.COMMUNITY_ADDRESS,
-  enableAdmin: process.env.ENABLE_ADMIN == 'ture' ?? false,
+  enableAdmin: process.env.ENABLE_ADMIN === 'true' ?? false,
 });
 
 export const subgraphApiUri =

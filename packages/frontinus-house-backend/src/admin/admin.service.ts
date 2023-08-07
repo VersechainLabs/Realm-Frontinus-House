@@ -55,12 +55,13 @@ export class AdminService {
       return true;
     }
 
-    const adminList = await this.adminRepository.find();
+    const lowerCaseAddress = address.toLowerCase();
 
-    const isAdmin = adminList.find((v) => v.address === address);
+    const admin = await this.adminRepository
+      .createQueryBuilder('admin')
+      .where('LOWER(admin.address) = :lowerCaseAddress', { lowerCaseAddress })
+      .getOne();
 
-    if (!isAdmin) return false;
-
-    return true;
+    return !!admin;
   }
 }
