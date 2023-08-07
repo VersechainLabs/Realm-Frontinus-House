@@ -13,7 +13,7 @@ const CommunityProfImg: React.FC<{
   const { community, hover } = props;
 
   return community ? (
-    <Link to={`/${nameToSlug(community.name)}`}>
+    <Link to={`/`}>
       <img
         src={community.profileImageUrl}
         alt="community profile "

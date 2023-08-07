@@ -90,7 +90,7 @@ export default function Comments(props: CommentsProps) {
       itemList.push(CommentListItem({ comment: comment }));
     });
 
-    if (commentList.length % 10 === 0) {
+    if (commentCount > 10 && (commentList.length % 10) === 0) {
       itemList.push(
         <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
           <LoadingButton
