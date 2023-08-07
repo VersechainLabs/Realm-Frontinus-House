@@ -44,6 +44,22 @@ export enum Order {
   DESC = 'DESC',
 }
 
+export enum DelegateAPIResponses {
+  OK = 'Success',
+  NO_APPLICATION = 'Can not find application',
+  NOT_VOTING = 'Not in the eligible voting period.',
+  DELEGATED = 'Already delegate to another address.',
+  OCCUPIED = 'Already created application. Can not delegate.',
+}
+
+// export let DelegateAPIResponses = new Map([
+//   [20000, "Success"],
+//   [40031, "Can not find application"],
+//   [40032, "Not in the eligible voting period."],
+//   [40033, "Already delegate to another address."],
+//   [40034, "Already created application. Can not delegate."],
+// ]);
+
 export class GetDelegateDto {
   @IsOptional()
   @IsInt()

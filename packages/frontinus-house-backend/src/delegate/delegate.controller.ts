@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { Delegate } from './delegate.entity';
-import { CreateDelegateDto, DeleteDelegateDto } from './delegate.types';
+import { CreateDelegateDto, DelegateAPIResponses, DeleteDelegateDto } from './delegate.types';
 import { DelegateService } from './delegate.service';
 import { ApplicationService } from '../delegation-application/application.service';
 import { ApiOkResponse } from '@nestjs/swagger';
@@ -104,23 +104,26 @@ export class DelegateController {
     @Query('applicationId') applicationId: number,
     @Query('address') fromAddress: string,
   ): Promise<object> {
+
     // Similar to /create:
     const application = await this.applicationService.findOne(applicationId);
     if (!application) {
-      return {
-        message: `Can not find application ${applicationId}`,
-        status: false,
-      };
+      return APITransformer(DelegateAPIResponses.NO_APPLICATION, `Can not find application ${applicationId}`);
+      // return {
+      //   message: `Can not find application ${applicationId}`,
+      //   status: false,
+      // };
     }
     const currentTime = new Date();
     if (
       currentTime < application.delegation.proposalEndTime ||
       currentTime > application.delegation.votingEndTime
     ) {
-      return {
-        message: 'Not in the eligible voting period.',
-        status: false,
-      };
+      return APITransformer(DelegateAPIResponses.NOT_VOTING);
+      // return {
+      //   message: 'Not in the eligible voting period.',
+      //   status: false,
+      // };
     }
 
     const existDelegate = await this.delegateService.findByFromAddress(
@@ -128,10 +131,11 @@ export class DelegateController {
       fromAddress,
     );
     if (existDelegate) {
-      return {
-        message: `Already delegate to ${existDelegate.toAddress}`,
-        status: false,
-      };
+      return APITransformer(DelegateAPIResponses.DELEGATED, `Already delegate to ${existDelegate.toAddress}`);
+      // return {
+      //   message: `Already delegate to ${existDelegate.toAddress}`,
+      //   status: false,
+      // };
     }
 
     const createdApplication = await this.applicationService.findByAddress(
@@ -139,16 +143,18 @@ export class DelegateController {
       fromAddress,
     );
     if (createdApplication) {
-      return {
-        message: `Already created application. Can not delegate to ${application.address}`,
-        status: false,
-      };
+      return APITransformer(DelegateAPIResponses.OCCUPIED, `Already created application. Can not delegate to ${application.address}`);
+      // return {
+      //   message: `Already created application. Can not delegate to ${application.address}`,
+      //   status: false,
+      // };
     }
 
-    return {
-      message: `Can vote!`,
-      status: true,
-    };
+    return APITransformer(DelegateAPIResponses.OK);
+    // return {
+    //   message: `Can vote!`,
+    //   status: true,
+    // };
   }
 
   @Get('/list')
@@ -245,3 +251,18 @@ export class DelegateController {
     return true;
   }
 }
+function APITransformer(description: DelegateAPIResponses, detail ?: string): object | PromiseLike<object> {
+  let status = false;
+  if (!detail) detail = null; 
+
+  if (description === DelegateAPIResponses.OK) {
+    status = true;
+  }
+
+  return {
+    detail: detail,
+    description: description,
+    status: status,
+  };
+}
+
