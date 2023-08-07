@@ -157,8 +157,10 @@ export class Auction implements AuctionBase {
 
   @AfterLoad()
   public countProposals() {
-    if (this.proposalIds.length > 0) {
+    if (this.proposalIds && this.proposalIds.length > 0) {
       this.numProposals = this.proposalIds.length;
+    } else if (this.proposals) {
+      this.numProposals = this.proposals.length;
     } else {
       this.numProposals = this.proposals.length;
     }
