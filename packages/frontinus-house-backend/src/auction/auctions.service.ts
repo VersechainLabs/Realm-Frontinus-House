@@ -1,11 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from '../utils/proposal-count-subquery';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { Auction } from './auction.entity';
 import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
 import { Community } from '../community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
+import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+import { Proposal } from '../proposal/proposal.entity';
+import { ParseDate } from '../utils';
 
 export type AuctionWithProposalCount = Auction & { numProposals: number };
 
@@ -26,6 +29,26 @@ export class AuctionsService {
       where: {
         visible: true,
       },
+    });
+  }
+
+  findAllForCommunityByVisible(
+    communityId: number,
+    visibleStatus?: AuctionVisibleStatus,
+  ): Promise<Auction[]> {
+    const where: any = {
+      community: { id: communityId },
+    };
+
+    if (visibleStatus !== undefined && !isNaN(visibleStatus)) {
+      where.visibleStatus = visibleStatus;
+    }
+
+    return this.auctionsRepository.find({
+      loadRelationIds: {
+        relations: ['proposals.auction', 'community'],
+      },
+      where,
     });
   }
 
@@ -174,15 +197,13 @@ export class AuctionsService {
     await this.auctionsRepository.delete(id);
   }
 
-  async store(proposal: Auction): Promise<Auction> {
-    return await this.auctionsRepository.save(proposal, { reload: true });
+  async store(auction: Auction): Promise<Auction> {
+    return await this.auctionsRepository.save(auction, { reload: true });
   }
 
   // Chao
-  async createAuctionByCommunity(createAuctionDetails: CreateAuctionDto) {
-    const community = await this.communitiesRepository.findOne(
-      createAuctionDetails.communityId,
-    );
+  async createAuctionByCommunity(dto: CreateAuctionDto, isAdmin: boolean) {
+    const community = await this.communitiesRepository.findOne(dto.communityId);
 
     if (!community) {
       throw new HttpException(
@@ -191,10 +212,22 @@ export class AuctionsService {
       );
     }
 
+    const startTime = dto.startTime ? dto.startTime : new Date();
+    if (
+      dto.startTime >= dto.proposalEndTime ||
+      dto.proposalEndTime >= dto.votingEndTime
+    ) {
+      throw new HttpException('Time order incorrect!', HttpStatus.BAD_REQUEST);
+    }
+
     const newAuction = this.auctionsRepository.create({
-      ...createAuctionDetails,
+      ...dto,
       community,
     });
+
+    newAuction.visibleStatus = isAdmin
+      ? AuctionVisibleStatus.NORMAL
+      : AuctionVisibleStatus.PENDING;
     newAuction.balanceBlockTag =
       await this.blockchainService.getCurrentBlockNum();
 

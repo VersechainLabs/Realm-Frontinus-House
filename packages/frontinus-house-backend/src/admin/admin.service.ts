@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Delegation } from '../delegation/delegation.entity';
 import { Admin } from './admin.entity';
 import { CreateAdminDto } from './admin.types';
+import config from '../config/configuration';
 
 export type AuctionWithProposalCount = Delegation & { numProposals: number };
 
@@ -23,9 +24,9 @@ export class AdminService {
 
   searchByAddress(address: string): Promise<Admin[]> {
     return this.adminRepository.find({
-        where: {
-          address: address,
-        },
+      where: {
+        address: address,
+      },
     });
   }
 
@@ -47,12 +48,26 @@ export class AdminService {
   }
 
   async isAdmin(address: string): Promise<boolean> {
-    const adminList = await this.adminRepository.find();
+    if (!config().enableAdmin) {
+      console.log(
+        'disable admin check. change `ENABLE_ADMIN` to true to enable admin check.',
+      );
+      return true;
+    }
 
-    const isAdmin = adminList.find((v) => v.address === address);
+    const lowerCaseAddress = address.toLowerCase();
 
-    if (!isAdmin) return false;
+    const admin = await this.adminRepository
+      .createQueryBuilder('admin')
+      .where('LOWER(admin.address) = :lowerCaseAddress', { lowerCaseAddress })
+      .getOne();
 
-    return true;
+    return !!admin;
+  }
+
+  async ensureIsAdmin(address: string): Promise<void> {
+    if (!(await this.isAdmin(address))) {
+      throw new HttpException('Need admin access!', HttpStatus.BAD_REQUEST);
+    }
   }
 }

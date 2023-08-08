@@ -241,7 +241,11 @@ export interface StoredProposal extends Proposal {
   lastUpdatedDate: Date;
   deletedAt: Date;
   reqAmount: number | null;
-
+  voteState: {
+    canVote: boolean;
+    code: number;
+    reason: string;
+  }
   canVote: boolean;
   disallowedVoteReason: string | null;
 }
@@ -258,6 +262,18 @@ export class DeleteProposal extends Signable {
   toPayload() {
     return {
       id: this.id,
+    };
+  }
+}
+
+export class DeleteApplication extends Signable {
+  constructor(public readonly id: number) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      applicationId: this.id,
     };
   }
 }

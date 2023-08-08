@@ -9,7 +9,6 @@ import { useDispatch } from 'react-redux';
 import { setActiveCommunity, setActiveProposal, setActiveRound } from '../../state/slices/delegate';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import LoadingIndicator from '../../components/LoadingIndicator';
-import { StoredProposalWithVotes } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Container } from 'react-bootstrap';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { cardServiceUrl, CardType } from '../../utils/cardServiceUrl';
@@ -20,6 +19,7 @@ import Button, {ButtonColor} from "../../components/Button";
 import { setAlert } from '../../state/slices/alert';
 import { useWalletClient } from 'wagmi';
 import AddressAvatar from "../../components/AddressAvatar";
+import {DeleteApplication} from "@nouns/frontinus-house-wrapper/dist/builders";
 
 const Application = () => {
   const params = useParams();
@@ -163,6 +163,25 @@ const Application = () => {
                           if(voteResult.hasOwnProperty('delegationId') && voteResult.delegationId > 0){
                             dispatch(setAlert({ type: 'success', message: 'success' }));
                           }
+
+                        } catch (e) {
+                          dispatch(setAlert({ type: 'error', message: e }));
+                        } finally {
+
+                        }
+                      }} />
+
+              <Button text={'　　cancel delegate　　'} bgColor={ButtonColor.Purple}
+                      disabled={canVote}
+                      onClick={async () => {
+                        try {
+                          const result = await backendClient.current.deleteDelegate(new DeleteApplication(proposal.id));
+
+                          console.log(result)
+
+                          // if(voteResult.hasOwnProperty('delegationId') && voteResult.delegationId > 0){
+                          //   dispatch(setAlert({ type: 'success', message: 'success' }));
+                          // }
 
                         } catch (e) {
                           dispatch(setAlert({ type: 'error', message: e }));

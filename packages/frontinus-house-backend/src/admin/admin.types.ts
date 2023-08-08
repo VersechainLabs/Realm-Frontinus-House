@@ -1,24 +1,13 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import {
-  IsEnum,
-  IsEthereumAddress,
-  IsInt,
-  IsOptional,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsInt, IsOptional, Min } from 'class-validator';
+import { SignedEntity } from '../entities/signed';
 
-export class CreateAdminDto {
-  @ApiProperty()
-  @IsEthereumAddress()
-  address: string;
-}
+export class CreateAdminDto extends SignedEntity {}
 
 export enum UserType {
   Admin = 'Admin',
   User = 'User',
 }
-
 
 export enum Order {
   ASC = 'ASC',

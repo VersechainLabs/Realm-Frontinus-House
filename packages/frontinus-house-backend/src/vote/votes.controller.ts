@@ -40,15 +40,14 @@ export class VotesController {
     private readonly votesService: VotesService,
     private readonly proposalService: ProposalsService,
     private readonly auctionService: AuctionsService,
-    private readonly blockchainService: BlockchainService,
   ) {}
 
-  @Get()
+  // @Get()
   getVotes(): Promise<Vote[]> {
     return this.votesService.findAll();
   }
 
-  @Get('findWithOpts')
+  // @Get('findWithOpts')
   getVotesWithOpts(@Query() dto: GetVoteDto): Promise<Vote[]> {
     return this.votesService.findAllWithOpts(dto);
   }
@@ -128,8 +127,8 @@ export class VotesController {
 
   @Get('getVotingEligibility')
   async isEligibleToVote(
-    proposalId: number,
-    address: string,
+    @Query() proposalId: number,
+    @Query() address: string,
   ): Promise<boolean> {
     const foundProposal = await this.proposalService.findOne(proposalId);
     if (!foundProposal) {
@@ -272,7 +271,9 @@ export class VotesController {
   })
   @ApiResponse({ status: 400, description: 'Bad request.' })
   @Delete()
-  async deleteOne(@Body() deleteVoteDto: DeleteVoteDto): Promise<boolean> {
+  async deleteOne(
+    @Body(SignedPayloadValidationPipe) deleteVoteDto: DeleteVoteDto,
+  ): Promise<boolean> {
     verifySignPayload(deleteVoteDto, ['id', 'proposalId']);
 
     let foundVote;

@@ -12,7 +12,6 @@ import { Comment } from './comment.entity';
 import { CreateCommentDto, GetCommentsDto } from './comment.types';
 import { CommentsService } from './comments.service';
 import { ApiOkResponse } from '@nestjs/swagger';
-import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 
 @Controller('comments')

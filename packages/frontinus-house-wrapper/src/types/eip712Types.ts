@@ -49,3 +49,7 @@ export const EditProposalMessageTypes: Record<string, TypedDataField[]> = {
 export const DeleteProposalMessageTypes: Record<string, TypedDataField[]> = {
   Proposal: [{ name: 'id', type: 'uint256' }],
 };
+
+export const DeleteApplicationMessageTypes: Record<string, TypedDataField[]> = {
+  Application: [{ name: 'ApplicationId', type: 'uint256' }],
+};
