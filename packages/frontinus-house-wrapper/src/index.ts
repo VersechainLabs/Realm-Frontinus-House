@@ -1,10 +1,11 @@
 import axios from 'axios';
 import {
+  Application,
   Comment,
   Community,
   CommunityWithAuctions, DeleteApplication,
   DeleteProposal, DeleteVote,
-  Proposal,
+  Proposal, ProposalParent,
   StoredAuctionBase,
   StoredComment,
   StoredFile,
@@ -360,10 +361,19 @@ export class ApiWrapper {
   async createApplication(proposal: Proposal, isContract = false) {
     if (!this.signer) return;
     try {
-      const signedPayload = await proposal.signedPayload(this.signer);
 
-      signedPayload.description = signedPayload.what;
-      signedPayload.delegationId = signedPayload.parentAuctionId;
+      const application = new Application(
+          proposal.title,
+          proposal.what,
+          proposal.tldr,
+          proposal.auctionId,
+          proposal.parentType,
+      )
+
+      const signedPayload = await application.signedPayload(this.signer);
+
+      // signedPayload.description = signedPayload.what;
+      // signedPayload.delegationId = signedPayload.parentAuctionId;
 
       return (await axios.post(`${this.host}/applications/create`, signedPayload)).data;
     } catch (e: any) {

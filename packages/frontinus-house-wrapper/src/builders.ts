@@ -211,6 +211,30 @@ export class Proposal extends Signable {
   }
 }
 
+
+export class Application extends Signable {
+  constructor(
+      public readonly title: string,
+      public readonly description: string,
+      public readonly tldr: string,
+      public readonly delegationId: number,
+      public readonly parentType: ProposalParent = 'auction',
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      title: this.title,
+      description: this.description,
+      tldr: this.tldr,
+      delegationId: this.delegationId,
+      parentType: this.parentType,
+    };
+  }
+}
+
+
 export class UpdatedProposal extends Proposal {
   constructor(
     public readonly id: number,
