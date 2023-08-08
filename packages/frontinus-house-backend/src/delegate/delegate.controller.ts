@@ -32,10 +32,19 @@ export class DelegateController {
   @ApiOkResponse({
     type: Delegate,
   })
-  async create(@Body() dto: CreateDelegateDto): Promise<Delegate> {
+  async create(
+    @Body(SignedPayloadValidationPipe) dto: CreateDelegateDto,
+  ): Promise<Delegate> {
+    verifySignPayload(dto, ['applicationId']);
     const application = await this.applicationService.findOne(
       dto.applicationId,
     );
+    if (!application) {
+      throw new HttpException(
+        'Cannot find this application',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const currentTime = new Date();
     if (

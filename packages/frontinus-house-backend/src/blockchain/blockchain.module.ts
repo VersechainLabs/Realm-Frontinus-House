@@ -4,12 +4,10 @@ import { Module } from '@nestjs/common';
 import { BlockchainService } from './blockchain.service';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { Delegate } from '../delegate/delegate.entity';
-import { DelegateService } from '../delegate/delegate.service';
 import { DelegationService } from '../delegation/delegation.service';
 import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
 import { Delegation } from '../delegation/delegation.entity';
 import { Application } from '../delegation-application/application.entity';
-import { ApplicationService } from '../delegation-application/application.service';
 import { BlockchainController } from './blockchain.controller';
 
 @Module({
@@ -23,7 +21,7 @@ import { BlockchainController } from './blockchain.controller';
   providers: [
     BlockchainService,
     DelegationService,
-    BchainProcessor
+    BchainProcessor,
     // ApplicationService,
   ],
 })

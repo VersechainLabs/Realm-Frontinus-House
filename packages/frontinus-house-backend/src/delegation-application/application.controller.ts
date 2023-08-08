@@ -11,6 +11,8 @@ import { Application } from './application.entity';
 import { CreateApplicationDto, GetApplicationDto } from './application.types';
 import { ApplicationService } from './application.service';
 import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
+import { verifySignPayload } from '../utils/verifySignedPayload';
 
 @Controller('applications')
 export class ApplicationController {
@@ -51,7 +53,10 @@ export class ApplicationController {
   @ApiOkResponse({
     type: Application,
   })
-  async create(@Body() dto: CreateApplicationDto): Promise<Application> {
+  async create(
+    @Body(ECDSASignedPayloadValidationPipe) dto: CreateApplicationDto,
+  ): Promise<Application> {
+    verifySignPayload(dto, ['delegationId', 'title']);
     return await this.applicationService.createApplicationByDelegation(dto);
   }
 

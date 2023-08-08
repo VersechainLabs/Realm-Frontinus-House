@@ -5,22 +5,18 @@ import {
   IsInt,
   IsNumber,
   IsOptional,
-  IsString,
   Min,
 } from 'class-validator';
 import { SignedEntity } from '../entities/signed';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
-export class CreateDelegateDto {
+export class CreateDelegateDto extends SignedEntity {
   // @IsInt()
   // @IsOptional()
   // delegationId: number;
 
   @IsInt()
   applicationId: number;
-
-  @IsString()
-  address: string; // "From" Address
 
   // @IsString()
   // @IsOptional()

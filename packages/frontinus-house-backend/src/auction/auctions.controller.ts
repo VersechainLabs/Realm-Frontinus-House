@@ -15,7 +15,7 @@ import {
   GetAuctionsDto,
   LatestDto,
 } from './auction.types';
-import { AuctionsService, AuctionWithProposalCount } from './auctions.service';
+import { AuctionsService } from './auctions.service';
 import { ProposalsService } from '../proposal/proposals.service';
 import { Proposal } from '../proposal/proposal.entity';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
@@ -55,6 +55,16 @@ export class AuctionsController {
   async createForCommunity(
     @Body(SignedPayloadValidationPipe) dto: CreateAuctionDto,
   ): Promise<Auction> {
+    verifySignPayload(dto, [
+      'startTime',
+      'proposalEndTime',
+      'votingEndTime',
+      'title',
+      'fundingAmount',
+      'numWinners',
+      'currencyType',
+      'communityId',
+    ]);
     return await this.auctionsService.createAuctionByCommunity(
       dto,
       await this.adminService.isAdmin(dto.address),
@@ -67,13 +77,11 @@ export class AuctionsController {
     @Body(SignedPayloadValidationPipe) dto: ApproveAuctionDto,
   ): Promise<Auction> {
     verifySignPayload(dto, ['id']);
+    await this.adminService.ensureIsAdmin(dto.address);
+
     const foundAuction = await this.auctionsService.findOne(dto.id);
     if (!foundAuction) {
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
-    }
-
-    if (!(await this.adminService.isAdmin(dto.address))) {
-      throw new HttpException('Need admin access!', HttpStatus.BAD_REQUEST);
     }
 
     foundAuction.visibleStatus = AuctionVisibleStatus.NORMAL;
