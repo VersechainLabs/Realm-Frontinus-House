@@ -40,6 +40,7 @@ export enum Order {
   DESC = 'DESC',
 }
 
+
 export class GetDelegateDto {
   @IsOptional()
   @IsInt()

@@ -142,6 +142,12 @@ export class Proposal {
     nullable: true,
   })
   disallowedVoteReason: string | null;
+  @ApiProperty({
+    description:
+      'Indicates how the frontend should react based on this code.',
+    type: Object,
+  })
+  voteState: any;
 
   toJSON() {
     if (this.votes && this.votes.length > 0) {
