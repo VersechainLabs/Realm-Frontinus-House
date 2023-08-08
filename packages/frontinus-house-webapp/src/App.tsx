@@ -170,7 +170,7 @@ function App() {
                   <Route path="/create-round" element={<CreateRound />} />
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
-                  <Route path="/faq" element={<FAQ />} />
+                  {/*<Route path="/faq" element={<FAQ />} />*/}
                   <Route path="/proposal/:id" element={<Proposal />} />
                   <Route path="/application/:id" element={<Application />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />

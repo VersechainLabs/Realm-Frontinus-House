@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
   Comment,
   Community,
-  CommunityWithAuctions,
+  CommunityWithAuctions, DeleteApplication,
   DeleteProposal, DeleteVote,
   Proposal,
   StoredAuctionBase,
@@ -18,7 +18,16 @@ import {
 } from './builders';
 import FormData from 'form-data';
 import * as fs from 'fs';
+import {
+  DeleteApplicationMessageTypes,
+  DeleteProposalMessageTypes,
+  EditProposalMessageTypes,
+  InfiniteAuctionProposalMessageTypes,
+  TimedAuctionProposalMessageTypes,
+} from './types/eip712Types';
 import { WalletClient } from 'viem';
+
+export * from './enums';
 
 export class ApiWrapper {
   constructor(
@@ -288,7 +297,7 @@ export class ApiWrapper {
 
   async getUserType( address: string) {
     try {
-      return (await axios.post(`${this.host}/admins/getUserType?address=/${address}`)).data;
+      return (await axios.post(`${this.host}/admins/getUserType?address=${address}`)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -398,6 +407,16 @@ export class ApiWrapper {
     try {
       const signedPayload = await deleteProposal.signedPayload(this.signer);
       return (await axios.delete(`${this.host}/proposals`, { data: signedPayload })).data;
+    } catch (e: any) {
+      throw e;
+    }
+  }
+
+  async deleteDelegate(deleteApplication: DeleteApplication) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await deleteApplication.signedPayload(   this.signer  );
+      return (await axios.delete(`${this.host}/delegates`, { data: signedPayload })).data;
     } catch (e: any) {
       throw e;
     }

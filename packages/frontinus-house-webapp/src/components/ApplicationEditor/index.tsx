@@ -121,7 +121,7 @@ const ApplicationEditor: React.FC<{
       type: 'input',
       fieldValue: data.tldr,
       fieldName: 'tldr',
-      placeholder: t('bibliothecaTitle'),
+      placeholder: t('tldrPlaceholder'),
       value: '',
       minCount: 10,
       maxCount: 120,

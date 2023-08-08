@@ -181,8 +181,6 @@ const House = () => {
             }),
           ));
 
-      console.log('rounds',rounds)
-      console.log('roundsOnDisplay',roundsOnDisplay)
 
   }, [input, currentRoundStatus, rounds]);
 

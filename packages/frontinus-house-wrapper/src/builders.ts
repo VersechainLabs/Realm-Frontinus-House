@@ -262,6 +262,18 @@ export class DeleteProposal extends Signable {
   }
 }
 
+export class DeleteApplication extends Signable {
+  constructor(public readonly id: number) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      applicationId: this.id,
+    };
+  }
+}
+
 export enum Direction {
   Up = 1,
   Down = -1,

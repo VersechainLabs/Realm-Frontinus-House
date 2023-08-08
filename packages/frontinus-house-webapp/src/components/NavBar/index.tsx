@@ -42,10 +42,11 @@ const NavBar = () => {
 
   const fetch = async ( ) => {
     try {
+
       const type = (await backendClient.current.getUserType(
           account
       ));
-
+      
       dispatch(setUserType({
         type : type,
         address : account
@@ -77,9 +78,9 @@ const NavBar = () => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className={clsx('ms-auto', classes.navBarCollapse)}>
             <Nav.Link as="div" className={classes.menuLink} onClick={() => setIsNavExpanded(false)}>
-              <Link to="/faq" className={classes.link}>
-                {t('faq')}
-              </Link>
+              {/*<Link to="/faq" className={classes.link}>*/}
+              <a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>
+              {/*</Link>*/}
               <span className={classes.divider}></span>
             </Nav.Link>
 
