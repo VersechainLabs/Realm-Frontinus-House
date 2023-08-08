@@ -424,7 +424,7 @@ export class Comment extends Signable {
 
 export interface StoredComment extends Comment {
   id: number;
-  owner: string;
+  address: string;
   createdDate: string;
 }
 

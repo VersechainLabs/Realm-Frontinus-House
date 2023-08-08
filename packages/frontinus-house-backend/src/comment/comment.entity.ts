@@ -1,16 +1,14 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
-import { Proposal } from '../proposal/proposal.entity';
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
-import { Application } from '../delegation-application/application.entity';
+import { Exclude, instanceToPlain } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -33,7 +31,7 @@ export class Comment {
   @ApiProperty()
   @Column({})
   @Field(() => String)
-  owner: string;
+  address: string;
 
   @ApiProperty({
     description: 'The unique ID of the related proposal',
@@ -52,22 +50,22 @@ export class Comment {
   applicationId?: number;
 
   @ApiProperty()
-  @Column()
+  @CreateDateColumn()
   @Field(() => Date)
   createdDate: Date;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @UpdateDateColumn({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;
 
-  @BeforeInsert()
-  setCreatedDate() {
-    this.createdDate = new Date();
-  }
+  @Exclude({ toPlainOnly: true })
+  @DeleteDateColumn()
+  @Field(() => Date)
+  deletedDate?: Date;
 
-  @BeforeUpdate()
-  setUpdatedDate() {
-    this.lastUpdatedDate = new Date();
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
+  toJSON() {
+    return instanceToPlain(this);
   }
 }
