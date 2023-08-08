@@ -92,6 +92,30 @@ export class TimedAuction extends Signable {
   }
 }
 
+export class TimedDelegate extends Signable {
+  constructor(
+    public readonly title: string,
+    public readonly startTime: Date,
+    public readonly endTime: Date,
+    public readonly proposalEndTime: Date,
+    public readonly votingEndTime: Date,
+    public readonly description: string,
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      title: this.title,
+      startTime: this.startTime.toISOString(),
+      endTime: this.endTime.toISOString(),
+      proposalEndTime: this.proposalEndTime.toISOString(),
+      votingEndTime: this.votingEndTime.toISOString(),
+      description: this.description,
+    };
+  }
+}
+
 export class StoredTimedAuction extends TimedAuction {
   //@ts-ignore
   public readonly id: number;

@@ -15,6 +15,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { setAlert, clearClick, alertSlice } from '../../state/slices/alert';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@mui/material/TextField';
+import {TimedDelegate} from "@nouns/frontinus-house-wrapper/dist/builders";
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -194,8 +195,17 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
     console.log(state);
 
+    const delegate = new TimedDelegate(
+        state.title,
+        state.startTime,
+        state.endTime,
+        state.proposalEndTime,
+        state.votingEndTime,
+        state.description
+    );
+
     client.current
-      .createDelegateAuction(state)
+      .createDelegateAuction(delegate)
       .then((round: any) => {
         navigate('/delegateDetails/' + round.id);
       })

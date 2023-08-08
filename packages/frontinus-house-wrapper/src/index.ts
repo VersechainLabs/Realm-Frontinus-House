@@ -12,7 +12,7 @@ import {
   StoredTimedAuction,
   StoredVote,
   StoredVoteWithProposal,
-  TimedAuction,
+  TimedAuction, TimedDelegate,
   UpdatedProposal,
   Vote,
 } from './builders';
@@ -46,22 +46,12 @@ export class ApiWrapper {
     }
   }
 
-  async createDelegateAuction(auction: any): Promise<any[]> {
+  async createDelegateAuction(auction: TimedDelegate): Promise<any[]> {
     if (!this.signer) throw 'Please sign';
     try {
-      const signMessage = JSON.stringify(auction);
-      const owner = (await this.signer.getAddresses())[0];
-      const signResult = await this.signer.signMessage({
-        account: owner,
-        message: signMessage,
-      });
-      (auction as any).owner = owner;
-      (auction as any).signedData = {
-        'message': signMessage,
-        'signature': signResult,
-        'signer': owner,
-      };
-      return (await axios.post(`${this.host}/delegations/create`, auction)).data;
+      const signedPayload = await auction.signedPayload(this.signer);
+
+      return (await axios.post(`${this.host}/delegations/create`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
