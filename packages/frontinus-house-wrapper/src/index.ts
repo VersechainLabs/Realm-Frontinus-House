@@ -39,19 +39,8 @@ export class ApiWrapper {
   async createAuction(auction: TimedAuction): Promise<StoredTimedAuction[]> {
     if (!this.signer) throw 'Please sign';
     try {
-      const signMessage = JSON.stringify(auction);
-      const owner = (await this.signer.getAddresses())[0];
-      const signResult = await this.signer.signMessage({
-        account: owner,
-        message: signMessage,
-      });
-      (auction as any).owner = owner;
-      (auction as any).signedData = {
-        'message': signMessage,
-        'signature': signResult,
-        'signer': owner,
-      };
-      return (await axios.post(`${this.host}/auctions/create`, auction)).data;
+      const signedPayload = await auction.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/auctions/create`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
