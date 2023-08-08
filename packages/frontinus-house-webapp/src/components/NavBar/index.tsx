@@ -42,10 +42,11 @@ const NavBar = () => {
 
   const fetch = async ( ) => {
     try {
+
       const type = (await backendClient.current.getUserType(
           account
       ));
-
+      
       dispatch(setUserType({
         type : type,
         address : account
