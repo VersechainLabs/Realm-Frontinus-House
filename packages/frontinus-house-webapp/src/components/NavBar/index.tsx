@@ -37,16 +37,21 @@ const NavBar = () => {
   useEffect(() => {
     if(account){
       fetch();
+    } else {
+      dispatch(setUserType({
+        type : '',
+        address : ''
+      }));
     }
+
+
   }, [ account]);
 
   const fetch = async ( ) => {
     try {
-
       const type = (await backendClient.current.getUserType(
           account
       ));
-      
       dispatch(setUserType({
         type : type,
         address : account
