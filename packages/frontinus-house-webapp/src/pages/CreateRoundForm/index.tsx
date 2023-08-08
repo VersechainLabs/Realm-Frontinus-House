@@ -178,17 +178,17 @@ const CreateRound: React.FC<{}> = () => {
     }
 
     // Check if proposalEndTime is greater than or equal to proposingStartTime
-    if (proposalEndTime && proposalEndTime.isBefore(proposingStartTime)) {
+    if (proposalEndTime && proposingStartTime && proposalEndTime <= proposingStartTime) {
       const errorMessage =
-        'The voting period should begin no earlier than the start time of proposal submissions.';
+        'The voting period should end no earlier than the start time of proposal submissions.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
-      setIsAlertVisible(true); // 显示alert弹出框
+      setIsAlertVisible(true);
       return;
     }
 
     // Check if votingEndTime is greater than or equal to proposalEndTime
-    if (votingEndTime && votingEndTime.isBefore(proposalEndTime)) {
+    if (votingEndTime && proposalEndTime && votingEndTime <= proposalEndTime) {
       const errorMessage = 'The voting end time must be later than the voting start time.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
@@ -242,7 +242,7 @@ const CreateRound: React.FC<{}> = () => {
       <Container>
         <Row>
           <form onSubmit={handleSubmit}>
-            <div className={classes.title}>Round creation</div>
+            <div className={classes.title}>Round Creation</div>
             <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
               questions: https://discord.gg/uQnjZhZPfu.
