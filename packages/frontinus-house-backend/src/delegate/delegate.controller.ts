@@ -233,33 +233,3 @@ export class DelegateController {
     return true;
   }
 }
-
-// function APITransformer(dataObj: object, customDetail ?: string): object | PromiseLike<object> {
-//   let status = false;
-
-//   if (dataObj === APIResponses.OK) {
-//     status = true;
-//   }
-
-//   return {
-//     description: customDetail ?? dataObj["Detail"],
-//     status: status,
-//     code: dataObj["Code"],
-//   };
-// }
-
-// function APITransformer(description: DelegateAPIResponses, detail ?: string): object | PromiseLike<object> {
-//   let status = false;
-//   if (!detail) detail = null; 
-
-//   if (description === DelegateAPIResponses.OK) {
-//     status = true;
-//   }
-
-//   return {
-//     detail: detail,
-//     description: description,
-//     status: status,
-//   };
-// }
-
