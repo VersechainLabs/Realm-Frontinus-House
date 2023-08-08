@@ -165,7 +165,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       return;
     }
     // 检查是否有时间比上一个时间要早的情况
-    if (grantStartTime && grantStartTime.isBefore(roundStartTime)) {
+    if (grantStartTime && roundStartTime && grantStartTime <= roundStartTime) {
       const errorMessage =
         'The time to select delegates should begin no earlier than the start time of application submissions.';
       console.log('Error message to be dispatched:', errorMessage);
@@ -174,7 +174,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       return;
     }
 
-    if (grantEndTime && grantEndTime.isBefore(grantStartTime)) {
+    if (grantEndTime && grantStartTime && grantEndTime <= grantStartTime) {
       const errorMessage =
         'The selection period end time must be later than the selection start time.';
       console.log('Error message to be dispatched:', errorMessage);
@@ -183,7 +183,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       return;
     }
 
-    if (roundEndTime && roundEndTime.isBefore(grantEndTime)) {
+    if (roundEndTime && grantEndTime && roundEndTime <= grantEndTime) {
       const errorMessage =
         'The delegation round end time must be later than the selection end time.';
       console.log('Error message to be dispatched:', errorMessage);
