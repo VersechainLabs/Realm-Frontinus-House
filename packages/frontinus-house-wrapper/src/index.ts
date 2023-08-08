@@ -2,7 +2,7 @@ import axios from 'axios';
 import {
   Comment,
   Community,
-  CommunityWithAuctions,
+  CommunityWithAuctions, DeleteApplication,
   DeleteProposal, DeleteVote,
   Proposal,
   StoredAuctionBase,
