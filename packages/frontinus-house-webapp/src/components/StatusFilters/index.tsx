@@ -69,7 +69,7 @@ const StatusFilters: React.FC<{
                 )}
               >
                 <div className={classes.filterText}>
-                  <span className={classes.filterName}>{t(s.title)}</span>
+                  <span className={clsx('frontinusTitle',classes.filterName)}>{t(s.title)}</span>
                   <span className={classes.filterNumber}>{numberOfRoundsPerStatus[index]}</span>
                 </div>
               </div>

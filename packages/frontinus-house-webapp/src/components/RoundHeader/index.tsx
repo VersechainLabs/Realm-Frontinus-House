@@ -68,7 +68,7 @@ const RoundHeader: React.FC<{
         </div>
 
         <Col lg={12} className={classes.communityInfoCol}>
-          <div className={classes.date}>
+          <div className={clsx('frontinusTitle',classes.date)}>
             {isInfAuction(auction)
               ? `${dayjs().isBefore(auction.startTime) ? `Starts` : `Started`} ${formatTime(
                   auction.startTime,
@@ -81,7 +81,7 @@ const RoundHeader: React.FC<{
               isLongName(community ? community.name : '') && classes.longName,
             )}
           >
-            <div className={classes.title}>{auction && `${auction.title}`}</div>
+            <div className={clsx('frontinusTitle',classes.title)}>{auction && `${auction.title}`}</div>
           </Col>
 
           <Col className={classes.communityDescriptionRow}>
