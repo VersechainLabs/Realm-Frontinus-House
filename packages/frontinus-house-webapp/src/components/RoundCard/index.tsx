@@ -52,7 +52,7 @@ const RoundCard: React.FC<{
             openInNewTab(`${window.location.href}/${nameToSlug(round.title)}`);
             return;
           }
-          navigate(`${nameToSlug(round.title)}/${round.id}`);
+          navigate(`${round.id}/${nameToSlug(round.title)}`);
         }}
       >
         <Card
@@ -65,7 +65,7 @@ const RoundCard: React.FC<{
         >
           <div className={classes.textContainer}>
             <div className={classes.titleContainer}>
-              <div className={classes.authorContainer}>{round.title}</div>
+              <div className={clsx('frontinusTitle',classes.authorContainer)}>{round.title}</div>
               <StatusPill status={auctionStatus(round)} />
             </div>
 

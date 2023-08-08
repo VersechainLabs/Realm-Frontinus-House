@@ -11,8 +11,8 @@ import {
 import { Comment } from './comment.entity';
 import { CreateCommentDto, GetCommentsDto } from './comment.types';
 import { CommentsService } from './comments.service';
-import { ECDSAPersonalSignedPayloadValidationPipe } from '../entities/ecdsa-personal-signed.pipe';
 import { ApiOkResponse } from '@nestjs/swagger';
+import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 
 @Controller('comments')
 export class CommentsController {
@@ -24,7 +24,7 @@ export class CommentsController {
     type: Comment,
   })
   async create(
-    @Body(ECDSAPersonalSignedPayloadValidationPipe)
+    @Body(SignedPayloadValidationPipe)
     createCommentDto: CreateCommentDto,
   ): Promise<Comment> {
     return await this.commentsService.createComment(createCommentDto);

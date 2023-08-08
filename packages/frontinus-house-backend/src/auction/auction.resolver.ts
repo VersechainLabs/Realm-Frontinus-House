@@ -12,10 +12,10 @@ import {
   ResolveField,
   Resolver,
 } from '@nestjs/graphql';
-import { CommunitiesService } from 'src/community/community.service';
-import { Proposal } from 'src/proposal/proposal.entity';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { PaginationArgs } from 'src/utils/graphql';
+import { CommunitiesService } from '../community/community.service';
+import { Proposal } from '../proposal/proposal.entity';
+import { ProposalsService } from '../proposal/proposals.service';
+import { PaginationArgs } from '../utils/graphql';
 import { Between, LessThan, MoreThan } from 'typeorm';
 import { Auction, AuctionInput } from './auction.entity';
 import { AuctionsService } from './auctions.service';
@@ -31,14 +31,14 @@ class GetAuctionArgs extends PaginationArgs {
   where: Partial<Auction>;
 }
 
-export enum AuctionStatus {
+export enum AuctionStatusDeprecated {
   Upcoming = 'Upcoming',
   Open = 'Open',
   Voting = 'Voting',
   Closed = 'Closed',
 }
 
-registerEnumType(AuctionStatus, {
+registerEnumType(AuctionStatusDeprecated, {
   name: 'AuctionStatus',
   description: "The Auction's current status",
   valuesMap: {
@@ -57,8 +57,8 @@ registerEnumType(AuctionStatus, {
 
 @ArgsType()
 class AuctionsByStatusArgs extends PaginationArgs {
-  @Field((type) => AuctionStatus)
-  status: AuctionStatus;
+  @Field((type) => AuctionStatusDeprecated)
+  status: AuctionStatusDeprecated;
 }
 
 @Resolver((of) => Auction)
@@ -99,7 +99,7 @@ export class AuctionsResolver {
   })
   async auctionsByStatus(@Args() args: AuctionsByStatusArgs) {
     switch (args.status) {
-      case AuctionStatus.Upcoming:
+      case AuctionStatusDeprecated.Upcoming:
         return this.auctionsService.findWhere(
           args.offset,
           args.limit,
@@ -113,7 +113,7 @@ export class AuctionsResolver {
             'community',
           ],
         );
-      case AuctionStatus.Open:
+      case AuctionStatusDeprecated.Open:
         return this.auctionsService.findWhere(
           args.offset,
           args.limit,
@@ -131,7 +131,7 @@ export class AuctionsResolver {
             'community',
           ],
         );
-      case AuctionStatus.Voting:
+      case AuctionStatusDeprecated.Voting:
         return this.auctionsService.findWhere(
           args.offset,
           args.limit,
@@ -149,7 +149,7 @@ export class AuctionsResolver {
             'community',
           ],
         );
-      case AuctionStatus.Closed:
+      case AuctionStatusDeprecated.Closed:
         return this.auctionsService.findWhere(
           args.offset,
           args.limit,
@@ -172,31 +172,31 @@ export class AuctionsResolver {
     }
   }
 
-  @ResolveField((type) => AuctionStatus, {
+  @ResolveField((type) => AuctionStatusDeprecated, {
     description:
       'The current status of the Auction. See AuctionStatus for more detail.',
   })
   async status(@Parent() auction: Auction) {
     if (auction.startTime > new Date()) {
-      return AuctionStatus.Upcoming;
+      return AuctionStatusDeprecated.Upcoming;
     } else if (
       auction.startTime <= new Date() &&
       auction.votingEndTime > new Date() &&
       auction.proposalEndTime > new Date()
     ) {
-      return AuctionStatus.Open;
+      return AuctionStatusDeprecated.Open;
     } else if (
       auction.startTime <= new Date() &&
       auction.proposalEndTime <= new Date() &&
       auction.votingEndTime > new Date()
     ) {
-      return AuctionStatus.Voting;
+      return AuctionStatusDeprecated.Voting;
     } else if (
       auction.startTime <= new Date() &&
       auction.proposalEndTime <= new Date() &&
       auction.votingEndTime <= new Date()
     ) {
-      return AuctionStatus.Closed;
+      return AuctionStatusDeprecated.Closed;
     }
   }
 

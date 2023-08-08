@@ -11,17 +11,19 @@ import AddressAvatar from '../AddressAvatar';
 import { serverDateToString } from '../../utils/detailedTime';
 import classes from './Comments.module.css';
 import LoadingIndicator from '../LoadingIndicator';
-import { CommentModal } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
+import clsx from "clsx";
 
 type CommentsProps = {
   proposalId?: number;
   applicationId?: number;
+  commentCount?:number;
 }
 
 export default function Comments(props: CommentsProps) {
-  const { proposalId, applicationId } = props;
+  const { proposalId, applicationId,commentCount } = props;
 
-  const [commentList, setCommentList] = useState<CommentModal[]>([]);
+  const [commentList, setCommentList] = useState<StoredComment[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
   const [showTailLoading, setShowTailLoading] = useState(false);
 
@@ -30,10 +32,11 @@ export default function Comments(props: CommentsProps) {
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     loadNextPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [proposalId, applicationId]);
+  }, [proposalId, applicationId,commentCount]);
 
   const loadNextPage = (skip: number) => {
 
@@ -62,10 +65,13 @@ export default function Comments(props: CommentsProps) {
           list = commentList.concat(res);
         }
 
-        if (list.length <= 0) {
+        if (res.length < 10) {
           setShowLoadMore(false);
         }
 
+        if( commentCount == 10 && skip == 0 ) {
+          setShowLoadMore(false);
+        }
         setCommentList(list);
       },
     ).finally(() => {
@@ -75,7 +81,7 @@ export default function Comments(props: CommentsProps) {
     });
   };
 
-  const onCommentCreated = (newComment: CommentModal) => {
+  const onCommentCreated = (newComment: StoredComment) => {
     setCommentList([newComment].concat(commentList));
   };
 
@@ -89,7 +95,7 @@ export default function Comments(props: CommentsProps) {
       itemList.push(CommentListItem({ comment: comment }));
     });
 
-    if (commentList.length % 10 === 0) {
+    if (showLoadMore) {
       itemList.push(
         <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
           <LoadingButton
@@ -123,7 +129,7 @@ export default function Comments(props: CommentsProps) {
       }
 
       <div className={classes.listBar}>
-        <div className={classes.listTitle}>Comments</div>
+        <div className={clsx('frontinusTitle',classes.listTitle)}>Comments {props.commentCount}</div>
         {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
       {!loading ? <List>{itemList}</List> : (
@@ -137,7 +143,7 @@ export default function Comments(props: CommentsProps) {
 /// CommentListItem
 
 type CommentListItemProps = {
-  comment: CommentModal;
+  comment: StoredComment;
 };
 
 export function CommentListItem(props: CommentListItemProps) {
@@ -149,7 +155,7 @@ export function CommentListItem(props: CommentListItemProps) {
       <Avatar sx={{
         width: avatarSize, height: avatarSize,
         marginRight: '16px',
-      }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
+      }}><AddressAvatar size={avatarSize} address={comment.address} /></Avatar>
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -160,8 +166,9 @@ export function CommentListItem(props: CommentListItemProps) {
           display: 'flex',
           alignItems: 'baseline',
           marginBottom: '8px',
+          marginTop:'-2px'
         }}>
-          <EthAddress address={props.comment.owner} />
+          <EthAddress address={props.comment.address} className={'commentName'} />
 
           <div className={classes.date}>
             <span style={{

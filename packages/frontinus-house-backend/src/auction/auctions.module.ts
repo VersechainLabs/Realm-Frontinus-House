@@ -1,22 +1,25 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Community } from 'src/community/community.entity';
-import { CommunitiesService } from 'src/community/community.service';
-import { Proposal } from 'src/proposal/proposal.entity';
-import { ProposalsService } from 'src/proposal/proposals.service';
+import { Community } from '../community/community.entity';
+import { CommunitiesService } from '../community/community.service';
+import { Proposal } from '../proposal/proposal.entity';
+import { ProposalsService } from '../proposal/proposals.service';
 import { Auction } from './auction.entity';
 import { AuctionsController } from './auctions.controller';
 import { AuctionsService } from './auctions.service';
 import { BlockchainService } from '../blockchain/blockchain.service';
-import { Snapshot } from 'src/voting-power-snapshot/snapshot.entity';
-import { DelegateService } from 'src/delegate/delegate.service';
-import { Delegate } from 'src/delegate/delegate.entity';
-import { DelegationService } from 'src/delegation/delegation.service';
-import { Delegation } from 'src/delegation/delegation.entity';
+import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
+import { DelegateService } from '../delegate/delegate.service';
+import { Delegate } from '../delegate/delegate.entity';
+import { DelegationService } from '../delegation/delegation.service';
+import { Delegation } from '../delegation/delegation.entity';
+import { AdminService } from '../admin/admin.service';
+import { Admin } from '../admin/admin.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      Admin,
       Auction,
       Proposal,
       Community,
@@ -27,6 +30,7 @@ import { Delegation } from 'src/delegation/delegation.entity';
   ],
   controllers: [AuctionsController],
   providers: [
+    AdminService,
     AuctionsService,
     ProposalsService,
     CommunitiesService,

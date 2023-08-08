@@ -1,7 +1,7 @@
-import { Proposal } from 'src/proposal/proposal.entity';
-import { CreateVoteDto } from 'src/vote/vote.types';
+import { CreateVoteDto } from '../vote/vote.types';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
+import { SignedEntity } from '../entities/signed';
 
 export const verifySignPayloadForVote = (createVoteDto: CreateVoteDto) => {
   const signedPayload = JSON.parse(
@@ -26,4 +26,36 @@ export const verifySignPayloadForVote = (createVoteDto: CreateVoteDto) => {
   }
 
   return createVoteDto;
+};
+
+export const verifySignPayload = (
+  signedEntity: SignedEntity,
+  fieldsToCheck?: string[],
+) => {
+  const signedPayload = JSON.parse(
+    Buffer.from(signedEntity.signedData.message, 'base64').toString(),
+  );
+
+  if (
+    signedEntity.signedData.signer.toLowerCase() !==
+    signedEntity.address.toLowerCase()
+  ) {
+    throw new HttpException(
+      'Signature validation Failed',
+      HttpStatus.BAD_REQUEST,
+    );
+  }
+
+  if (fieldsToCheck) {
+    for (const field of fieldsToCheck) {
+      if (signedEntity[field] !== signedPayload[field]) {
+        console.warn(`Signature validation Failed For Field ${field}`);
+        throw new HttpException(
+          'Signature validation Failed',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+  }
+  return signedEntity;
 };

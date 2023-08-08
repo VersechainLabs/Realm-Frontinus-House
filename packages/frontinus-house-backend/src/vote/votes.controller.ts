@@ -8,17 +8,21 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { verifySignPayloadForVote } from 'src/utils/verifySignedPayload';
+import { ProposalsService } from '../proposal/proposals.service';
+import {
+  verifySignPayload,
+  verifySignPayloadForVote,
+} from '../utils/verifySignedPayload';
 import { convertVoteListToDelegateVoteList, Vote } from './vote.entity';
 import {
   CreateVoteDto,
   DelegatedVoteDto,
+  DeleteVoteDto,
   GetVoteDto,
   VotingPower,
 } from './vote.types';
 import { VotesService } from './votes.service';
-import { AuctionsService } from 'src/auction/auctions.service';
+import { AuctionsService } from '../auction/auctions.service';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
@@ -28,6 +32,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { ApiQuery } from '@nestjs/swagger/dist/decorators/api-query.decorator';
+import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 
 @Controller('votes')
 export class VotesController {
@@ -35,15 +40,14 @@ export class VotesController {
     private readonly votesService: VotesService,
     private readonly proposalService: ProposalsService,
     private readonly auctionService: AuctionsService,
-    private readonly blockchainService: BlockchainService,
   ) {}
 
-  @Get()
+  // @Get()
   getVotes(): Promise<Vote[]> {
     return this.votesService.findAll();
   }
 
-  @Get('findWithOpts')
+  // @Get('findWithOpts')
   getVotesWithOpts(@Query() dto: GetVoteDto): Promise<Vote[]> {
     return this.votesService.findAllWithOpts(dto);
   }
@@ -123,8 +127,8 @@ export class VotesController {
 
   @Get('getVotingEligibility')
   async isEligibleToVote(
-    proposalId: number,
-    address: string,
+    @Query() proposalId: number,
+    @Query() address: string,
   ): Promise<boolean> {
     const foundProposal = await this.proposalService.findOne(proposalId);
     if (!foundProposal) {
@@ -249,6 +253,90 @@ export class VotesController {
 
   @Get(':id')
   findOne(@Param('id') id: number): Promise<Vote> {
-    return this.votesService.findOne(id);
+    return this.votesService.findOne({
+      where: {
+        id: id,
+      },
+    });
+  }
+
+  @ApiOperation({
+    summary: 'Remove vote',
+    description:
+      'At the same time, it will remove the votes of others that it delegated.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'The vote has been successfully deleted.',
+  })
+  @ApiResponse({ status: 400, description: 'Bad request.' })
+  @Delete()
+  async deleteOne(
+    @Body(SignedPayloadValidationPipe) deleteVoteDto: DeleteVoteDto,
+  ): Promise<boolean> {
+    verifySignPayload(deleteVoteDto, ['id', 'proposalId']);
+
+    let foundVote;
+    if (deleteVoteDto.id) {
+      foundVote = await this.votesService.findOne({
+        where: { id: deleteVoteDto.id },
+      });
+    } else if (deleteVoteDto.proposalId) {
+      foundVote = await this.votesService.findOne({
+        where: {
+          address: deleteVoteDto.address,
+          proposalId: deleteVoteDto.proposalId,
+        },
+      });
+    } else {
+      throw new HttpException(
+        'Missing id or proposalId',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (!foundVote) {
+      throw new HttpException('No Vote with that ID', HttpStatus.NOT_FOUND);
+    }
+    if (
+      foundVote.address.toLowerCase() !== deleteVoteDto.address.toLowerCase()
+    ) {
+      throw new HttpException(
+        'Can not unapproved this Vote',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const foundProposal = await this.proposalService.findOne(
+      foundVote.proposalId,
+    );
+    // Should never happen ( Unless Chao manually modifies the database )
+    // if (!foundProposal) {
+    //   throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+    // }
+    const currentTime = new Date();
+    if (currentTime > foundProposal.auction.votingEndTime) {
+      throw new HttpException('Round had been ended.', HttpStatus.BAD_REQUEST);
+    }
+    if (foundVote.delegateId && foundVote.delegateId > 0) {
+      throw new HttpException(
+        'Unable to undo votes delegated by others.',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // Start remove vote.
+    const ids = [foundVote.id];
+    const delegateVoteList = await this.votesService.findAll({
+      where: {
+        proposalId: foundVote.proposalId,
+        delegateAddress: foundVote.address,
+      },
+    });
+    if (delegateVoteList.length > 0) {
+      ids.push(...delegateVoteList.map((v) => v.id));
+    }
+    await this.votesService.removeMany(ids);
+    await this.proposalService.rollupVoteCount(foundProposal.id);
+    return true;
   }
 }

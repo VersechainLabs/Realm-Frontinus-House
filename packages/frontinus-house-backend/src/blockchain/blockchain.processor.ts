@@ -1,17 +1,13 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
-import { BlockchainService } from 'src/blockchain/blockchain.service';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
 @Processor('bchain')
 export class BchainProcessor {
   private readonly logger = new Logger(BchainProcessor.name);
 
-  constructor(
-    // private readonly blockchainService: BlockchainService,
-  ) {
-  }
-
+  constructor() {} // private readonly blockchainService: BlockchainService,
 
   @Process('transcode')
   handleTranscode(job: Job) {
@@ -47,11 +43,11 @@ export class BchainProcessor {
 //     console.log(
 //       `Processing job ${job.id} of type ${job.name} with data ${job.data}...`,
 //     );
-//   }  
+//   }
 
 //   // @OnGlobalQueueCompleted()
 //   // async onGlobalCompleted(jobId: number, result: any) {
 //   //   const job = await this.immediateQueue.getJob(jobId);
 //   //   console.log('(Global) on completed: job ', job.id, ' -> result: ', result);
-//   // }  
+//   // }
 // }

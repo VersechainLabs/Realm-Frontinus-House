@@ -1,19 +1,16 @@
 import { Transform } from 'class-transformer';
-import { IsEthereumAddress } from 'class-validator';
-
 import {
   IsArray,
   IsEnum,
   IsInt,
   IsNumber,
   IsOptional,
-  IsPositive,
-  IsString,
   Min,
-  isEthereumAddress,
 } from 'class-validator';
+import { SignedEntity } from '../entities/signed';
+import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
-export class CreateDelegateDto {
+export class CreateDelegateDto extends SignedEntity {
   // @IsInt()
   // @IsOptional()
   // delegationId: number;
@@ -21,18 +18,28 @@ export class CreateDelegateDto {
   @IsInt()
   applicationId: number;
 
-  @IsString()
-  address: string; // "From" Address
-
   // @IsString()
   // @IsOptional()
   // toAddress: string;
+}
+
+export class DeleteDelegateDto extends SignedEntity {
+  @ApiProperty({ description: 'The delegate ID to delete' })
+  @IsNumber()
+  @IsOptional()
+  id: number;
+
+  @ApiProperty({ description: 'The application ID to delete delegate' })
+  @IsNumber()
+  @IsOptional()
+  applicationId: number;
 }
 
 export enum Order {
   ASC = 'ASC',
   DESC = 'DESC',
 }
+
 
 export class GetDelegateDto {
   @IsOptional()

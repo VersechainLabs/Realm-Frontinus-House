@@ -1,13 +1,14 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { Admin } from './admin.entity';
 import { AdminService } from './admin.service';
-import { ProposalsService } from 'src/proposal/proposals.service';
-import { CreateAdminDto } from './admin.types';
+import { CreateAdminDto, UserType } from './admin.types';
 import { ApiOkResponse } from '@nestjs/swagger';
+import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 
 @Controller('admins')
 export class AdminsController {
   [x: string]: any;
+
   constructor(private readonly adminService: AdminService) {}
 
   @Get('/list')
@@ -22,13 +23,24 @@ export class AdminsController {
   @ApiOkResponse({
     type: Admin,
   })
-  async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
-    return await this.adminService.createAdmin(createAdminDto);
+  async create(
+    @Body(SignedPayloadValidationPipe) dto: CreateAdminDto,
+  ): Promise<Admin> {
+    await this.adminService.ensureIsAdmin(dto.address);
+    return await this.adminService.createAdmin(dto);
   }
 
-  @Post('/:id/delete')
-  async delete(@Param('id') id: number): Promise<boolean> {
-    await this.adminService.remove(id);
-    return true;
+  @Post('/getUserType')
+  // @ApiOkResponse({
+  //   description: 'Id가 일치하는 유저 정보를 조회한다.',
+  //   type: UserResponseDto,
+  // })
+  async search(@Query('address') address: UserType) {
+    const adminRecord = this.adminService.searchByAddress(address);
+
+    // return (await adminRecord).length;
+    if ((await adminRecord).length === 0) return UserType.User;
+
+    return UserType.Admin;
   }
 }

@@ -13,11 +13,9 @@ import {
   Min,
   MinLength,
 } from 'class-validator';
+import { SignedEntity } from '../entities/signed';
 
-export class CreateApplicationDto {
-  @IsString()
-  address: string;
-
+export class CreateApplicationDto extends SignedEntity {
   @ApiProperty({})
   @MinLength(3)
   @MaxLength(100)

@@ -120,7 +120,7 @@ const DelegateEditor: React.FC<{
       type: 'input',
       fieldValue: data.tldr,
       fieldName: 'tldr',
-      placeholder: t('bibliothecaTitle'),
+      placeholder: t('tldrPlaceholder'),
       value: '',
       minCount: 10,
       maxCount: 120,
@@ -222,7 +222,7 @@ const DelegateEditor: React.FC<{
 
   return (
     <>
-      <div className={classes.nominateText}>Creating your proposal for</div>
+      <div className={classes.nominateText}>Creating your proposal</div>
       <ProposalInputs onDataChange={onDataChange} formData={formData} fundReqData={fundReqData} />
 
       <div className={classes.buttonContainer}>

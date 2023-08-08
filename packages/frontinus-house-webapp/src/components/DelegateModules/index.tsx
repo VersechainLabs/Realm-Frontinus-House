@@ -125,14 +125,11 @@ const DelegateModules: React.FC<{
       />
     );
 
+
   const modules = [
     acceptingPropsModule,
-    timedRoundVotingModule,
-    infRoundVotingModule,
-    roundWinnerModule,
     roundStaleModule,
     roundOverModule,
-    userPropCardModule,
   ];
 
   return (

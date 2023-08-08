@@ -10,9 +10,9 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
-import { AuctionsService } from 'src/auction/auctions.service';
-import { ECDSASignedPayloadValidationPipe } from 'src/entities/ecdsa-signed.pipe';
-import { canSubmitProposals } from 'src/utils';
+import { AuctionsService } from '../auction/auctions.service';
+import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
+import { VoteStates, canSubmitProposals } from '../utils';
 import { Proposal } from './proposal.entity';
 import {
   CreateProposalDto,
@@ -28,8 +28,10 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
-import getProposalByIdResponse from 'examples/getProposalById.json';
+import getProposalByIdResponse from '../../examples/getProposalById.json';
 import { VotesService } from '../vote/votes.service';
+import { verifySignPayload } from '../utils/verifySignedPayload';
+import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 
 @Controller('proposals')
 export class ProposalsController {
@@ -75,7 +77,7 @@ export class ProposalsController {
       throw new HttpException('Proposal not found', HttpStatus.NOT_FOUND);
 
     if (userAddress && userAddress.length > 0) {
-      await this.checkCanVote(foundProposal, userAddress);
+      await this.addVoteState(foundProposal, userAddress);
     }
 
     return foundProposal;
@@ -86,9 +88,11 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     deleteProposalDto: DeleteProposalDto,
   ) {
+    verifySignPayload(deleteProposalDto, ['id']);
     const foundProposal = await this.proposalsService.findOne(
       deleteProposalDto.id,
     );
+
     if (!foundProposal)
       throw new HttpException(
         'No proposal with that ID exists',
@@ -101,22 +105,12 @@ export class ProposalsController {
         HttpStatus.BAD_REQUEST,
       );
 
-    // Check that signed payload and body have same proposal ID
-    const signedPayload = JSON.parse(
-      Buffer.from(deleteProposalDto.signedData.message, 'base64').toString(),
-    );
-
-    if (signedPayload.id !== deleteProposalDto.id)
-      throw new HttpException(
-        "Signed payload and supplied data doesn't match",
-        HttpStatus.BAD_REQUEST,
-      );
-
-    if (deleteProposalDto.address !== foundProposal.address)
+    if (deleteProposalDto.address !== foundProposal.address) {
       throw new HttpException(
         "Found proposal does not match signed payload's address",
         HttpStatus.BAD_REQUEST,
       );
+    }
 
     return await this.proposalsService.remove(deleteProposalDto.id);
   }
@@ -126,6 +120,14 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     updateProposalDto: UpdateProposalDto,
   ): Promise<Proposal> {
+    verifySignPayload(updateProposalDto, [
+      'what',
+      'tldr',
+      'title',
+      'parentAuctionId',
+      'id',
+    ]);
+
     const foundProposal = await this.proposalsService.findOne(
       updateProposalDto.id,
     );
@@ -138,25 +140,6 @@ export class ProposalsController {
     if (!canSubmitProposals(await foundProposal.auction))
       throw new HttpException(
         'You cannot edit proposals for this round at this time',
-        HttpStatus.BAD_REQUEST,
-      );
-
-    // Verify that signed data equals this payload
-    const signedPayload = JSON.parse(
-      Buffer.from(updateProposalDto.signedData.message, 'base64').toString(),
-    );
-
-    if (
-      !(
-        signedPayload.what === updateProposalDto.what &&
-        signedPayload.tldr === updateProposalDto.tldr &&
-        signedPayload.title === updateProposalDto.title &&
-        signedPayload.parentAuctionId === updateProposalDto.parentAuctionId &&
-        signedPayload.id === updateProposalDto.id
-      )
-    )
-      throw new HttpException(
-        "Signed payload and supplied data doesn't match",
         HttpStatus.BAD_REQUEST,
       );
 
@@ -184,6 +167,13 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     createProposalDto: CreateProposalDto,
   ): Promise<Proposal> {
+    verifySignPayload(createProposalDto, [
+      'what',
+      'tldr',
+      'title',
+      'parentAuctionId',
+    ]);
+
     const foundAuction = await this.auctionsService.findOne(
       createProposalDto.parentAuctionId,
     );
@@ -195,27 +185,16 @@ export class ProposalsController {
 
     if (!canSubmitProposals(foundAuction))
       throw new HttpException(
-        'You cannot edit proposals for this round at this time',
+        'You cannot create proposals for this round at this time',
         HttpStatus.BAD_REQUEST,
       );
 
-    // Verify that signed data equals this payload
-    const signedPayload = JSON.parse(
-      Buffer.from(createProposalDto.signedData.message, 'base64').toString(),
-    );
-
-    if (
-      !(
-        signedPayload.what === createProposalDto.what &&
-        signedPayload.tldr === createProposalDto.tldr &&
-        signedPayload.title === createProposalDto.title &&
-        signedPayload.parentAuctionId === createProposalDto.parentAuctionId
-      )
-    )
+    if (foundAuction.visibleStatus === AuctionVisibleStatus.PENDING) {
       throw new HttpException(
-        "Signed payload and supplied data doesn't match",
+        'You cannot create proposals for this round at this time',
         HttpStatus.BAD_REQUEST,
       );
+    }
 
     const proposal = new Proposal();
     proposal.address = createProposalDto.address;
@@ -228,34 +207,33 @@ export class ProposalsController {
     return this.proposalsService.store(proposal);
   }
 
-  async checkCanVote(foundProposal: Proposal, userAddress: string) {
-    try {
-      if (foundProposal.votes) {
-        for (const vote of foundProposal.votes) {
-          if (vote.address === userAddress) {
-            foundProposal.canVote = false;
-            foundProposal.disallowedVoteReason =
-              'You have voted for this proposal';
-            return;
-          }
+  /**
+   * Add canVote|disallowedVoteReason|stateCode to proposal entity.
+   * @param foundProposal
+   * @param userAddress
+   * @returns
+   */
+  async addVoteState(foundProposal: Proposal, userAddress: string) {
+    if (foundProposal.votes) {
+      for (const vote of foundProposal.votes) {
+        if (vote.address === userAddress) {
+          foundProposal.voteState = VoteStates.VOTED;
+          return;
         }
       }
-
-      await this.voteService.checkEligibleToVote(
-        foundProposal,
-        foundProposal.auction,
-        userAddress,
-        true,
-      );
-
-      foundProposal.canVote = true;
-    } catch (e) {
-      if (e instanceof HttpException) {
-        foundProposal.canVote = false;
-        foundProposal.disallowedVoteReason = e.message;
-      } else {
-        console.log(e);
-      }
     }
+
+    const checkVoteState = await this.voteService.checkEligibleToVoteNew(
+      foundProposal,
+      foundProposal.auction,
+      userAddress,
+      true,
+    );
+    if (checkVoteState) {
+      foundProposal.voteState = checkVoteState;
+      return;
+    }
+
+    foundProposal.voteState = VoteStates.OK;
   }
 }

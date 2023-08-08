@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { Auction } from 'src/auction/auction.entity';
+import { Auction } from '../auction/auction.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -71,10 +71,20 @@ export class Proposal {
 
   @BeforeUpdate()
   updateVoteCount() {
-    this.voteCount = this.votes.reduce((acc, vote) => {
-      return Number(acc) + Number(vote.weight);
-    }, 0);
+    if (this.votes) {
+      this.voteCount = this.votes.reduce((acc, vote) => {
+        return Number(acc) + Number(vote.weight);
+      }, 0);
+    } else {
+      this.voteCount = 0;
+    }
   }
+
+  @ApiProperty({
+    description: 'The comment count about this proposal',
+  })
+  @Column({ type: 'integer', default: 0 })
+  commentCount: number;
 
   @ApiProperty()
   @Column()
@@ -132,6 +142,12 @@ export class Proposal {
     nullable: true,
   })
   disallowedVoteReason: string | null;
+  @ApiProperty({
+    description:
+      'Indicates how the frontend should react based on this code.',
+    type: Object,
+  })
+  voteState: any;
 
   toJSON() {
     if (this.votes && this.votes.length > 0) {

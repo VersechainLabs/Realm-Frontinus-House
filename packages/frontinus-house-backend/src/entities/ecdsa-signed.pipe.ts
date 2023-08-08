@@ -1,6 +1,6 @@
 import { PipeTransform, Injectable } from '@nestjs/common';
-import { SignatureState } from 'src/types/signature';
-import { verifyAccountSignature } from 'src/utils';
+import { SignatureState } from '../types/signature';
+import { verifyPersonalMessageSignature } from '../utils';
 import { SignedEntity } from './signed';
 
 @Injectable()
@@ -11,10 +11,8 @@ export class ECDSASignedPayloadValidationPipe implements PipeTransform {
   transform(value: SignedEntity) {
     const message = Buffer.from(value.signedData.message, 'base64').toString();
 
-    const { isValidAccountSig, accountSigError } = verifyAccountSignature(
-      message,
-      value,
-    );
+    const { isValidAccountSig, accountSigError } =
+      verifyPersonalMessageSignature(message, value);
     if (!isValidAccountSig) {
       throw new Error(accountSigError);
     }

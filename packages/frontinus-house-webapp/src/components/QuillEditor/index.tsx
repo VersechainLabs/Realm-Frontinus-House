@@ -3,11 +3,15 @@ import React, {useEffect, useRef, useState} from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
 import BlotFormatter from 'quill-blot-formatter';
-import { Form } from 'react-bootstrap';
+import {Container, Form} from 'react-bootstrap';
 import clsx from 'clsx';
 import classes from './QuillEditor.module.css';
 import {useConnectModal} from "@rainbow-me/rainbowkit";
 import {useAccount} from "wagmi";
+import RenderedProposalFields from "../RenderedProposalFields";
+import {IoArrowBackCircleOutline} from "react-icons/io5";
+import NotFound from "../NotFound";
+import LoadingIndicator from "../LoadingIndicator";
 
 type QuillEditorProps = {
   widgetKey: string;
@@ -66,6 +70,9 @@ export default function QuillEditor(props: QuillEditorProps) {
 
 
       if (file) {
+        // quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/QmRZoJNYQ65oPTgpcLR5gcHfDsdfvdCXQscfgvJaq8tqdW','user');
+        // quillObj.setSelection(range.index + 1);
+        // return false;
 
         setShowLoading(true);
         quillObj.disable();
@@ -84,11 +91,12 @@ export default function QuillEditor(props: QuillEditorProps) {
           return;
         }
 
-        setShowLoading(false);
-        quillObj.enable();
+
 
         quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
-        quillObj.setSelection(range.index + 1)
+        quillObj.setSelection(range.index + 1);
+        setShowLoading(false);
+        quillObj.enable();
       }
     };
   };
@@ -115,10 +123,11 @@ export default function QuillEditor(props: QuillEditorProps) {
     },
   };
 
-  const placeholder =  props.placeholderText;
 
 
   const theme = 'snow';
+  const placeholder = props.placeholderText;
+
 
   const { quill, quillRef, Quill } = useQuill({ theme, modules,placeholder,formats});
   if (Quill && !quill) {
@@ -144,9 +153,9 @@ export default function QuillEditor(props: QuillEditorProps) {
     // });
 
     quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
-      if (source === 'user') {
+      // if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-      }
+      // }
     });
 
 
@@ -174,6 +183,13 @@ export default function QuillEditor(props: QuillEditorProps) {
     return     props.onButtonClick?.(props.widgetKey);
   }
 
+
+  const handleClick =  () => {
+    const quillObj = quillRef.current.__quill;
+    quillObj.focus();
+  }
+
+
   return (
     <Form>
       <Form.Group className={clsx(classes.inputGroup)}>
@@ -183,7 +199,7 @@ export default function QuillEditor(props: QuillEditorProps) {
           {/*  <Form.Label className={classes.iwnputChars}>{quill && quill.getText().length - 1}</Form.Label>*/}
           {/*</div>*/}
           <>
-            <div  style={{minHeight:(props.minHeightStr)}} ref={quillRef} />
+            <div  style={{minHeight:(props.minHeightStr)}} ref={quillRef} onClick={() => handleClick()}/>
             {
               showLoading && (
                   <div className={'loadingImg'}>
@@ -217,13 +233,24 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               <button className="ql-image"></button>
 
-              <div
-                  id="custom-button"
-                  onClick={clickBtn}
-              >
-                <span>{ props.btnText }</span>
-              </div>
 
+
+              {props.loading ? (
+                  <div
+                      id="custom-button"
+                      className={'btnDisabled'}
+
+                  >
+                    <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                  </div>
+              ) :  (
+                  <div
+                      id="custom-button"
+                      onClick={clickBtn}
+                  >
+                    <span>{ props.btnText }</span>
+                  </div>
+              )}
 
 
             </div>

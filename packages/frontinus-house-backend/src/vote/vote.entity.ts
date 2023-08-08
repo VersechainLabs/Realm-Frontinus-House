@@ -1,8 +1,9 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
-import { Proposal } from 'src/proposal/proposal.entity';
+import { Proposal } from '../proposal/proposal.entity';
 import {
-  BeforeInsert,
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -12,6 +13,7 @@ import { Delegate } from '../delegate/delegate.entity';
 import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 import { Address } from '../types/address';
 import { IsEthereumAddress } from 'class-validator';
+import { Exclude, instanceToPlain } from 'class-transformer';
 
 @Entity()
 @ObjectType()
@@ -96,15 +98,14 @@ export class Vote {
   })
   delegateList: Vote[];
 
-  // @ApiProperty()
-  @Column()
+  @CreateDateColumn()
   @Field(() => Date)
   createdDate?: Date;
 
-  @BeforeInsert()
-  setCreatedDate() {
-    this.createdDate = new Date();
-  }
+  @Exclude({ toPlainOnly: true })
+  @DeleteDateColumn()
+  @Field(() => Date)
+  deletedDate?: Date;
 
   constructor(opts?: Partial<Vote>) {
     if (opts) {
@@ -119,6 +120,11 @@ export class Vote {
       this.delegateId = opts.delegateId;
       this.delegateAddress = opts.delegateAddress;
     }
+  }
+
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
+  toJSON() {
+    return instanceToPlain(this);
   }
 }
 

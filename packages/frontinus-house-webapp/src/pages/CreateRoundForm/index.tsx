@@ -16,6 +16,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../state/slices/alert';
+import clsx from "clsx";
 
 dayjs.extend(isToday);
 
@@ -235,7 +236,7 @@ const CreateRound: React.FC<{}> = () => {
 
   const close = () => {
     setFlag(false);
-    navigate('/frontinus');
+    navigate('/');
   };
 
   return (
@@ -243,7 +244,7 @@ const CreateRound: React.FC<{}> = () => {
       <Container>
         <Row>
           <form onSubmit={handleSubmit}>
-            <div className={classes.title}>Round Creation</div>
+            <div className={clsx('frontinusTitle',classes.title)}>Round creation</div>
             <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
               questions: https://discord.gg/uQnjZhZPfu.

@@ -8,8 +8,8 @@ import {
   statSync,
   writeFileSync,
 } from 'fs';
-import config from 'src/config/configuration';
-import { IpfsService } from 'src/ipfs/ipfs.service';
+import config from '../config/configuration';
+import { IpfsService } from '../ipfs/ipfs.service';
 import { Repository } from 'typeorm';
 import { File } from './file.entity';
 

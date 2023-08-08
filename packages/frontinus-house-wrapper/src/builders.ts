@@ -1,4 +1,3 @@
-import { DomainSeparator } from './types/eip712Types';
 import { TypedDataDomain, WalletClient } from 'viem';
 import { TypedDataField } from '@ethersproject/abstract-signer';
 
@@ -27,27 +26,28 @@ export abstract class Signable {
   /** sign typed data */
   async signedPayload(
     signer: WalletClient,
-    primaryType: string,
-    eip712MessageTypes: Record<string, TypedDataField[]>,
   ) {
     const jsonPayload = this.jsonPayload();
     const address = (await signer.getAddresses())[0];
 
-    const signature = await this.typedSignature(signer, DomainSeparator, eip712MessageTypes, primaryType, address);
-
+    let payload = {
+      address: address,
+      ...this.toPayload(),
+    };
+    const signMessage = JSON.stringify(payload);
+    const signature = await signer.signMessage({
+      account: address,
+      message: signMessage,
+    });
     if (!signature) throw new Error(`Error signing payload.`);
-
     return {
       signedData: {
-        message: Buffer.from(jsonPayload).toString('base64'),
+        message: Buffer.from(signMessage).toString('base64'),
         signature: signature,
         signer: address,
       },
-      address,
-      messageTypes: eip712MessageTypes,
-      domainSeparator: DomainSeparator,
-      primaryType: primaryType,
-      ...this.toPayload(),
+      owner: address,
+      ...payload,
     };
   }
 
@@ -87,6 +87,30 @@ export class TimedAuction extends Signable {
       community: this.community,
       communityId: this.communityId,
       balanceBlockTag: this.balanceBlockTag,
+      description: this.description,
+    };
+  }
+}
+
+export class TimedDelegate extends Signable {
+  constructor(
+    public readonly title: string,
+    public readonly startTime: Date,
+    public readonly endTime: Date,
+    public readonly proposalEndTime: Date,
+    public readonly votingEndTime: Date,
+    public readonly description: string,
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      title: this.title,
+      startTime: this.startTime.toISOString(),
+      endTime: this.endTime.toISOString(),
+      proposalEndTime: this.proposalEndTime.toISOString(),
+      votingEndTime: this.votingEndTime.toISOString(),
       description: this.description,
     };
   }
@@ -241,7 +265,11 @@ export interface StoredProposal extends Proposal {
   lastUpdatedDate: Date;
   deletedAt: Date;
   reqAmount: number | null;
-
+  voteState: {
+    canVote: boolean;
+    code: number;
+    reason: string;
+  }
   canVote: boolean;
   disallowedVoteReason: string | null;
 }
@@ -262,6 +290,18 @@ export class DeleteProposal extends Signable {
   }
 }
 
+export class DeleteApplication extends Signable {
+  constructor(public readonly id: number) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      applicationId: this.id,
+    };
+  }
+}
+
 export enum Direction {
   Up = 1,
   Down = -1,
@@ -276,7 +316,7 @@ export enum SignatureState {
 
 export class Vote extends Signable {
   constructor(
-    public readonly direction: Direction,
+    // public readonly direction: Direction,
     public readonly proposalId: number,
   ) {
     super();
@@ -284,7 +324,24 @@ export class Vote extends Signable {
 
   toPayload() {
     return {
-      direction: this.direction,
+      // No need direction
+      // direction: this.direction,
+      proposalId: this.proposalId,
+    };
+  }
+}
+
+export class DeleteVote extends Signable {
+  constructor(
+      public readonly proposalId: number,
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      // No need direction
+      // direction: this.direction,
       proposalId: this.proposalId,
     };
   }
@@ -347,21 +404,30 @@ export class Community extends Signable {
   }
 }
 
-export interface Comment {
-  content: string;
-  proposalId?: number;
-  applicationId?: number;
+export class Comment extends Signable {
+  constructor(
+    public readonly content: string,
+    public readonly proposalId?: number,
+    public readonly applicationId?: number,
+  ) {
+    super();
+  }
+
+  toPayload(): any {
+    return {
+      content: this.content,
+      proposalId: this.proposalId,
+      applicationId: this.applicationId,
+    };
+  }
+}
+
+export interface StoredComment extends Comment {
+  id: number;
+  address: string;
+  createdDate: string;
 }
 
 export interface CommunityWithAuctions extends Community {
   auctions: StoredTimedAuction[];
-}
-
-export type CommentModal = {
-  id: number;
-  proposalId: number;
-  content: string;
-  visible: boolean;
-  owner: string;
-  createdDate: string;
 }

@@ -4,12 +4,13 @@ import {
   DeepPartial,
   FindConditions,
   FindManyOptions,
+  FindOneOptions,
   Repository,
 } from 'typeorm';
 import { Vote } from './vote.entity';
 import { DelegatedVoteDto, GetVoteDto, VotingPower } from './vote.types';
-import { Proposal } from 'src/proposal/proposal.entity';
-import config from 'src/config/configuration';
+import { Proposal } from '../proposal/proposal.entity';
+import config from '../config/configuration';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Auction } from '../auction/auction.entity';
 import { DelegationState } from '../delegation/delegation.types';
@@ -17,10 +18,12 @@ import { DelegationService } from '../delegation/delegation.service';
 import { DelegateService } from '../delegate/delegate.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
+import { VoteStates } from '../utils';
 
 @Injectable()
 export class VotesService {
   private readonly communityAddress = config().communityAddress;
+
 
   constructor(
     @InjectRepository(Vote)
@@ -29,6 +32,9 @@ export class VotesService {
     private readonly delegationService: DelegationService,
     private readonly delegateService: DelegateService,
   ) {}
+
+  // public stateMsg : string;
+  // public stateCode : number;
 
   async findAll(opts?: FindManyOptions<Vote>): Promise<Vote[]> {
     return this.votesRepository.find(opts);
@@ -70,8 +76,8 @@ export class VotesService {
       .getMany();
   }
 
-  findOne(id: number): Promise<Vote> {
-    return this.votesRepository.findOne(id);
+  findOne(opt?: FindOneOptions<Vote>): Promise<Vote> {
+    return this.votesRepository.findOne(opt);
   }
 
   findBy(auctionId: number, address: string): Promise<Vote> {
@@ -80,8 +86,12 @@ export class VotesService {
     });
   }
 
-  async remove(id: string): Promise<void> {
-    await this.votesRepository.delete(id);
+  async remove(id: number): Promise<void> {
+    await this.votesRepository.softDelete(id);
+  }
+
+  async removeMany(ids: number[]): Promise<void> {
+    await this.votesRepository.softDelete(ids);
   }
 
   async store(vote: DeepPartial<Vote>) {
@@ -215,6 +225,36 @@ export class VotesService {
 
     return true;
   }
+  async checkEligibleToVoteNew(
+    proposal: Proposal,
+    auction: Auction,
+    address: string,
+    checkVotingPower = true,
+  ): Promise<object> {
+    const currentTime = new Date();
+    if (
+      currentTime < auction.proposalEndTime ||
+      currentTime > auction.votingEndTime
+    ) {
+      return VoteStates.NOT_VOTING;
+    }
+
+    // Check if user has voted for this round, Protect against casting same vote twice
+    const sameAuctionVote = await this.findBy(auction.id, address);
+    if (sameAuctionVote) {
+      return VoteStates.DUPLICATE;
+    }
+
+    if (checkVotingPower) {
+      const vp = await this.getVotingPower(address, auction, true);
+      if (vp.weight === 0) {
+        return VoteStates.NO_POWER;
+      }
+    }
+
+    // return true;
+  }
+
 
   async createNewVoteList(voteDtoList: DelegatedVoteDto[], proposal: Proposal) {
     const voteList = [];

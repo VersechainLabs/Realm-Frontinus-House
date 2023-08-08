@@ -170,13 +170,13 @@ function App() {
                   <Route path="/create-round" element={<CreateRound />} />
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
-                  <Route path="/faq" element={<FAQ />} />
+                  {/*<Route path="/faq" element={<FAQ />} />*/}
                   <Route path="/proposal/:id" element={<Proposal />} />
                   <Route path="/application/:id" element={<Application />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   {/*<Route path="/:house" element={<House />} />*/}
                   {/*<Route path="/:title" element={<Round />} />*/}
-                  <Route path="/:title/:id" element={<Round />} />
+                  <Route path="/:id/:title" element={<Round />} />
                   <Route path="/comment/:proposalId" element={<CommentsPage />} />
 
                   <Route path="*" element={<NotFound />} />

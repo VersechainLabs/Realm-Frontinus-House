@@ -57,7 +57,7 @@ const HouseHeader: React.FC<{
       <div className={classes.communityInfoCol}>
         <div className={classes.houseTitleInfo}>
           <div className={clsx(classes.titleRow, isLongName(community.name) && classes.longName)}>
-            <div className={classes.title}>{community.name} House</div>
+            <div className={clsx('frontinusTitle',classes.title)}>{community.name} House</div>
             <Tooltip
               content={
                 <div
@@ -85,7 +85,7 @@ const HouseHeader: React.FC<{
 
           <div className={classes.propHouseDataRow}>
             <div className={classes.itemData}>{community.numAuctions ?? 0}</div>
-            <div className={classes.itemTitle}>
+            <div className={clsx('frontinusTitle',classes.itemTitle)}>
               {Number(community?.numAuctions) === 1 ? t('roundCap') : t('roundsCap')}
             </div>
             <span className={classes.bullet}>{' • '}</span>
