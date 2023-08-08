@@ -8,6 +8,7 @@ import { Community } from '../community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 import { Proposal } from '../proposal/proposal.entity';
+import { ParseDate } from '../utils';
 
 export type AuctionWithProposalCount = Auction & { numProposals: number };
 
@@ -211,11 +212,7 @@ export class AuctionsService {
       );
     }
 
-    const currentTime = new Date();
-    if (!dto.startTime || dto.startTime < currentTime) {
-      dto.startTime = currentTime;
-    }
-
+    const startTime = dto.startTime ? dto.startTime : new Date();
     if (
       dto.startTime >= dto.proposalEndTime ||
       dto.proposalEndTime >= dto.votingEndTime

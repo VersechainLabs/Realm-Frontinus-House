@@ -18,10 +18,12 @@ import { DelegationService } from '../delegation/delegation.service';
 import { DelegateService } from '../delegate/delegate.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
+import { VoteStates } from '../utils';
 
 @Injectable()
 export class VotesService {
   private readonly communityAddress = config().communityAddress;
+
 
   constructor(
     @InjectRepository(Vote)
@@ -30,6 +32,9 @@ export class VotesService {
     private readonly delegationService: DelegationService,
     private readonly delegateService: DelegateService,
   ) {}
+
+  // public stateMsg : string;
+  // public stateCode : number;
 
   async findAll(opts?: FindManyOptions<Vote>): Promise<Vote[]> {
     return this.votesRepository.find(opts);
@@ -220,6 +225,36 @@ export class VotesService {
 
     return true;
   }
+  async checkEligibleToVoteNew(
+    proposal: Proposal,
+    auction: Auction,
+    address: string,
+    checkVotingPower = true,
+  ): Promise<object> {
+    const currentTime = new Date();
+    if (
+      currentTime < auction.proposalEndTime ||
+      currentTime > auction.votingEndTime
+    ) {
+      return VoteStates.NOT_VOTING;
+    }
+
+    // Check if user has voted for this round, Protect against casting same vote twice
+    const sameAuctionVote = await this.findBy(auction.id, address);
+    if (sameAuctionVote) {
+      return VoteStates.DUPLICATE;
+    }
+
+    if (checkVotingPower) {
+      const vp = await this.getVotingPower(address, auction, true);
+      if (vp.weight === 0) {
+        return VoteStates.NO_POWER;
+      }
+    }
+
+    // return true;
+  }
+
 
   async createNewVoteList(voteDtoList: DelegatedVoteDto[], proposal: Proposal) {
     const voteList = [];
