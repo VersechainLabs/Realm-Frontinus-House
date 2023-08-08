@@ -179,10 +179,11 @@ const ApplicationInputs: React.FC<{
 
             {/** DESCRIPTION */}
           </Form>
+          <div className={classes.description}>
+            Description
+          </div>
           <div className={"propEditor"}>
-            <div className={classes.description}>
-              Description
-            </div>
+
             <QuillEditor
                 widgetKey={'Comment-proposalId'}
                 minHeightStr={'400px'}
