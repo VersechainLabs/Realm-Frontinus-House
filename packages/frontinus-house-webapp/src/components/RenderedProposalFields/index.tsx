@@ -33,7 +33,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             <div className={classes.backBtnContainer}>{backButton && backButton}</div>
             <div className={classes.headerBottomContainer}>
               <div>
-                <h1>{fields.title}</h1>
+                <h1 className={clsx('frontinusTitle')}>{fields.title}</h1>
 
                 {proposal.address && proposal.id && (
                   <div className={classes.subinfo}>

@@ -12,6 +12,7 @@ import { serverDateToString } from '../../utils/detailedTime';
 import classes from './Comments.module.css';
 import LoadingIndicator from '../LoadingIndicator';
 import { StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
+import clsx from "clsx";
 
 type CommentsProps = {
   proposalId?: number;
@@ -128,7 +129,7 @@ export default function Comments(props: CommentsProps) {
       }
 
       <div className={classes.listBar}>
-        <div className={classes.listTitle}>Comments {props.commentCount}</div>
+        <div className={clsx('frontinusTitle',classes.listTitle)}>Comments {props.commentCount}</div>
         {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
       {!loading ? <List>{itemList}</List> : (
