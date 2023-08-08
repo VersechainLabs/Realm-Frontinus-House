@@ -31,10 +31,11 @@ export default function Comments(props: CommentsProps) {
   const [showLoadMore, setShowLoadMore] = useState(true);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     loadNextPage(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [proposalId, applicationId]);
+  }, [proposalId, applicationId,commentCount]);
 
   const loadNextPage = (skip: number) => {
 
@@ -63,10 +64,13 @@ export default function Comments(props: CommentsProps) {
           list = commentList.concat(res);
         }
 
-        if (list.length <= 0) {
+        if (res.length < 10) {
           setShowLoadMore(false);
         }
 
+        if( commentCount == 10 && skip == 0 ) {
+          setShowLoadMore(false);
+        }
         setCommentList(list);
       },
     ).finally(() => {
@@ -90,7 +94,7 @@ export default function Comments(props: CommentsProps) {
       itemList.push(CommentListItem({ comment: comment }));
     });
 
-    if (commentList.length % 10 === 0) {
+    if (showLoadMore) {
       itemList.push(
         <ListItem key={'has-more'} sx={{ justifyContent: 'center' }}>
           <LoadingButton

@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { setActiveCommunity, setActiveProposal, setActiveRound } from '../../state/slices/propHouse';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import LoadingIndicator from '../../components/LoadingIndicator';
-import { StoredProposalWithVotes, Vote } from '@nouns/frontinus-house-wrapper/dist/builders';
+import {DeleteVote, StoredProposalWithVotes, Vote} from '@nouns/frontinus-house-wrapper/dist/builders';
 import { Container } from 'react-bootstrap';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { cardServiceUrl, CardType } from '../../utils/cardServiceUrl';
@@ -169,11 +169,13 @@ const Proposal = () => {
                     onClick={async () => {
                       // TODO: 按钮需要加 loading
                       try {
-                        const voteResult = await backendClient.current.createVote({ proposalId: proposal.id } as Vote);
+                        console.log(proposal.id );
+                        const voteResult = await backendClient.current.createVote(new Vote(proposal.id));
                         setCanVote(false);
                         window.location.reload();
                         console.log('voteResult: ', voteResult);
                       } catch (e) {
+                        console.log(e);
                         //
                       } finally {
                         // TODO: 按钮取消 loading，如果投票成功，设为 disable并且更新 vote list。
@@ -189,6 +191,22 @@ const Proposal = () => {
             {!canVote && (
                 <button
                     className={classes.disApproveButton}
+                    onClick={async () => {
+                      // TODO: 按钮需要加 loading
+                      try {
+                        const voteResult = await backendClient.current.deleteVote(new DeleteVote(proposal.id));
+                        setCanVote(false);
+                        window.location.reload();
+                        console.log('voteResult: ', voteResult);
+                      } catch (e) {
+                        //
+                      } finally {
+                        // TODO: 按钮取消 loading，如果投票成功，设为 disable并且更新 vote list。
+                      }
+                    }}
+
+
+
                 >
                   Approve
                   <svg className={classes.approveSvg} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

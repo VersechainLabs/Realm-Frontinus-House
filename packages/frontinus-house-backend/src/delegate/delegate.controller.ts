@@ -93,7 +93,6 @@ export class DelegateController {
     );
 
     if (!foundDelegate) return false;
-
     return true;
   }
 
@@ -105,15 +104,14 @@ export class DelegateController {
     @Query('applicationId') applicationId: number,
     @Query('address') fromAddress: string,
   ): Promise<object> {
-    if ((await this.checkDelegateExist(applicationId, fromAddress)) === false) {
+    // Similar to /create:
+    const application = await this.applicationService.findOne(applicationId);
+    if (!application) {
       return {
-        message: 'Delegate not exists',
+        message: `Can not find application ${applicationId}`,
         status: false,
       };
     }
-    // Similar to /create:
-    const application = await this.applicationService.findOne(applicationId);
-
     const currentTime = new Date();
     if (
       currentTime < application.delegation.proposalEndTime ||

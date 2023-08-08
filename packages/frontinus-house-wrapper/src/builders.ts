@@ -288,8 +288,24 @@ export enum SignatureState {
 
 export class Vote extends Signable {
   constructor(
-    public readonly direction: Direction,
+    // public readonly direction: Direction,
     public readonly proposalId: number,
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      // No need direction
+      // direction: this.direction,
+      proposalId: this.proposalId,
+    };
+  }
+}
+
+export class DeleteVote extends Signable {
+  constructor(
+      public readonly proposalId: number,
   ) {
     super();
   }

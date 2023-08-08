@@ -2,8 +2,8 @@ import axios from 'axios';
 import {
   Comment,
   Community,
-  CommunityWithAuctions, DeleteApplication,
-  DeleteProposal,
+  CommunityWithAuctions,
+  DeleteProposal, DeleteVote,
   Proposal,
   StoredAuctionBase,
   StoredComment,
@@ -26,6 +26,8 @@ import {
   TimedAuctionProposalMessageTypes,
 } from './types/eip712Types';
 import { WalletClient } from 'viem';
+
+export * from './enums';
 
 export class ApiWrapper {
   constructor(
@@ -454,6 +456,16 @@ export class ApiWrapper {
     try {
       const signedPayload = await vote.signedPayload(this.signer);
       return (await axios.post(`${this.host}/votes`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async deleteVote(deleteVote: DeleteVote) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await deleteVote.signedPayload(this.signer);
+      return (await axios.delete(`${this.host}/votes`, { data: signedPayload })).data;
     } catch (e: any) {
       throw e.response.data.message;
     }

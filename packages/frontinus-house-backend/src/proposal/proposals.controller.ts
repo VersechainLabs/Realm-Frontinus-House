@@ -30,6 +30,8 @@ import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.deco
 import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
 import getProposalByIdResponse from '../../examples/getProposalById.json';
 import { VotesService } from '../vote/votes.service';
+import { verifySignPayload } from '../utils/verifySignedPayload';
+import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 
 @Controller('proposals')
 export class ProposalsController {
@@ -184,6 +186,13 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     createProposalDto: CreateProposalDto,
   ): Promise<Proposal> {
+    verifySignPayload(createProposalDto, [
+      'what',
+      'tldr',
+      'title',
+      'parentAuctionId',
+    ]);
+
     const foundAuction = await this.auctionsService.findOne(
       createProposalDto.parentAuctionId,
     );
@@ -195,27 +204,16 @@ export class ProposalsController {
 
     if (!canSubmitProposals(foundAuction))
       throw new HttpException(
-        'You cannot edit proposals for this round at this time',
+        'You cannot create proposals for this round at this time',
         HttpStatus.BAD_REQUEST,
       );
 
-    // Verify that signed data equals this payload
-    const signedPayload = JSON.parse(
-      Buffer.from(createProposalDto.signedData.message, 'base64').toString(),
-    );
-
-    if (
-      !(
-        signedPayload.what === createProposalDto.what &&
-        signedPayload.tldr === createProposalDto.tldr &&
-        signedPayload.title === createProposalDto.title &&
-        signedPayload.parentAuctionId === createProposalDto.parentAuctionId
-      )
-    )
+    if (foundAuction.visibleStatus === AuctionVisibleStatus.PENDING) {
       throw new HttpException(
-        "Signed payload and supplied data doesn't match",
+        'You cannot create proposals for this round at this time',
         HttpStatus.BAD_REQUEST,
       );
+    }
 
     const proposal = new Proposal();
     proposal.address = createProposalDto.address;

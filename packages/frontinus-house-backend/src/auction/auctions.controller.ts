@@ -9,7 +9,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { Auction } from './auction.entity';
-import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
+import {
+  ApproveAuctionDto,
+  CreateAuctionDto,
+  GetAuctionsDto,
+  LatestDto,
+} from './auction.types';
 import { AuctionsService, AuctionWithProposalCount } from './auctions.service';
 import { ProposalsService } from '../proposal/proposals.service';
 import { Proposal } from '../proposal/proposal.entity';
@@ -19,13 +24,19 @@ import {
   ApiNotFoundResponse,
   ApiOkResponse,
 } from '@nestjs/swagger/dist/decorators/api-response.decorator';
+import { AdminService } from '../admin/admin.service';
+import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
+import { verifySignPayload } from '../utils/verifySignedPayload';
+import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 
 @Controller('auctions')
 export class AuctionsController {
   [x: string]: any;
+
   constructor(
     private readonly auctionsService: AuctionsService,
     private readonly proposalService: ProposalsService,
+    private readonly adminService: AdminService,
   ) {}
 
   @Get()
@@ -36,33 +47,37 @@ export class AuctionsController {
     return this.auctionsService.findAll();
   }
 
-  // @Post()
-  // async create(@Body() createAuctionDto: CreateAuctionDto): Promise<Auction> {
-  //   const auction = new Auction();
-  //   auction.startTime = createAuctionDto.startTime
-  //     ? ParseDate(createAuctionDto.startTime)
-  //     : new Date();
-  //   auction.fundingAmount = createAuctionDto.fundingAmount;
-  //   auction.proposalEndTime = ParseDate(createAuctionDto.proposalEndTime);
-  //   auction.votingEndTime = ParseDate(createAuctionDto.votingEndTime);
-  //   auction.title = createAuctionDto.title;
-  //   auction.numWinners = createAuctionDto.numWinners;
-  //   auction.currencyType = createAuctionDto.currencyType;
-  //   // auction.communityId = createAuctionDto.communityId;
-  //   return this.auctionsService.store(auction);
-  // }
-
   // Chao
   @Post('/create')
   @ApiOkResponse({
     type: Auction,
   })
   async createForCommunity(
-    @Body() createAuctionDto: CreateAuctionDto,
+    @Body(SignedPayloadValidationPipe) dto: CreateAuctionDto,
   ): Promise<Auction> {
     return await this.auctionsService.createAuctionByCommunity(
-      createAuctionDto,
+      dto,
+      await this.adminService.isAdmin(dto.address),
     );
+  }
+
+  @Post('approve')
+  @ApiOkResponse({ type: Auction })
+  async approveAuction(
+    @Body(SignedPayloadValidationPipe) dto: ApproveAuctionDto,
+  ): Promise<Auction> {
+    verifySignPayload(dto, ['id']);
+    const foundAuction = await this.auctionsService.findOne(dto.id);
+    if (!foundAuction) {
+      throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!(await this.adminService.isAdmin(dto.address))) {
+      throw new HttpException('Need admin access!', HttpStatus.BAD_REQUEST);
+    }
+
+    foundAuction.visibleStatus = AuctionVisibleStatus.NORMAL;
+    return await this.auctionsService.store(foundAuction);
   }
 
   @Get(':id')
@@ -79,11 +94,15 @@ export class AuctionsController {
   @Get('/forCommunity/:id')
   async findAllForCommunity(
     @Param('id') id: number,
-  ): Promise<AuctionWithProposalCount[]> {
-    const auctions = await this.auctionsService.findAllForCommunity(id);
+    @Query('visibleStatus') visibleStatus?: AuctionVisibleStatus,
+  ): Promise<Auction[]> {
+    const auctions = await this.auctionsService.findAllForCommunityByVisible(
+      id,
+      visibleStatus,
+    );
     if (!auctions)
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
-    auctions.map((a) => (a.numProposals = Number(a.numProposals) || 0));
+    // auctions.map((a) => (a.numProposals = Number(a.numProposals) || 0));
     return auctions;
   }
 

@@ -15,7 +15,7 @@ import {useAccount, useWalletClient} from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
 import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
 import {DeltaStatic, Quill} from "quill";
-import {InfiniteAuctionProposal, Proposal} from "@nouns/frontinus-house-wrapper/dist/builders";
+import {InfiniteAuctionProposal, Proposal, Vote} from "@nouns/frontinus-house-wrapper/dist/builders";
 import {appendProposal} from "../../state/slices/propHouse";
 import {clearProposal} from "../../state/slices/editor";
 import ProposalSuccessModal from "../ProposalSuccessModal";
@@ -34,6 +34,15 @@ const ProposalInputs: React.FC<{
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
+  const [hasError,setHasError] = useState(false);
+
+  // const validateError = async (min: number, count: number) => {
+  //       let error = validateInput(min, count);
+  //       if ( !hasError && !error ){
+  //         setHasError(error);
+  //       }
+  //       return error;
+  // }
 
   const titleAndTldrInputs = (data: any, isTitleSection: boolean = false) => (
     <InputFormGroup
@@ -99,27 +108,49 @@ const ProposalInputs: React.FC<{
     }
   };
 
+
+
+
   const submit = async () => {
 
-    console.log(content,formData);
-    if (content.length === 0 || !account) {
-      return;
+
+    try {
+      console.log(content,formData);
+      if (content.length === 0 || !account) {
+        return;
+      }
+
+      //check error
+      if (validateInput(formData[0].minCount, formData[0].fieldValue.length)){
+        return false;
+      }
+
+      if (validateInput(formData[1].minCount, formData[1].fieldValue.length)){
+        return false;
+      }
+
+      setLoading(true);
+
+      let newProp: Proposal | InfiniteAuctionProposal;
+
+      newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
+      const proposal = await client.current.createProposal(newProp);
+
+      setPropId(proposal.id);
+      dispatch(appendProposal({ proposal }));
+      dispatch(clearProposal());
+      // setShowProposalSuccessModal(true);
+      // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
+      navigate(`/proposal/${proposal.id}`, { replace: false });
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+    } finally {
+      setLoading(false);
     }
 
-    setLoading(true);
 
-    let newProp: Proposal | InfiniteAuctionProposal;
 
-    newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
-    const proposal = await client.current.createProposal(newProp);
-
-    setPropId(proposal.id);
-    dispatch(appendProposal({ proposal }));
-    dispatch(clearProposal());
-    // setShowProposalSuccessModal(true);
-    // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
-    navigate(`/proposal/${proposal.id}`, { replace: false });
-    setLoading(false);
   };
 
 
@@ -171,17 +202,20 @@ const ProposalInputs: React.FC<{
             <div className={classes.description}>
               Description
             </div>
-            <QuillEditor
-                widgetKey={'Comment-proposalId'}
-                minHeightStr={'400px'}
-                onChange={handleChange}
-                title='Create Comment'
-                loading={loading}
-                onQuillInit={(q) => setQuill(q)}
-                btnText='Submit'
-                onButtonClick={submit}
-                placeholderText=''
-            />
+            <div style={{ marginTop: '45px'}}>
+              <QuillEditor
+                  widgetKey={'Comment-proposalId'}
+                  minHeightStr={'400px'}
+                  onChange={handleChange}
+                  title='Create Comment'
+                  loading={loading}
+                  onQuillInit={(q) => setQuill(q)}
+                  btnText='Submit'
+                  onButtonClick={submit}
+                  placeholderText=''
+              />
+            </div>
+
           </div>
 
         </Col>

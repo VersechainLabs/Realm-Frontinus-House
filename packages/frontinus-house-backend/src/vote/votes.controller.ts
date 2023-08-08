@@ -128,8 +128,8 @@ export class VotesController {
 
   @Get('getVotingEligibility')
   async isEligibleToVote(
-    proposalId: number,
-    address: string,
+    @Query() proposalId: number,
+    @Query() address: string,
   ): Promise<boolean> {
     const foundProposal = await this.proposalService.findOne(proposalId);
     if (!foundProposal) {
