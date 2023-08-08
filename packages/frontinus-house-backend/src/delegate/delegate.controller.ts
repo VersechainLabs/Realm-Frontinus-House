@@ -128,7 +128,7 @@ export class DelegateController {
       fromAddress,
     );
     if (existDelegate) {
-      application.voteState = VoteStates.ALREADY_DELEGATED;
+      application.voteState = VoteStates.VOTED; // Frontend : Can cancel
       return APITransformer(APIResponses.DELEGATE.DELEGATED, application, `Already delegate to ${existDelegate.toAddress}`);
     }
 
