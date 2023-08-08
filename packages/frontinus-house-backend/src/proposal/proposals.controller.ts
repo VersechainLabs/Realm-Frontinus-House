@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuctionsService } from '../auction/auctions.service';
 import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
-import { canSubmitProposals } from '../utils';
+import { VoteStates, canSubmitProposals } from '../utils';
 import { Proposal } from './proposal.entity';
 import {
   CreateProposalDto,
@@ -75,7 +75,7 @@ export class ProposalsController {
       throw new HttpException('Proposal not found', HttpStatus.NOT_FOUND);
 
     if (userAddress && userAddress.length > 0) {
-      await this.checkCanVote(foundProposal, userAddress);
+      await this.addVoteState(foundProposal, userAddress);
     }
 
     return foundProposal;
@@ -228,34 +228,33 @@ export class ProposalsController {
     return this.proposalsService.store(proposal);
   }
 
-  async checkCanVote(foundProposal: Proposal, userAddress: string) {
-    try {
-      if (foundProposal.votes) {
-        for (const vote of foundProposal.votes) {
-          if (vote.address === userAddress) {
-            foundProposal.canVote = false;
-            foundProposal.disallowedVoteReason =
-              'You have voted for this proposal';
-            return;
-          }
+  /**
+   * Add canVote|disallowedVoteReason|stateCode to proposal entity.
+   * @param foundProposal 
+   * @param userAddress 
+   * @returns 
+   */
+  async addVoteState(foundProposal: Proposal, userAddress: string) {
+    if (foundProposal.votes) {
+      for (const vote of foundProposal.votes) {
+        if (vote.address === userAddress) {
+          foundProposal.voteState = VoteStates.VOTED;
+          return;
         }
       }
-
-      await this.voteService.checkEligibleToVote(
-        foundProposal,
-        foundProposal.auction,
-        userAddress,
-        true,
-      );
-
-      foundProposal.canVote = true;
-    } catch (e) {
-      if (e instanceof HttpException) {
-        foundProposal.canVote = false;
-        foundProposal.disallowedVoteReason = e.message;
-      } else {
-        console.log(e);
-      }
     }
+
+    let checkVoteState = await this.voteService.checkEligibleToVoteNew(
+      foundProposal,
+      foundProposal.auction,
+      userAddress,
+      true,
+    );
+    if (checkVoteState) {
+      foundProposal.voteState = checkVoteState;
+      return;
+    }
+
+    foundProposal.voteState = VoteStates.OK;
   }
 }
