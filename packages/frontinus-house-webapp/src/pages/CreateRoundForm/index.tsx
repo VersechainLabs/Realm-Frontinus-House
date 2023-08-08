@@ -33,6 +33,7 @@ const CreateRound: React.FC<{}> = () => {
   const [proposingStartTime, setProposingStartTime] = useState<Dayjs | null>(currentTime);
   const [proposalEndTime, setProposalEndTime] = useState<Dayjs | null>(currentTime);
   const [votingEndTime, setVotingEndTime] = useState<Dayjs | null>(currentTime);
+  const [showSignatureModal, setShowSignatureModal] = useState(false);
 
   const MAX_TITLE_LENGTH = 50;
   const MAX_DESCRIPTION_LENGTH = 1000;
@@ -110,7 +111,7 @@ const CreateRound: React.FC<{}> = () => {
       setProposalEndTime(null); // 清空提案结束时间
       setVotingEndTime(null); // 清空投票结束时间
       setIsProposalTimeFilled(false); // 将条件变量设为未填充状态
-      setIsEndTimeFilled(false); // 同时将投票结束时间的条件变量设为未填充状态
+      //setIsEndTimeFilled(false); // 同时将投票结束时间的条件变量设为未填充状态
     }
   };
 
@@ -167,11 +168,7 @@ const CreateRound: React.FC<{}> = () => {
 
     // Check if proposingStartTime is earlier than the current time
     const currentTime = dayjs();
-    if (
-      (proposingStartTime && proposingStartTime.isBefore(currentTime)) ||
-      (proposalEndTime && proposalEndTime.isBefore(currentTime)) ||
-      (votingEndTime && votingEndTime.isBefore(currentTime))
-    ) {
+    if (proposingStartTime && proposingStartTime.isBefore(currentTime)) {
       const errorMessage =
         'Proposal submissions should commence at the current time or later, not earlier.';
       console.log('Error message to be dispatched:', errorMessage);
@@ -198,6 +195,11 @@ const CreateRound: React.FC<{}> = () => {
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
+    if (showSignatureModal) {
+      // 用户点击了拒绝签名，不执行创建拍卖轮次的逻辑
+      console.log('用户拒绝了签名');
+      return;
+    }
 
     // Proceed with the form submission logic
     const round = await client.current
@@ -218,10 +220,10 @@ const CreateRound: React.FC<{}> = () => {
         ),
       )
       .then(res => {
-        console.log(res);
+        console.log('拍卖轮次创建成功，响应数据：', res);
       })
       .catch(e => {
-        console.log(e);
+        console.log('拍卖轮次创建失败，响应数据：', e);
       });
     setFlag(true);
 
@@ -241,7 +243,7 @@ const CreateRound: React.FC<{}> = () => {
         <Row>
           <form onSubmit={handleSubmit}>
             <div className={classes.title}>Round creation</div>
-            <div className={classes.desc}>
+            <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
               questions: https://discord.gg/uQnjZhZPfu.
             </div>

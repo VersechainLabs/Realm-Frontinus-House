@@ -156,14 +156,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }
 
     const currentTime = dayjs();
-    if (
-      state.startTime < currentDate.current ||
-      state.proposalEndTime < currentDate.current ||
-      state.votingEndTime < currentDate.current ||
-      state.endTime < currentDate.current
-    ) {
+    if (state.startTime < currentDate.current) {
       const errorMessage =
-        'Proposal submissions should commence at the current time or later, not earlier.';
+        'Application submissions should commence at the current time or later, not earlier.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -171,7 +166,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }
     // 检查是否有时间比上一个时间要早的情况
     if (grantStartTime && grantStartTime.isBefore(roundStartTime)) {
-      const errorMessage = 'Time set did not follow the required order!';
+      const errorMessage =
+        'The time to select delegates should begin no earlier than the start time of application submissions.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -179,7 +175,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }
 
     if (grantEndTime && grantEndTime.isBefore(grantStartTime)) {
-      const errorMessage = 'Time set did not follow the required order!';
+      const errorMessage =
+        'The selection period end time must be later than the selection start time.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -187,7 +184,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }
 
     if (roundEndTime && roundEndTime.isBefore(grantEndTime)) {
-      const errorMessage = 'Time set did not follow the required order!';
+      const errorMessage =
+        'The delegation round end time must be later than the selection end time.';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
@@ -214,7 +212,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
         <Row>
           <form onSubmit={handleSubmit}>
             <div className={classes.title}>Delegation Round Creation</div>
-            <div className={classes.desc}>
+            <div className={classes.desc1}>
               Use this form to create a new delegation round. Please visit our Discord if you have
               any questions:{' '}
               <a
