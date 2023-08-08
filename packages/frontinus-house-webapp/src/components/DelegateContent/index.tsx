@@ -163,7 +163,7 @@ const DelegateContent: React.FC<{
       )}
 
       {auctionStatus(auction) === AuctionStatus.AuctionNotStarted ? (
-        <ErrorMessageCard message={t('fundingRoundStartingSoon')} date={auction.startTime} />
+        <ErrorMessageCard message={t('DelegationRoundStartingSoon')} />
       ) : (
         <>
           {community && !modalActive && (

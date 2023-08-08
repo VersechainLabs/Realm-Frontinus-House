@@ -59,6 +59,7 @@ const HouseHeader: React.FC<{
           <div className={clsx(classes.titleRow, isLongName(community.name) && classes.longName)}>
             <div className={clsx('frontinusTitle',classes.title)}>{community.name} House</div>
             <Tooltip
+
               content={
                 <div
                   className={classes.contractAddressPill}
