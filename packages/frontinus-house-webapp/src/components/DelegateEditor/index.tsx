@@ -234,14 +234,14 @@ const DelegateEditor: React.FC<{
         >
           {'Submit'}
         </button> */}
-        <button
+        {/* <button
           type="button"
           className={`${classes.additionalButton} customButton`}
           // style={{ backgroundColor: additionalButtonColor }}
           // onClick={additionalButtonOnClick}
         >
           {'Preview'}
-        </button>
+        </button> */}
       </div>
     </>
   );

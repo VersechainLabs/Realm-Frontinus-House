@@ -195,11 +195,11 @@ const CreateRound: React.FC<{}> = () => {
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
-    if (showSignatureModal) {
-      // 用户点击了拒绝签名，不执行创建拍卖轮次的逻辑
-      console.log('用户拒绝了签名');
-      return;
-    }
+    // if (showSignatureModal) {
+    //   // 用户点击了拒绝签名，不执行创建拍卖轮次的逻辑
+    //   console.log('用户拒绝了签名');
+    //   return;
+    // }
 
     // Proceed with the form submission logic
     const round = await client.current
@@ -220,12 +220,13 @@ const CreateRound: React.FC<{}> = () => {
         ),
       )
       .then(res => {
+        setFlag(true);
         console.log('拍卖轮次创建成功，响应数据：', res);
       })
       .catch(e => {
+        setFlag(false);
         console.log('拍卖轮次创建失败，响应数据：', e);
       });
-    setFlag(true);
 
     setShowTimeWarning(false);
     setShowOrderWarning(false);
