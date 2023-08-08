@@ -203,7 +203,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  color: var(--brand-white);
+  color: var(--text-color);
   font-weight: 500;
   word-break: break-word;
 }
