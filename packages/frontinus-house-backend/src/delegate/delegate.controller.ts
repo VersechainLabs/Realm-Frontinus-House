@@ -18,7 +18,8 @@ import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.deco
 import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { verifySignPayload } from '../utils/verifySignedPayload';
-import { APIResponses, APITransformer } from '../utils/error-codes';
+import { APIResponses, APITransformer, VoteStates } from '../utils/error-codes';
+import { Vote } from 'src/vote/vote.entity';
 
 @Controller('delegates')
 export class DelegateController {
@@ -117,8 +118,9 @@ export class DelegateController {
     // Similar to /create:
     const application = await this.applicationService.findOne(applicationId);
     if (!application) {
-      return APITransformer(APIResponses.DELEGATE.NO_APPLICATION, `Can not find application ${applicationId}`);
-    // return APITransformer(DelegateAPIResponses.NO_APPLICATION, `Can not find application ${applicationId}`);
+      // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
+      application.voteState = VoteStates.NO_APPLICATION;
+      return APITransformer(APIResponses.DELEGATE.NO_APPLICATION, application, `Can not find application ${applicationId}`);
     }
 
     const currentTime = new Date();
@@ -126,7 +128,8 @@ export class DelegateController {
       currentTime < application.delegation.proposalEndTime ||
       currentTime > application.delegation.votingEndTime
     ) {
-      return APITransformer(APIResponses.DELEGATE.NOT_VOTING);
+      application.voteState = VoteStates.NOT_VOTING;
+      return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
     }
 
     const existDelegate = await this.delegateService.findByFromAddress(
@@ -134,7 +137,8 @@ export class DelegateController {
       fromAddress,
     );
     if (existDelegate) {
-      return APITransformer(APIResponses.DELEGATE.DELEGATED, `Already delegate to ${existDelegate.toAddress}`);
+      application.voteState = VoteStates.ALREADY_DELEGATED;
+      return APITransformer(APIResponses.DELEGATE.DELEGATED, application, `Already delegate to ${existDelegate.toAddress}`);
     }
 
     const createdApplication = await this.applicationService.findByAddress(
@@ -142,10 +146,12 @@ export class DelegateController {
       fromAddress,
     );
     if (createdApplication) {
-      return APITransformer(APIResponses.DELEGATE.OCCUPIED, `Already created application. Can not delegate to ${application.address}`);
+      application.voteState = VoteStates.APPLICATION_EXIST;
+      return APITransformer(APIResponses.DELEGATE.OCCUPIED, application, `Already created application. Can not delegate to ${application.address}`);
     }
 
-    return APITransformer(APIResponses.OK);
+    application.voteState = VoteStates.OK;
+    return APITransformer(APIResponses.OK, application);
   }
 
   @Get('/list')

@@ -80,6 +80,13 @@ export class Application {
   @Field(() => Date)
   deletedAt: Date;
 
+  @ApiProperty({
+    description:
+      'Indicates how the frontend should react based on this code.',
+    type: Object,
+  })
+  voteState: { code: number; canVote: boolean; reason: string; };
+
   @BeforeInsert()
   setCreatedDate() {
     this.createdDate = new Date();
