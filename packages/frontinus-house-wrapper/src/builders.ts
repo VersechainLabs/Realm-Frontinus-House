@@ -269,7 +269,7 @@ export class DeleteApplication extends Signable {
 
   toPayload() {
     return {
-      ApplicationId: this.id,
+      applicationId: this.id,
     };
   }
 }

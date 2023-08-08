@@ -295,7 +295,7 @@ export class ApiWrapper {
 
   async getUserType( address: string) {
     try {
-      return (await axios.post(`${this.host}/admins/getUserType?address=/${address}`)).data;
+      return (await axios.post(`${this.host}/admins/getUserType?address=${address}`)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -410,14 +410,10 @@ export class ApiWrapper {
     }
   }
 
-  async deleteDelegate(deleteApplication: DeleteApplication, isContract = false) {
+  async deleteDelegate(deleteApplication: DeleteApplication) {
     if (!this.signer) return;
     try {
-      const signedPayload = await deleteApplication.signedPayload(
-        this.signer,
-        'Application',
-          DeleteApplicationMessageTypes,
-      );
+      const signedPayload = await deleteApplication.signedPayload(   this.signer  );
       return (await axios.delete(`${this.host}/delegates`, { data: signedPayload })).data;
     } catch (e: any) {
       throw e;
