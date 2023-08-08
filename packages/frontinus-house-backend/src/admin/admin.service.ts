@@ -64,4 +64,10 @@ export class AdminService {
 
     return !!admin;
   }
+
+  async ensureIsAdmin(address: string): Promise<void> {
+    if (!(await this.isAdmin(address))) {
+      throw new HttpException('Need admin access!', HttpStatus.BAD_REQUEST);
+    }
+  }
 }

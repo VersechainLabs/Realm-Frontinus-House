@@ -5,17 +5,16 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
   MaxLength,
   Min,
   MinLength,
 } from 'class-validator';
+import { SignedEntity } from '../entities/signed';
 
-export class CreateDelegationDto {
-  // @IsEthereumAddress()
-  // address: string;
-
+export class CreateDelegationDto extends SignedEntity {
   @ApiProperty({})
   @IsString()
   @IsOptional()
@@ -47,6 +46,13 @@ export class CreateDelegationDto {
   //   @IsNumber()
   //   @IsPositive()
   //   communityId: number;
+}
+
+export class DeleteDelegationDto extends SignedEntity {
+  @ApiProperty({ description: 'The delegation ID to delete' })
+  @IsNumber()
+  @IsOptional()
+  id: number;
 }
 
 export enum Order {

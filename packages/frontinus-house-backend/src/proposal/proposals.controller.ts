@@ -88,9 +88,11 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     deleteProposalDto: DeleteProposalDto,
   ) {
+    verifySignPayload(deleteProposalDto, ['id']);
     const foundProposal = await this.proposalsService.findOne(
       deleteProposalDto.id,
     );
+
     if (!foundProposal)
       throw new HttpException(
         'No proposal with that ID exists',
@@ -103,22 +105,12 @@ export class ProposalsController {
         HttpStatus.BAD_REQUEST,
       );
 
-    // Check that signed payload and body have same proposal ID
-    const signedPayload = JSON.parse(
-      Buffer.from(deleteProposalDto.signedData.message, 'base64').toString(),
-    );
-
-    if (signedPayload.id !== deleteProposalDto.id)
-      throw new HttpException(
-        "Signed payload and supplied data doesn't match",
-        HttpStatus.BAD_REQUEST,
-      );
-
-    if (deleteProposalDto.address !== foundProposal.address)
+    if (deleteProposalDto.address !== foundProposal.address) {
       throw new HttpException(
         "Found proposal does not match signed payload's address",
         HttpStatus.BAD_REQUEST,
       );
+    }
 
     return await this.proposalsService.remove(deleteProposalDto.id);
   }
@@ -128,6 +120,14 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     updateProposalDto: UpdateProposalDto,
   ): Promise<Proposal> {
+    verifySignPayload(updateProposalDto, [
+      'what',
+      'tldr',
+      'title',
+      'parentAuctionId',
+      'id',
+    ]);
+
     const foundProposal = await this.proposalsService.findOne(
       updateProposalDto.id,
     );
@@ -140,25 +140,6 @@ export class ProposalsController {
     if (!canSubmitProposals(await foundProposal.auction))
       throw new HttpException(
         'You cannot edit proposals for this round at this time',
-        HttpStatus.BAD_REQUEST,
-      );
-
-    // Verify that signed data equals this payload
-    const signedPayload = JSON.parse(
-      Buffer.from(updateProposalDto.signedData.message, 'base64').toString(),
-    );
-
-    if (
-      !(
-        signedPayload.what === updateProposalDto.what &&
-        signedPayload.tldr === updateProposalDto.tldr &&
-        signedPayload.title === updateProposalDto.title &&
-        signedPayload.parentAuctionId === updateProposalDto.parentAuctionId &&
-        signedPayload.id === updateProposalDto.id
-      )
-    )
-      throw new HttpException(
-        "Signed payload and supplied data doesn't match",
         HttpStatus.BAD_REQUEST,
       );
 
