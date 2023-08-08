@@ -162,7 +162,7 @@ const RoundContent: React.FC<{
       )}
 
       {auctionStatus(auction) === AuctionStatus.AuctionNotStarted ? (
-        <ErrorMessageCard message={t('fundingRoundStartingSoon')} date={auction.startTime} />
+        <ErrorMessageCard message={t('ProposalRoundStartingSoon')} />
       ) : (
         <>
           {community && !modalActive && (
