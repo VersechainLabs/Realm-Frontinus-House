@@ -32,10 +32,77 @@
 
 
 
+/**
+ * title
+ */
+@font-face {
+  font-family: 'FT Root UI';
+  src: url('./assets/fonts/EB-Garamond_Regular.woff2') format('woff2'),
+  url('./assets/fonts/EB-Garamond_Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FT Root UI';
+  src: url('./assets/fonts/EB-Garamond_Bold.woff2') format('woff2'),
+  url('./assets/fonts/EB-Garamond_Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'FT Root UI';
+  src: url('./assets/fonts/EB-Garamond_Regular.woff2') format('woff2'),
+  url('./assets/fonts/EB-Garamond_Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'FT Root UI';
+  src: url('./assets/fonts/EB-Garamond_Bold.woff2') format('woff2'),
+  url('./assets/fonts/EB-Garamond_Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
 
 
 
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Regular.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
 
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Bold.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Light.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Medium.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Medium.woff') format('woff');
+  font-weight: medium;
+  font-style: normal;
+}
 
 
 
@@ -153,6 +220,6 @@ h5 {
 }
 
 .frontinusTitle{
-  font-family: 'EB Garamond' ;
+  font-family: 'FT Root UI' ;
   font-weight: 700;
 }
