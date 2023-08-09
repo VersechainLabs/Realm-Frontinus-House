@@ -52,7 +52,7 @@ const Proposal = () => {
 
   const handleBackClick = () => {
     if (!community || !round) return;
-    navigate(buildRoundPath(community, round)+`/${round.id}`, { replace: false });
+    navigate(`/${round.id}` + buildRoundPath(community, round), { replace: false });
   };
 
   useEffect(() => {
