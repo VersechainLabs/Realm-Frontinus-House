@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Application } from './application.entity';
 import { CreateApplicationDto, GetApplicationDto } from './application.types';
@@ -45,6 +46,25 @@ export class ApplicationController {
     if (!applications)
       throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
     return applications;
+  }
+
+
+  @Get('/checkApplied')
+  @ApiOkResponse({
+    type: Boolean,
+  })
+  async findApplied(
+    @Query('delegationId') delegationId: number,
+    @Query('address') address: string,
+  ): Promise<Boolean> {
+    const application = await this.applicationService.findByAddress(
+      delegationId,
+      address,
+    );
+
+    if (!application) return false;
+
+    return true;
   }
 
   @Post('/create')
