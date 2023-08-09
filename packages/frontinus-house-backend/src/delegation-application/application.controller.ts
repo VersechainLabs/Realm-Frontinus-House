@@ -18,6 +18,7 @@ import { verifySignPayload } from '../utils/verifySignedPayload';
 @Controller('applications')
 export class ApplicationController {
   [x: string]: any;
+
   constructor(private readonly applicationService: ApplicationService) {}
 
   @Get('/list')
@@ -50,7 +51,6 @@ export class ApplicationController {
     return applications;
   }
 
-
   @Get('/checkApplied')
   @ApiOkResponse({
     type: Boolean,
@@ -58,7 +58,7 @@ export class ApplicationController {
   async findApplied(
     @Query('delegationId') delegationId: number,
     @Query('address') address: string,
-  ): Promise<Boolean> {
+  ): Promise<boolean> {
     const application = await this.applicationService.findByAddress(
       delegationId,
       address,

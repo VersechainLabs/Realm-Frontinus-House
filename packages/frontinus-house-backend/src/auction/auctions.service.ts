@@ -9,6 +9,8 @@ import { BlockchainService } from '../blockchain/blockchain.service';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 import { Proposal } from '../proposal/proposal.entity';
 import { ParseDate } from '../utils';
+import { Delegate } from '../delegate/delegate.entity';
+import { Delegation } from '../delegation/delegation.entity';
 
 export type AuctionWithProposalCount = Auction & { numProposals: number };
 
@@ -19,6 +21,11 @@ export class AuctionsService {
     @InjectRepository(Community)
     private communitiesRepository: Repository<Community>,
     private readonly blockchainService: BlockchainService,
+
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Delegation)
+    private delegationRepository: Repository<Delegation>,
   ) {}
 
   findAll(): Promise<Auction[]> {
@@ -234,6 +241,8 @@ export class AuctionsService {
 
     // noinspection ES6MissingAwait: Just a cache, no need await
     this.blockchainService.cacheAll(
+      this.delegateRepository,
+      this.delegationRepository,
       community.contractAddress,
       newAuction.balanceBlockTag,
     );

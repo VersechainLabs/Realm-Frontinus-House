@@ -14,22 +14,27 @@ import config from '../config/configuration';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Auction } from '../auction/auction.entity';
 import { DelegationState } from '../delegation/delegation.types';
-import { DelegationService } from '../delegation/delegation.service';
+import {
+  DelegationService,
+  findByState,
+} from '../delegation/delegation.service';
 import { DelegateService } from '../delegate/delegate.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { VoteStates } from '../utils';
+import { Delegation } from '../delegation/delegation.entity';
 
 @Injectable()
 export class VotesService {
   private readonly communityAddress = config().communityAddress;
 
-
   constructor(
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
+    @InjectRepository(Delegation)
+    private delegationRepository: Repository<Delegation>,
+
     private readonly blockchainService: BlockchainService,
-    private readonly delegationService: DelegationService,
     private readonly delegateService: DelegateService,
   ) {}
 
@@ -255,7 +260,6 @@ export class VotesService {
     // return true;
   }
 
-
   async createNewVoteList(voteDtoList: DelegatedVoteDto[], proposal: Proposal) {
     const voteList = [];
     for (const createVoteDto of voteDtoList) {
@@ -278,7 +282,8 @@ export class VotesService {
 
   async getDelegateListByAuction(address: string, auction: Auction) {
     // Check if user has delegated to other user.
-    const currentDelegationList = await this.delegationService.findByState(
+    const currentDelegationList = await findByState(
+      this.delegationRepository,
       DelegationState.ACTIVE,
       auction.createdDate,
     );
