@@ -76,6 +76,8 @@ const Proposal = () => {
             setCanVote(1);
           } else if (proposal.voteState.code === 311) {
             setCanVote(2);
+          } else if (proposal.voteState.code === 314) {
+            setCanVote(3);
           }
 
         }
@@ -154,7 +156,7 @@ const Proposal = () => {
 
         {/*  )}*/}
         {proposal && (
-          <div style={{ marginTop: '30px', marginBottom: '30px' ,display:'flex'}}>
+          <div style={{ marginTop: '30px' ,display:'flex'}}>
             {canVote === 1 && (
                 <button
                     className={classes.approveButton}
@@ -181,6 +183,7 @@ const Proposal = () => {
             )}
             {canVote === 2 && (
                 <button
+                    disabled={true}
                     className={classes.disApproveButton}
                     onClick={async () => {
                       // TODO: 按钮需要加 loading
@@ -194,9 +197,6 @@ const Proposal = () => {
                         // TODO: 按钮取消 loading，如果投票成功，设为 disable并且更新 vote list。
                       }
                     }}
-
-
-
                 >
                   Cancel Approve
                   <svg className={classes.approveSvg} width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -204,8 +204,14 @@ const Proposal = () => {
                   </svg>
                 </button>
             )}
+            {canVote === 3 && (
+                <div className={classes.noPow} >
+                  {proposal && proposal.voteState && proposal.voteState.reason}
+                </div>
+            )}
             {canVote === 0 && (
                 <button
+                    disabled={true}
                     className={classes.disApproveButton}
                 >
                   Approve

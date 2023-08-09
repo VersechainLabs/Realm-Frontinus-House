@@ -81,6 +81,11 @@
   margin-left: 8px;
 }
 
+.noPow {
+  margin-bottom: -30px;
+  color: #A3A3A4;
+}
+
 .approveButton {
   background: #D0A059;
   font-size: 16px;
