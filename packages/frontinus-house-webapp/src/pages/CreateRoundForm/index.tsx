@@ -16,7 +16,8 @@ import dayjs, { Dayjs } from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../state/slices/alert';
-import clsx from "clsx";
+import clsx from 'clsx';
+import { setUserType } from '../../state/slices/user';
 
 dayjs.extend(isToday);
 
@@ -35,12 +36,17 @@ const CreateRound: React.FC<{}> = () => {
   const [proposalEndTime, setProposalEndTime] = useState<Dayjs | null>(currentTime);
   const [votingEndTime, setVotingEndTime] = useState<Dayjs | null>(currentTime);
   const [showSignatureModal, setShowSignatureModal] = useState(false);
+  const userType = useAppSelector(state => state.user.type);
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
 
   const MAX_TITLE_LENGTH = 50;
   const MAX_DESCRIPTION_LENGTH = 1000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const dispatch = useDispatch();
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [isSignatureComplete, setIsSignatureComplete] = useState(false);
 
   const [state, setState] = useState({
     description: '',
@@ -196,41 +202,42 @@ const CreateRound: React.FC<{}> = () => {
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
-    if (showSignatureModal) {
-      // 用户点击了拒绝签名，不执行创建拍卖轮次的逻辑
-      console.log('用户拒绝了签名');
+
+    if (userType === 'Admin') {
+      try {
+        const round = await client.current.createAuction(
+          new TimedAuction(
+            true,
+            state.title,
+            state.proposingStartTime,
+            state.proposalEndTime,
+            state.votingEndTime,
+            state.fundingAmount,
+            state.currencyType,
+            state.numWinners,
+            state.community,
+            state.communityId,
+            state.balanceBlockTag,
+            state.description,
+          ),
+        );
+
+        setIsSuccessAlertVisible(true); // 显示成功提示
+        dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
+        setIsButtonDisabled(true);
+        navigate('/');
+        console.log('Success：', round);
+      } catch (e) {
+        setFlag(false);
+        setIsButtonDisabled(false);
+        console.log('Failed：', e);
+      }
       return;
     }
-
-    // Proceed with the form submission logic
-    const round = await client.current
-      .createAuction(
-        new TimedAuction(
-          true,
-          state.title,
-          state.proposingStartTime,
-          state.proposalEndTime,
-          state.votingEndTime,
-          state.fundingAmount,
-          state.currencyType,
-          state.numWinners,
-          state.community,
-          state.communityId,
-          state.balanceBlockTag,
-          state.description,
-        ),
-      )
-      .then(res => {
-        console.log('拍卖轮次创建成功，响应数据：', res);
-      })
-      .catch(e => {
-        console.log('拍卖轮次创建失败，响应数据：', e);
-      });
+    setIsButtonDisabled(false);
     setFlag(true);
 
-    setShowTimeWarning(false);
-    setShowOrderWarning(false);
-    setShowBlankWarning(false);
+    // Proceed with the form submission logic
   };
 
   const close = () => {
@@ -243,7 +250,7 @@ const CreateRound: React.FC<{}> = () => {
       <Container>
         <Row>
           <form onSubmit={handleSubmit}>
-            <div className={clsx('frontinusTitle',classes.title)}>Round creation</div>
+            <div className={clsx('frontinusTitle', classes.title)}>Round Creation</div>
             <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
               questions: https://discord.gg/uQnjZhZPfu.
@@ -268,7 +275,7 @@ const CreateRound: React.FC<{}> = () => {
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
                 What is the round description? (Please use a markdown editor to format your
-                description) *
+                description)*
                 <span className={classes.characterCount1}>
                   {descriptionLength}/{MAX_DESCRIPTION_LENGTH}
                 </span>
@@ -416,49 +423,13 @@ const CreateRound: React.FC<{}> = () => {
                 type="number" // Add type="number" to allow only numeric input
               />
             </div>
-            <button className={classes.button}>Submit</button>
 
-            {showTimeWarning && (
-              <div className={classes.popup}>
-                <div className={classes.popupContent}>
-                  <div className={classes.timeWarning}>
-                    Time set should not be earlier than present time!
-                  </div>
-                  <button className={classes.closeButton} onClick={() => setShowTimeWarning(false)}>
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-            {showOrderWarning && (
-              <div className={classes.popup}>
-                <div className={classes.popupContent}>
-                  <div className={classes.timeWarning}>
-                    Time set did not follow the required order!
-                  </div>
-                  <button
-                    className={classes.closeButton}
-                    onClick={() => setShowOrderWarning(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-            {showBlankWarning && (
-              <div className={classes.popup}>
-                <div className={classes.popupContent}>
-                  <div className={classes.timeWarning}>Input bar should not be blank!</div>
-                  <button
-                    className={classes.closeButton}
-                    onClick={() => setShowBlankWarning(false)}
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-
+            <button
+              className={`${classes.button} ${isButtonDisabled ? 'disabled-button' : ''}`}
+              disabled={isButtonDisabled}
+            >
+              Submit
+            </button>
             {flag && <Popup trigger={flag} onClose={close} />}
           </form>
         </Row>
