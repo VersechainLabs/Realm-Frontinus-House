@@ -69,7 +69,7 @@ const DelegateAcceptingPropsModule: React.FC<{
             (account ? (
 
                 (delegateStatus ? <Button
-                    text={'Already Delegated'}
+                    text={'Already Submitted'}
                     bgColor={ButtonColor.Gray}
                 /> :
                     <Button
