@@ -165,12 +165,12 @@
     padding-top: 42px;
     padding-left: 40px;
 }
-
-.characterCount {
-    margin-left: 156px; 
-    color: #676b6d
-  }
+  .characterCount,
   .characterCount1 {
-    margin-left: 323px; 
-    color: #676b6d
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #676b6d;  
+    text-align: right;
+    margin-top: -23px;
   }

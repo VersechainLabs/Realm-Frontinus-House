@@ -225,6 +225,7 @@ const CreateRound: React.FC<{}> = () => {
         setIsSuccessAlertVisible(true); // 显示成功提示
         dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
         setIsButtonDisabled(true);
+        navigate('/');
         console.log('Success：', round);
       } catch (e) {
         setFlag(false);
