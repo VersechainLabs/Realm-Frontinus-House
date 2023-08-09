@@ -112,7 +112,8 @@ function App() {
   const noNavPath =
     location.pathname === '/' || location.pathname === '/faq' || location.pathname === '/create';
   const rainbowKitTheme = darkTheme({
-    accentColor: 'var(--brand-purple)',
+    accentColor: 'var(--brand-common-yellow)',
+    accentColorForeground:'#212529'
   });
   rainbowKitTheme.fonts.body = 'Inconsolata';
 
