@@ -15,7 +15,7 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { setAlert, clearClick, alertSlice } from '../../state/slices/alert';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@mui/material/TextField';
-import {TimedDelegate} from "@nouns/frontinus-house-wrapper/dist/builders";
+import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -53,6 +53,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
   // const alertType = useSelector(state => state.alert.type);
   // const alertMessage = useSelector(state => state.alert.message);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
 
   const [state, setState] = useState({
     description: '',
@@ -62,6 +63,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
     proposalEndTime: new Date(''),
     votingEndTime: new Date(''),
   });
+  const [flag, setFlag] = useState(false);
 
   const saveFormTitle = (value: string) => {
     const limitedTitle = value.slice(0, MAX_TITLE_LENGTH);
@@ -196,23 +198,26 @@ const CreateDelegateForm: React.FC<{}> = () => {
     console.log(state);
 
     const delegate = new TimedDelegate(
-        state.title,
-        state.startTime,
-        state.endTime,
-        state.proposalEndTime,
-        state.votingEndTime,
-        state.description
+      state.title,
+      state.startTime,
+      state.endTime,
+      state.proposalEndTime,
+      state.votingEndTime,
+      state.description,
     );
 
     client.current
       .createDelegateAuction(delegate)
       .then((round: any) => {
+        setIsSuccessAlertVisible(true); // 显示成功提示
+        dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
         navigate('/delegateDetails/' + round.id);
       })
       .catch(e => {
-        dispatch(setAlert({ type: 'error', message: e }));
-        setIsAlertVisible(true); // 显示alert弹出框
-        return;
+        setFlag(false);
+        // dispatch(setAlert({ type: 'error', message: e }));
+        // setIsAlertVisible(true); // 显示alert弹出框
+        // return;
       });
   };
 
