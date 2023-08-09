@@ -79,7 +79,7 @@ export class CommentsService {
           HttpStatus.BAD_REQUEST,
         );
       }
-      if (currentDate > application.delegation.votingEndTime) {
+      if (currentDate > application.delegation.endTime) {
         throw new HttpException(
           'Delegation has been closed. Cannot create comment',
           HttpStatus.BAD_REQUEST,
