@@ -36,7 +36,7 @@
  * title
  */
 @font-face {
-  font-family: 'FT Root UI';
+  font-family: 'EB Garamond';
   src: url('./assets/fonts/EB-Garamond_Regular.woff2') format('woff2'),
   url('./assets/fonts/EB-Garamond_Regular.woff') format('woff');
   font-weight: normal;
@@ -44,29 +44,13 @@
 }
 
 @font-face {
-  font-family: 'FT Root UI';
+  font-family: 'EB Garamond';
   src: url('./assets/fonts/EB-Garamond_Bold.woff2') format('woff2'),
   url('./assets/fonts/EB-Garamond_Bold.woff') format('woff');
   font-weight: bold;
   font-style: normal;
 }
 
-
-@font-face {
-  font-family: 'FT Root UI';
-  src: url('./assets/fonts/EB-Garamond_Regular.woff2') format('woff2'),
-  url('./assets/fonts/EB-Garamond_Regular.woff') format('woff');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'FT Root UI';
-  src: url('./assets/fonts/EB-Garamond_Bold.woff2') format('woff2'),
-  url('./assets/fonts/EB-Garamond_Bold.woff') format('woff');
-  font-weight: bold;
-  font-style: normal;
-}
 
 
 
@@ -160,7 +144,7 @@
 
 html,
 body {
-  letter-spacing: -0.2px;
+  /*letter-spacing: -0.2px;*/
   background-color: black;
 }
 
@@ -220,6 +204,6 @@ h5 {
 }
 
 .frontinusTitle{
-  font-family: 'FT Root UI' ;
+  font-family: 'EB Garamond' ;
   font-weight: 700;
 }
