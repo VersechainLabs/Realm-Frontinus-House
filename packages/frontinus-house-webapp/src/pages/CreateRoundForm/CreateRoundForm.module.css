@@ -81,6 +81,30 @@
     margin-left: calc(var(--bs-gutter-x) * .5);
 
 }
+.disabled-button {
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: 8px;
+    background: #272728;
+    border:1px solid #272728;
+    color: #f5eee6;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 28px;
+    letter-spacing: 0px;
+    height: 40px;
+    width: 96px;
+    text-align: center;
+    margin-top: 30px;
+    margin-right: calc(var(--bs-gutter-x) * .5);
+    margin-left: calc(var(--bs-gutter-x) * .5);
+    
+}
 .labelMargin {
     margin-bottom: 10px;
 }
@@ -143,10 +167,10 @@
 }
 
 .characterCount {
-    margin-left: 165px; 
+    margin-left: 156px; 
     color: #676b6d
   }
   .characterCount1 {
-    margin-left: 347px; 
+    margin-left: 323px; 
     color: #676b6d
   }
