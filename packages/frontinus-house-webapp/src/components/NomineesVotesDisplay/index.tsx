@@ -23,6 +23,20 @@ const NomineesVotesDisplay: React.FC<{ proposal: StoredProposalWithVotes }> = pr
           proposal={proposal}
         />
       )}
+
+
+      <div>
+        <div className={classes.scoreAndIcon}>
+          <MdHowToVote /> <TruncateThousands amount={proposal.delegatorCount} />
+           · {proposal.commentCount} { proposal.commentCount > 1 && <span>Comments</span> }{ proposal.commentCount < 2 && <span>Comment</span> }
+        </div>
+      </div>
+
+      {/*<div>*/}
+      {/*  <div className={classes.scoreAndIcon}>*/}
+      {/*     <TruncateThousands amount={proposal.commentCount} />*/}
+      {/*  </div>*/}
+      {/*</div>*/}
     </>
   );
 };
