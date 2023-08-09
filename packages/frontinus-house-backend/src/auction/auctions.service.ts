@@ -225,9 +225,10 @@ export class AuctionsService {
       community,
     });
 
-    newAuction.visibleStatus = isAdmin
-      ? AuctionVisibleStatus.NORMAL
-      : AuctionVisibleStatus.PENDING;
+    // newAuction.visibleStatus = isAdmin
+    //   ? AuctionVisibleStatus.NORMAL
+    //   : AuctionVisibleStatus.PENDING;
+    newAuction.visibleStatus = AuctionVisibleStatus.NORMAL;
     newAuction.balanceBlockTag =
       await this.blockchainService.getCurrentBlockNum();
 
