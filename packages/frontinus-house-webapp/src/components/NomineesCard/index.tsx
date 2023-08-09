@@ -89,7 +89,6 @@ const NomineesCard: React.FC<{
           borderRadius={CardBorderRadius.thirty}
           classNames={clsx(
             classes.proposalCard,
-            isWinner && auctionStatus === AuctionStatus.AuctionEnded && classes.winner,
             stale && classes.stale,
           )}
         >

@@ -129,7 +129,6 @@ const DelegateModules: React.FC<{
   const modules = [
     acceptingPropsModule,
     roundStaleModule,
-    roundOverModule,
   ];
 
   return (
