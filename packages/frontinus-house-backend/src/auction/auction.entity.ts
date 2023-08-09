@@ -151,9 +151,8 @@ export class Auction implements AuctionBase {
   }
 
   public isAcceptingProposals = (): boolean =>
-    new Date() > this.startTime &&
-    new Date() <= this.proposalEndTime &&
-    this.visibleStatus == AuctionVisibleStatus.NORMAL;
+    new Date() > this.startTime && new Date() <= this.proposalEndTime /*&&
+    this.visibleStatus == AuctionVisibleStatus.NORMAL*/;
 
   @AfterLoad()
   public countProposals() {

@@ -189,12 +189,12 @@ export class ProposalsController {
         HttpStatus.BAD_REQUEST,
       );
 
-    if (foundAuction.visibleStatus === AuctionVisibleStatus.PENDING) {
-      throw new HttpException(
-        'You cannot create proposals for this round at this time',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // if (foundAuction.visibleStatus === AuctionVisibleStatus.PENDING) {
+    //   throw new HttpException(
+    //     'You cannot create proposals for this round at this time',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
 
     const proposal = new Proposal();
     proposal.address = createProposalDto.address;
