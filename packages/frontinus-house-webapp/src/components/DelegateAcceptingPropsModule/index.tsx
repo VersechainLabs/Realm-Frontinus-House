@@ -60,7 +60,7 @@ const DelegateAcceptingPropsModule: React.FC<{
                 <div className={classes.bulletItem}>
                     <hr className={classes.bullet} />
                     <div className={classes.customParagraph}>
-                        <p>{t('delegateDesc')}.</p>
+                        <p>{t('delegateDesc')}</p>
                     </div>
                 </div>
 
