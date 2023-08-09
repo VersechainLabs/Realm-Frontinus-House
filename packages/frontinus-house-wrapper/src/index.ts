@@ -85,6 +85,18 @@ export class ApiWrapper {
     }
   }
 
+  async getDelegationApplied(id: number ): Promise<any> {
+    if (!this.signer) return;
+
+    try {
+      const owner = (await this.signer.getAddresses())[0];
+      const raw = (await axios.get(`${this.host}/applications/checkApplied?delegationId=${id}&address=${owner}`)).data;
+      return raw;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getDelegateStatus(id: any): Promise<any> {
     if (!this.signer) throw 'Please sign';
     try {
