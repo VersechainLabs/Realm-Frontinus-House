@@ -279,7 +279,7 @@ const Application = () => {
                 <div>
                   <div style={{ height: 30 }}></div>
                   {/*<h2>Comments</h2>*/}
-                  <Comments applicationId={Number(id)} />
+                  <Comments applicationId={Number(id)} commentCount={Number(proposal.commentCount)}/>
                 </div>
             )}
 
