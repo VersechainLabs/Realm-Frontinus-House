@@ -30,11 +30,77 @@
   font-style: normal;
 }
 
+
+
+/**
+ * title
+ */
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('./assets/fonts/EB-Garamond_Regular.woff2') format('woff2'),
+  url('./assets/fonts/EB-Garamond_Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'EB Garamond';
+  src: url('./assets/fonts/EB-Garamond_Bold.woff2') format('woff2'),
+  url('./assets/fonts/EB-Garamond_Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Regular.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Bold.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Light.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Inconsolata';
+  src: url('./assets/fonts/Inconsolata_Medium.woff2') format('woff2'),
+  url('./assets/fonts/Inconsolata_Medium.woff') format('woff');
+  font-weight: medium;
+  font-style: normal;
+}
+
+
+
+
+
+
+
+
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Londrina+Solid&display=swap');
 
 * {
-  font-family: 'PT Root UI';
+  font-family: 'Inconsolata';
 }
 
 .App {
@@ -78,7 +144,7 @@
 
 html,
 body {
-  letter-spacing: -0.2px;
+  /*letter-spacing: -0.2px;*/
   background-color: black;
 }
 
@@ -135,4 +201,9 @@ h3,
 h4,
 h5 {
   font-weight: bold;
+}
+
+.frontinusTitle{
+  font-family: 'EB Garamond' ;
+  font-weight: 700;
 }

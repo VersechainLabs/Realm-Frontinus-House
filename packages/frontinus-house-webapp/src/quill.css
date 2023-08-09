@@ -110,43 +110,43 @@
   word-break: break-word;
 }
 .ql-editor h1 {
-  font-family: 'PT Root UI' !important;
+  font-family: 'EB Garamond' !important;
   font-style: normal !important;
   font-weight: 700 !important;
   font-size: 20px !important;
   line-height: 25px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
 }
 .ql-editor h2 {
-  font-family: 'PT Root UI' !important;
+  font-family: 'EB Garamond' !important;
   font-style: normal !important;
   font-weight: 700 !important;
   font-size: 14px !important;
   line-height: 19px !important;
   margin-top: 15px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
   color: var(--brand-black) !important;
 }
 .ql-editor img {
   max-width: 100% !important;
 }
 .ql-editor :is(p, li) {
-  font-family: 'PT Root UI' !important;
+  font-family: 'EB Garamond' !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 16px !important;
   line-height: 21px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
   margin-bottom: 0 !important;
 }
 .ql-editor blockquote {
-  font-family: 'PT Root UI';
+  font-family: 'EB Garamond';
   color: var(--brand-black) !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 16px !important;
   line-height: 21px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
   margin: 0 !important;
   margin-left: 20px !important;
   margin-bottom: 10px !important;

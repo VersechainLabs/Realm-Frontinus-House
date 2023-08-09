@@ -209,9 +209,9 @@ export class ProposalsController {
 
   /**
    * Add canVote|disallowedVoteReason|stateCode to proposal entity.
-   * @param foundProposal 
-   * @param userAddress 
-   * @returns 
+   * @param foundProposal
+   * @param userAddress
+   * @returns
    */
   async addVoteState(foundProposal: Proposal, userAddress: string) {
     if (foundProposal.votes) {
@@ -223,7 +223,7 @@ export class ProposalsController {
       }
     }
 
-    let checkVoteState = await this.voteService.checkEligibleToVoteNew(
+    const checkVoteState = await this.voteService.checkEligibleToVoteNew(
       foundProposal,
       foundProposal.auction,
       userAddress,

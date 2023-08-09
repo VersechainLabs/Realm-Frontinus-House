@@ -30,5 +30,14 @@ export const communities = new CaseInsensitiveMap(
 
     // Mock strategies.
     '0x82cE4e52918B83cCf7072594db05Eb186443A62F': mockRandomByBlock(),
+
+    // Test strategies on test chain
+    '0x86f7692569914b5060ef39aab99e62ec96a6ed45': snapshotMultiple([
+      {
+        address: '0x86f7692569914b5060ef39aab99e62ec96a6ed45',
+        strategyType: StrategyType.Erc721,
+        multiplier: 1,
+      },
+    ]),
   }),
 );

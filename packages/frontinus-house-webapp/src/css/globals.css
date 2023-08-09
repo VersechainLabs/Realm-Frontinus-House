@@ -62,6 +62,7 @@ p {
   --brand-yellow-semi-transparent: rgba(203, 167, 39, 0.3);
   --brand-yellow-hint: rgba(203, 167, 39, 0.1);
   --brand-proposql-yellow: rgba(208, 160, 89, 1);
+  --brand-common-yellow:#D0A059;
 
   /* Green */
   --brand-green: #50ba9a;
@@ -283,45 +284,45 @@ p {
   word-break: break-word;
 }
 .proposalCopy h1 {
-  font-family: 'PT Root UI' !important;
+  font-family: 'EB Garamond' !important;
   font-style: normal !important;
   font-weight: 700 !important;
   font-size: 20px !important;
   line-height: 25px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
 }
 .proposalCopy h2 {
-  font-family: 'PT Root UI' !important;
+  font-family: 'EB Garamond' !important;
   font-style: normal !important;
   font-weight: 700 !important;
   font-size: 14px !important;
   line-height: 19px !important;
   margin-top: 15px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
   color: var(--brand-black) !important;
 }
 .proposalCopy img {
   max-width: 100% !important;
 }
 .proposalCopy :is(p, li) {
-  font-family: 'PT Root UI' !important;
+  font-family: 'Inconsolata' !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 16px !important;
   color: #F5EEE6;
   line-height: 24px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
   margin-bottom: 0 !important;
 }
 
 .proposalCopy blockquote {
-  font-family: 'PT Root UI';
+  font-family: 'Inconsolata';
   color: var(--brand-black) !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 16px !important;
   line-height: 21px !important;
-  letter-spacing: 0.02em !important;
+  /*letter-spacing: 0.02em !important;*/
   margin: 0 !important;
   margin-left: 20px !important;
   margin-bottom: 10px !important;
@@ -479,4 +480,8 @@ p {
 
 .loadingImg img{
   width: 50px;
+}
+
+.iekbcc0 button{
+  font-family: 'Inconsolata' !important;
 }

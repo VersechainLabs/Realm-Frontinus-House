@@ -203,7 +203,7 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  color: var(--brand-white);
+  color: var(--text-color);
   font-weight: 500;
   word-break: break-word;
 }
@@ -279,7 +279,7 @@
   font-weight: 700;
   font-size: 16px;
   line-height: 23px;
-  letter-spacing: 0.02em;
+  /*letter-spacing: 0.02em;*/
   height: 23px;
 }
 

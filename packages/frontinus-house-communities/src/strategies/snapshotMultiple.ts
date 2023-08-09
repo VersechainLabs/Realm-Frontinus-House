@@ -51,7 +51,7 @@ const getErc721Balance = async (userAddress: string, strategyAddress: string, bl
     blockNumber: blockNumber ? BigInt(blockNumber) : undefined,
   });
   try {
-    return new BigNumber((data as [number])[0] as number);
+    return new BigNumber(data as number);
   } catch (e) {
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }
@@ -70,7 +70,7 @@ const getContractCallBalance = async (userAddress: string, strategyAddress: stri
 
   const data = await provider.readContract(config);
   try {
-    return new BigNumber((data as [number])[0] as number);
+    return new BigNumber(data as number);
   } catch (e) {
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }

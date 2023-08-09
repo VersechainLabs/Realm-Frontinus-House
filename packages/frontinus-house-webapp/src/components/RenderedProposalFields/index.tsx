@@ -10,6 +10,9 @@ import { StoredAuctionBase, StoredProposal } from '@nouns/frontinus-house-wrappe
 import { BiAward } from 'react-icons/bi';
 import clsx from "clsx";
 import formatTime from '../../utils/formatTime';
+import '../QuillEditor/quill.snow.css';
+import '../QuillEditor/QuillEditor.module.css';
+
 
 
 export interface RenderedProposalProps {
@@ -33,7 +36,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             <div className={classes.backBtnContainer}>{backButton && backButton}</div>
             <div className={classes.headerBottomContainer}>
               <div>
-                <h1>{fields.title}</h1>
+                <h1 className={clsx('frontinusTitle')}>{fields.title}</h1>
 
                 {proposal.address && proposal.id && (
                   <div className={classes.subinfo}>
@@ -47,6 +50,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                     </div>
                   </div>
                 )}
+
 
               </div>
               {proposal.reqAmount && round && (
@@ -68,26 +72,30 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             )}
 
             <h2>{t('description')}</h2>
+            <div
+                className="ql-editor"
+                dangerouslySetInnerHTML={{ __html: fields.what}}
+            />
             {/*
              * We sanitize HTML coming from rich text editor to prevent xss attacks.
              *
              * <Markdown/> component used to render HTML, while supporting Markdown.
              */}
-            <Markdown>
-              {sanitizeHtml(fields.what, {
-                allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
-                allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(['data']),
-                allowedAttributes: {
-                  img: ['src', 'alt', 'height', 'width'],
-                  a: ['href', 'target'],
-                },
-                allowedClasses: {
-                  code: ['language-*', 'lang-*'],
-                  pre: ['language-*', 'lang-*'],
-                },
-                // edge case: handle ampersands in img links encoded from sanitization
-              }).replaceAll('&amp;', '&')}
-            </Markdown>
+            {/*<Markdown>*/}
+            {/*  {sanitizeHtml(fields.what, {*/}
+            {/*    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),*/}
+            {/*    allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(['data']),*/}
+            {/*    allowedAttributes: {*/}
+            {/*      img: ['src', 'alt', 'height', 'width'],*/}
+            {/*      a: ['href', 'target'],*/}
+            {/*    },*/}
+            {/*    allowedClasses: {*/}
+            {/*      code: ['language-*', 'lang-*'],*/}
+            {/*      pre: ['language-*', 'lang-*'],*/}
+            {/*    },*/}
+            {/*    // edge case: handle ampersands in img links encoded from sanitization*/}
+            {/*  }).replaceAll('&amp;', '&')}*/}
+            {/*</Markdown>*/}
           </span>
         </Col>
     </>

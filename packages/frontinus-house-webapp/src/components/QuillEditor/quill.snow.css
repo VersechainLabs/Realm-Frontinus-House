@@ -478,6 +478,7 @@
 
 .ql-editor .ql-size-huge {
     font-size: 2.5em;
+    line-height: 2.5rem;
 }
 
 .ql-editor .ql-direction-rtl {

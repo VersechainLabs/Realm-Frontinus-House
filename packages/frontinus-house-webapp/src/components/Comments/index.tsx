@@ -12,6 +12,7 @@ import { serverDateToString } from '../../utils/detailedTime';
 import classes from './Comments.module.css';
 import LoadingIndicator from '../LoadingIndicator';
 import { StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
+import clsx from "clsx";
 
 type CommentsProps = {
   proposalId?: number;
@@ -128,7 +129,7 @@ export default function Comments(props: CommentsProps) {
       }
 
       <div className={classes.listBar}>
-        <div className={classes.listTitle}>Comments {props.commentCount}</div>
+        <div className={clsx('frontinusTitle',classes.listTitle)}>Comments {props.commentCount}</div>
         {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
       </div>
       {!loading ? <List>{itemList}</List> : (
@@ -154,7 +155,7 @@ export function CommentListItem(props: CommentListItemProps) {
       <Avatar sx={{
         width: avatarSize, height: avatarSize,
         marginRight: '16px',
-      }}><AddressAvatar size={avatarSize} address={comment.owner} /></Avatar>
+      }}><AddressAvatar size={avatarSize} address={comment.address} /></Avatar>
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -167,7 +168,7 @@ export function CommentListItem(props: CommentListItemProps) {
           marginBottom: '8px',
           marginTop:'-2px'
         }}>
-          <EthAddress address={props.comment.owner} className={'commentName'} />
+          <EthAddress address={props.comment.address} className={'commentName'} />
 
           <div className={classes.date}>
             <span style={{

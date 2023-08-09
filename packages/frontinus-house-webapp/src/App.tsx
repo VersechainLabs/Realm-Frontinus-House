@@ -26,7 +26,6 @@ import Application from './pages/Application';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
 
-
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
@@ -112,6 +111,10 @@ function App() {
   const openGraphCardPath = new RegExp('.+?/card').test(location.pathname);
   const noNavPath =
     location.pathname === '/' || location.pathname === '/faq' || location.pathname === '/create';
+  const rainbowKitTheme = darkTheme({
+    accentColor: 'var(--brand-purple)',
+  });
+  rainbowKitTheme.fonts.body = 'Inconsolata';
 
   const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
     return (
@@ -142,9 +145,7 @@ function App() {
         ) : (
           <RainbowKitProvider
             chains={chains}
-            theme={darkTheme({
-              accentColor: 'var(--brand-purple)',
-            })}
+            theme={rainbowKitTheme}
             avatar={CustomAvatar}
           >
             <Suspense fallback={<LoadingIndicator />}>

@@ -70,7 +70,7 @@ const NavBar = () => {
           <Navbar.Brand>
             {!isMobile() && (
               <>
-                <div className={classes.navbarBrand}>{t('frontinusHouse')}</div>
+                <div className={clsx('frontinusTitle', classes.navbarBrand)}>{t('frontinusHouse')}</div>
               </>
             )}
           </Navbar.Brand>

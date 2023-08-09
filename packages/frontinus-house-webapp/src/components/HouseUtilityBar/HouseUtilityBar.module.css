@@ -25,7 +25,7 @@
   height: 38px;
   background: #1A1A1B;
   border: 1px solid #2C2C2D;
-  color: #2C2C2D;
+  color: var(--brand-white);
 
 }
 .searchBar input:active,

@@ -101,7 +101,7 @@ const ProposalCard: React.FC<{
                       <img src="/heads/crown.png" alt="crown" />
                     </div>
                   )}
-                  <div className={classes.propTitle}>{proposal.title}</div>
+                  <div className={clsx('frontinusTitle',classes.propTitle)}>{proposal.title}</div>
                 </div>
 
                 {displayTldr && (
