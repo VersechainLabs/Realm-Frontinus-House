@@ -119,8 +119,10 @@ export class DelegateController {
     const application = await this.applicationService.findOne(applicationId);
     if (!application) {
       // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
-      application.voteState = VoteStates.NO_APPLICATION;
-      return APITransformer(APIResponses.DELEGATE.NO_APPLICATION, application, `Can not find application ${applicationId}`);
+      let dummyApplication = {voteState: {}};
+      dummyApplication.voteState = VoteStates.NO_APPLICATION;
+
+      return APITransformer(APIResponses.DELEGATE.NO_APPLICATION, dummyApplication, `Can not find application ${applicationId}`);
     }
 
     const currentTime = new Date();
