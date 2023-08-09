@@ -34,7 +34,7 @@
   border-radius: 10px;
   cursor: pointer;
   margin-left: 1rem;
-  letter-spacing: 0.2px;
+  /*letter-spacing: 0.2px;*/
 }
 
 .communityDescriptionRow p {

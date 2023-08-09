@@ -10,6 +10,9 @@ import { StoredAuctionBase, StoredProposal } from '@nouns/frontinus-house-wrappe
 import { BiAward } from 'react-icons/bi';
 import clsx from "clsx";
 import formatTime from '../../utils/formatTime';
+import '../QuillEditor/quill.snow.css';
+import '../QuillEditor/QuillEditor.module.css';
+
 
 
 export interface RenderedProposalProps {
@@ -48,6 +51,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                   </div>
                 )}
 
+
               </div>
               {proposal.reqAmount && round && (
                 <div className={classes.fundReq}>
@@ -68,26 +72,30 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             )}
 
             <h2>{t('description')}</h2>
+            <div
+                className="ql-editor"
+                dangerouslySetInnerHTML={{ __html: fields.what}}
+            />
             {/*
              * We sanitize HTML coming from rich text editor to prevent xss attacks.
              *
              * <Markdown/> component used to render HTML, while supporting Markdown.
              */}
-            <Markdown>
-              {sanitizeHtml(fields.what, {
-                allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
-                allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(['data']),
-                allowedAttributes: {
-                  img: ['src', 'alt', 'height', 'width'],
-                  a: ['href', 'target'],
-                },
-                allowedClasses: {
-                  code: ['language-*', 'lang-*'],
-                  pre: ['language-*', 'lang-*'],
-                },
-                // edge case: handle ampersands in img links encoded from sanitization
-              }).replaceAll('&amp;', '&')}
-            </Markdown>
+            {/*<Markdown>*/}
+            {/*  {sanitizeHtml(fields.what, {*/}
+            {/*    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),*/}
+            {/*    allowedSchemes: sanitizeHtml.defaults.allowedSchemes.concat(['data']),*/}
+            {/*    allowedAttributes: {*/}
+            {/*      img: ['src', 'alt', 'height', 'width'],*/}
+            {/*      a: ['href', 'target'],*/}
+            {/*    },*/}
+            {/*    allowedClasses: {*/}
+            {/*      code: ['language-*', 'lang-*'],*/}
+            {/*      pre: ['language-*', 'lang-*'],*/}
+            {/*    },*/}
+            {/*    // edge case: handle ampersands in img links encoded from sanitization*/}
+            {/*  }).replaceAll('&amp;', '&')}*/}
+            {/*</Markdown>*/}
           </span>
         </Col>
     </>
