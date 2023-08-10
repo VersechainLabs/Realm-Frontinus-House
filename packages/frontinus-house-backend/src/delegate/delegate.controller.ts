@@ -48,6 +48,7 @@ export class DelegateController {
     const application = await this.applicationService.findOne(
       dto.applicationId,
     );
+
     if (!application) {
       throw new HttpException(
         'Cannot find this application',
@@ -105,8 +106,11 @@ export class DelegateController {
     delegate.applicationId = dto.applicationId;
     delegate.fromAddress = dto.address;
     delegate.toAddress = application.address;
+    const storedDelegate = await this.delegateService.store(delegate);
 
-    return this.delegateService.store(delegate);
+    this.applicationService.updateDelegatorCount(application);
+
+    return storedDelegate;
   }
 
   @Get('/checkExist')
@@ -161,6 +165,7 @@ export class DelegateController {
       application.delegationId,
       fromAddress,
     );
+    // Only 1 delagate is allowed in 1 delegation.
     if (existDelegate) {
       application.voteState = VoteStates.VOTED; // Frontend : Can cancel
       return APITransformer(

@@ -1,6 +1,8 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   DeleteDateColumn,
@@ -54,6 +56,16 @@ export class Delegate {
   @DeleteDateColumn()
   @Field(() => Date)
   deletedDate?: Date;
+
+  @BeforeInsert()
+  setCreatedDate() {
+    this.createdDate = new Date();
+  }
+
+  @BeforeUpdate()
+  setUpdatedDate() {
+    this.lastUpdatedDate = new Date();
+  }
 
   // noinspection JSUnusedGlobalSymbols : use for exclude attrs
   toJSON() {
