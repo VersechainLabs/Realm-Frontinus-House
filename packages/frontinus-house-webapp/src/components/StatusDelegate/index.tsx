@@ -12,7 +12,7 @@ const StatusDelegate: React.FC<{ status: DelegateVoteStatus }> = props => {
     switch (status) {
         case DelegateVoteStatus.DelegateNotStarted:
             copy = 'Not Started';
-            bgClass = classes.grayBg;
+            bgClass = classes.grayBg1;
             break;
         case DelegateVoteStatus.DelegateAccepting:
             copy = 'Accepting Applicant';

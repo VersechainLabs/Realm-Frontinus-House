@@ -94,7 +94,10 @@
 }
 .black.active .filterNumber {
   color: var(--brand-black);
-  background-color: var(--bg-dark);
+  /*background-color: var(--bg-dark);*/
+  background: #313134;
+  border-radius: 8px;
+  padding: 0 4px;
 }
 
 .count {
