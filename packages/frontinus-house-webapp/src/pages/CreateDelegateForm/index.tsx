@@ -154,7 +154,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
     ) {
       const errorMessage = 'You must complete all the fields before submit!';
       console.log('Error message to be dispatched:', errorMessage);
-      dispatch(setAlert({ type: 'error', message: errorMessage, time: 10000 }));
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
