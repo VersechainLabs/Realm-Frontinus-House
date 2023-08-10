@@ -67,7 +67,7 @@ const RoundUtilityBar = ({ auction }: RoundUtilityBarProps) => {
                 content={diffTime(deadlineTime(auction))}
                 tooltipContent={`${dayjs(deadlineTime(auction))
                   .tz()
-                  .format('MMMM D, YYYY h:mm A UTC+8')}`}
+                  .format('MMMM D, YYYY h:mm A  UTC')}`}
                 titleColor="purple"
               />
               {/** FUNDING */}
