@@ -9,10 +9,17 @@ import { Delegate } from '../delegate/delegate.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
 import { DelegateService } from '../delegate/delegate.service';
+import { Community } from '../community/community.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Delegation, Application, Delegate, Snapshot]),
+    TypeOrmModule.forFeature([
+      Delegation,
+      Application,
+      Delegate,
+      Snapshot,
+      Community,
+    ]),
   ],
   controllers: [ApplicationController],
   providers: [

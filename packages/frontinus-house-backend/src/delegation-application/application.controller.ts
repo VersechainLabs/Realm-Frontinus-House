@@ -17,7 +17,9 @@ import { verifySignPayload } from '../utils/verifySignedPayload';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { DelegationService } from '../delegation/delegation.service';
 import { DelegateService } from '../delegate/delegate.service';
-import config from '../config/configuration';
+import { Community } from '../community/community.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Controller('applications')
 export class ApplicationController {
@@ -28,6 +30,8 @@ export class ApplicationController {
     private readonly delegationService: DelegationService,
     private readonly delegateService: DelegateService,
     private readonly blockchainService: BlockchainService,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
   ) {}
 
   @Get('/list')
@@ -131,10 +135,13 @@ export class ApplicationController {
       );
     }
 
+    // TODO: add communityId in delegation, remove get community by id=1
+    const community = await this.communitiesRepository.findOne(1);
+
     // Check voting power
     const vp = await this.blockchainService.getVotingPowerWithSnapshot(
       dto.address,
-      config().communityAddress,
+      community.contractAddress,
     );
     if (vp <= 0) {
       throw new HttpException('No voting power', HttpStatus.BAD_REQUEST);
