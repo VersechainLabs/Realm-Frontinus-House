@@ -153,7 +153,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
     ) {
       const errorMessage = 'You must complete all the fields before submit!';
       console.log('Error message to be dispatched:', errorMessage);
-      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      dispatch(setAlert({ type: 'error', message: errorMessage, time: 10000 }));
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
@@ -243,8 +243,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
-                What is the delegation round name? (Please use only standard letters, no special
-                characters such as dashes or question marks)*
+                What is the delegation round name?*
                 <span className={classes.characterCount}>
                   {titleLength}/{MAX_TITLE_LENGTH}
                 </span>

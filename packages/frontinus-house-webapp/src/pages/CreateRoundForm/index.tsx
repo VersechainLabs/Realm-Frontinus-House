@@ -169,7 +169,7 @@ const CreateRound: React.FC<{}> = () => {
     ) {
       const errorMessage = 'You must complete all the fields before submit!';
       console.log('Error message to be dispatched:', errorMessage);
-      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      dispatch(setAlert({ type: 'error', message: errorMessage, time: 5000 }));
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
@@ -257,8 +257,7 @@ const CreateRound: React.FC<{}> = () => {
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
-                What is the round name? (Please use only standard letters, no special characters
-                such as dashes or question marks)*
+                What is the round name?*
                 <span className={classes.characterCount}>
                   {titleLength}/{MAX_TITLE_LENGTH}
                 </span>
@@ -426,8 +425,17 @@ const CreateRound: React.FC<{}> = () => {
                 type="number" // Add type="number" to allow only numeric input
               />
             </div>
-
-            <button className={classes.button}>Submit</button>
+            <div className={classes.button}>
+              <LoadingButton
+                loading={isButtonDisabled} // Pass the loading state here
+                type="submit" // Make sure to set the type attribute to "submit"
+                variant="outlined"
+                loadingIndicator="Loading..."
+                disabled={isButtonDisabled} // Disable the button while loading
+              >
+                Submit
+              </LoadingButton>
+            </div>
             {flag && <Popup trigger={flag} onClose={close} />}
           </form>
         </Row>
