@@ -394,6 +394,22 @@ p {
   color: var(--bg-dark);
 }
 
+#custom-button-connect{
+  cursor: pointer;
+  position: absolute;
+  right: 20px;
+  top: 5px;
+
+  font-weight: 700;
+}
+
+#custom-button-connect button{
+  background-color:var(--brand-common-yellow) !important;
+  color: var(--bg-dark) !important;
+  width: 100%;
+  height: 32px;
+  font-size: 16px;
+}
 
 .btnDisabled{
   border: 1px solid gray !important;

@@ -34,8 +34,10 @@
 }
 .filterName {
   font-weight: 600;
-  color: var(--brand-gray);
+  color: var(--text-color);
 }
+
+
 
 .filterNumber {
   font-weight: 700;
@@ -44,12 +46,15 @@
   padding: 0px 2px;
   align-self: center;
   background: var(--border-light);
-  color: var(--brand-gray);
+  color: var(--text-color);
   min-width: 20px;
   text-align: center;
 }
 
-.filter:hover {
+
+
+
+.filter:hover{
   border-bottom: 2px solid var(--brand-common-yellow);
 }
 

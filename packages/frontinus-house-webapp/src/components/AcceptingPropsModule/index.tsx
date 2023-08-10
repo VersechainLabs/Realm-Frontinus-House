@@ -37,14 +37,10 @@ const AcceptingPropsModule: React.FC<{
               Anyone can submit a proposal to get funded.
             </li>
             <li>
-              Owners of the Realms NFT token will vote on the best proposals.
+              Owners of the Realms NFT will vote on the best proposals.
             </li>
             <li>
-              The top 1 proposal will get funded 1
-            </li>
-
-            <li>
-              1 each
+              The top 1 proposal will get funded 1 each
             </li>
           </div>
         </div>
