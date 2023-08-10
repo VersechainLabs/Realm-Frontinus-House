@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Delegation } from '../delegation/delegation.entity';
 import { Application } from './application.entity';
 import { CreateApplicationDto, GetApplicationDto } from './application.types';
@@ -22,6 +22,10 @@ export class ApplicationService {
       relations: ['delegation'],
       where: { visible: true },
     });
+  }
+
+  findBy(options: FindOneOptions<Application>): Promise<Application> {
+    return this.applicationRepository.findOne(options);
   }
 
   findAll(): Promise<Application[]> {

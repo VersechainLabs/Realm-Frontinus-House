@@ -6,11 +6,21 @@ import { Application } from './application.entity';
 import { ApplicationController } from './application.controller';
 import { ApplicationService } from './application.service';
 import { Delegate } from '../delegate/delegate.entity';
+import { BlockchainService } from '../blockchain/blockchain.service';
+import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
+import { DelegateService } from '../delegate/delegate.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Delegation, Application, Delegate])],
+  imports: [
+    TypeOrmModule.forFeature([Delegation, Application, Delegate, Snapshot]),
+  ],
   controllers: [ApplicationController],
-  providers: [DelegationService, ApplicationService],
+  providers: [
+    ApplicationService,
+    BlockchainService,
+    DelegateService,
+    DelegationService,
+  ],
   exports: [TypeOrmModule],
 })
 export class ApplicationModule {}

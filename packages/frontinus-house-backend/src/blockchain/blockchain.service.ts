@@ -33,7 +33,7 @@ export class BlockchainService {
   async getVotingPowerWithSnapshot(
     userAddress: string,
     communityAddress: string,
-    blockTag: number,
+    blockTag?: number,
   ): Promise<number> {
     // First, search DB for snapshot:
     const existSnapshot = await this.snapshotRepository.findOne({

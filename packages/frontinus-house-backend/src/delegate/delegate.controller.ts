@@ -19,7 +19,8 @@ import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decora
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { verifySignPayload } from '../utils/verifySignedPayload';
 import { APIResponses, APITransformer, VoteStates } from '../utils/error-codes';
-import { Vote } from 'src/vote/vote.entity';
+import { BlockchainService } from '../blockchain/blockchain.service';
+import config from '../config/configuration';
 
 @Controller('delegates')
 export class DelegateController {
@@ -28,6 +29,7 @@ export class DelegateController {
   constructor(
     private readonly delegateService: DelegateService,
     private readonly applicationService: ApplicationService,
+    private readonly blockchainService: BlockchainService,
   ) {}
 
   @Post('/create')
@@ -81,6 +83,15 @@ export class DelegateController {
       );
     }
 
+    // Check voting power
+    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+      dto.address,
+      config().communityAddress,
+    );
+    if (vp <= 0) {
+      throw new HttpException('No voting power', HttpStatus.BAD_REQUEST);
+    }
+
     const delegate = new Delegate();
     delegate.delegationId = application.delegationId;
     delegate.applicationId = dto.applicationId;
@@ -119,10 +130,14 @@ export class DelegateController {
     const application = await this.applicationService.findOne(applicationId);
     if (!application) {
       // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
-      let dummyApplication = {voteState: {}};
+      const dummyApplication = { voteState: {} };
       dummyApplication.voteState = VoteStates.NO_APPLICATION;
 
-      return APITransformer(APIResponses.DELEGATE.NO_APPLICATION, dummyApplication, `Can not find application ${applicationId}`);
+      return APITransformer(
+        APIResponses.DELEGATE.NO_APPLICATION,
+        dummyApplication,
+        `Can not find application ${applicationId}`,
+      );
     }
 
     const currentTime = new Date();
@@ -140,7 +155,11 @@ export class DelegateController {
     );
     if (existDelegate) {
       application.voteState = VoteStates.VOTED; // Frontend : Can cancel
-      return APITransformer(APIResponses.DELEGATE.DELEGATED, application, `Already delegate to ${existDelegate.toAddress}`);
+      return APITransformer(
+        APIResponses.DELEGATE.DELEGATED,
+        application,
+        `Already delegate to ${existDelegate.toAddress}`,
+      );
     }
 
     const createdApplication = await this.applicationService.findByAddress(
@@ -149,7 +168,11 @@ export class DelegateController {
     );
     if (createdApplication) {
       application.voteState = VoteStates.APPLICATION_EXIST;
-      return APITransformer(APIResponses.DELEGATE.OCCUPIED, application, `Already created application. Can not delegate to ${application.address}`);
+      return APITransformer(
+        APIResponses.DELEGATE.OCCUPIED,
+        application,
+        `Already created application. Can not delegate to ${application.address}`,
+      );
     }
 
     application.voteState = VoteStates.OK;
@@ -160,7 +183,7 @@ export class DelegateController {
   @ApiOkResponse({
     type: [Delegate],
   })
-  async listByAppliactionID(
+  async listByApplicationID(
     @Query('applicationId') applicationId: number,
   ): Promise<object> {
     const foundDelegate =
