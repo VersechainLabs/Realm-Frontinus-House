@@ -169,7 +169,7 @@ const CreateRound: React.FC<{}> = () => {
     ) {
       const errorMessage = 'You must complete all the fields before submit!';
       console.log('Error message to be dispatched:', errorMessage);
-      dispatch(setAlert({ type: 'error', message: errorMessage, time: 5000 }));
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
       setIsAlertVisible(true); // 显示alert弹出框
       return;
     }
@@ -430,7 +430,6 @@ const CreateRound: React.FC<{}> = () => {
                 loading={isButtonDisabled} // Pass the loading state here
                 type="submit" // Make sure to set the type attribute to "submit"
                 variant="outlined"
-                loadingIndicator="Loading..."
                 disabled={isButtonDisabled} // Disable the button while loading
               >
                 Submit

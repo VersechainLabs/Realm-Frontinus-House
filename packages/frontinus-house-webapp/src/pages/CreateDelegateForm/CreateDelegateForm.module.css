@@ -82,6 +82,10 @@
     margin-left: calc(var(--bs-gutter-x) * .5);
 
 }
+.button button:hover {
+    border: none;
+    background-color: #F5C27C;
+}
 .labelMargin {
     margin-bottom: 10px;
 }

@@ -58,7 +58,9 @@
 
 }
 .button button {
-    display: inline-block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     white-space: nowrap;
     vertical-align: middle;
     -webkit-user-select: none;
@@ -81,10 +83,10 @@
     margin-left: calc(var(--bs-gutter-x) * .5); 
 
 }
-.button button :hover{
-    text-decoration: none;
-    background-color: rgba(25, 118, 210, 0.04);
-    border:1px solid #D0A059;
+
+.button button:hover {
+    border: none;
+    background-color: #F5C27C;
 }
 .labelMargin {
     margin-bottom: 10px;

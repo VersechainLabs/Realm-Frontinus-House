@@ -16,6 +16,7 @@ import { setAlert, clearClick, alertSlice } from '../../state/slices/alert';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { LoadingButton } from '@mui/lab';
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -408,7 +409,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
                 <div className={classes.xian + ' ' + classes.xian5}></div>
               </div>
             </div>
-            <button className={classes.button}>Submit</button>
+            <div>
+              <button className={classes.button}>Submit</button>
+            </div>
             {isAlertVisible && (
               <div className={classes.popup} onClick={hideAlert}>
                 <div className={classes.popupContent}>
