@@ -98,7 +98,10 @@ export class DelegateController {
       community.contractAddress,
     );
     if (vp <= 0) {
-      throw new HttpException('No voting power', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Only Realms NFT Holder can submit delegate.',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const delegate = new Delegate();
