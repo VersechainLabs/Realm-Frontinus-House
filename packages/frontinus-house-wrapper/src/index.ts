@@ -409,6 +409,7 @@ export class ApiWrapper {
       const signedPayload = await deleteProposal.signedPayload(this.signer);
       return (await axios.delete(`${this.host}/proposals`, { data: signedPayload })).data;
     } catch (e: any) {
+      console.log('deleteProposal',e);
       throw e;
     }
   }
@@ -419,6 +420,7 @@ export class ApiWrapper {
       const signedPayload = await deleteApplication.signedPayload(   this.signer  );
       return (await axios.delete(`${this.host}/delegates`, { data: signedPayload })).data;
     } catch (e: any) {
+      console.log('deleteDelegate',e);
       throw e;
     }
   }
