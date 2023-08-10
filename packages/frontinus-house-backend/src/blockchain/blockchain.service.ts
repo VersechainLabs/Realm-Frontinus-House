@@ -36,6 +36,10 @@ export class BlockchainService {
     blockTag?: number,
   ): Promise<number> {
     try {
+      if (!blockTag || blockTag === 0) {
+        blockTag = await this.getCurrentBlockNum();
+      }
+
       // First, search DB for snapshot:
       const existSnapshot = await this.snapshotRepository.findOne({
         where: { communityAddress, address: userAddress, blockNum: blockTag },
