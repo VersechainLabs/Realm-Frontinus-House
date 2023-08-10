@@ -1,7 +1,5 @@
 import { Strategy } from '../types/Strategy';
-// import { Provider } from '@ethersproject/providers';
 import BigNumber from 'bignumber.js';
-// import { Contract } from 'ethers';
 import BalanceOfABI from '../abi/BalanceOfABI.json';
 import ContractCallABI from '../abi/ContractCallABI.json';
 import { parseBlockTag } from '../utils/parseBlockTag';
@@ -41,40 +39,38 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
 };
 
 const getErc721Balance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: PublicClient): Promise<BigNumber> => {
-
   const blockNumber = parseBlockTag(blockTag);
-  const data = await provider.readContract({
-    address: strategyAddress as `0x{string}`,
-    abi: BalanceOfABI,
-    functionName: 'balanceOf',
-    args: [userAddress],
-    blockNumber: blockNumber ? BigInt(blockNumber) : undefined,
-  });
   try {
+    let config = {
+      address: strategyAddress as `0x{string}`,
+      abi: BalanceOfABI,
+      functionName: 'balanceOf',
+      args: [userAddress],
+      blockNumber: (blockNumber && blockNumber > 0) ? BigInt(blockNumber) : undefined,
+    };
+    const data = await provider.readContract(config);
     return new BigNumber(data as number);
   } catch (e) {
+    console.warn(`[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`);
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }
-  // return new BigNumber(balance.toString());
 };
 
 const getContractCallBalance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: PublicClient): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
-  let config = {
-    address: strategyAddress as `0x{string}`,
-    abi: ContractCallABI,
-    functionName: 'getNumberRealms',
-    args: [userAddress],
-    blockNumber: blockNumber ? BigInt(blockNumber) : undefined,
-  };
-
-  const data = await provider.readContract(config);
   try {
+    let config = {
+      address: strategyAddress as `0x{string}`,
+      abi: ContractCallABI,
+      functionName: 'getNumberRealms',
+      args: [userAddress],
+      blockNumber: (blockNumber && blockNumber > 0) ? BigInt(blockNumber) : undefined,
+    };
+    const data = await provider.readContract(config);
     return new BigNumber(data as number);
   } catch (e) {
+    console.warn(`[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`);
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }
-
-
 };
 
