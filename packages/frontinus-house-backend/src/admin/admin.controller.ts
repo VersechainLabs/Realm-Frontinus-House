@@ -4,6 +4,7 @@ import { AdminService } from './admin.service';
 import { CreateAdminDto, UserType } from './admin.types';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
+import config from '../config/configuration';
 
 @Controller('admins')
 export class AdminsController {
@@ -37,6 +38,9 @@ export class AdminsController {
   // })
   async search(@Query('address') address: UserType) {
     const adminRecord = this.adminService.searchByAddress(address);
+
+    // 6v在env里加了个开关，enable为false的时候，全部用户都是admin:
+    if (!config().enableAdmin) return UserType.Admin;
 
     // return (await adminRecord).length;
     if ((await adminRecord).length === 0) return UserType.User;
