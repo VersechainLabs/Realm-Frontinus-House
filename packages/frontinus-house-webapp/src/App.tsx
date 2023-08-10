@@ -195,7 +195,7 @@ function App() {
               vertical: 'top' ,
               horizontal:'center'
             }}
-            open={open} autoHideDuration={2000} onClose={handleClose}>
+            open={open} autoHideDuration={alert.time} onClose={handleClose}>
           <Alert severity={alert.type}>{alert.message}</Alert>
          </Snackbar>
 
