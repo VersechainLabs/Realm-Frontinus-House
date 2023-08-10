@@ -11,7 +11,7 @@ const StatusPill: React.FC<{ status: AuctionStatus }> = props => {
   switch (status) {
     case AuctionStatus.AuctionNotStarted:
       copy = 'Not started';
-      bgClass = classes.grayBg;
+      bgClass = classes.grayBg1;
       break;
     case AuctionStatus.AuctionAcceptingProps:
       copy = 'Proposing';
@@ -19,7 +19,7 @@ const StatusPill: React.FC<{ status: AuctionStatus }> = props => {
       break;
     case AuctionStatus.AuctionVoting:
       copy = 'Voting';
-      bgClass = classes.purpleBg;
+      bgClass = classes.greenBg;
       break;
     case AuctionStatus.AuctionEnded:
       copy = 'Ended';

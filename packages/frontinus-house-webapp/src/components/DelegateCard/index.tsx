@@ -125,7 +125,7 @@ const DelegateCard: React.FC<{
                 tooltipContent={
                   isInfAuction(round)
                     ? `The number of votes required for a prop to be funded`
-                    : `${dayjs(delegateDeadlineTime(round)).tz().format('MMMM D, YYYY h:mm A z')}`
+                    : `${dayjs(delegateDeadlineTime(round)).tz().format('MMMM D, YYYY h:mm UTC')}`
                 }
               />
             </div>

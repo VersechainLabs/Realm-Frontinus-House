@@ -33,6 +33,16 @@
     color: #F5EEE6;
 
 }
+
+.grayBg1 {
+    /*background-color: var(--bg-dark);*/
+    /*border: 1px solid var(--border-light);*/
+    /*color: var(--brand-gray);*/
+    border: 1px solid #2C2C2D;
+    border-radius: 8px;
+    color: #A3A3A4;
+    background: #2C2C2D;
+}
 .purpleBg {
     background-color: var(--brand-purple-hint);
     border: 1px solid var(--brand-purple-semi-transparent);

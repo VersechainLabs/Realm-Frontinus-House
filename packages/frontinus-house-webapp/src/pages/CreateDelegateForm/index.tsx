@@ -289,6 +289,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormStart(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -305,6 +306,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormProposal(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -322,6 +324,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormVote(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -337,6 +340,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormEnd(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>

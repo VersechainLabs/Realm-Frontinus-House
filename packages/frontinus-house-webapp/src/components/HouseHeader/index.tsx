@@ -84,9 +84,9 @@ const HouseHeader: React.FC<{
             />
           </div>
 
-          <div className={classes.propHouseDataRow}>
+          <div className={clsx('frontinusTitle',classes.propHouseDataRow)}>
             <div className={classes.itemData}>{community.numAuctions ?? 0}</div>
-            <div className={clsx('frontinusTitle',classes.itemTitle)}>
+            <div className={classes.itemTitle}>
               {Number(community?.numAuctions) === 1 ? t('roundCap') : t('roundsCap')}
             </div>
             <span className={classes.bullet}>{' • '}</span>

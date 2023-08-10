@@ -3,23 +3,20 @@ import config from '../config/configuration';
 import { getCurrentBlockNum } from 'frontinus-house-communities/dist/actions/getBlockNum';
 import { getVotingPower } from 'frontinus-house-communities';
 import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
-import { DelegationService } from '../delegation/delegation.service';
+import { findByState } from '../delegation/delegation.service';
 import { DelegationState } from '../delegation/delegation.types';
 import { InjectRepository } from '@nestjs/typeorm/dist/common/typeorm.decorators';
 import { Repository } from 'typeorm';
 import { Delegate } from '../delegate/delegate.entity';
 import { createPublicClient, http, PublicClient } from 'viem';
 import { mainnet } from 'viem/chains';
+import { Delegation } from '../delegation/delegation.entity';
 
 @Injectable()
 export class BlockchainService {
   private readonly provider: PublicClient;
 
   constructor(
-    @InjectRepository(Delegate)
-    private delegateRepository: Repository<Delegate>,
-    private readonly delegationService: DelegationService,
-
     @InjectRepository(Snapshot)
     private snapshotRepository: Repository<Snapshot>,
   ) {
@@ -36,34 +33,45 @@ export class BlockchainService {
   async getVotingPowerWithSnapshot(
     userAddress: string,
     communityAddress: string,
-    blockTag: number,
+    blockTag?: number,
   ): Promise<number> {
-    // First, search DB for snapshot:
-    const existSnapshot = await this.snapshotRepository.findOne({
-      where: { communityAddress, address: userAddress, blockNum: blockTag },
-    });
-    if (existSnapshot) {
-      return existSnapshot.votingPower;
+    try {
+      if (!blockTag || blockTag === 0) {
+        blockTag = await this.getCurrentBlockNum();
+      }
+
+      // First, search DB for snapshot:
+      const existSnapshot = await this.snapshotRepository.findOne({
+        where: { communityAddress, address: userAddress, blockNum: blockTag },
+      });
+      if (existSnapshot) {
+        return existSnapshot.votingPower;
+      }
+
+      // Second, snapshot not found, search on chain:
+      const votingPowerOnChain = await getVotingPower(
+        userAddress,
+        communityAddress,
+        this.provider,
+        blockTag,
+      );
+
+      // Then, save the on-chain voting power to DB.snapshot:
+      const newSnapshot = new Snapshot();
+      newSnapshot.communityAddress = communityAddress;
+      newSnapshot.blockNum = blockTag;
+      newSnapshot.address = userAddress;
+      newSnapshot.votingPower = votingPowerOnChain;
+      // noinspection ES6MissingAwait . just a cache
+      this.snapshotRepository.save(newSnapshot);
+
+      return newSnapshot.votingPower;
+    } catch (e) {
+      console.error(
+        `BlockchainService Exception: ${userAddress} @ ${blockTag}\n${e}`,
+      );
+      return 0;
     }
-
-    // Second, snapshot not found, search on chain:
-    const votingPowerOnChain = await getVotingPower(
-      userAddress,
-      communityAddress,
-      this.provider,
-      blockTag,
-    );
-
-    // Then, save the on-chain voting power to DB.snapshot:
-    const newSnapshot = new Snapshot();
-    newSnapshot.communityAddress = communityAddress;
-    newSnapshot.blockNum = blockTag;
-    newSnapshot.address = userAddress;
-    newSnapshot.votingPower = votingPowerOnChain;
-    // noinspection ES6MissingAwait . just a cache
-    this.snapshotRepository.save(newSnapshot);
-
-    return newSnapshot.votingPower;
   }
 
   async getVotingPowerOnChain(
@@ -96,15 +104,21 @@ export class BlockchainService {
 
   // The addresses used here are probably from an address table, which is used to list all possible
   // users that may appear in the system.
-  async cacheAll(communityAddress: string, blockNum: number) {
-    const activeDelegations = await this.delegationService.findByState(
+  async cacheAll(
+    delegateRepository: Repository<Delegate>,
+    delegationRepository: Repository<Delegation>,
+    communityAddress: string,
+    blockNum: number,
+  ) {
+    const activeDelegations = await findByState(
+      delegationRepository,
       DelegationState.ACTIVE,
     );
 
     let allDelegates = [];
 
     for (const delegation of activeDelegations) {
-      const delegates = await this.delegateRepository.find({
+      const delegates = await delegateRepository.find({
         where: { delegationId: delegation.id },
       });
       allDelegates = allDelegates.concat(delegates);

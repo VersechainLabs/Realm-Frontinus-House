@@ -12,6 +12,8 @@ import dayjs from 'dayjs';
 import ConnectButton from '../ConnectButton';
 import { useAccount } from 'wagmi';
 import { useAppSelector } from '../../hooks';
+import TruncateThousands from "../TruncateThousands";
+import {countDecimals} from "../../utils/countDecimals";
 
 const AcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
@@ -20,6 +22,7 @@ const AcceptingPropsModule: React.FC<{
   const { auction, community } = props;
 
   const proposals = useAppSelector(state => state.propHouse.activeProposals);
+
   const isProposingWindow = auctionStatus(auction) === AuctionStatus.AuctionAcceptingProps;
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -37,14 +40,13 @@ const AcceptingPropsModule: React.FC<{
               Anyone can submit a proposal to get funded.
             </li>
             <li>
-              Owners of the Realms NFT token will vote on the best proposals.
+              Owners of the Realms NFT will vote on the best proposals.
             </li>
             <li>
-              The top 1 proposal will get funded 1
-            </li>
-
-            <li>
-              1 each
+              The top {auction.numWinners} proposal will get funded  <TruncateThousands
+                amount={auction.fundingAmount}
+                decimals={countDecimals(auction.fundingAmount) === 3 ? 3 : 2}
+            />{' '}{auction.currencyType} each
             </li>
           </div>
         </div>

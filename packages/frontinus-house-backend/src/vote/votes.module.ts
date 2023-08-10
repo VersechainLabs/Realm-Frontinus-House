@@ -10,11 +10,8 @@ import { VotesService } from './votes.service';
 import { Community } from '../community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
-import { DelegateService } from '../delegate/delegate.service';
 import { Delegate } from '../delegate/delegate.entity';
-import { DelegationService } from '../delegation/delegation.service';
 import { Delegation } from '../delegation/delegation.entity';
-import { CommunitiesService } from '../community/community.service';
 
 @Module({
   imports: [
@@ -33,10 +30,7 @@ import { CommunitiesService } from '../community/community.service';
     VotesService,
     AuctionsService,
     ProposalsService,
-    CommunitiesService,
     BlockchainService,
-    DelegateService,
-    DelegationService,
   ],
   exports: [TypeOrmModule],
 })

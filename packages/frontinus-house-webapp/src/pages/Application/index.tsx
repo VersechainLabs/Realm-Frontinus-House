@@ -249,31 +249,34 @@ const Application = () => {
             </div>
         )}
 
-        <div className={classes.voteMain}>
-          <div className={classes.voteHeader}>
-            <div className={classes.voteHeaderText}>
-              Delegates
+
+        {
+          voteCount > 0 && <div className={classes.voteMain}>
+            <div className={classes.voteHeader}>
+              <div className={classes.voteHeaderText}>
+                Delegates
+              </div>
+              <div className={classes.voteHeaderNum}>
+                {voteCount}
+              </div>
             </div>
-            <div className={classes.voteHeaderNum}>
-              {voteCount}
-            </div>
-          </div>
-          <div className={classes.voteList}>
-            {voteList.map(item => (
-                <div key={item.id}>
-                  <div className={classes.voteContent}>
-                    <div className={classes.voteListChild}>
-                      <AddressAvatar address={item.fromAddress} size={20} />
-                      <div className={classes.voteUserAddress}>{item.fromAddress} </div>
-                      {/*<div>X3 vote</div>*/}
+            <div className={classes.voteList}>
+              {voteList.map(item => (
+                  <div key={item.id}>
+                    <div className={classes.voteContent}>
+                      <div className={classes.voteListChild}>
+                        <AddressAvatar address={item.fromAddress} size={20} />
+                        <div className={classes.voteUserAddress}>{item.fromAddress} </div>
+                        {/*<div>X3 vote</div>*/}
+                      </div>
                     </div>
+
                   </div>
-
-                </div>
-            ))}
+              ))}
+            </div>
           </div>
+        }
 
-        </div>
 
         {proposal && (
                 <div>
