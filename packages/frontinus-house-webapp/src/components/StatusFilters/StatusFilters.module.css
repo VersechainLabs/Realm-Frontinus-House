@@ -42,13 +42,18 @@
 .filterNumber {
   font-weight: 700;
   font-size: 14px;
-  border-radius: 6px;
-  padding: 0px 2px;
+  /*border-radius: 6px;*/
+  /*padding: 0px 2px;*/
   align-self: center;
   background: var(--border-light);
-  color: var(--text-color);
+  /*color: var(--text-color);*/
   min-width: 20px;
   text-align: center;
+  color: var(--brand-black);
+  /*background-color: var(--bg-dark);*/
+  background: #313134;
+  border-radius: 8px;
+  padding: 0 4px;
 }
 
 
@@ -98,8 +103,11 @@
   color: var(--brand-common-yellow);
 }
 .black.active .filterNumber {
-  color: var(--brand-common-yellow);
-  background-color: var(--bg-dark);
+  color: var(--brand-black);
+  /*background-color: var(--bg-dark);*/
+  background: #313134;
+  border-radius: 8px;
+  padding: 0 4px;
 }
 
 .count {
