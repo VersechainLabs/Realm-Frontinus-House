@@ -125,7 +125,7 @@ const RoundCard: React.FC<{
                 tooltipContent={
                   isInfAuction(round)
                     ? `The number of votes required for a prop to be funded`
-                    : `${dayjs(deadlineTime(round)).tz().format('MMMM D, YYYY h:mm A z')}`
+                    : `${dayjs(deadlineTime(round)).tz().format('MMMM D, YYYY h:mm UTC+8')}`
                 }
               />
             </div>
