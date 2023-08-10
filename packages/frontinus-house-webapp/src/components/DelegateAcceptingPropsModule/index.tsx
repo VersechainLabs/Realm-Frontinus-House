@@ -73,6 +73,7 @@ const DelegateAcceptingPropsModule: React.FC<{
                     bgColor={ButtonColor.Gray}
                 /> :
                     <Button
+                        classNames={classes.margintop28}
                         text={t('becomeDelegate')}
                         bgColor={ButtonColor.Green}
                         onClick={() => {
@@ -84,7 +85,7 @@ const DelegateAcceptingPropsModule: React.FC<{
 
 
             ) : (
-                <ConnectButton color={ButtonColor.Pink} />
+                <ConnectButton classNames={classes.margintop28} color={ButtonColor.Pink} />
             ))}
         </>
     );
