@@ -18,7 +18,6 @@ import {
   CreateVoteDto,
   DelegatedVoteDto,
   DeleteVoteDto,
-  GetVoteDto,
   VotingPower,
 } from './vote.types';
 import { VotesService } from './votes.service';
@@ -40,17 +39,8 @@ export class VotesController {
     private readonly votesService: VotesService,
     private readonly proposalService: ProposalsService,
     private readonly auctionService: AuctionsService,
+    private readonly blockchainService: BlockchainService,
   ) {}
-
-  // @Get()
-  getVotes(): Promise<Vote[]> {
-    return this.votesService.findAll();
-  }
-
-  // @Get('findWithOpts')
-  getVotesWithOpts(@Query() dto: GetVoteDto): Promise<Vote[]> {
-    return this.votesService.findAllWithOpts(dto);
-  }
 
   @Get('votingPower')
   @ApiOperation({
@@ -193,8 +183,9 @@ export class VotesController {
     );
 
     const voteList: DelegatedVoteDto[] = [];
-    const vp = await this.votesService.getVotingPowerByBlockNum(
+    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
       createVoteDto.address,
+      foundAuction.community.contractAddress,
       foundAuction.balanceBlockTag,
     );
     voteList.push({
@@ -206,8 +197,9 @@ export class VotesController {
       actualWeight: vp,
     } as DelegatedVoteDto);
     for (const delegate of delegateList) {
-      const vp = await this.votesService.getVotingPowerByBlockNum(
+      const vp = await this.blockchainService.getVotingPowerWithSnapshot(
         delegate.fromAddress,
+        foundAuction.community.contractAddress,
         foundAuction.balanceBlockTag,
       );
       if (vp === 0) {

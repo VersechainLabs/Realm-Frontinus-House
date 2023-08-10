@@ -33,8 +33,6 @@ import { VotesService } from '../vote/votes.service';
     ProposalsService,
     AuctionsService,
     BlockchainService,
-    DelegateService,
-    DelegationService,
     VotesService,
   ],
   exports: [TypeOrmModule],

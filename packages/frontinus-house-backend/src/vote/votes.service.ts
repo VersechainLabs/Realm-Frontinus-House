@@ -10,36 +10,27 @@ import {
 import { Vote } from './vote.entity';
 import { DelegatedVoteDto, GetVoteDto, VotingPower } from './vote.types';
 import { Proposal } from '../proposal/proposal.entity';
-import config from '../config/configuration';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Auction } from '../auction/auction.entity';
 import { DelegationState } from '../delegation/delegation.types';
-import {
-  DelegationService,
-  findByState,
-} from '../delegation/delegation.service';
-import { DelegateService } from '../delegate/delegate.service';
+import { findByState } from '../delegation/delegation.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { VoteStates } from '../utils';
 import { Delegation } from '../delegation/delegation.entity';
+import { Delegate } from '../delegate/delegate.entity';
 
 @Injectable()
 export class VotesService {
-  private readonly communityAddress = config().communityAddress;
-
   constructor(
     @InjectRepository(Vote)
     private votesRepository: Repository<Vote>,
     @InjectRepository(Delegation)
     private delegationRepository: Repository<Delegation>,
-
     private readonly blockchainService: BlockchainService,
-    private readonly delegateService: DelegateService,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
   ) {}
-
-  // public stateMsg : string;
-  // public stateCode : number;
 
   async findAll(opts?: FindManyOptions<Vote>): Promise<Vote[]> {
     return this.votesRepository.find(opts);
@@ -177,17 +168,6 @@ export class VotesService {
     return result;
   }
 
-  async getVotingPowerByBlockNum(
-    address: string,
-    balanceBlockTag: number,
-  ): Promise<number> {
-    return this.blockchainService.getVotingPowerWithSnapshot(
-      address,
-      this.communityAddress,
-      balanceBlockTag,
-    );
-  }
-
   /**
    * Check if the vote is valid. The checks include:
    * - The proposal is within the valid voting period
@@ -230,6 +210,7 @@ export class VotesService {
 
     return true;
   }
+
   async checkEligibleToVoteNew(
     proposal: Proposal,
     auction: Auction,
@@ -293,10 +274,9 @@ export class VotesService {
       return [];
     }
 
-    const fromDelegate = await this.delegateService.findByFromAddress(
-      currentDelegation.id,
-      address,
-    );
+    const fromDelegate = await this.delegateRepository.findOne({
+      where: { delegationId: currentDelegation.id, fromAddress: address },
+    });
     if (fromDelegate) {
       throw new HttpException(
         `user has already been delegated for other user`,
@@ -305,9 +285,11 @@ export class VotesService {
     }
 
     // Get delegate list for calculate voting power
-    return await this.delegateService.getDelegateListByAddress(
-      currentDelegation.id,
-      address,
-    );
+    return await this.delegateRepository.find({
+      where: {
+        delegationId: currentDelegation.id,
+        toAddress: address,
+      },
+    });
   }
 }
