@@ -35,32 +35,39 @@ export class BlockchainService {
     communityAddress: string,
     blockTag?: number,
   ): Promise<number> {
-    // First, search DB for snapshot:
-    const existSnapshot = await this.snapshotRepository.findOne({
-      where: { communityAddress, address: userAddress, blockNum: blockTag },
-    });
-    if (existSnapshot) {
-      return existSnapshot.votingPower;
+    try {
+      // First, search DB for snapshot:
+      const existSnapshot = await this.snapshotRepository.findOne({
+        where: { communityAddress, address: userAddress, blockNum: blockTag },
+      });
+      if (existSnapshot) {
+        return existSnapshot.votingPower;
+      }
+
+      // Second, snapshot not found, search on chain:
+      const votingPowerOnChain = await getVotingPower(
+        userAddress,
+        communityAddress,
+        this.provider,
+        blockTag,
+      );
+
+      // Then, save the on-chain voting power to DB.snapshot:
+      const newSnapshot = new Snapshot();
+      newSnapshot.communityAddress = communityAddress;
+      newSnapshot.blockNum = blockTag;
+      newSnapshot.address = userAddress;
+      newSnapshot.votingPower = votingPowerOnChain;
+      // noinspection ES6MissingAwait . just a cache
+      this.snapshotRepository.save(newSnapshot);
+
+      return newSnapshot.votingPower;
+    } catch (e) {
+      console.error(
+        `BlockchainService Exception: ${userAddress} @ ${blockTag}\n${e}`,
+      );
+      return 0;
     }
-
-    // Second, snapshot not found, search on chain:
-    const votingPowerOnChain = await getVotingPower(
-      userAddress,
-      communityAddress,
-      this.provider,
-      blockTag,
-    );
-
-    // Then, save the on-chain voting power to DB.snapshot:
-    const newSnapshot = new Snapshot();
-    newSnapshot.communityAddress = communityAddress;
-    newSnapshot.blockNum = blockTag;
-    newSnapshot.address = userAddress;
-    newSnapshot.votingPower = votingPowerOnChain;
-    // noinspection ES6MissingAwait . just a cache
-    this.snapshotRepository.save(newSnapshot);
-
-    return newSnapshot.votingPower;
   }
 
   async getVotingPowerOnChain(
