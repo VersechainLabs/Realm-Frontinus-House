@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, Repository } from 'typeorm';
+import { FindOneOptions, IsNull, Not, Repository } from 'typeorm';
 import { Delegation } from '../delegation/delegation.entity';
 import { Application } from './application.entity';
 import { CreateApplicationDto, GetApplicationDto } from './application.types';
@@ -124,4 +124,21 @@ export class ApplicationService {
   async store(value: Application): Promise<Application> {
     return await this.applicationRepository.save(value, { reload: true });
   }
+
+  async updateDelegatorCount(application: Application): Promise<Application> {
+    console.log("enter updateDelegatorCount() - applicationId: ", application.id);
+    const list = await this.delegateRepository.find({
+      where: { 
+        applicationId: application.id,
+        // deletedDate: Not(IsNull())
+      }
+    });
+
+    console.log(list);
+    console.log("delegatorCount:", list.length);
+
+    application.delegatorCount = list.length;
+
+    return await this.applicationRepository.save(application);
+  }  
 }
