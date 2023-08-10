@@ -21,6 +21,7 @@ const NavBar = () => {
   const [isNavExpanded, setIsNavExpanded] = useState(false);
   const navigate = useNavigate();
 
+
   const { data: walletClient } = useWalletClient();
   const {address: account} = useAccount();
   const backendHost = useAppSelector(state => state.configuration.backendHost);
@@ -102,15 +103,18 @@ const NavBar = () => {
                 </Nav.Link>
               }
 
+              {account && (
+                <Nav.Link as="div" className={classes.connectBtnContainer}>
+                  <Button
+                      text="Create a Proposal Round"
+                      bgColor={ButtonColor.Purple}
+                      onClick={() => navigate('/create-round-form')}
+                      classNames={classes.createRoundBtn}
+                  />
+                </Nav.Link>
+                )
+              }
 
-              <Nav.Link as="div" className={classes.connectBtnContainer}>
-                <Button
-                    text="Create a Proposal Round"
-                    bgColor={ButtonColor.Purple}
-                    onClick={() => navigate('/create-round-form')}
-                    classNames={classes.createRoundBtn}
-                />
-              </Nav.Link>
 
               <Nav.Link as="div" className={classes.connectBtnContainer}>
                 <ConnectButton showBalance={false} label={t('connect')} />

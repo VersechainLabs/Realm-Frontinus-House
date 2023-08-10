@@ -12,6 +12,8 @@ import RenderedProposalFields from "../RenderedProposalFields";
 import {IoArrowBackCircleOutline} from "react-icons/io5";
 import NotFound from "../NotFound";
 import LoadingIndicator from "../LoadingIndicator";
+import ConnectButton from "../ConnectButton";
+import {ButtonColor} from "../Button";
 
 type QuillEditorProps = {
   widgetKey: string;
@@ -233,24 +235,30 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               <button className="ql-image"></button>
 
+              {account ? (
+                  props.loading ? (
+                      <div
+                          id="custom-button"
+                          className={'btnDisabled'}
 
-
-              {props.loading ? (
-                  <div
-                      id="custom-button"
-                      className={'btnDisabled'}
-
-                  >
-                    <span><img src="/loading.gif" alt="" width={'40'}/></span>
-                  </div>
-              ) :  (
-                  <div
-                      id="custom-button"
-                      onClick={clickBtn}
-                  >
-                    <span>{ props.btnText }</span>
+                      >
+                        <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                      </div>
+                  ) :  (
+                      <div
+                          id="custom-button"
+                          onClick={clickBtn}
+                      >
+                        <span>{ props.btnText }</span>
+                      </div>
+                  )
+              ) : (
+                  <div  id="custom-button-connect">
+                    <ConnectButton
+                    />
                   </div>
               )}
+
 
 
             </div>

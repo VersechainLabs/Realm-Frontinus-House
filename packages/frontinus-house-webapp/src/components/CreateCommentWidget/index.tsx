@@ -6,13 +6,18 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { Comment, StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { useAccount, useWalletClient } from 'wagmi';
 import {setActiveCommunity} from "../../state/slices/propHouse";
+import {setAlert} from "../../state/slices/alert";
+import {useDispatch} from "react-redux";
 type CreateCommentWidgetProps = {
   proposalId?: number;
   applicationId?: number;
   onCommentCreated: (comment: StoredComment) => void;
 }
 
+
 export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
+  const dispatch = useDispatch();
+
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
@@ -58,7 +63,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       setLoading(false);
     } catch (e) {
       setLoading(false);
-      console.log(e);
+      dispatch(setAlert({ type: 'error', message: e }));
     }
 
   };

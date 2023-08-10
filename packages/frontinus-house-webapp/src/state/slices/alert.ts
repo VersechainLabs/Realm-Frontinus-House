@@ -5,12 +5,13 @@ const initialState: any = {
   click: false,
   type: 'error',
   message: 'error',
+  time: 2000,
 };
 
 //type error warning info success
 
 export const alertSlice = createSlice({
-  name: 'voting',
+  name: 'alert',
   initialState,
   reducers: {
     setAlert: (state, action ) => {
@@ -18,6 +19,7 @@ export const alertSlice = createSlice({
 
       state.type = action.payload.type ?? 'error' ;
       state.message = action.payload.message ?? 'error';
+      state.time = action.payload.time ?? 2000;
       state.click = true;
     },
     clearClick: (state ) => {

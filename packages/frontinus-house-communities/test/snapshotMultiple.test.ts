@@ -1,13 +1,17 @@
 import { expect } from 'chai';
-import { providers } from 'ethers';
-import { blastApiEndpoint } from './src/constants/infuraEndpoint';
 import { communities } from '../src/communities';
+import { createPublicClient, http } from 'viem';
+import { mainnet } from 'viem/chains';
+import config from 'frontinus-house-backend/dist/src/config/configuration';
 
 describe('Snapshot multiple strategy', () => {
-  const provider = new providers.JsonRpcProvider(blastApiEndpoint);
+  const provider = createPublicClient({
+    chain: mainnet,
+    transport: http(config().Web3RpcUrl),
+  });
   before('web3 provider should be available', async () => {
-    const network = await provider.ready;
-    expect(network.chainId).to.eq(1);
+    const chain = provider.chain;
+    expect(chain.id).to.eq(1);
   });
 
   // snapshot strategy define: https://snapshot.org/#/council.bibliotheca.eth/proposal/0x755fc15017bc4a061e385c3fe4cd65b9e39496ba028577b4828c3a3f8dc4b71f

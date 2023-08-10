@@ -85,6 +85,18 @@ export class ApiWrapper {
     }
   }
 
+  async getDelegationApplied(id: number ): Promise<any> {
+    if (!this.signer) return;
+
+    try {
+      const owner = (await this.signer.getAddresses())[0];
+      const raw = (await axios.get(`${this.host}/applications/checkApplied?delegationId=${id}&address=${owner}`)).data;
+      return raw;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getDelegateStatus(id: any): Promise<any> {
     if (!this.signer) throw 'Please sign';
     try {
@@ -397,6 +409,7 @@ export class ApiWrapper {
       const signedPayload = await deleteProposal.signedPayload(this.signer);
       return (await axios.delete(`${this.host}/proposals`, { data: signedPayload })).data;
     } catch (e: any) {
+      console.log('deleteProposal',e);
       throw e;
     }
   }
@@ -407,6 +420,7 @@ export class ApiWrapper {
       const signedPayload = await deleteApplication.signedPayload(   this.signer  );
       return (await axios.delete(`${this.host}/delegates`, { data: signedPayload })).data;
     } catch (e: any) {
+      console.log('deleteDelegate',e);
       throw e;
     }
   }

@@ -34,16 +34,16 @@
 /* PURPLE BG */
 
 .btnPurpleBg {
-  background-color: var(--brand-purple);
+  background-color: var(--brand-common-yellow);
   border: none;
 }
 .btnPurpleBg:hover {
-  background-color: var(--brand-purple-semi-transparent);
+  background-color: var(--brand-common-yellow);
 }
 .btnPurpleBg:active,
 .btnPurpleBg:focus {
-  background-color: var(--brand-purple-semi-transparent);
-  box-shadow: 0 0 0 0.25rem var(--brand-purple-transparent) !important;
+  background-color: var(--brand-common-yellow);
+  box-shadow: 0 0 0 0.25rem var(--brand-common-yellow) !important;
 }
 
 /* PURPLE LIGHT BG */

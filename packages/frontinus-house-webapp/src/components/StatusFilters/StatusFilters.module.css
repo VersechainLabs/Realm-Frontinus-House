@@ -34,33 +34,43 @@
 }
 .filterName {
   font-weight: 600;
-  color: var(--brand-gray);
+  color: var(--text-color);
 }
+
+
 
 .filterNumber {
   font-weight: 700;
   font-size: 14px;
-  border-radius: 6px;
-  padding: 0px 2px;
+  /*border-radius: 6px;*/
+  /*padding: 0px 2px;*/
   align-self: center;
   background: var(--border-light);
-  color: var(--brand-gray);
+  /*color: var(--text-color);*/
   min-width: 20px;
   text-align: center;
+  color: var(--brand-black);
+  /*background-color: var(--bg-dark);*/
+  background: #313134;
+  border-radius: 8px;
+  padding: 0 4px;
 }
 
-.filter:hover {
-  border-bottom: 2px solid var(--brand-gray-transparent);
+
+
+
+.filter:hover{
+  border-bottom: 2px solid var(--brand-common-yellow);
 }
 
 .pink.active {
-  border-bottom: 2px solid var(--brand-pink);
+  border-bottom: 2px solid var(--brand-common-yellow);
 }
 .pink.active .filterName {
-  color: var(--brand-pink);
+  color: var(--brand-common-yellow);
 }
 .pink.active .filterNumber {
-  color: var(--brand-pink);
+  color: var(--brand-common-yellow);
   background-color: var(--brand-pink-hint);
 }
 
@@ -87,10 +97,10 @@
 }
 
 .black.active {
-  border-bottom: 2px solid var(--brand-black);
+  border-bottom: 2px solid var(--brand-common-yellow);
 }
 .black.active .filterName {
-  color: var(--brand-black);
+  color: var(--brand-common-yellow);
 }
 .black.active .filterNumber {
   color: var(--brand-black);

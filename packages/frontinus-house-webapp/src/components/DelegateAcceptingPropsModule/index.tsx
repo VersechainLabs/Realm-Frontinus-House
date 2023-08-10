@@ -10,8 +10,11 @@ import RoundModuleCard from '../RoundModuleCard';
 import { isInfAuction } from '../../utils/auctionType';
 import dayjs from 'dayjs';
 import ConnectButton from '../ConnectButton';
-import { useAccount } from 'wagmi';
+import {useAccount, useWalletClient} from 'wagmi';
 import { useAppSelector } from '../../hooks';
+import {useEffect, useRef, useState} from "react";
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
+import delegate from "../../state/slices/delegate";
 
 const DelegateAcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
@@ -25,33 +28,29 @@ const DelegateAcceptingPropsModule: React.FC<{
   const navigate = useNavigate();
   const { address: account } = useAccount();
   const { t } = useTranslation();
+  const { data: walletClient } = useWalletClient();
+  const backendHost = useAppSelector(state => state.configuration.backendHost);
+  const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
 
-  // const content = (
-  //   <>
-  //     <b>{t('howBecomeDelegate')} :</b>
-  //     <div className={classes.bulletList}>
-  //       <div className={classes.bulletItem}>
-  //         <hr className={classes.bullet} />
-  //         <p>{t('delegateDesc')}.</p>
-  //       </div>
-  //
-  //     </div>
-  //
-  //     {isProposingWindow &&
-  //       (account ? (
-  //         <Button
-  //           text={t('becomeDelegate')}
-  //           bgColor={ButtonColor.Green}
-  //           onClick={() => {
-  //             dispatch(clearProposal());
-  //             navigate('/create', { state: { auction, community, proposals } });
-  //           }}
-  //         />
-  //       ) : (
-  //         <ConnectButton color={ButtonColor.Pink} />
-  //       ))}
-  //   </>
-  // );
+  const [delegateStatus, setDelegateStatus] = useState(false);
+
+  useEffect(() => {
+      backendClient.current = new ApiWrapper(backendHost, walletClient);
+  }, [walletClient, backendHost]);
+
+  useEffect(() => {
+      // auction.id
+      setDelegateStatus(false);
+      if(account && auction){
+          fetchDelegateStatus();
+      }
+
+  }, [account, auction]);
+
+  const fetchDelegateStatus = async () => {
+      const raw = await backendClient.current.getDelegationApplied(auction.id);
+      setDelegateStatus(raw);
+  };
 
     const content = (
         <>
@@ -60,7 +59,7 @@ const DelegateAcceptingPropsModule: React.FC<{
                 <div className={classes.bulletItem}>
                     <hr className={classes.bullet} />
                     <div className={classes.customParagraph}>
-                        <p>{t('delegateDesc')}.</p>
+                        <p>{t('delegateDesc')}</p>
                     </div>
                 </div>
 
@@ -68,16 +67,25 @@ const DelegateAcceptingPropsModule: React.FC<{
 
             {isProposingWindow &&
             (account ? (
-                <Button
-                    text={t('becomeDelegate')}
-                    bgColor={ButtonColor.Green}
-                    onClick={() => {
-                        dispatch(clearProposal());
-                        navigate('/application/create', { state: { auction, community, proposals } });
-                    }}
-                />
+
+                (delegateStatus ? <Button
+                    text={'Already Submitted'}
+                    bgColor={ButtonColor.Gray}
+                /> :
+                    <Button
+                        classNames={classes.margintop28}
+                        text={t('becomeDelegate')}
+                        bgColor={ButtonColor.Green}
+                        onClick={() => {
+                            dispatch(clearProposal());
+                            navigate('/application/create', { state: { auction, community, proposals } });
+                        }}
+                    />
+                )
+
+
             ) : (
-                <ConnectButton color={ButtonColor.Pink} />
+                <ConnectButton classNames={classes.margintop28} color={ButtonColor.Pink} />
             ))}
         </>
     );

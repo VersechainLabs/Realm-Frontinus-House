@@ -13,14 +13,14 @@
   font-size: 28px;
   font-weight: 700;
   line-height: 37px;
-  letter-spacing: 0px;
+  /*letter-spacing: 0px;*/
   text-align: left;
 }
 .desc1 {
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  letter-spacing: 0px;
+  /*letter-spacing: 0px;*/
   text-align: left;
   color:#F5EEE6;
   margin-bottom: 10px;
@@ -31,7 +31,7 @@
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  letter-spacing: 0px;
+  /*letter-spacing: 0px;*/
   text-align: left;
   color:#F5EEE6;
   margin-bottom: 10px;
@@ -73,7 +73,7 @@
     font-size: 16px;
     font-weight: 700;
     line-height: 28px;
-    letter-spacing: 0px;
+    /*letter-spacing: 0px;*/
     height: 40px;
     width: 96px;
     text-align: center;
@@ -145,11 +145,12 @@
     padding-top: 65px;
     padding-left: 40px;
 }
-.characterCount {
-    margin-left: 90px; 
-    color: #676b6d
-  }
+.characterCount,
   .characterCount1 {
-    margin-left: 198px; 
-    color: #676b6d
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #676b6d;  
+    text-align: right;
+    margin-top: -23px;
   }
