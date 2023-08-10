@@ -193,6 +193,7 @@ const Proposal = () => {
                         console.log('voteResult: ', voteResult);
                       } catch (e) {
                         //
+                        console.log(e);
                       } finally {
                         // TODO: 按钮取消 loading，如果投票成功，设为 disable并且更新 vote list。
                       }
