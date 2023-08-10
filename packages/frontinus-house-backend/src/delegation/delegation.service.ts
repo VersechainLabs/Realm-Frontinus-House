@@ -81,53 +81,54 @@ export class DelegationService {
       ],
     });
   }
-
-  async findByState(
-    stateToFind: DelegationState,
-    timeToFind?: Date,
-  ): Promise<Delegation[]> {
-    if (timeToFind === undefined) {
-      timeToFind = new Date();
-    }
-
-    if (stateToFind == DelegationState.NOT_START) {
-      return this.delegationRepository.find({
-        where: {
-          visible: true,
-          startTime: MoreThan(timeToFind),
-        },
-      });
-    } else if (stateToFind == DelegationState.APPLYING) {
-      return this.delegationRepository.find({
-        where: {
-          visible: true,
-          startTime: LessThanOrEqual(timeToFind),
-          proposalEndTime: MoreThan(timeToFind),
-        },
-      });
-    } else if (stateToFind == DelegationState.DELEGATING) {
-      return this.delegationRepository.find({
-        where: {
-          visible: true,
-          proposalEndTime: LessThanOrEqual(timeToFind),
-          votingEndTime: MoreThan(timeToFind),
-        },
-      });
-    } else if (stateToFind == DelegationState.ACTIVE) {
-      return this.delegationRepository.find({
-        where: {
-          visible: true,
-          votingEndTime: LessThanOrEqual(timeToFind),
-          endTime: MoreThan(timeToFind),
-        },
-      });
-    } else if (stateToFind == DelegationState.EXPIRED) {
-      return this.delegationRepository.find({
-        where: {
-          visible: true,
-          endTime: LessThanOrEqual(timeToFind),
-        },
-      });
-    }
-  }
 }
+
+export const findByState = async (
+  delegationRepository: Repository<Delegation>,
+  stateToFind: DelegationState,
+  timeToFind?: Date,
+): Promise<Delegation[]> => {
+  if (timeToFind === undefined) {
+    timeToFind = new Date();
+  }
+
+  if (stateToFind == DelegationState.NOT_START) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        startTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.APPLYING) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        startTime: LessThanOrEqual(timeToFind),
+        proposalEndTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.DELEGATING) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        proposalEndTime: LessThanOrEqual(timeToFind),
+        votingEndTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.ACTIVE) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        votingEndTime: LessThanOrEqual(timeToFind),
+        endTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.EXPIRED) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        endTime: LessThanOrEqual(timeToFind),
+      },
+    });
+  }
+};
