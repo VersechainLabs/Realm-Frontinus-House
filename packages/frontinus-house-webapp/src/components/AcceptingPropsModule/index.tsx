@@ -79,6 +79,7 @@ const AcceptingPropsModule: React.FC<{
   );
 
   return (
+    
     <RoundModuleCard
       title={t('acceptingProposals')}
       subtitle={
@@ -92,6 +93,7 @@ const AcceptingPropsModule: React.FC<{
       content={content}
       type="proposing"
     />
+    
   );
 };
 

@@ -16,7 +16,7 @@ import { DelegationState } from '../delegation/delegation.types';
 import { findByState } from '../delegation/delegation.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { VoteStates } from '../utils';
+import { VoteStates } from '@nouns/frontinus-house-wrapper';
 import { Delegation } from '../delegation/delegation.entity';
 import { Delegate } from '../delegate/delegate.entity';
 
