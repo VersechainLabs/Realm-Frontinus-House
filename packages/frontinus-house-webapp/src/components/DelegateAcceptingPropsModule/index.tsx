@@ -15,6 +15,7 @@ import { useAppSelector } from '../../hooks';
 import {useEffect, useRef, useState} from "react";
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import delegate from "../../state/slices/delegate";
+import { ApplicationCreateStatusMap } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
 
 const DelegateAcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
@@ -31,8 +32,7 @@ const DelegateAcceptingPropsModule: React.FC<{
   const { data: walletClient } = useWalletClient();
   const backendHost = useAppSelector(state => state.configuration.backendHost);
   const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
-
-  const [delegateStatus, setDelegateStatus] = useState(false);
+  const [delegateStatus, setDelegateStatus] = useState(ApplicationCreateStatusMap.OK);
 
   useEffect(() => {
       backendClient.current = new ApiWrapper(backendHost, walletClient);
@@ -49,6 +49,9 @@ const DelegateAcceptingPropsModule: React.FC<{
 
   const fetchDelegateStatus = async () => {
       const raw = await backendClient.current.getDelegationApplied(auction.id);
+
+      console.log('getDelegationApplied',raw);
+
       setDelegateStatus(raw);
   };
 
@@ -68,8 +71,8 @@ const DelegateAcceptingPropsModule: React.FC<{
             {isProposingWindow &&
             (account ? (
 
-                (delegateStatus ? <Button
-                    text={'Already Submitted'}
+                ( !delegateStatus.canCreate ? <Button
+                    text={delegateStatus.message}
                     bgColor={ButtonColor.Gray}
                 /> :
                     <Button
