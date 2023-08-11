@@ -12,6 +12,7 @@ import clsx from "clsx";
 import formatTime from '../../utils/formatTime';
 import '../QuillEditor/quill.snow.css';
 import '../QuillEditor/QuillEditor.module.css';
+import { serverDateToString } from '../../utils/detailedTime';
 
 
 
@@ -46,7 +47,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                       <div className={classes.submittedBy}>
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
-                      <span>{' • '} {formatTime(proposal.createdDate)}</span>
+                      <span>{' • '} {serverDateToString(proposal.createdDate)}</span>
                     </div>
                   </div>
                 )}
