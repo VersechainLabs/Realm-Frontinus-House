@@ -82,6 +82,10 @@ export class VotesService {
     });
   }
 
+  findOneBy(opt?: FindOneOptions<Vote>): Promise<Vote> {
+    return this.votesRepository.findOne(opt);
+  }
+
   async remove(id: number): Promise<void> {
     await this.votesRepository.softDelete(id);
   }

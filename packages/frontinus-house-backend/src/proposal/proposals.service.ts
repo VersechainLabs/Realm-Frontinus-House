@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 import { Proposal } from './proposal.entity';
 import { GetProposalsDto } from './proposal.types';
 
@@ -11,6 +11,10 @@ export class ProposalsService {
     private proposalsRepository: Repository<Proposal>,
   ) {}
 
+  findBy(options: FindOneOptions<Proposal>): Promise<Proposal> {
+    return this.proposalsRepository.findOne(options);
+  }
+  
   findAll(dto: GetProposalsDto) {
     return this.proposalsRepository.find({
       skip: dto.skip,
