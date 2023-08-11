@@ -93,12 +93,12 @@ const CreateRound: React.FC<{}> = () => {
 
   const saveFormStart = (value: Dayjs | null) => {
     if (value !== null) {
-      const utcValue = utc(value.format()); // 将选定的时间转换为 UTC 时间
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
         proposingStartTime: utcValue.toDate(),
       }));
-      setProposingStartTime(utcValue); // 将 UTC 时间保存到 proposingStartTime 状态
+      setProposingStartTime(utcValue);
       setIsStartTimeFilled(true);
     } else {
       setProposingStartTime(null);
@@ -108,7 +108,7 @@ const CreateRound: React.FC<{}> = () => {
 
   const saveFormProposal = (value: Dayjs | null) => {
     if (value !== null) {
-      const utcValue = utc(value.format()); // 将选定的时间转换为 UTC 时间
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
         proposalEndTime: utcValue.toDate(),
@@ -126,7 +126,7 @@ const CreateRound: React.FC<{}> = () => {
 
   const saveFormVote = (value: Dayjs | null) => {
     if (value !== null) {
-      const utcValue = utc(value.format()); // 将选定的时间转换为 UTC 时间
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
         votingEndTime: utcValue.toDate(),
@@ -154,7 +154,6 @@ const CreateRound: React.FC<{}> = () => {
   const hideAlert = () => {
     setIsAlertVisible(false); // 隐藏警告
   };
-  
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -294,9 +293,7 @@ const CreateRound: React.FC<{}> = () => {
             <div className={classes.flexDiv}>
               <div className={classes.dateMain}>
                 <div className={classes.labelMargin}>
-                  <div className={classes.desc}>
-                    When does the round proposing period start? (exact date and time in UTC)*
-                  </div>
+                  <div className={classes.desc}>When does the round proposing period start?*</div>
 
                   {/*<input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>*/}
 
@@ -315,9 +312,7 @@ const CreateRound: React.FC<{}> = () => {
                   </LocalizationProvider>
                 </div>
                 <div className={classes.labelMargin}>
-                  <div className={classes.desc}>
-                    When does the round voting period start? (exact date and time in UTC)*
-                  </div>
+                  <div className={classes.desc}>When does the round voting period start?*</div>
 
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
@@ -331,9 +326,7 @@ const CreateRound: React.FC<{}> = () => {
                   </LocalizationProvider>
                 </div>
                 <div className={classes.labelMargin}>
-                  <div className={classes.desc}>
-                    When does the round voting period end? (exact date and time in UTC)*
-                  </div>
+                  <div className={classes.desc}>When does the round voting period end?*</div>
 
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
@@ -438,8 +431,6 @@ const CreateRound: React.FC<{}> = () => {
               >
                 Submit
               </LoadingButton>
-              
-
             </div>
             {flag && <Popup trigger={flag} onClose={close} />}
           </form>

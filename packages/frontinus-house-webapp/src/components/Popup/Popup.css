@@ -6,7 +6,7 @@
     height: 212px;
     border: 1px solid #2c2c2d;
     border-radius: 24px;
-    background-color: #2c2c2d;
+    background-color: #1a1a1b;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -24,8 +24,9 @@
   .popup-inner {
     width: 592px;
     height: 96px;
+    font-size: 24px;
     gap: 17px;
-    background-color: #2c2c2d;
+    background-color: #1a1a1b;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -45,8 +46,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #2c2c2d;
+    background-color: #1a1a1b;
     cursor: pointer;
+  }
+  .close-btn img {
+    width: 14px; 
+    height: 14px; 
+    
   }
   
   .button-group {
