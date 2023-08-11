@@ -5,7 +5,7 @@ export const APIResponses = {
       NOT_VOTING : { Code: 40032, Detail: 'Not in the eligible voting period.'},
       DELEGATED : { Code: 40033, Detail: 'Already delegate to another address.'},
       OCCUPIED : { Code: 40034, Detail: 'Already created application. Can not delegate.'},
-      NO_POWER : { Code: 40034, Detail: 'Only Realms NFT holders have permission to approve.'},
+      NO_POWER : { Code: 40035, Detail: 'Only Realms NFT holders have permission to approve.'},
     }
 };
 export function APITransformer(infoObj: object, data: object, customDetail ?: string): object | PromiseLike<object> {
