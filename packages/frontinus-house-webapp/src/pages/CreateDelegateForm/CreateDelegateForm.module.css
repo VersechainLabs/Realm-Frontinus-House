@@ -80,12 +80,12 @@
     margin-top: 30px;
     margin-right: calc(var(--bs-gutter-x) * .5);
     margin-left: calc(var(--bs-gutter-x) * .5);
+    
+    &:hover {
+        background-color: #F5C27C; /* New color on hover */
+      }
+}
 
-}
-.button button:hover {
-    border: none;
-    background-color: #F5C27C;
-}
 .labelMargin {
     margin-bottom: 10px;
 }

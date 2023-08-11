@@ -2,8 +2,8 @@ import classes from './ProposalInputs.module.css';
 import './ProposalInputs.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import '../../quill.css';
 import clsx from 'clsx';
@@ -11,30 +11,31 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../DelegateEditor';
-import {useAccount, useWalletClient} from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
-import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
-import {DeltaStatic, Quill} from "quill";
-import {InfiniteAuctionProposal, Proposal, Vote} from "@nouns/frontinus-house-wrapper/dist/builders";
-import {appendProposal} from "../../state/slices/propHouse";
-import {clearProposal} from "../../state/slices/editor";
-import ProposalSuccessModal from "../ProposalSuccessModal";
-import {buildRoundPath} from "../../utils/buildRoundPath";
+import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
+import { DeltaStatic, Quill } from 'quill';
+import {
+  InfiniteAuctionProposal,
+  Proposal,
+  Vote,
+} from '@nouns/frontinus-house-wrapper/dist/builders';
+import { appendProposal } from '../../state/slices/propHouse';
+import { clearProposal } from '../../state/slices/editor';
+import ProposalSuccessModal from '../ProposalSuccessModal';
+import { buildRoundPath } from '../../utils/buildRoundPath';
+import { setAlert } from '../../state/slices/alert';
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
   fundReqData: FundReqDataType;
   onDataChange: (data: Partial<ProposalFields>) => void;
 }> = props => {
-  const {
-    formData,
-    fundReqData,
-    onDataChange,
-  } = props;
+  const { formData, fundReqData, onDataChange } = props;
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
-  const [hasError,setHasError] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   // const validateError = async (min: number, count: number) => {
   //       let error = validateInput(min, count);
@@ -78,10 +79,9 @@ const ProposalInputs: React.FC<{
     />
   );
 
-
   const navigate = useNavigate();
-    const location = useLocation();
-    const activeAuction = location.state.auction;
+  const location = useLocation();
+  const activeAuction = location.state.auction;
   const activeCommunity = location.state.community;
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
@@ -90,6 +90,7 @@ const ProposalInputs: React.FC<{
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
   const dispatch = useAppDispatch();
   const { address: account } = useAccount();
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
 
   const { data: walletClient } = useWalletClient();
 
@@ -108,24 +109,29 @@ const ProposalInputs: React.FC<{
     }
   };
 
-
-
-
   const submit = async () => {
-
-
     try {
-      console.log(content,formData);
+      console.log(content, formData);
       if (content.length === 0 || !account) {
+        return;
+      }
+      const titleFieldValue = formData[0].fieldValue;
+      const tldrFieldValue = formData[1].fieldValue;
+
+      if (titleFieldValue.trim().length === 0 || tldrFieldValue.trim().length === 0) {
+        const errorMessage = 'You must complete all the fields before submit!';
+        console.log('Error message to be dispatched:', errorMessage);
+        dispatch(setAlert({ type: 'error', message: errorMessage }));
+        setIsAlertVisible(true);
         return;
       }
 
       //check error
-      if (validateInput(formData[0].minCount, formData[0].fieldValue.length)){
+      if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
         return false;
       }
 
-      if (validateInput(formData[1].minCount, formData[1].fieldValue.length)){
+      if (validateInput(formData[1].minCount, formData[1].fieldValue.length)) {
         return false;
       }
 
@@ -133,7 +139,12 @@ const ProposalInputs: React.FC<{
 
       let newProp: Proposal | InfiniteAuctionProposal;
 
-      newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
+      newProp = new Proposal(
+        formData[0].fieldValue,
+        content,
+        formData[1].fieldValue,
+        activeAuction.id,
+      );
       const proposal = await client.current.createProposal(newProp);
 
       setPropId(proposal.id);
@@ -148,11 +159,7 @@ const ProposalInputs: React.FC<{
     } finally {
       setLoading(false);
     }
-
-
-
   };
-
 
   return (
     <>
@@ -198,26 +205,22 @@ const ProposalInputs: React.FC<{
 
             {/** DESCRIPTION */}
           </Form>
-          <div className={"propEditor"}>
-            <div className={classes.description}>
-              Description
-            </div>
-            <div style={{ marginTop: '45px'}}>
+          <div className={'propEditor'}>
+            <div className={classes.description}>Description</div>
+            <div style={{ marginTop: '45px' }}>
               <QuillEditor
-                  widgetKey={'Comment-proposalId'}
-                  minHeightStr={'400px'}
-                  onChange={handleChange}
-                  title='Create Comment'
-                  loading={loading}
-                  onQuillInit={(q) => setQuill(q)}
-                  btnText='Submit'
-                  onButtonClick={submit}
-                  placeholderText=''
+                widgetKey={'Comment-proposalId'}
+                minHeightStr={'400px'}
+                onChange={handleChange}
+                title="Create Comment"
+                loading={loading}
+                onQuillInit={q => setQuill(q)}
+                btnText="Submit"
+                onButtonClick={submit}
+                placeholderText=""
               />
             </div>
-
           </div>
-
         </Col>
       </Row>
       {/*{showProposalSuccessModal && propId && (*/}
