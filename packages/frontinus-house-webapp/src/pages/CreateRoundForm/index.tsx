@@ -257,8 +257,7 @@ const CreateRound: React.FC<{}> = () => {
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
-                What is the round name? (Please use only standard letters, no special characters
-                such as dashes or question marks)*
+                What is the round name?*
                 <span className={classes.characterCount}>
                   {titleLength}/{MAX_TITLE_LENGTH}
                 </span>
@@ -426,8 +425,16 @@ const CreateRound: React.FC<{}> = () => {
                 type="number" // Add type="number" to allow only numeric input
               />
             </div>
-
-            <button className={classes.button}>Submit</button>
+            <div className={classes.button}>
+              <LoadingButton
+                loading={isButtonDisabled} // Pass the loading state here
+                type="submit" // Make sure to set the type attribute to "submit"
+                variant="outlined"
+                disabled={isButtonDisabled} // Disable the button while loading
+              >
+                Submit
+              </LoadingButton>
+            </div>
             {flag && <Popup trigger={flag} onClose={close} />}
           </form>
         </Row>
