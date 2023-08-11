@@ -4,7 +4,7 @@ export const APIResponses = {
       NO_APPLICATION : { Code: 40031, Detail: "Can not find application"},
       NOT_VOTING : { Code: 40032, Detail: 'Not in the eligible voting period.'},
       DELEGATED : { Code: 40033, Detail: 'Already delegate to another address.'},
-      OCCUPIED : { Code: 40034, Detail: 'Already created application. Can not delegate.'},
+      APPLICATION_EXIST : { Code: 40034, Detail: 'Already created application. Can not delegate.'},
       NO_POWER : { Code: 40035, Detail: 'Only Realms NFT holders have permission to approve.'},
     }
 };
