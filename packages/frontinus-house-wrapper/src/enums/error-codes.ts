@@ -11,6 +11,13 @@ export const ApplicationCreateStatusMap: Record<string, ApplicationCreateStatus>
   DELEGATE_TO_OTHER: { code: 313, canCreate: false, message: 'Already delegate to another in this delegation' },
   NO_VOTING_POWER: { code: 314, canCreate: false, message: 'Only Realms NFT Holder can submit application.' },
 };
+export const ProposalCreateStatusMap: Record<string, ApplicationCreateStatus> = {
+  OK: { code: 200, canCreate: true, message: '' },
+  CREATED: { code: 411, canCreate: false, message: 'You have created proposal in this round.' },
+  WRONG_PERIOD: { code: 412, canCreate: false, message: 'Not in the eligible create proposal period.' },
+  VOTED_TO_OTHER: { code: 413, canCreate: false, message: 'Already vote to another in this round' },
+  NO_VOTING_POWER: { code: 414, canCreate: false, message: 'Only Realms NFT Holder can submit proposal.' },
+};
 
 
 export class VoteStatesClass {
