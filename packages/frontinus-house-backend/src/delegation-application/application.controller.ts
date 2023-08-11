@@ -83,7 +83,6 @@ export class ApplicationController {
     );
 
     if (!application) return false;
-
     return true;
   }
 
@@ -114,11 +113,11 @@ export class ApplicationController {
     }
 
     // Create:
-    const newApplication = this.applicationRepository.create({
+    const newApplication = await this.applicationService.create({
       ...dto,
       delegation,
     });
-    return await this.applicationRepository.save(newApplication);
+    return await this.applicationService.store(newApplication);
   }
 
   @Get('/canCreate')
