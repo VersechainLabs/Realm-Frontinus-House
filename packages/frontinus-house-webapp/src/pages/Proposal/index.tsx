@@ -76,7 +76,7 @@ const Proposal = () => {
             setCanVote(1);
           } else if (proposal.voteState.code === 311) {
             setCanVote(2);
-          } else if (proposal.voteState.code === 314) {
+          } else if (proposal.voteState.code === 314 || proposal.voteState.code === 312) {
             setCanVote(3);
           }
 
@@ -181,9 +181,8 @@ const Proposal = () => {
                   </svg>
                 </button>
             )}
-            {canVote === 2 && (
+            {canVote === 4 && (
                 <button
-                    disabled={true}
                     className={classes.disApproveButton}
                     onClick={async () => {
                       // TODO: 按钮需要加 loading
