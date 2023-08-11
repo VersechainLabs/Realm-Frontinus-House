@@ -236,9 +236,14 @@ export class VotesService {
     }
 
     if (checkVotingPower) {
-      const vp = await this.getVotingPower(address, auction, true);
-      if (vp.weight === 0) {
-        return VoteStates.NO_POWER;
+      try {
+        const vp = await this.getVotingPower(address, auction, true);
+        if (vp.weight === 0) {
+          return VoteStates.NO_POWER;
+        }        
+      } catch (error) {
+        // 6v add new case:
+        return VoteStates.ALREADY_DELEGATED;
       }
     }
 

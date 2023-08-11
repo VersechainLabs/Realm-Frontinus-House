@@ -201,18 +201,6 @@ export class DelegateController {
   }
 
 
-  @Get('/detail/:id')
-  @ApiOkResponse({
-    type: Delegate,
-  })
-  async findOneDetail(@Param('id') id: number): Promise<Delegate> {
-    const foundDelegate = await this.delegateService.findOne(id);
-
-    if (!foundDelegate)
-      throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
-
-    return foundDelegate;
-  }
   @Get(':id')
   @ApiOkResponse({
     type: Delegate,
