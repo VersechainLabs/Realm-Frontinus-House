@@ -30,11 +30,12 @@ export const VoteStates: Record<string, VoteStatesClass> = {
   OK : { code: 200, canVote: true, reason: "Can vote."},
   VOTED : { code: 311, canVote: false, reason: "You have voted for this proposal."}, // For Frontend: Can cancel
   NOT_VOTING : { code: 312, canVote: false, reason: "Not in the eligible voting period."},
-  // DUPLICATE : { code: 313, canVote: false, reason: "Vote for prop failed because user has already been voted in this round."},
   DUPLICATE : { code: 313, canVote: false, reason: "You've already voted another proposal."},
   NO_POWER : { code: 314, canVote: false, reason: "Only Realms NFT holders have permission to approve."},
+  ALREADY_DELEGATED : { code: 319, canVote: false, reason: "User already delegated to another user."},
 
   // For Appliation only:
   NO_APPLICATION : { code: 315, canVote: false, reason: "Can not find application."},
   APPLICATION_EXIST : { code: 317, canVote: false, reason: "Already created application. Can not delegate to this address."},
+  NOT_DELEGATING : { code: 318, canVote: false, reason: "Not in the eligible selection period."},
 };
