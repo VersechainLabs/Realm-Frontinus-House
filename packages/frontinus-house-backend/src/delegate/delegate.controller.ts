@@ -135,12 +135,8 @@ export class DelegateController {
 
     let application = await this.applicationService.findOne(applicationId);
     
-    if (checkResult === VoteStates.OK) {
-      application.voteState = VoteStates.OK;
-      return APITransformer(APIResponses.OK, application);
-    }
-
-    if (checkResult === VoteStates.NO_APPLICATION) {
+    switch (checkResult) {
+      case VoteStates.NO_APPLICATION:
         // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
         const dummyApplication = { voteState: {} };
         dummyApplication.voteState = VoteStates.NO_APPLICATION;
@@ -148,55 +144,39 @@ export class DelegateController {
         return APITransformer(
           APIResponses.DELEGATE.NO_APPLICATION,
           dummyApplication,
-          checkResult.reason,
+          `Can not find application ${applicationId}`,
         );
+        break;
+      case VoteStates.NOT_VOTING:
+        application.voteState = VoteStates.NOT_VOTING;
+        return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
+        break;        
+      case VoteStates.VOTED:
+        application.voteState = VoteStates.VOTED; // Frontend : Can cancel
+        return APITransformer(
+          APIResponses.DELEGATE.DELEGATED,
+          application,
+        );
+        break;   
+      case VoteStates.APPLICATION_EXIST:
+        application.voteState = VoteStates.APPLICATION_EXIST;
+        return APITransformer(
+          APIResponses.DELEGATE.APPLICATION_EXIST,
+          application,
+          `Already created application. Can not delegate to ${application.address}`,
+        );
+        break;   
+      case VoteStates.NO_POWER:
+        application.voteState = VoteStates.NO_POWER;
+        return APITransformer(
+          APIResponses.DELEGATE.NO_POWER,
+          application,
+        );
+        break;  
     }
 
-    application.voteState = checkResult;
-    return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
-
-    // switch (checkResult) {
-    //   case VoteStates.NO_APPLICATION:
-    //     // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
-    //     const dummyApplication = { voteState: {} };
-    //     dummyApplication.voteState = VoteStates.NO_APPLICATION;
-
-    //     return APITransformer(
-    //       APIResponses.DELEGATE.NO_APPLICATION,
-    //       dummyApplication,
-    //       `Can not find application ${applicationId}`,
-    //     );
-    //     break;
-    //   case VoteStates.NOT_VOTING:
-    //     application.voteState = VoteStates.NOT_VOTING;
-    //     return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
-    //     break;        
-    //   case VoteStates.VOTED:
-    //     application.voteState = VoteStates.VOTED; // Frontend : Can cancel
-    //     return APITransformer(
-    //       APIResponses.DELEGATE.DELEGATED,
-    //       application,
-    //     );
-    //     break;   
-    //   case VoteStates.APPLICATION_EXIST:
-    //     application.voteState = VoteStates.APPLICATION_EXIST;
-    //     return APITransformer(
-    //       APIResponses.DELEGATE.APPLICATION_EXIST,
-    //       application,
-    //       `Already created application. Can not delegate to ${application.address}`,
-    //     );
-    //     break;   
-    //   case VoteStates.NO_POWER:
-    //     application.voteState = VoteStates.NO_POWER;
-    //     return APITransformer(
-    //       APIResponses.DELEGATE.NO_POWER,
-    //       application,
-    //     );
-    //     break;  
-    // }
-
-    // application.voteState = VoteStates.OK;
-    // return APITransformer(APIResponses.OK, application);
+    application.voteState = VoteStates.OK;
+    return APITransformer(APIResponses.OK, application);
   }
 
   @Get('/list')
