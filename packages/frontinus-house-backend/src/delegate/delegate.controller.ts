@@ -50,38 +50,45 @@ export class DelegateController {
 
     const checkResult = await this.doDelegateCheck(dto.applicationId, dto.address);
 
-    switch (checkResult) {
-      case VoteStates.NO_APPLICATION:
-        throw new HttpException(
-          'Cannot find this application.',
-          HttpStatus.BAD_REQUEST,
-        );
-        break;
-      case VoteStates.NOT_VOTING:
-        throw new HttpException(
-          'Not in the eligible voting period.',
-          HttpStatus.BAD_REQUEST,
-        );
-        break;        
-      case VoteStates.VOTED:
-        throw new HttpException(
-          'Already delegate to another address.',
-          HttpStatus.BAD_REQUEST,
-        );
-        break;   
-      case VoteStates.APPLICATION_EXIST:
-        throw new HttpException(
-          'Already created application. Can not delegate.',
-          HttpStatus.BAD_REQUEST,
-        );
-        break;   
-      case VoteStates.NO_POWER:
-        throw new HttpException(
-          'Only Realms NFT holders have permission to approve.',
-          HttpStatus.BAD_REQUEST,
-        );
-        break;  
+    if (checkResult !== VoteStates.OK) {
+      throw new HttpException(
+        checkResult.reason,
+        HttpStatus.BAD_REQUEST,
+      );
     }
+
+    // switch (checkResult) {
+    //   case VoteStates.NO_APPLICATION:
+    //     throw new HttpException(
+    //       'Cannot find this application.',
+    //       HttpStatus.BAD_REQUEST,
+    //     );
+    //     break;
+    //   case VoteStates.NOT_VOTING:
+    //     throw new HttpException(
+    //       'Not in the eligible voting period.',
+    //       HttpStatus.BAD_REQUEST,
+    //     );
+    //     break;        
+    //   case VoteStates.VOTED:
+    //     throw new HttpException(
+    //       'Already delegate to another address.',
+    //       HttpStatus.BAD_REQUEST,
+    //     );
+    //     break;   
+    //   case VoteStates.APPLICATION_EXIST:
+    //     throw new HttpException(
+    //       'Already created application. Can not delegate.',
+    //       HttpStatus.BAD_REQUEST,
+    //     );
+    //     break;   
+    //   case VoteStates.NO_POWER:
+    //     throw new HttpException(
+    //       'Only Realms NFT holders have permission to approve.',
+    //       HttpStatus.BAD_REQUEST,
+    //     );
+    //     break;  
+    // }
 
     const application = await this.applicationService.findOne(
       dto.applicationId,
@@ -126,10 +133,14 @@ export class DelegateController {
   ): Promise<object> {
     const checkResult = await this.doDelegateCheck(applicationId, fromAddress);
 
-    const application = await this.applicationService.findOne(applicationId);
+    let application = await this.applicationService.findOne(applicationId);
     
-    switch (checkResult) {
-      case VoteStates.NO_APPLICATION:
+    if (checkResult === VoteStates.OK) {
+      application.voteState = VoteStates.OK;
+      return APITransformer(APIResponses.OK, application);
+    }
+
+    if (checkResult === VoteStates.NO_APPLICATION) {
         // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
         const dummyApplication = { voteState: {} };
         dummyApplication.voteState = VoteStates.NO_APPLICATION;
@@ -137,39 +148,55 @@ export class DelegateController {
         return APITransformer(
           APIResponses.DELEGATE.NO_APPLICATION,
           dummyApplication,
-          `Can not find application ${applicationId}`,
+          checkResult.reason,
         );
-        break;
-      case VoteStates.NOT_VOTING:
-        application.voteState = VoteStates.NOT_VOTING;
-        return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
-        break;        
-      case VoteStates.VOTED:
-        application.voteState = VoteStates.VOTED; // Frontend : Can cancel
-        return APITransformer(
-          APIResponses.DELEGATE.DELEGATED,
-          application,
-        );
-        break;   
-      case VoteStates.APPLICATION_EXIST:
-        application.voteState = VoteStates.APPLICATION_EXIST;
-        return APITransformer(
-          APIResponses.DELEGATE.APPLICATION_EXIST,
-          application,
-          `Already created application. Can not delegate to ${application.address}`,
-        );
-        break;   
-      case VoteStates.NO_POWER:
-        application.voteState = VoteStates.NO_POWER;
-        return APITransformer(
-          APIResponses.DELEGATE.NO_POWER,
-          application,
-        );
-        break;  
     }
 
-    application.voteState = VoteStates.OK;
-    return APITransformer(APIResponses.OK, application);
+    application.voteState = checkResult;
+    return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
+
+    // switch (checkResult) {
+    //   case VoteStates.NO_APPLICATION:
+    //     // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
+    //     const dummyApplication = { voteState: {} };
+    //     dummyApplication.voteState = VoteStates.NO_APPLICATION;
+
+    //     return APITransformer(
+    //       APIResponses.DELEGATE.NO_APPLICATION,
+    //       dummyApplication,
+    //       `Can not find application ${applicationId}`,
+    //     );
+    //     break;
+    //   case VoteStates.NOT_VOTING:
+    //     application.voteState = VoteStates.NOT_VOTING;
+    //     return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
+    //     break;        
+    //   case VoteStates.VOTED:
+    //     application.voteState = VoteStates.VOTED; // Frontend : Can cancel
+    //     return APITransformer(
+    //       APIResponses.DELEGATE.DELEGATED,
+    //       application,
+    //     );
+    //     break;   
+    //   case VoteStates.APPLICATION_EXIST:
+    //     application.voteState = VoteStates.APPLICATION_EXIST;
+    //     return APITransformer(
+    //       APIResponses.DELEGATE.APPLICATION_EXIST,
+    //       application,
+    //       `Already created application. Can not delegate to ${application.address}`,
+    //     );
+    //     break;   
+    //   case VoteStates.NO_POWER:
+    //     application.voteState = VoteStates.NO_POWER;
+    //     return APITransformer(
+    //       APIResponses.DELEGATE.NO_POWER,
+    //       application,
+    //     );
+    //     break;  
+    // }
+
+    // application.voteState = VoteStates.OK;
+    // return APITransformer(APIResponses.OK, application);
   }
 
   @Get('/list')
