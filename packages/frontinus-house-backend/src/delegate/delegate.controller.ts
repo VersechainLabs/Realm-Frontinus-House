@@ -18,7 +18,8 @@ import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.deco
 import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { verifySignPayload } from '../utils/verifySignedPayload';
-import { APIResponses, APITransformer, VoteStates } from '../utils/error-codes';
+import { APIResponses, APITransformer,  } from '../utils/error-codes';
+import { VoteStates } from '@nouns/frontinus-house-wrapper';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import config from '../config/configuration';
 import { Community } from '../community/community.entity';

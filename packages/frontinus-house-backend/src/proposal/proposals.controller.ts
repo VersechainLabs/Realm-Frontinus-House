@@ -12,7 +12,8 @@ import {
 } from '@nestjs/common';
 import { AuctionsService } from '../auction/auctions.service';
 import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
-import { VoteStates, canSubmitProposals } from '../utils';
+import { canSubmitProposals } from '../utils';
+import { VoteStates } from '@nouns/frontinus-house-wrapper';
 import { Proposal } from './proposal.entity';
 import {
   CreateProposalDto,
