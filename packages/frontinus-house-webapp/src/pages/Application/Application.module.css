@@ -118,6 +118,10 @@
 
 }
 
+.reason{
+  color: var(--brand-gray);
+}
+
 @media (min-width: 577px) {
   .backToAuction svg {
     height: 1.5rem;
