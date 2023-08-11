@@ -76,7 +76,7 @@ const Proposal = () => {
             setCanVote(1);
           } else if (proposal.voteState.code === 311) {
             setCanVote(2);
-          } else if (proposal.voteState.code === 314) {
+          } else if (proposal.voteState.code === 314 || proposal.voteState.code === 312 || proposal.voteState.code === 313) {
             setCanVote(3);
           }
 
@@ -183,7 +183,6 @@ const Proposal = () => {
             )}
             {canVote === 2 && (
                 <button
-                    disabled={true}
                     className={classes.disApproveButton}
                     onClick={async () => {
                       // TODO: 按钮需要加 loading
@@ -193,6 +192,7 @@ const Proposal = () => {
                         console.log('voteResult: ', voteResult);
                       } catch (e) {
                         //
+                        console.log(e);
                       } finally {
                         // TODO: 按钮取消 loading，如果投票成功，设为 disable并且更新 vote list。
                       }
