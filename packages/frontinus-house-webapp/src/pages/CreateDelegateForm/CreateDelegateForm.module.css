@@ -82,6 +82,10 @@
     margin-left: calc(var(--bs-gutter-x) * .5);
 
 }
+.button button:hover {
+    border: none;
+    background-color: #F5C27C;
+}
 .labelMargin {
     margin-bottom: 10px;
 }
@@ -145,11 +149,12 @@
     padding-top: 65px;
     padding-left: 40px;
 }
-.characterCount {
-    margin-left: 73px; 
-    color: #676b6d
-  }
+.characterCount,
   .characterCount1 {
-    margin-left: 161px; 
-    color: #676b6d
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    color: #676b6d;  
+    text-align: right;
+    margin-top: -23px;
   }

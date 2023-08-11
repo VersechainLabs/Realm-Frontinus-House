@@ -24,7 +24,7 @@ const statuses: Status[] = [
   {
     status: RoundStatus.Active,
     title: 'Active',
-    bgColor: classes.pink,
+    bgColor: classes.black,
   },
   {
     status: RoundStatus.AllRounds,

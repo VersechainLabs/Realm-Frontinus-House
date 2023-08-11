@@ -131,7 +131,7 @@
   max-width: 100% !important;
 }
 .ql-editor :is(p, li) {
-  font-family: 'EB Garamond' !important;
+  font-family: 'Inconsolata' !important;
   font-style: normal !important;
   font-weight: 400 !important;
   font-size: 16px !important;
@@ -140,7 +140,7 @@
   margin-bottom: 0 !important;
 }
 .ql-editor blockquote {
-  font-family: 'EB Garamond';
+  font-family: 'Inconsolata';
   color: var(--brand-black) !important;
   font-style: normal !important;
   font-weight: 400 !important;

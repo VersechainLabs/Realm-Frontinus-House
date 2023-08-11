@@ -16,6 +16,7 @@ import { setAlert, clearClick, alertSlice } from '../../state/slices/alert';
 import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { LoadingButton } from '@mui/lab';
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -243,8 +244,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
-                What is the delegation round name? (Please use only standard letters, no special
-                characters such as dashes or question marks)*
+                What is the delegation round name?*
                 <span className={classes.characterCount}>
                   {titleLength}/{MAX_TITLE_LENGTH}
                 </span>
@@ -289,6 +289,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormStart(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -305,6 +306,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormProposal(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -322,6 +324,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormVote(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -337,6 +340,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                         onChange={newValue => saveFormEnd(newValue)}
                         className={classes.input}
                         minDate={dayjs()}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -405,7 +409,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
                 <div className={classes.xian + ' ' + classes.xian5}></div>
               </div>
             </div>
-            <button className={classes.button}>Submit</button>
+            <div>
+              <button className={classes.button}>Submit</button>
+            </div>
             {isAlertVisible && (
               <div className={classes.popup} onClick={hideAlert}>
                 <div className={classes.popupContent}>

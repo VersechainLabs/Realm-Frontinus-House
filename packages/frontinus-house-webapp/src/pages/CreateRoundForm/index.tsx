@@ -17,6 +17,7 @@ import isToday from 'dayjs/plugin/isToday';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlert } from '../../state/slices/alert';
 import clsx from 'clsx';
+import { LoadingButton } from '@mui/lab';
 import { setUserType } from '../../state/slices/user';
 
 dayjs.extend(isToday);
@@ -204,6 +205,7 @@ const CreateRound: React.FC<{}> = () => {
     }
 
     if (userType === 'Admin') {
+      setIsButtonDisabled(true);
       try {
         const round = await client.current.createAuction(
           new TimedAuction(
@@ -221,10 +223,8 @@ const CreateRound: React.FC<{}> = () => {
             state.description,
           ),
         );
-
         setIsSuccessAlertVisible(true); // 显示成功提示
         dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-        setIsButtonDisabled(true);
         navigate('/');
         console.log('Success：', round);
       } catch (e) {
@@ -257,8 +257,7 @@ const CreateRound: React.FC<{}> = () => {
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
-                What is the round name? (Please use only standard letters, no special characters
-                such as dashes or question marks)*
+                What is the round name?*
                 <span className={classes.characterCount}>
                   {titleLength}/{MAX_TITLE_LENGTH}
                 </span>
@@ -307,6 +306,7 @@ const CreateRound: React.FC<{}> = () => {
                         }}
                         className={classes.input}
                         minDate={dayjs()} //set minDate to the current date and time
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -322,6 +322,7 @@ const CreateRound: React.FC<{}> = () => {
                         onChange={newValue => saveFormProposal(newValue)}
                         className={classes.input}
                         minDate={proposingStartTime}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -337,6 +338,7 @@ const CreateRound: React.FC<{}> = () => {
                         onChange={newValue => saveFormVote(newValue)}
                         minDate={proposingStartTime}
                         className={classes.input}
+                        ampm={false}
                       />
                     </DemoContainer>
                   </LocalizationProvider>
@@ -423,13 +425,16 @@ const CreateRound: React.FC<{}> = () => {
                 type="number" // Add type="number" to allow only numeric input
               />
             </div>
-
-            <button
-              className={`${classes.button} ${isButtonDisabled ? 'disabled-button' : ''}`}
-              disabled={isButtonDisabled}
-            >
-              Submit
-            </button>
+            <div className={classes.button}>
+              <LoadingButton
+                loading={isButtonDisabled} // Pass the loading state here
+                type="submit" // Make sure to set the type attribute to "submit"
+                variant="outlined"
+                disabled={isButtonDisabled} // Disable the button while loading
+              >
+                Submit
+              </LoadingButton>
+            </div>
             {flag && <Popup trigger={flag} onClose={close} />}
           </form>
         </Row>
