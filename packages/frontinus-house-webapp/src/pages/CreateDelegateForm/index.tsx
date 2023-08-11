@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@mui/material/TextField';
 import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { LoadingButton } from '@mui/lab';
+import { utc } from 'dayjs';
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -55,6 +56,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
   // const alertMessage = useSelector(state => state.alert.message);
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const [state, setState] = useState({
     description: '',
@@ -80,11 +82,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
   const saveFormStart = (value: Dayjs | null) => {
     if (value !== null) {
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
-        startTime: value.toDate(),
+        startTime: utcValue.toDate(),
       }));
-      setRoundStartTime(value);
+      setRoundStartTime(utcValue);
       setIsStartTimeFilled(true);
     } else {
       setRoundStartTime(null);
@@ -94,11 +97,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
   const saveFormProposal = (value: Dayjs | null) => {
     if (value !== null) {
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
-        proposalEndTime: value.toDate(),
+        proposalEndTime: utcValue.toDate(),
       }));
-      setGrantStartTime(value);
+      setGrantStartTime(utcValue);
       setIsProposalTimeFilled(true);
     } else {
       setGrantStartTime(null);
@@ -108,11 +112,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
   const saveFormVote = (value: Dayjs | null) => {
     if (value !== null) {
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
-        votingEndTime: value.toDate(),
+        votingEndTime: utcValue.toDate(),
       }));
-      setGrantEndTime(value);
+      setGrantEndTime(utcValue);
       setIsVotingTimeFilled(true);
     } else {
       setGrantEndTime(null);
@@ -122,11 +127,12 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
   const saveFormEnd = (value: Dayjs | null) => {
     if (value !== null) {
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
-        endTime: value.toDate(),
+        endTime: utcValue.toDate(),
       }));
-      setRoundEndTime(value);
+      setRoundEndTime(utcValue);
       setIsEndTimeFilled(true);
     } else {
       setRoundEndTime(null);
@@ -206,7 +212,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       state.votingEndTime,
       state.description,
     );
-
+    setIsButtonDisabled(true);
     client.current
       .createDelegateAuction(delegate)
       .then((round: any) => {
@@ -215,6 +221,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
         navigate('/delegateDetails/' + round.id);
       })
       .catch(e => {
+        setIsButtonDisabled(false);
         setFlag(false);
         // dispatch(setAlert({ type: 'error', message: e }));
         // setIsAlertVisible(true); // 显示alert弹出框
@@ -280,8 +287,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
               <div className={classes.dateMain}>
                 <div className={classes.labelMargin}>
                   <div className={classes.desc}>
-                    When does the delegation round start accepting applications? (exact date and
-                    time in UTC)*
+                    When does the delegation round start accepting applications?*
                   </div>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
@@ -297,8 +303,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
                 <div className={classes.labelMargin}>
                   <div className={classes.desc}>
-                    When can community members start granting voting power to delegate
-                    applicants?(exact date and time in UTC)*
+                    When can community members start granting voting power to delegate applicants?*
                   </div>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
@@ -315,7 +320,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                 <div className={classes.labelMargin}>
                   <div className={classes.desc}>
                     When is the last day community members can grant voting power to delegate
-                    applicants? (exact date and time in UTC)*
+                    applicants?*
                   </div>
 
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -330,9 +335,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
                   </LocalizationProvider>
                 </div>
                 <div className={classes.labelMargin}>
-                  <div className={classes.desc}>
-                    When does the delegation round end? (exact date and time in UTC)*
-                  </div>
+                  <div className={classes.desc}>When does the delegation round end?*</div>
 
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
@@ -409,8 +412,16 @@ const CreateDelegateForm: React.FC<{}> = () => {
                 <div className={classes.xian + ' ' + classes.xian5}></div>
               </div>
             </div>
-            <div>
-              <button className={classes.button}>Submit</button>
+            <div className={classes.button}>
+              <LoadingButton
+                loading={isButtonDisabled} // Pass the loading state here
+                type="submit" // Make sure to set the type attribute to "submit"
+                variant="outlined"
+                disabled={isButtonDisabled} // Disable the button while loading
+                style={{ textTransform: 'capitalize' }}
+              >
+                Submit
+              </LoadingButton>
             </div>
             {isAlertVisible && (
               <div className={classes.popup} onClick={hideAlert}>

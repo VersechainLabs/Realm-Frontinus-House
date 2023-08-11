@@ -36,7 +36,6 @@ const DelegateUtilityBar = ({ auction }: RoundUtilityBarProps) => {
 
   return (
     <div className={classes.roundUtilityBar}>
-
       {/** ROUND DATA */}
       <div className={classes.utilitySection}>
         <Col
@@ -54,7 +53,7 @@ const DelegateUtilityBar = ({ auction }: RoundUtilityBarProps) => {
                 content={diffTime(delegateDeadlineTime(auction))}
                 tooltipContent={`${dayjs(delegateDeadlineTime(auction))
                   .tz()
-                  .format('MMMM D, YYYY h:mm A z')}`}
+                  .format('MMMM D, YYYY h:mm A')}`}
                 titleColor="purple"
               />
             </>
