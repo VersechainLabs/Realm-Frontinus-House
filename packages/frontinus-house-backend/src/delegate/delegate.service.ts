@@ -4,14 +4,14 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { Delegate } from './delegate.entity';
 
 
-export enum DelegateErrorTypes {
-  OK,
-  NO_APPLICATION,
-  NOT_VOTING,
-  VOTED,
-  OCCUPIED,
-  NO_POWER
-}
+// export enum DelegateErrorTypes {
+//   OK,
+//   NO_APPLICATION,
+//   NOT_VOTING,
+//   VOTED,
+//   OCCUPIED,
+//   NO_POWER
+// }
 
 @Injectable()
 export class DelegateService {

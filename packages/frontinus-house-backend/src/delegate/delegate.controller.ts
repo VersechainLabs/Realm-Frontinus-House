@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Delegate } from './delegate.entity';
 import { CreateDelegateDto, DeleteDelegateDto } from './delegate.types';
-import { DelegateErrorTypes, DelegateService } from './delegate.service';
+import { DelegateService } from './delegate.service';
 import { ApplicationService } from '../delegation-application/application.service';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
@@ -19,7 +19,7 @@ import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decora
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { verifySignPayload } from '../utils/verifySignedPayload';
 import { APIResponses, APITransformer,  } from '../utils/error-codes';
-import { VoteStates } from '@nouns/frontinus-house-wrapper';
+import { VoteStates, VoteStatesClass } from '@nouns/frontinus-house-wrapper';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import config from '../config/configuration';
 import { Community } from '../community/community.entity';
@@ -51,31 +51,31 @@ export class DelegateController {
     const checkResult = await this.doDelegateCheck(dto.applicationId, dto.address);
 
     switch (checkResult) {
-      case DelegateErrorTypes.NO_APPLICATION:
+      case VoteStates.NO_APPLICATION:
         throw new HttpException(
           'Cannot find this application.',
           HttpStatus.BAD_REQUEST,
         );
         break;
-      case DelegateErrorTypes.NOT_VOTING:
+      case VoteStates.NOT_VOTING:
         throw new HttpException(
           'Not in the eligible voting period.',
           HttpStatus.BAD_REQUEST,
         );
         break;        
-      case DelegateErrorTypes.VOTED:
+      case VoteStates.VOTED:
         throw new HttpException(
           'Already delegate to another address.',
           HttpStatus.BAD_REQUEST,
         );
         break;   
-      case DelegateErrorTypes.OCCUPIED:
+      case VoteStates.APPLICATION_EXIST:
         throw new HttpException(
           'Already created application. Can not delegate.',
           HttpStatus.BAD_REQUEST,
         );
         break;   
-      case DelegateErrorTypes.NO_POWER:
+      case VoteStates.NO_POWER:
         throw new HttpException(
           'Only Realms NFT holders have permission to approve.',
           HttpStatus.BAD_REQUEST,
@@ -129,7 +129,7 @@ export class DelegateController {
     const application = await this.applicationService.findOne(applicationId);
     
     switch (checkResult) {
-      case DelegateErrorTypes.NO_APPLICATION:
+      case VoteStates.NO_APPLICATION:
         // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
         const dummyApplication = { voteState: {} };
         dummyApplication.voteState = VoteStates.NO_APPLICATION;
@@ -140,26 +140,26 @@ export class DelegateController {
           `Can not find application ${applicationId}`,
         );
         break;
-      case DelegateErrorTypes.NOT_VOTING:
+      case VoteStates.NOT_VOTING:
         application.voteState = VoteStates.NOT_VOTING;
         return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
         break;        
-      case DelegateErrorTypes.VOTED:
+      case VoteStates.VOTED:
         application.voteState = VoteStates.VOTED; // Frontend : Can cancel
         return APITransformer(
           APIResponses.DELEGATE.DELEGATED,
           application,
         );
         break;   
-      case DelegateErrorTypes.OCCUPIED:
+      case VoteStates.APPLICATION_EXIST:
         application.voteState = VoteStates.APPLICATION_EXIST;
         return APITransformer(
-          APIResponses.DELEGATE.OCCUPIED,
+          APIResponses.DELEGATE.APPLICATION_EXIST,
           application,
           `Already created application. Can not delegate to ${application.address}`,
         );
         break;   
-      case DelegateErrorTypes.NO_POWER:
+      case VoteStates.NO_POWER:
         application.voteState = VoteStates.NO_POWER;
         return APITransformer(
           APIResponses.DELEGATE.NO_POWER,
@@ -267,10 +267,10 @@ export class DelegateController {
   }
 
 
-  async doDelegateCheck(applicationId: number, address: string): Promise<DelegateErrorTypes> {
+  async doDelegateCheck(applicationId: number, address: string): Promise<VoteStatesClass> {
     const application = await this.applicationService.findOne(applicationId);
     if (!application) {
-      return DelegateErrorTypes.NO_APPLICATION;
+      return VoteStates.NO_APPLICATION;
     }
 
     const currentTime = new Date();
@@ -278,7 +278,7 @@ export class DelegateController {
       currentTime < application.delegation.proposalEndTime ||
       currentTime > application.delegation.votingEndTime
     ) {
-      return DelegateErrorTypes.NOT_VOTING;
+      return VoteStates.NOT_VOTING;
     }
 
     const existDelegate = await this.delegateService.findByFromAddress(
@@ -287,7 +287,7 @@ export class DelegateController {
     );
     // Only 1 delagate is allowed in 1 delegation.
     if (existDelegate) {
-      return DelegateErrorTypes.VOTED;
+      return VoteStates.VOTED;
     }
 
     const createdApplication = await this.applicationService.findByAddress(
@@ -295,7 +295,7 @@ export class DelegateController {
       address,
     );
     if (createdApplication) {
-      return DelegateErrorTypes.OCCUPIED;
+      return VoteStates.APPLICATION_EXIST;
     }
 
 
@@ -308,10 +308,10 @@ export class DelegateController {
       community.contractAddress,
     );
     if (vp <= 0) {
-      return DelegateErrorTypes.NO_POWER;
+      return VoteStates.NO_POWER;
     }
 
-    return DelegateErrorTypes.OK;
+    return VoteStates.OK;
   }
 
 
