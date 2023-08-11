@@ -38,6 +38,20 @@ export class DelegateController {
     private communitiesRepository: Repository<Community>,
   ) {}
 
+  @Get(':id')
+  @ApiOkResponse({
+    type: Delegate,
+  })
+  async findOne(@Param('id') id: number): Promise<Delegate> {
+    const foundDelegate = await this.delegateService.findOne(id);
+
+    if (!foundDelegate)
+      throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
+
+    return foundDelegate;
+  }
+
+
   @Post('/create')
   @ApiOkResponse({
     type: Delegate,
@@ -200,18 +214,7 @@ export class DelegateController {
     return results;
   }
 
-  @Get(':id')
-  @ApiOkResponse({
-    type: Delegate,
-  })
-  async findOne(@Param('id') id: number): Promise<Delegate> {
-    const foundDelegate = await this.delegateService.findOne(id);
 
-    if (!foundDelegate)
-      throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
-
-    return foundDelegate;
-  }
 
   @ApiOperation({
     summary: 'Remove delegate',
