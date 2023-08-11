@@ -181,7 +181,7 @@ const Proposal = () => {
                   </svg>
                 </button>
             )}
-            {canVote === 4 && (
+            {canVote === 2 && (
                 <button
                     className={classes.disApproveButton}
                     onClick={async () => {
