@@ -48,7 +48,7 @@
   -webkit-box-orient: vertical;
 }
 .communityDescriptionRow a {
-  color: var(--brand-pink) !important;
+  color: var(--brand-common-yellow) !important;
   text-decoration: underline;
   font-weight: 600;
 }

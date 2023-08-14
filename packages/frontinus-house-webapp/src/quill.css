@@ -41,11 +41,11 @@
   font-weight: 500;
 }
 .ql-editor.ql-blank::before {
-  left: auto !important;
+  /*left: auto !important;*/
   right: auto !important;
   color: var(--brand-gray-transparent) !important;
   font-size: 16px !important;
-  font-style: italic !important;
+  font-style:normal !important;
 }
 
 .hideBorderBox {
