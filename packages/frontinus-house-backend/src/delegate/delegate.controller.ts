@@ -127,8 +127,8 @@ export class DelegateController {
           application,
           `Already created application. Can not delegate to ${application.address}`,
         );
-      case VoteStates.NO_POWER:
-        application.voteState = VoteStates.NO_POWER;
+      case VoteStates.NO_DELEGATE_POWER:
+        application.voteState = VoteStates.NO_DELEGATE_POWER;
         return APITransformer(APIResponses.DELEGATE.NO_POWER, application);
     }
 
@@ -276,7 +276,7 @@ export class DelegateController {
       community.contractAddress,
     );
     if (vp <= 0) {
-      return VoteStates.NO_POWER;
+      return VoteStates.NO_DELEGATE_POWER;
     }
 
     return VoteStates.OK;
