@@ -101,8 +101,8 @@ export default function Comments(props: CommentsProps) {
           <LoadingButton
             loading={showTailLoading}
             onClick={() => loadNextPage(commentList.length)}
+            className={classes.loadMoreBtn}
             sx={{
-              display: 'flex',
               textTransform: 'none',
             }}
           >
