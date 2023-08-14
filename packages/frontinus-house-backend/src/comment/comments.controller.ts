@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -35,7 +36,7 @@ export class CommentsController {
     type: [Comment],
   })
   async findByProposal(
-    @Param('proposalId') proposalId: number,
+    @Param('proposalId', ParseIntPipe) proposalId: number,
     @Query() dto: GetCommentsDto,
   ): Promise<Comment[]> {
     const comments = await this.commentsService.findByProposal(proposalId, dto);
@@ -49,7 +50,7 @@ export class CommentsController {
     type: [Comment],
   })
   async findByApplication(
-    @Param('applicationId') applicationId: number,
+    @Param('applicationId', ParseIntPipe) applicationId: number,
     @Query() dto: GetCommentsDto,
   ): Promise<Comment[]> {
     const comments = await this.commentsService.findByApplication(

@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -79,7 +80,7 @@ export class ProposalsController {
   })
   @ApiNotFoundResponse({ description: 'Proposal not found' })
   async findOne(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Query('address') userAddress: string,
   ): Promise<Proposal> {
     const foundProposal = await this.proposalsService.findOne(id);

@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -200,12 +201,11 @@ export class DelegateController {
     return results;
   }
 
-
   @Get(':id')
   @ApiOkResponse({
     type: Delegate,
   })
-  async findOne(@Param('id') id: number): Promise<Delegate> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Delegate> {
     const foundDelegate = await this.delegateService.findOne(id);
 
     if (!foundDelegate)

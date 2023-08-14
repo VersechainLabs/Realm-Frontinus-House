@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -248,7 +249,7 @@ export class VotesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Vote> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Vote> {
     return this.votesService.findOne({
       where: {
         id: id,
