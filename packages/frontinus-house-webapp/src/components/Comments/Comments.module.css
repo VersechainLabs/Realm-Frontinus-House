@@ -40,3 +40,10 @@
     font-size: 16px;
     font-weight: 700;
 }
+
+
+.loadMoreBtn{
+    display: flex !important;
+    /*textTransform: none !important;*/
+    color:var(--brand-common-yellow) !important;
+}
