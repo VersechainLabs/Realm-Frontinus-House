@@ -67,7 +67,7 @@ export class ProposalsService {
     const foundProposal = await this.findOne(id);
     if (!foundProposal) return;
     foundProposal.updateVoteCount();
-    this.proposalsRepository.save(foundProposal);
+    await this.proposalsRepository.save(foundProposal);
   }
 
   async store(proposal: Proposal) {
