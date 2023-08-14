@@ -148,7 +148,7 @@ export class DelegateController {
         );
         break;
       case VoteStates.NOT_VOTING:
-        application.voteState = VoteStates.NOT_VOTING;
+        application.voteState = VoteStates.NOT_DELEGATING;
         return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
         break;        
       case VoteStates.VOTED:
