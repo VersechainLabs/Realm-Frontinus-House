@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -75,6 +76,10 @@ export class VotesController {
     @Query('proposalId') proposalId: number,
     @Query('delegate') delegate: boolean,
   ): Promise<VotingPower> {
+    if (!proposalId) {
+      throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+    }
+
     const foundProposal = await this.proposalService.findOne(proposalId);
     if (!foundProposal) {
       throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
@@ -244,7 +249,7 @@ export class VotesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number): Promise<Vote> {
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<Vote> {
     return this.votesService.findOne({
       where: {
         id: id,

@@ -6,13 +6,20 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { AuctionsService } from '../auction/auctions.service';
 import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
-import { VoteStates, canSubmitProposals } from '../utils';
+import { canSubmitProposals } from '../utils';
+import {
+  ApplicationCreateStatus,
+  AuctionVisibleStatus,
+  ProposalCreateStatusMap,
+  VoteStates,
+} from '@nouns/frontinus-house-wrapper';
 import { Proposal } from './proposal.entity';
 import {
   CreateProposalDto,
@@ -31,7 +38,11 @@ import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
 import getProposalByIdResponse from '../../examples/getProposalById.json';
 import { VotesService } from '../vote/votes.service';
 import { verifySignPayload } from '../utils/verifySignedPayload';
-import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+import { Auction } from '../auction/auction.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Community } from '../community/community.entity';
+import { BlockchainService } from '../blockchain/blockchain.service';
 
 @Controller('proposals')
 export class ProposalsController {
@@ -39,6 +50,9 @@ export class ProposalsController {
     private readonly proposalsService: ProposalsService,
     private readonly auctionsService: AuctionsService,
     private readonly voteService: VotesService,
+    private readonly blockchainService: BlockchainService,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
   ) {}
 
   @Get()
@@ -69,7 +83,7 @@ export class ProposalsController {
   })
   @ApiNotFoundResponse({ description: 'Proposal not found' })
   async findOne(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Query('address') userAddress: string,
   ): Promise<Proposal> {
     const foundProposal = await this.proposalsService.findOne(id);
@@ -189,13 +203,15 @@ export class ProposalsController {
         HttpStatus.BAD_REQUEST,
       );
 
-    // if (foundAuction.visibleStatus === AuctionVisibleStatus.PENDING) {
-    //   throw new HttpException(
-    //     'You cannot create proposals for this round at this time',
-    //     HttpStatus.BAD_REQUEST,
-    //   );
-    // }
+    const canCreateStatus = await this.checkCanCreateProposal(
+      foundAuction,
+      createProposalDto.address,
+    );
+    if (canCreateStatus.code !== ProposalCreateStatusMap.OK.code) {
+      throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
+    }
 
+    // Do create:
     const proposal = new Proposal();
     proposal.address = createProposalDto.address;
     proposal.what = createProposalDto.what;
@@ -205,6 +221,51 @@ export class ProposalsController {
     proposal.createdDate = new Date();
 
     return this.proposalsService.store(proposal);
+  }
+
+  async checkCanCreateProposal(
+    auction: Auction,
+    address: string,
+  ): Promise<ApplicationCreateStatus> {
+    const auctionId = auction.id;
+    const currentDate = new Date();
+    if (
+      currentDate < auction.startTime ||
+      currentDate > auction.proposalEndTime ||
+      auction.visibleStatus != AuctionVisibleStatus.NORMAL
+    ) {
+      return ProposalCreateStatusMap.WRONG_PERIOD;
+    }
+
+    // Same Proposal must NOT exists:
+    const existingProposal = await this.proposalsService.findBy({
+      where: { auctionId: auctionId, address: address },
+    });
+
+    if (existingProposal) {
+      return ProposalCreateStatusMap.CREATED;
+    }
+
+    // Can not create proposal if he already vote to another user.
+    const existingVote = await this.voteService.findOneBy({
+      where: { auctionId: auctionId, address: address },
+    });
+    if (existingVote) {
+      return ProposalCreateStatusMap.DELEGATE_TO_OTHER;
+    }
+
+    // TODO: add communityId in delegation, remove get community by id=1
+    const community = await this.communitiesRepository.findOne(1);
+    // Check voting power
+    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+      address,
+      community.contractAddress,
+    );
+    if (vp <= 0) {
+      return ProposalCreateStatusMap.NO_VOTING_POWER;
+    }
+
+    return ProposalCreateStatusMap.OK;
   }
 
   /**

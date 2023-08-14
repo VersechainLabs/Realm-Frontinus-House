@@ -16,7 +16,7 @@ import { DelegationState } from '../delegation/delegation.types';
 import { findByState } from '../delegation/delegation.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { VoteStates } from '../utils';
+import { VoteStates } from '@nouns/frontinus-house-wrapper';
 import { Delegation } from '../delegation/delegation.entity';
 import { Delegate } from '../delegate/delegate.entity';
 
@@ -80,6 +80,10 @@ export class VotesService {
     return this.votesRepository.findOne({
       where: { address, auctionId },
     });
+  }
+
+  findOneBy(opt?: FindOneOptions<Vote>): Promise<Vote> {
+    return this.votesRepository.findOne(opt);
   }
 
   async remove(id: number): Promise<void> {
@@ -232,9 +236,14 @@ export class VotesService {
     }
 
     if (checkVotingPower) {
-      const vp = await this.getVotingPower(address, auction, true);
-      if (vp.weight === 0) {
-        return VoteStates.NO_POWER;
+      try {
+        const vp = await this.getVotingPower(address, auction, true);
+        if (vp.weight === 0) {
+          return VoteStates.NO_POWER;
+        }        
+      } catch (error) {
+        // 6v add new case:
+        return VoteStates.ALREADY_DELEGATED;
       }
     }
 

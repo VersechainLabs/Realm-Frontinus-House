@@ -19,8 +19,8 @@ import { setAlert } from '../../state/slices/alert';
 import clsx from 'clsx';
 import { LoadingButton } from '@mui/lab';
 import { setUserType } from '../../state/slices/user';
-
-dayjs.extend(isToday);
+import { utc } from 'dayjs';
+import CongratsDialog from '../../components/CongratsDialog';
 
 const CreateRound: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -93,47 +93,49 @@ const CreateRound: React.FC<{}> = () => {
 
   const saveFormStart = (value: Dayjs | null) => {
     if (value !== null) {
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
-        proposingStartTime: value.toDate(),
+        proposingStartTime: utcValue.toDate(),
       }));
-      setProposingStartTime(value);
+      setProposingStartTime(utcValue);
       setIsStartTimeFilled(true);
     } else {
-      setProposingStartTime(null); // 清空开始时间
-      setIsStartTimeFilled(false); // 将条件变量设为未填充状态
+      setProposingStartTime(null);
+      setIsStartTimeFilled(false);
     }
   };
 
   const saveFormProposal = (value: Dayjs | null) => {
     if (value !== null) {
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
-        proposalEndTime: value.toDate(),
-        votingEndTime: value.toDate(), // 设置提案结束时间和投票结束时间为选择的时间
+        proposalEndTime: utcValue.toDate(),
+        votingEndTime: utcValue.toDate(),
       }));
-      setProposalEndTime(value);
-      setVotingEndTime(value);
+      setProposalEndTime(utcValue);
+      setVotingEndTime(utcValue);
       setIsProposalTimeFilled(true);
     } else {
-      setProposalEndTime(null); // 清空提案结束时间
-      setVotingEndTime(null); // 清空投票结束时间
-      setIsProposalTimeFilled(false); // 将条件变量设为未填充状态
-      //setIsEndTimeFilled(false); // 同时将投票结束时间的条件变量设为未填充状态
+      setProposalEndTime(null);
+      setVotingEndTime(null);
+      setIsProposalTimeFilled(false);
     }
   };
 
   const saveFormVote = (value: Dayjs | null) => {
     if (value !== null) {
+      const utcValue = utc(value.format());
       setState(prevState => ({
         ...prevState,
-        votingEndTime: value.toDate(),
+        votingEndTime: utcValue.toDate(),
       }));
-      setVotingEndTime(value);
+      setVotingEndTime(utcValue);
       setIsEndTimeFilled(true);
     } else {
-      setVotingEndTime(null); // 清空投票结束时间
-      setIsEndTimeFilled(false); // 将条件变量设为未填充状态
+      setVotingEndTime(null);
+      setIsEndTimeFilled(false);
     }
   };
   const saveFormType = (value: string) => {
@@ -257,8 +259,7 @@ const CreateRound: React.FC<{}> = () => {
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
-                What is the round name? (Please use only standard letters, no special characters
-                such as dashes or question marks)*
+                What is the round name?*
                 <span className={classes.characterCount}>
                   {titleLength}/{MAX_TITLE_LENGTH}
                 </span>
@@ -292,9 +293,7 @@ const CreateRound: React.FC<{}> = () => {
             <div className={classes.flexDiv}>
               <div className={classes.dateMain}>
                 <div className={classes.labelMargin}>
-                  <div className={classes.desc}>
-                    When does the round proposing period start? (exact date and time in UTC)*
-                  </div>
+                  <div className={classes.desc}>When does the round proposing period start?*</div>
 
                   {/*<input onChange={event => saveFormStart(event.target.value)} name={'startTime'} className={classes.input} type="text"/>*/}
 
@@ -313,9 +312,7 @@ const CreateRound: React.FC<{}> = () => {
                   </LocalizationProvider>
                 </div>
                 <div className={classes.labelMargin}>
-                  <div className={classes.desc}>
-                    When does the round voting period start? (exact date and time in UTC)*
-                  </div>
+                  <div className={classes.desc}>When does the round voting period start?*</div>
 
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
@@ -329,9 +326,7 @@ const CreateRound: React.FC<{}> = () => {
                   </LocalizationProvider>
                 </div>
                 <div className={classes.labelMargin}>
-                  <div className={classes.desc}>
-                    When does the round voting period end? (exact date and time in UTC)*
-                  </div>
+                  <div className={classes.desc}>When does the round voting period end?*</div>
 
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DateTimePicker']}>
@@ -426,8 +421,17 @@ const CreateRound: React.FC<{}> = () => {
                 type="number" // Add type="number" to allow only numeric input
               />
             </div>
-
-            <button className={classes.button}>Submit</button>
+            <div className={classes.button}>
+              <LoadingButton
+                loading={isButtonDisabled} // Pass the loading state here
+                type="submit" // Make sure to set the type attribute to "submit"
+                variant="outlined"
+                disabled={isButtonDisabled} // Disable the button while loading
+                style={{ textTransform: 'capitalize' }}
+              >
+                Submit
+              </LoadingButton>
+            </div>
             {flag && <Popup trigger={flag} onClose={close} />}
           </form>
         </Row>

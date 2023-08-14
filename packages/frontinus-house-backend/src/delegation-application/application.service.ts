@@ -1,6 +1,6 @@
-import { ConsoleLogger, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOneOptions, IsNull, Not, Repository } from 'typeorm';
+import { DeepPartial, FindOneOptions, Repository } from 'typeorm';
 import { Delegation } from '../delegation/delegation.entity';
 import { Application } from './application.entity';
 import { CreateApplicationDto, GetApplicationDto } from './application.types';
@@ -121,6 +121,10 @@ export class ApplicationService {
     });
   }
 
+  async create(entityLike: DeepPartial<Application>) {
+    return this.applicationRepository.create(entityLike);
+  }
+
   async store(value: Application): Promise<Application> {
     return await this.applicationRepository.save(value, { reload: true });
   }
@@ -128,10 +132,10 @@ export class ApplicationService {
   async updateDelegatorCount(application: Application): Promise<Application> {
     // console.log("enter updateDelegatorCount() - applicationId: ", application.id);
     const list = await this.delegateRepository.find({
-      where: { 
+      where: {
         applicationId: application.id,
         // deletedDate: Not(IsNull()) // No need
-      }
+      },
     });
 
     // console.log(list);
@@ -140,5 +144,5 @@ export class ApplicationService {
     application.delegatorCount = list.length;
 
     return await this.applicationRepository.save(application);
-  }  
+  }
 }
