@@ -14,7 +14,12 @@ import {
 import { AuctionsService } from '../auction/auctions.service';
 import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
 import { canSubmitProposals } from '../utils';
-import { ApplicationCreateStatus, ProposalCreateStatusMap, VoteStates } from '@nouns/frontinus-house-wrapper';
+import {
+  ApplicationCreateStatus,
+  AuctionVisibleStatus,
+  ProposalCreateStatusMap,
+  VoteStates,
+} from '@nouns/frontinus-house-wrapper';
 import { Proposal } from './proposal.entity';
 import {
   CreateProposalDto,
@@ -33,7 +38,6 @@ import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
 import getProposalByIdResponse from '../../examples/getProposalById.json';
 import { VotesService } from '../vote/votes.service';
 import { verifySignPayload } from '../utils/verifySignedPayload';
-import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 import { Auction } from '../auction/auction.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -49,7 +53,6 @@ export class ProposalsController {
     private readonly blockchainService: BlockchainService,
     @InjectRepository(Community)
     private communitiesRepository: Repository<Community>,
-    
   ) {}
 
   @Get()
@@ -220,7 +223,6 @@ export class ProposalsController {
     return this.proposalsService.store(proposal);
   }
 
-
   async checkCanCreateProposal(
     auction: Auction,
     address: string,
@@ -229,7 +231,8 @@ export class ProposalsController {
     const currentDate = new Date();
     if (
       currentDate < auction.startTime ||
-      currentDate > auction.proposalEndTime
+      currentDate > auction.proposalEndTime ||
+      auction.visibleStatus != AuctionVisibleStatus.NORMAL
     ) {
       return ProposalCreateStatusMap.WRONG_PERIOD;
     }
@@ -264,7 +267,6 @@ export class ProposalsController {
 
     return ProposalCreateStatusMap.OK;
   }
-
 
   /**
    * Add canVote|disallowedVoteReason|stateCode to proposal entity.
