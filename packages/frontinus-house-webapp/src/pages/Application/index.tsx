@@ -87,8 +87,8 @@ const Application = () => {
     if (!proposal) return;
     const fetchCommunity = async () => {
       const round = await backendClient.current.getDelegateDetails(proposal.delegationId);
-      const community = await backendClient.current.getCommunityWithId(round.community);
-      dispatch(setActiveCommunity(community));
+      // const community = await backendClient.current.getCommunityWithId(round.community);
+      // dispatch(setActiveCommunity(community));
       dispatch(setActiveRound(round));
     };
 
