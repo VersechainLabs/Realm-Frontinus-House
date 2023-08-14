@@ -2,7 +2,7 @@ import { CreateVoteDto } from '../vote/vote.types';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { SignedEntity } from '../entities/signed';
-import config from "../config/configuration";
+import config from '../config/configuration';
 
 export const verifySignPayloadForVote = (createVoteDto: CreateVoteDto) => {
   if (config().enableDebugMode) {
@@ -54,7 +54,6 @@ export const verifySignPayload = (
   if (fieldsToCheck) {
     for (const field of fieldsToCheck) {
       if (signedEntity[field] !== signedPayload[field]) {
-        console.warn(`Signature validation Failed For Field ${field}`);
         throw new HttpException(
           'Signature validation Failed',
           HttpStatus.BAD_REQUEST,
