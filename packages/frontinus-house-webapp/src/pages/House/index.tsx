@@ -78,7 +78,6 @@ const House = () => {
   // fetch rounds
   useEffect(() => {
     if (!community) return;
-
     const fetchRounds = async () => {
       try {
         setLoadingRounds(true);
@@ -86,23 +85,7 @@ const House = () => {
 
         setRounds(rounds);
 
-        // Number of rounds under a certain status type in a House
-        setNumberOfRoundsPerStatus([
-          // number of active rounds (proposing & voting)
-          rounds.filter(
-            r =>
-              auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
-              auctionStatus(r) === AuctionStatus.AuctionVoting,
-          ).length,
-          rounds.length,
-        ]);
 
-        // if there are no active rounds, default filter by all rounds
-        rounds.filter(
-          r =>
-            auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
-            auctionStatus(r) === AuctionStatus.AuctionVoting,
-        ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
 
         setLoadingRounds(false);
       } catch (e) {
@@ -112,6 +95,37 @@ const House = () => {
     };
     fetchRounds();
   }, [community]);
+
+  useEffect(() => {
+    if (!community) return;
+
+
+  }, [community]);
+
+
+  // fetch filter
+  useEffect(() => {
+    if (!community) return;
+    // Number of rounds under a certain status type in a House
+    setNumberOfRoundsPerStatus([
+      // number of active rounds (proposing & voting)
+      rounds.filter(
+          r =>
+              auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
+              auctionStatus(r) === AuctionStatus.AuctionVoting,
+      ).length,
+      rounds.length,
+      delegates.length
+    ]);
+
+    // if there are no active rounds, default filter by all rounds
+    rounds.filter(
+        r =>
+            auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
+            auctionStatus(r) === AuctionStatus.AuctionVoting,
+    ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
+
+  }, [rounds, delegates]);
 
   // fetch delegate
   useEffect(() => {
@@ -152,7 +166,8 @@ const House = () => {
       }
     };
     fetchDelegate();
-  }, [community]);
+
+  }, [community ]);
 
   useEffect(() => {
     rounds &&

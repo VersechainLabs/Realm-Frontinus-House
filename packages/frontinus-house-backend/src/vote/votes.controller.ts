@@ -75,6 +75,10 @@ export class VotesController {
     @Query('proposalId') proposalId: number,
     @Query('delegate') delegate: boolean,
   ): Promise<VotingPower> {
+    if (!proposalId) {
+      throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+    }
+
     const foundProposal = await this.proposalService.findOne(proposalId);
     if (!foundProposal) {
       throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);

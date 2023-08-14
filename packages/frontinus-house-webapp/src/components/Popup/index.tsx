@@ -10,7 +10,7 @@ const Popup: React.FC<PopupProps> = (props: PopupProps) => {
   const { trigger, onClose } = props;
 
   return (
-    <div className="popup" >
+    <div className="popup">
       <div className="popup-inner">
         <div className="text">
           Thank you for creating a round!
@@ -20,7 +20,7 @@ const Popup: React.FC<PopupProps> = (props: PopupProps) => {
 
         <div className="button-group">
           <button className="close-btn" onClick={onClose}>
-            X
+            <img src="/x-icon.png" alt="Close" />
           </button>
           <button className="ok-btn" onClick={onClose}>
             OK

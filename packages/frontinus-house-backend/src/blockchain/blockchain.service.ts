@@ -36,16 +36,21 @@ export class BlockchainService {
     blockTag?: number,
   ): Promise<number> {
     try {
-      if (!blockTag || blockTag === 0) {
+      // Test if there's still has Exception in server log
+      const debugCode = true;
+
+      if (!debugCode && (!blockTag || blockTag === 0)) {
         blockTag = await this.getCurrentBlockNum();
       }
 
-      // First, search DB for snapshot:
-      const existSnapshot = await this.snapshotRepository.findOne({
-        where: { communityAddress, address: userAddress, blockNum: blockTag },
-      });
-      if (existSnapshot) {
-        return existSnapshot.votingPower;
+      if (!debugCode || blockTag > 0) {
+        // First, search DB for snapshot:
+        const existSnapshot = await this.snapshotRepository.findOne({
+          where: { communityAddress, address: userAddress, blockNum: blockTag },
+        });
+        if (existSnapshot) {
+          return existSnapshot.votingPower;
+        }
       }
 
       // Second, snapshot not found, search on chain:
@@ -56,16 +61,20 @@ export class BlockchainService {
         blockTag,
       );
 
-      // Then, save the on-chain voting power to DB.snapshot:
-      const newSnapshot = new Snapshot();
-      newSnapshot.communityAddress = communityAddress;
-      newSnapshot.blockNum = blockTag;
-      newSnapshot.address = userAddress;
-      newSnapshot.votingPower = votingPowerOnChain;
-      // noinspection ES6MissingAwait . just a cache
-      this.snapshotRepository.save(newSnapshot);
+      if (!debugCode || blockTag > 0) {
+        // Then, save the on-chain voting power to DB.snapshot:
+        const newSnapshot = new Snapshot();
+        newSnapshot.communityAddress = communityAddress;
+        newSnapshot.blockNum = blockTag;
+        newSnapshot.address = userAddress;
+        newSnapshot.votingPower = votingPowerOnChain;
+        // noinspection ES6MissingAwait . just a cache
+        this.snapshotRepository.save(newSnapshot);
 
-      return newSnapshot.votingPower;
+        return newSnapshot.votingPower;
+      } else {
+        return votingPowerOnChain;
+      }
     } catch (e) {
       console.error(
         `BlockchainService Exception: ${userAddress} @ ${blockTag}\n${e}`,
