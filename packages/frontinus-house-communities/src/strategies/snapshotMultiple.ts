@@ -11,13 +11,18 @@ export enum StrategyType {
 }
 
 export type SnapshotStrategy = {
-  address: string,
-  strategyType: StrategyType,
-  multiplier: number,
-}
+  address: string;
+  strategyType: StrategyType;
+  multiplier: number;
+};
 
 export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
-  return async (userAddress: string, _communityAddress: string, blockTag: number, provider: PublicClient) => {
+  return async (
+    userAddress: string,
+    _communityAddress: string,
+    blockTag: number,
+    provider: PublicClient,
+  ) => {
     const balances = await Promise.all(
       strategies.map(async strategy => {
         let power;
@@ -38,7 +43,12 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
   };
 };
 
-const getErc721Balance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: PublicClient): Promise<BigNumber> => {
+const getErc721Balance = async (
+  userAddress: string,
+  strategyAddress: string,
+  blockTag: number,
+  provider: PublicClient,
+): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
     let config = {
@@ -46,17 +56,24 @@ const getErc721Balance = async (userAddress: string, strategyAddress: string, bl
       abi: BalanceOfABI,
       functionName: 'balanceOf',
       args: [userAddress],
-      blockNumber: (blockNumber && blockNumber > 0) ? BigInt(blockNumber) : undefined,
+      blockNumber: blockNumber && blockNumber > 0 ? BigInt(blockNumber) : undefined,
     };
     const data = await provider.readContract(config);
     return new BigNumber(data as number);
   } catch (e) {
-    console.warn(`[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`);
+    console.warn(
+      `[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
+    );
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }
 };
 
-const getContractCallBalance = async (userAddress: string, strategyAddress: string, blockTag: number, provider: PublicClient): Promise<BigNumber> => {
+const getContractCallBalance = async (
+  userAddress: string,
+  strategyAddress: string,
+  blockTag: number,
+  provider: PublicClient,
+): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
     let config = {
@@ -64,13 +81,14 @@ const getContractCallBalance = async (userAddress: string, strategyAddress: stri
       abi: ContractCallABI,
       functionName: 'getNumberRealms',
       args: [userAddress],
-      blockNumber: (blockNumber && blockNumber > 0) ? BigInt(blockNumber) : undefined,
+      blockNumber: blockNumber && blockNumber > 0 ? BigInt(blockNumber) : undefined,
     };
     const data = await provider.readContract(config);
     return new BigNumber(data as number);
   } catch (e) {
-    console.warn(`[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`);
+    console.warn(
+      `[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
+    );
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }
 };
-

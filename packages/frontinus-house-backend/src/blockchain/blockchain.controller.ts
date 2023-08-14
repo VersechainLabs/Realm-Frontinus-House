@@ -1,5 +1,5 @@
 import { InjectQueue } from '@nestjs/bull';
-import { Controller, Get, Post } from '@nestjs/common';
+import { Controller, Get, Post, Query } from '@nestjs/common';
 import { Queue } from 'bull';
 import { BlockchainService } from './blockchain.service';
 
@@ -17,9 +17,22 @@ export class BlockchainController {
     });
   }
 
-  @Get('vp')
-  async getVp() {
+  @Get('blocknumber')
+  async getBlocknumber() {
     return await this.blockchainService.getCurrentBlockNum();
+  }
+
+  @Get('vp')
+  async getVp(
+    @Query('address') address: string,
+    @Query('community') communityAddress: string,
+    @Query('blocknum') blocknum: number,
+  ) {
+    return await this.blockchainService.getVotingPowerWithSnapshot(
+      address,
+      communityAddress,
+      blocknum,
+    );
   }
 
   @Get('test')
