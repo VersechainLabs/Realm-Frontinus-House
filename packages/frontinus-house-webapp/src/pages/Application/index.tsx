@@ -93,7 +93,7 @@ const Application = () => {
     };
 
     fetchCommunity();
-  }, [id, dispatch, proposal]);
+  }, [dispatch, proposal]);
 
   useEffect(() => {
     if (!proposal || !walletClient) return;
