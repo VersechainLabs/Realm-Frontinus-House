@@ -33,6 +33,7 @@ export const VoteStates: Record<string, VoteStatesClass> = {
   VOTED_ANOTHER : { code: 313, canVote: false, reason: "You've already voted another proposal."},
   DELEGATE_ANOTHER : { code: 320, canVote: false, reason: "You've already delegated your voting power to someone else."},
   NO_POWER : { code: 314, canVote: false, reason: "Only Realms NFT holders have permission to approve."},
+  NO_DELEGATE_POWER : { code: 321, canVote: false, reason: "Only Realms NFT holders have permission to delegate."},
   ALREADY_DELEGATED : { code: 319, canVote: false, reason: "User already delegated to another user."},
 
   // For Appliation only:
