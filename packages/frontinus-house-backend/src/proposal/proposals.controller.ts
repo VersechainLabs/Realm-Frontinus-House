@@ -248,7 +248,7 @@ export class ProposalsController {
 
     // Can not create proposal if he already vote to another user.
     const existingVote = await this.voteService.findOneBy({
-      where: { auctionId: auctionId, fromAddress: address },
+      where: { auctionId: auctionId, address: address },
     });
     if (existingVote) {
       return ProposalCreateStatusMap.DELEGATE_TO_OTHER;
