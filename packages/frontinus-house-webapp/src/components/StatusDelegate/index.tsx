@@ -20,7 +20,7 @@ const StatusDelegate: React.FC<{ status: DelegateVoteStatus }> = props => {
             break;
         case DelegateVoteStatus.DelegateDelegating:
             copy = 'Delegating';
-            bgClass = classes.purpleBg;
+            bgClass = classes.greenBg;
             break;
         case DelegateVoteStatus.DelegateGranted:
             copy = 'Delegation Granted';
