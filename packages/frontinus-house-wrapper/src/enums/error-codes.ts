@@ -37,6 +37,6 @@ export const VoteStates: Record<string, VoteStatesClass> = {
 
   // For Appliation only:
   NO_APPLICATION : { code: 315, canVote: false, reason: "Can not find application."},
-  APPLICATION_EXIST : { code: 317, canVote: false, reason: "Already created application. Can not delegate to this address."},
+  APPLICATION_EXIST : { code: 317, canVote: false, reason: "Your campaign profile is open to accepting delegation, so you can't delegate your voting power to others."},
   NOT_DELEGATING : { code: 318, canVote: false, reason: "Not in the eligible selection period."},
 };
