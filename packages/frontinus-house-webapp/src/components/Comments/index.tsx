@@ -170,10 +170,7 @@ export function CommentListItem(props: CommentListItemProps) {
         }}>
           <EthAddress address={props.comment.address} className={'commentName'} />
 
-          <div className={classes.date}>
-            <span style={{
-              marginRight: '6px',
-            }}>{' • '} </span> {formatServerDate(comment.createdDate)}
+          <div className={classes.date}>{' • '}  {formatServerDate(comment.createdDate)}
           </div>
         </div>
         <div className={classes.quillContent}>

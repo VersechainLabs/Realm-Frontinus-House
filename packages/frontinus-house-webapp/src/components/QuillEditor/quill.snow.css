@@ -501,8 +501,8 @@
 .ql-editor.ql-blank::before {
     color: rgba(0, 0, 0, 0.6);
     content: attr(data-placeholder);
-    font-style: italic;
-    left: 15px;
+    /*font-style: italic;*/
+    left: 21px;
     pointer-events: none;
     position: absolute;
     right: 15px;

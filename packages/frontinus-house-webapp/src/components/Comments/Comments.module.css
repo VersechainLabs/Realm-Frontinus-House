@@ -7,8 +7,7 @@
 }
 
 .listItem{
-    padding-left: unset !important;
-    padding-right: unset !important;
+    padding: 0px 0px 6px !important;
 }
 
 .date{
