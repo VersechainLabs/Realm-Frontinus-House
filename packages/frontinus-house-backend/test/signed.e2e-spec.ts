@@ -39,13 +39,16 @@ describe('Test Wallet Signature', () => {
     transport: http(),
   });
 
-  const param = {
+  let param = {
     title: 'test proposal title',
     what: '<p>The proposal content</p>',
     tldr: 'too long, dont read',
     parentAuctionId: 85,
     parentType: 'auction',
   };
+
+  // param = JSON.parse('{  "visibleStatus": 2,\n' +
+  //   '  "id": 101}');
 
   it('Success signature validation', async () => {
     expect(walletClient.account.address).toBe(address);

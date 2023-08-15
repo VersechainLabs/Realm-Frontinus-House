@@ -197,12 +197,6 @@ export class ProposalsController {
         HttpStatus.NOT_FOUND,
       );
 
-    if (!canSubmitProposals(foundAuction))
-      throw new HttpException(
-        'You cannot create proposals for this round at this time',
-        HttpStatus.BAD_REQUEST,
-      );
-
     const canCreateStatus = await this.checkCanCreateProposal(
       foundAuction,
       createProposalDto.address,
@@ -231,10 +225,13 @@ export class ProposalsController {
     const currentDate = new Date();
     if (
       currentDate < auction.startTime ||
-      currentDate > auction.proposalEndTime ||
-      auction.visibleStatus != AuctionVisibleStatus.NORMAL
+      currentDate > auction.proposalEndTime
     ) {
       return ProposalCreateStatusMap.WRONG_PERIOD;
+    }
+
+    if (auction.visibleStatus !== AuctionVisibleStatus.NORMAL) {
+      return ProposalCreateStatusMap.NOT_APPROVE;
     }
 
     // Same Proposal must NOT exists:
