@@ -40,8 +40,8 @@ const CreateRound: React.FC<{}> = () => {
   const userType = useAppSelector(state => state.user.type);
   const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
 
-  const MAX_TITLE_LENGTH = 50;
-  const MAX_DESCRIPTION_LENGTH = 1000;
+  const MAX_TITLE_LENGTH = 100;
+  const MAX_DESCRIPTION_LENGTH = 100000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const dispatch = useDispatch();
