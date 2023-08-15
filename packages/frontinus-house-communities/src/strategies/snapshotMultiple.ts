@@ -33,7 +33,7 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
               strategy.address,
               blockTag,
               provider,
-              false,
+              0,
             );
             break;
           case StrategyType.ContractCall:
@@ -42,7 +42,7 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
               strategy.address,
               blockTag,
               provider,
-              false,
+              0,
             );
             break;
         }
@@ -60,7 +60,7 @@ const getErc721Balance = async (
   strategyAddress: string,
   blockTag: number,
   provider: PublicClient,
-  isRetry?: boolean,
+  retryCount: number,
 ): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
@@ -78,7 +78,7 @@ const getErc721Balance = async (
       `[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
     );
 
-    if (!isRetry) {
+    if (retryCount < 3) {
       // There's some exception as below:
       //
       // BlockchainService Exception: 0x??? @ undefined
@@ -104,8 +104,8 @@ const getErc721Balance = async (
       // Version: viem@1.5.0
 
       // don't know how to fix, just retry it.
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return getErc721Balance(userAddress, strategyAddress, blockTag, provider, true);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return getErc721Balance(userAddress, strategyAddress, blockTag, provider, retryCount + 1);
     }
 
     throw Error(`Error fetching name for contract ${strategyAddress}`);
@@ -117,7 +117,7 @@ const getContractCallBalance = async (
   strategyAddress: string,
   blockTag: number,
   provider: PublicClient,
-  isRetry?: boolean,
+  retryCount: number,
 ): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
@@ -135,7 +135,7 @@ const getContractCallBalance = async (
       `[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
     );
 
-    if (!isRetry) {
+    if (retryCount < 3) {
       // There's some exception as below:
       //
       // BlockchainService Exception: 0x??? @ undefined
@@ -161,8 +161,8 @@ const getContractCallBalance = async (
       // Version: viem@1.5.0
 
       // don't know how to fix, just retry it.
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      return getContractCallBalance(userAddress, strategyAddress, blockTag, provider, true);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return getContractCallBalance(userAddress, strategyAddress, blockTag, provider, retryCount + 1);
     }
 
     throw Error(`Error fetching name for contract ${strategyAddress}`);
