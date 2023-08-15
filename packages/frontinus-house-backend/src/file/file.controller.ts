@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Res,
   StreamableFile,
@@ -63,8 +64,8 @@ export class FileController {
    * that the File record exist.
    */
   @Get('/local/id/:id')
-  async getById(@Param('id') id: string, @Res() res: Response) {
-    const file = await this.fileService.findOne(Number(id));
+  async getById(@Param('id', ParseIntPipe) id: number, @Res() res: Response) {
+    const file = await this.fileService.findOne(id);
     const fileBuf = await this.fileService.readFileFromDisk(file.ipfsHash);
     res.header('Content-Type', mime.contentType(file.mimeType));
     res.send(fileBuf);

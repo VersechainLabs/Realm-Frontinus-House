@@ -62,10 +62,9 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             </div>
           </div>
 
-          <span className={classes.proposalBody}>
+          <div className={classes.proposalBody}>
             {fields.tldr && (
               <div className={classes.tldr}>
-                <hr></hr>
                 <h2 >{t('tldr')}</h2>
                 <ReactMarkdown className={`${classes.markdown} ${classes.tldrContent}`} children={fields.tldr}></ReactMarkdown>
               </div>
@@ -96,7 +95,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             {/*    // edge case: handle ampersands in img links encoded from sanitization*/}
             {/*  }).replaceAll('&amp;', '&')}*/}
             {/*</Markdown>*/}
-          </span>
+          </div>
         </Col>
     </>
   );

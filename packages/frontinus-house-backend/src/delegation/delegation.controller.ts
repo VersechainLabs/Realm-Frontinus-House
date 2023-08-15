@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
 } from '@nestjs/common';
 import { ParseDate } from '../utils/date';
@@ -85,7 +86,7 @@ export class DelegationController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<Delegation> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Delegation> {
     const foundDelegation = await this.delegationService.findOne(id);
 
     if (!foundDelegation)

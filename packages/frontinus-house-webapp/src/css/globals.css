@@ -299,7 +299,7 @@ p {
   line-height: 19px !important;
   margin-top: 15px !important;
   /*letter-spacing: 0.02em !important;*/
-  color: var(--brand-black) !important;
+  color: var(--text-color) !important;
 }
 .proposalCopy img {
   max-width: 100% !important;
@@ -356,29 +356,29 @@ p {
 
 .ql-container{
   background: unset !important;
-  border-bottom-left-radius:unset !important;
-  border-bottom-right-radius:unset !important;
+  border-radius: 8px 8px 0px 0px !important;
   border: 1px solid var(--container-bg) !important;
 }
 
 .commentName{
   font-size: 16px !important;
+  font-weight: 400 !important;
 }
 
 
 
 #toolbar{
-  border-top-left-radius:unset !important;
-  border-top-right-radius:unset !important;
+  border-radius: 0px 0px 8px 8px !important;
   border-top: unset !important;
-  padding-bottom:10px !important;
+  padding-bottom:14px !important;
+  padding-top: 14px !important;
 }
 
 #custom-button{
   cursor: pointer;
   position: absolute;
   right: 20px;
-  top: 5px;
+  top: 10px;
 
   display: flex;
   justify-content: center;

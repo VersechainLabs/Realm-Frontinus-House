@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -92,7 +93,7 @@ export class AuctionsController {
   @ApiOkResponse({
     type: Auction,
   })
-  async findOne(@Param('id') id: number): Promise<Auction> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Auction> {
     const foundAuction = await this.auctionsService.findOne(id);
     if (!foundAuction)
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
@@ -101,7 +102,7 @@ export class AuctionsController {
 
   @Get('/forCommunity/:id')
   async findAllForCommunity(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Query('visibleStatus') visibleStatus?: AuctionVisibleStatus,
   ): Promise<Auction[]> {
     const auctions = await this.auctionsService.findAllForCommunityByVisible(
@@ -119,7 +120,7 @@ export class AuctionsController {
     type: Auction,
   })
   async findWithNameForCommunity(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Param('name') name: string,
   ): Promise<Auction> {
     const auction = await this.auctionsService.findWithNameForCommunity(
@@ -135,7 +136,7 @@ export class AuctionsController {
   @ApiOkResponse({
     type: Auction,
   })
-  async findWithIDForCommunity(@Param('id') id: number): Promise<Auction> {
+  async findWithIDForCommunity(@Param('id', ParseIntPipe) id: number): Promise<Auction> {
     const auction = await this.auctionsService.findWithIDForCommunity(id);
     if (!auction)
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
@@ -150,7 +151,7 @@ export class AuctionsController {
     type: [Proposal],
   })
   @ApiNotFoundResponse({ description: 'Proposals not found' })
-  async find(@Param('id') id: number): Promise<Proposal[]> {
+  async find(@Param('id', ParseIntPipe) id: number): Promise<Proposal[]> {
     const foundProposals = await this.proposalService.findAllWithAuctionId(id);
     if (!foundProposals)
       throw new HttpException('Proposals not found', HttpStatus.NOT_FOUND);
@@ -161,7 +162,7 @@ export class AuctionsController {
   @ApiOkResponse({
     type: [Proposal],
   })
-  async findAll(@Param('id') id: number): Promise<Proposal[]> {
+  async findAll(@Param('id', ParseIntPipe) id: number): Promise<Proposal[]> {
     const foundProposals = await this.proposalService.findAllWithAuctionId(id);
     if (!foundProposals)
       throw new HttpException('Proposals not found', HttpStatus.NOT_FOUND);

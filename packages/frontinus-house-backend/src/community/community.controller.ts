@@ -4,6 +4,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { CommunitiesService } from './community.service';
 import { CommunityOverview, ExtendedCommunity } from './community.types';
@@ -28,7 +29,7 @@ export class CommunitiesController {
   }
 
   @Get('communities/id/:id')
-  async findOne(@Param('id') id: number): Promise<Community> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Community> {
     const foundCommunity = await this.communitiesService.findOne(id);
     if (!foundCommunity)
       throw new HttpException('Community not found', HttpStatus.NOT_FOUND);
