@@ -143,36 +143,25 @@ const CreateRound: React.FC<{}> = () => {
     console.log(state);
   };
   const saveFormNum = (value: string) => {
-
-    let newValue = value.replace(/-/g, "");
+    let newValue = value.replace(/-/g, '');
 
     // @ts-ignore
     setState(prevState => ({
       ...prevState,
-      numWinners:
-          newValue ?
-              parseInt(value.replace(/-/g, ""))
-              : ''
-      ,
+      numWinners: newValue ? parseInt(value.replace(/-/g, '')) : '',
     }));
-
   };
   const saveFormAmount = (value: string) => {
     // state.fundingAmount = parseInt(value);
     // console.log(state);
 
-    let newValue = value.replace(/-/g, "");
+    let newValue = value.replace(/-/g, '');
 
     // @ts-ignore
     setState(prevState => ({
       ...prevState,
-      fundingAmount:
-      newValue ?
-          Number(value.replace(/-/g, ""))
-          : ''
-        ,
+      fundingAmount: newValue ? Number(value.replace(/-/g, '')) : '',
     }));
-
   };
 
   const hideAlert = () => {
@@ -230,9 +219,10 @@ const CreateRound: React.FC<{}> = () => {
       return;
     }
 
-      setIsButtonDisabled(true);
-      try {
-        const round = await client.current.createAuction(
+    setIsButtonDisabled(true);
+    try {
+      const round = await client.current
+        .createAuction(
           new TimedAuction(
             true,
             state.title,
@@ -247,26 +237,27 @@ const CreateRound: React.FC<{}> = () => {
             state.balanceBlockTag,
             state.description,
           ),
-        ).then(()=>{
+        )
+        .then(() => {
           setIsSuccessAlertVisible(true); // 显示成功提示
           dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-            if (userType === 'Admin') {
-              navigate('/');
-            } else {
-              setIsButtonDisabled(false);
-              setFlag(true);
-            }
-          }).catch(e=>{
+          if (userType === 'Admin') {
+            navigate('/');
+          } else {
+            setIsButtonDisabled(false);
+            setFlag(true);
+          }
+        })
+        .catch(e => {
           setFlag(false);
           setIsButtonDisabled(false);
           console.log('Failed：', e);
         });
-        console.log('Success：', round);
-      } catch (e) {
-        setFlag(false);
-        setIsButtonDisabled(false);
-        console.log('Failed：', e);
-      }
+      console.log('Success：', round);
+    } catch (e) {
+      setIsButtonDisabled(false);
+      console.log('Failed：', e);
+    }
     // Proceed with the form submission logic
   };
 
@@ -426,7 +417,7 @@ const CreateRound: React.FC<{}> = () => {
                 type="number" // Add type="number" to allow only numeric input
                 min="0"
                 value={state.numWinners}
-                />
+              />
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
