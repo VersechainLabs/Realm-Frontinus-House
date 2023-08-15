@@ -29,12 +29,22 @@ export class BlockchainController {
     @Query('address') address: string,
     @Query('community') communityAddress: string,
     @Query('blocknum') blocknum: number,
+    @Query('ignoreCache') ignoreCache: boolean,
   ) {
-    return await this.blockchainService.getVotingPowerWithSnapshot(
-      address,
-      communityAddress,
-      blocknum,
-    );
+    if (ignoreCache) {
+      console.log(`Get VP: ${communityAddress}, ${address}, ${blocknum}`);
+      return await this.blockchainService.getVotingPowerOnChain(
+        address,
+        communityAddress,
+        blocknum,
+      );
+    } else {
+      return await this.blockchainService.getVotingPowerWithSnapshot(
+        address,
+        communityAddress,
+        blocknum,
+      );
+    }
   }
 
   @Get('test')

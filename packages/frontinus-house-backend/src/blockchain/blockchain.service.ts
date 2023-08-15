@@ -36,14 +36,11 @@ export class BlockchainService {
     blockTag?: number,
   ): Promise<number> {
     try {
-      // Test if there's still has Exception in server log
-      const debugCode = true;
-
-      if (!debugCode && (!blockTag || blockTag === 0)) {
-        blockTag = await this.getCurrentBlockNum();
+      if (!blockTag) {
+        blockTag = 0;
       }
 
-      if (!debugCode || blockTag > 0) {
+      if (blockTag > 0) {
         // First, search DB for snapshot:
         const existSnapshot = await this.snapshotRepository.findOne({
           where: { communityAddress, address: userAddress, blockNum: blockTag },
@@ -61,7 +58,7 @@ export class BlockchainService {
         blockTag,
       );
 
-      if (!debugCode || blockTag > 0) {
+      if (blockTag > 0) {
         // Then, save the on-chain voting power to DB.snapshot:
         const newSnapshot = new Snapshot();
         newSnapshot.communityAddress = communityAddress;
