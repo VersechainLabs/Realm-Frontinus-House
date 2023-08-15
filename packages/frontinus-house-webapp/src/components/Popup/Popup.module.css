@@ -21,7 +21,7 @@
   }
   
   
-  .popup-inner {
+  .popupInner {
     width: 592px;
     height: 96px;
     font-size: 24px;
@@ -43,7 +43,7 @@
     text-align: center;
   }
   
-  .popup-inner .close-btn {
+  .popupInner .closeBtn {
     position: absolute;
     top: 16px;
     right: 16px;
@@ -57,20 +57,20 @@
     background-color: #1a1a1b;
     cursor: pointer;
   }
-  .close-btn img {
+  .closeBtn img {
     width: 14px; 
     height: 14px; 
     
   }
   
-  .button-group {
+  .buttonGroup {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 20px;
   }
   
-  .popup-inner .ok-btn {
+  .popupInner .okBtn {
     width: 96px;
     height: 40px;
     padding: 0 16px;
