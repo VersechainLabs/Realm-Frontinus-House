@@ -56,6 +56,7 @@ const RoundHeader: React.FC<{
   const client = useRef(new ApiWrapper(host));
   const { data: walletClient } = useWalletClient();
   const dispatch = useDispatch();
+  const userType = useAppSelector(state => state.user.type);
   useEffect(() => {
     client.current = new ApiWrapper(host, walletClient);
   }, [walletClient, host]);
@@ -78,7 +79,7 @@ const RoundHeader: React.FC<{
   return (
     <Row className={classes.profileHeaderRow}>
       <Col>
-        <div className={classes.pendingMain}>
+        {auction && auction.hasOwnProperty('visibleStatus') && auction.visibleStatus == 0 && userType === 'Admin' && (<div className={classes.pendingMain}>
           <div className={classes.pendingTitle}>
             Pending Round
           </div>
@@ -94,7 +95,7 @@ const RoundHeader: React.FC<{
           >
             Reject
           </div>
-        </div>
+        </div>)}
         <div
           className={classes.backToAuction}
           onClick={() => {
