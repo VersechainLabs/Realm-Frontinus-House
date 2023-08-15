@@ -131,7 +131,7 @@ export class ApiWrapper {
       const [rawTimedAuctions,
         // , rawInfAuctions
       ] = await Promise.allSettled([
-        axios.get(`${this.host}/auctions/forCommunity/${id}`),
+        axios.get(`${this.host}/auctions/forCommunity/${id}?visibleStatus=1`),
         // ,axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
       ]);
 
