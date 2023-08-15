@@ -12,8 +12,13 @@
 .proposalBody h2{
   font-size: 22px !important;
   margin-top: 8px !important;
-  margin-bottom: 14px !important;
+  margin-bottom: 11px !important;
   font-weight: 700 !important;
+}
+
+.proposalBody{
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--brand-gray-border);
 }
 
 .tldr{
@@ -33,8 +38,9 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 16px;
+  padding-bottom: 13px;
   border-bottom: 1px solid var(--brand-gray-border);
+  margin-bottom: 30px;
 }
 
 .fundReq {
@@ -72,6 +78,9 @@ hr {
   gap: 5px;
 }
 .submittedBy a {
+  text-decoration: none !important;
+}
+.submittedBy a:hover {
   text-decoration: none !important;
 }
 

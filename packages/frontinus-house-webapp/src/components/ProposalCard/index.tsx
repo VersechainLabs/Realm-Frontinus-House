@@ -176,21 +176,15 @@ const ProposalCard: React.FC<{
               )}
             </div>
 
-            {showVotesSection && (
+
               <div className={classes.timestampAndlinkContainer}>
                 <div className={clsx(classes.avatarAndPropNumber)}>
                   <div className={classes.voteCountCopy} title={detailedTime(proposal.createdDate)}>
                     <VotesDisplay proposal={proposal} />
-                    {cardStatus === ProposalCardStatus.Voting && (
-                      <div className={classes.votingArrows}>
-                        {/*<span className={classes.plusArrow}>+</span>*/}
-                        {/*<VotingControls proposal={proposal} />*/}
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
-            )}
+
           </div>
         </Card>
       </div>

@@ -6,7 +6,7 @@ import { useAppSelector } from '../../hooks';
 import { countVotesRemainingForTimedRound } from '../../utils/countVotesRemainingForTimedRound';
 import { countTotalVotesAlloted } from '../../utils/countTotalVotesAlloted';
 import Button, { ButtonColor } from '../Button';
-import RoundModuleCard from '../RoundModuleCard';
+import VotesCard from '../VotesCard';
 import { countNumVotes } from '../../utils/countNumVotes';
 import ConnectButton from '../ConnectButton';
 import { useTranslation } from 'react-i18next';
@@ -111,7 +111,7 @@ const TimedRoundVotingModule: React.FC<TimedRoundVotingModuleProps> = (
   );
 
   return (
-    <RoundModuleCard
+    <VotesCard
       title={t('votingInProgress')}
       subtitle={
         <>

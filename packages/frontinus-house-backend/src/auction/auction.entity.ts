@@ -3,15 +3,16 @@ import { Community } from '../community/community.entity';
 import { Proposal } from '../proposal/proposal.entity';
 import {
   AfterLoad,
-  BeforeInsert,
-  BeforeUpdate,
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
+  UpdateDateColumn,
 } from 'typeorm';
 import { AuctionBase } from './auction-base.type';
 import { ApiProperty } from '@nestjs/swagger';
@@ -120,14 +121,17 @@ export class Auction implements AuctionBase {
   community: Community;
 
   @ApiProperty()
-  @Column()
+  @CreateDateColumn()
   @Field(() => Date)
   createdDate: Date;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @UpdateDateColumn({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @ApiProperty()
   @Column({ default: 0 })
@@ -143,18 +147,9 @@ export class Auction implements AuctionBase {
   })
   visibleStatus: AuctionVisibleStatus;
 
-  @BeforeInsert()
-  setCreatedDate() {
-    this.createdDate = new Date();
-  }
-
-  @BeforeUpdate()
-  setUpdatedDate() {
-    this.lastUpdatedDate = new Date();
-  }
-
   public isAcceptingProposals = (): boolean =>
-    new Date() > this.startTime && new Date() <= this.proposalEndTime &&
+    new Date() > this.startTime &&
+    new Date() <= this.proposalEndTime &&
     this.visibleStatus == AuctionVisibleStatus.NORMAL;
 
   @AfterLoad()

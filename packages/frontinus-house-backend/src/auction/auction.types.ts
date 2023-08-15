@@ -12,6 +12,7 @@ import {
   Min,
 } from 'class-validator';
 import { SignedEntity } from '../entities/signed';
+import { AuctionVisibleStatus } from "@nouns/frontinus-house-wrapper";
 
 export class CreateAuctionDto extends SignedEntity {
   @ApiProperty()
@@ -58,6 +59,10 @@ export class ApproveAuctionDto extends SignedEntity {
   @IsNumber()
   @IsOptional()
   id: number;
+
+  @ApiProperty({ description: 'The approve status' })
+  @IsEnum(AuctionVisibleStatus)
+  visibleStatus: AuctionVisibleStatus;
 }
 
 export enum Order {
