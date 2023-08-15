@@ -116,6 +116,22 @@ export class TimedDelegate extends Signable {
   }
 }
 
+export class ApproveRound extends Signable {
+  constructor(
+      public readonly id: number,
+      public readonly visibleStatus: number,
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      id: this.id,
+      visibleStatus: this.visibleStatus,
+    };
+  }
+}
+
 export class StoredTimedAuction extends TimedAuction {
   //@ts-ignore
   public readonly id: number;
