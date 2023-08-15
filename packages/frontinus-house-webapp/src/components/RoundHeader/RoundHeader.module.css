@@ -38,14 +38,14 @@
 }
 
 .communityDescriptionRow p {
-  font-size: large;
+  font-size: 16px;
   /*color: var(--brand-gray);*/
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-  -webkit-box-orient: vertical;
+  /*overflow: hidden;*/
+  /*text-overflow: ellipsis;*/
+  /*display: -webkit-box;*/
+  /*-webkit-line-clamp: 4;*/
+  /*line-clamp: 4;*/
+  /*-webkit-box-orient: vertical;*/
 }
 .communityDescriptionRow a {
   color: var(--brand-common-yellow) !important;

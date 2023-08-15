@@ -254,16 +254,16 @@ export class ProposalsController {
       return ProposalCreateStatusMap.DELEGATE_TO_OTHER;
     }
 
-    // TODO: add communityId in delegation, remove get community by id=1
-    const community = await this.communitiesRepository.findOne(1);
-    // Check voting power
-    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
-      address,
-      community.contractAddress,
-    );
-    if (vp <= 0) {
-      return ProposalCreateStatusMap.NO_VOTING_POWER;
-    }
+    // Long: Create Proposal don't need Realms NFT:
+    // const community = await this.communitiesRepository.findOne(1);
+    // // Check voting power
+    // const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+    //   address,
+    //   community.contractAddress,
+    // );
+    // if (vp <= 0) {
+    //   return ProposalCreateStatusMap.NO_VOTING_POWER;
+    // }
 
     return ProposalCreateStatusMap.OK;
   }

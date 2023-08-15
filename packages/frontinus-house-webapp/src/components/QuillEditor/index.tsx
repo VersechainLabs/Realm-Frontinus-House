@@ -29,6 +29,8 @@ type QuillEditorProps = {
   placeholderText:string;
 }
 
+
+
 export default function QuillEditor(props: QuillEditorProps) {
 
   const formats = [
@@ -134,6 +136,16 @@ export default function QuillEditor(props: QuillEditorProps) {
   const { quill, quillRef, Quill } = useQuill({ theme, modules,placeholder,formats});
   if (Quill && !quill) {
     Quill.register('modules/blotFormatter', BlotFormatter);
+
+    //deal with the link without http or https
+    const Link = Quill.import('formats/link');
+    Link.sanitize = function(url) {
+      // quill by default creates relative links if scheme is missing.
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        return `http://${url}`
+      }
+      return url;
+    }
     // Quill.register('modules/placeholder', getPlaceholderModule(Quill, {
     //   className: 'ql-placeholder-content'  // default
     // }))

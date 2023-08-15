@@ -40,8 +40,8 @@ const CreateRound: React.FC<{}> = () => {
   const userType = useAppSelector(state => state.user.type);
   const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
 
-  const MAX_TITLE_LENGTH = 50;
-  const MAX_DESCRIPTION_LENGTH = 1000;
+  const MAX_TITLE_LENGTH = 100;
+  const MAX_DESCRIPTION_LENGTH = 100000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const dispatch = useDispatch();
@@ -144,12 +144,36 @@ const CreateRound: React.FC<{}> = () => {
     console.log(state);
   };
   const saveFormNum = (value: string) => {
-    state.numWinners = parseInt(value);
-    console.log(state);
+
+    let newValue = value.replace(/-/g, "");
+
+    // @ts-ignore
+    setState(prevState => ({
+      ...prevState,
+      numWinners:
+          newValue ?
+              parseInt(value.replace(/-/g, ""))
+              : ''
+      ,
+    }));
+
   };
   const saveFormAmount = (value: string) => {
-    state.fundingAmount = parseInt(value);
-    console.log(state);
+    // state.fundingAmount = parseInt(value);
+    // console.log(state);
+
+    let newValue = value.replace(/-/g, "");
+
+    // @ts-ignore
+    setState(prevState => ({
+      ...prevState,
+      fundingAmount:
+      newValue ?
+          Number(value.replace(/-/g, ""))
+          : ''
+        ,
+    }));
+
   };
 
   const hideAlert = () => {
@@ -207,7 +231,6 @@ const CreateRound: React.FC<{}> = () => {
       return;
     }
 
-    if (userType === 'Admin') {
       setIsButtonDisabled(true);
       try {
         const round = await client.current.createAuction(
@@ -225,20 +248,25 @@ const CreateRound: React.FC<{}> = () => {
             state.balanceBlockTag,
             state.description,
           ),
-        );
-        setIsSuccessAlertVisible(true); // 显示成功提示
-        dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-        navigate('/');
+        ).then(()=>{
+          setIsSuccessAlertVisible(true); // 显示成功提示
+          dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
+            if (userType === 'Admin') {
+              navigate('/');
+            } else {
+              setIsButtonDisabled(false);
+              setFlag(true);
+            }
+          }).catch(e=>{
+          setFlag(false);
+          setIsButtonDisabled(false);
+          console.log('Failed：', e);
+        });
         console.log('Success：', round);
       } catch (e) {    
         setIsButtonDisabled(false);
         console.log('Failed：', e);
       }
-      return;
-    }
-    setIsButtonDisabled(false);
-    setFlag(true);
-
     // Proceed with the form submission logic
   };
 
@@ -396,7 +424,9 @@ const CreateRound: React.FC<{}> = () => {
                 name={'numWinners'}
                 className={classes.input}
                 type="number" // Add type="number" to allow only numeric input
-              />
+                min="0"
+                value={state.numWinners}
+                />
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
@@ -419,6 +449,7 @@ const CreateRound: React.FC<{}> = () => {
                 name={'fundingAmount'}
                 className={classes.input}
                 type="number" // Add type="number" to allow only numeric input
+                value={state.fundingAmount}
               />
             </div>
             <div className={classes.button}>

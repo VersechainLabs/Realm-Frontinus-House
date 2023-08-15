@@ -115,7 +115,10 @@ export class DelegateController {
         application.voteState = VoteStates.NOT_DELEGATING;
         return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
       case VoteStates.VOTED:
-        application.voteState = VoteStates.VOTED; // Frontend : Can cancel
+        application.voteState = VoteStates.VOTED; // Frontend : Show cancel btn
+        return APITransformer(APIResponses.DELEGATE.DELEGATED, application);
+      case VoteStates.DELEGATE_ANOTHER:
+          application.voteState = VoteStates.DELEGATE_ANOTHER; // Frontend : Show words only
         return APITransformer(APIResponses.DELEGATE.DELEGATED, application);
       case VoteStates.APPLICATION_EXIST:
         application.voteState = VoteStates.APPLICATION_EXIST;
@@ -124,8 +127,8 @@ export class DelegateController {
           application,
           `Already created application. Can not delegate to ${application.address}`,
         );
-      case VoteStates.NO_POWER:
-        application.voteState = VoteStates.NO_POWER;
+      case VoteStates.NO_DELEGATE_POWER:
+        application.voteState = VoteStates.NO_DELEGATE_POWER;
         return APITransformer(APIResponses.DELEGATE.NO_POWER, application);
     }
 
@@ -250,7 +253,10 @@ export class DelegateController {
     );
     // Only 1 delagate is allowed in 1 delegation.
     if (existDelegate) {
-      return VoteStates.VOTED;
+      if (existDelegate.applicationId === applicationId)
+        return VoteStates.VOTED;  // show cancel btn
+      else
+        return VoteStates.DELEGATE_ANOTHER; // show words only
     }
 
     const createdApplication = await this.applicationService.findByAddress(
@@ -270,7 +276,7 @@ export class DelegateController {
       community.contractAddress,
     );
     if (vp <= 0) {
-      return VoteStates.NO_POWER;
+      return VoteStates.NO_DELEGATE_POWER;
     }
 
     return VoteStates.OK;
