@@ -28,6 +28,7 @@ export class Auction implements AuctionBase {
   })
   id: number;
 
+  @ApiProperty()
   @Column({ default: true })
   visible: boolean;
 
@@ -89,7 +90,7 @@ export class Auction implements AuctionBase {
   })
   numWinners: number;
 
-  @ApiProperty({ type: () => Proposal, isArray: true })
+  // @ApiProperty({ type: () => Proposal, isArray: true })
   @OneToMany(() => Proposal, (proposal) => proposal.auction, {
     createForeignKeyConstraints: false,
   })
@@ -97,6 +98,7 @@ export class Auction implements AuctionBase {
   @Field(() => [Proposal])
   proposals: Proposal[];
 
+  @ApiProperty({ isArray: true })
   @RelationId((auction: Auction) => auction.proposals)
   proposalIds: number[];
 
@@ -108,7 +110,8 @@ export class Auction implements AuctionBase {
   // This attribute was previously defined in the API layer, which is quite strange - -
   numProposals: number;
 
-  @ApiProperty({ type: () => Community, isArray: true })
+  // @ApiProperty({ type: () => Community, isArray: true })
+  @ApiProperty({type: Number})
   @ManyToOne(() => Community, (community) => community.auctions, {
     createForeignKeyConstraints: false,
   })

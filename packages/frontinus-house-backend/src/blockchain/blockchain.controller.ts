@@ -2,7 +2,9 @@ import { InjectQueue } from '@nestjs/bull';
 import { Controller, Get, Post, Query } from '@nestjs/common';
 import { Queue } from 'bull';
 import { BlockchainService } from './blockchain.service';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller('audio')
 export class BlockchainController {
   constructor(
