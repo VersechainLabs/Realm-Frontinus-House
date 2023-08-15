@@ -184,8 +184,27 @@ export class StoredInfiniteAuction extends InfiniteAuction {
   }
 }
 
+export class StoredPendingAuction extends InfiniteAuction {
+  //@ts-ignore
+  public readonly visibleStatus: number;
+  //@ts-ignore
+  public readonly id: number;
+  //@ts-ignore
+  public readonly numProposals: number;
+  //@ts-ignore
+  public readonly createdDate: Date;
+
+  static FromResponse(response: any): StoredTimedAuction {
+    const parsed = {
+      ...response,
+      startTime: new Date(response.startTime),
+    };
+    return parsed;
+  }
+}
+
 export type AuctionBase = TimedAuction | InfiniteAuction;
-export type StoredAuctionBase = StoredTimedAuction | StoredInfiniteAuction;
+export type StoredAuctionBase = StoredTimedAuction | StoredInfiniteAuction | StoredPendingAuction;
 
 export type ProposalParent = 'auction' | 'infinite-auction';
 
