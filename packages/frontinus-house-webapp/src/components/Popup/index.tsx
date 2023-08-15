@@ -12,7 +12,7 @@ const Popup: React.FC<PopupProps> = (props: PopupProps) => {
   return (
     <div className="popup">
       <div className="popup-inner">
-        <div className="text">
+        <div className={'frontinusTitle'}>
           Thank you for creating a round!
           <br />
           It will be posted as soon as the Admin approves it.

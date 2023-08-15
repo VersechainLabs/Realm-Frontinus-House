@@ -34,6 +34,14 @@
     margin-top: 20px;
   }
   
+  .text {
+    width: 501px;
+    height: 64px;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 31.68px;
+    text-align: center;
+  }
   
   .popup-inner .close-btn {
     position: absolute;
@@ -57,7 +65,9 @@
   
   .button-group {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
   }
   
   .popup-inner .ok-btn {
@@ -72,8 +82,7 @@
     font-weight: 700;
     color: #111111;
     cursor: pointer;
-    margin-top: 20px; 
+    margin-top: -2px;
   }
-  
   
   
