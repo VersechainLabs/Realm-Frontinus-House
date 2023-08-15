@@ -230,7 +230,6 @@ const CreateRound: React.FC<{}> = () => {
       return;
     }
 
-    if (userType === 'Admin') {
       setIsButtonDisabled(true);
       try {
         const round = await client.current.createAuction(
@@ -248,21 +247,26 @@ const CreateRound: React.FC<{}> = () => {
             state.balanceBlockTag,
             state.description,
           ),
-        );
-        setIsSuccessAlertVisible(true); // 显示成功提示
-        dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-        navigate('/');
+        ).then(()=>{
+          setIsSuccessAlertVisible(true); // 显示成功提示
+          dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
+            if (userType === 'Admin') {
+              navigate('/');
+            } else {
+              setIsButtonDisabled(false);
+              setFlag(true);
+            }
+          }).catch(e=>{
+          setFlag(false);
+          setIsButtonDisabled(false);
+          console.log('Failed：', e);
+        });
         console.log('Success：', round);
       } catch (e) {
         setFlag(false);
         setIsButtonDisabled(false);
         console.log('Failed：', e);
       }
-      return;
-    }
-    setIsButtonDisabled(false);
-    setFlag(true);
-
     // Proceed with the form submission logic
   };
 
