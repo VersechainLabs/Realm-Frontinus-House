@@ -10,9 +10,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { Comment } from './comment.entity';
-import { CreateCommentDto, GetCommentsDto } from './comment.types';
+import { CreateCommentDto, GetCommentsDto, Order } from './comment.types';
 import { CommentsService } from './comments.service';
-import { ApiOkResponse } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 
 @Controller('comments')
@@ -34,6 +34,25 @@ export class CommentsController {
   @Get('/byProposal/:proposalId')
   @ApiOkResponse({
     type: [Comment],
+  })
+  @ApiQuery({
+    name: 'skip',
+    description: 'Start from which result.',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'limit',
+    description: 'How many results to return.',
+    type: Number,
+    required: false,
+  })
+  @ApiQuery({
+    name: 'order',
+    description:
+      'Search results in Desc or Asc order',
+    enum: Order,
+    required: false,
   })
   async findByProposal(
     @Param('proposalId', ParseIntPipe) proposalId: number,
