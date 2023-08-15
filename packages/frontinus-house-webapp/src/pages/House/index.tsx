@@ -114,8 +114,15 @@ const House = () => {
               auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
               auctionStatus(r) === AuctionStatus.AuctionVoting,
       ).length,
-      rounds.length,
-      delegates.length
+      rounds.filter(
+          r =>
+              auctionPendingStatus(r) === AuctionStatus.Normal,
+      ).length,
+      delegates.length,
+      rounds.filter(
+          r =>
+              auctionPendingStatus(r) === AuctionStatus.Pending,
+      ).length
     ]);
 
     // if there are no active rounds, default filter by all rounds
@@ -197,7 +204,10 @@ const House = () => {
             )
         : // filter by search input that matches round title or description
           setRoundsOnDisplay(
-            rounds.filter(round => {
+            rounds.filter(
+                r =>
+                    auctionPendingStatus(r) === AuctionStatus.Normal,
+            ).filter(round => {
               const query = input.toLowerCase();
               return (
                 round.title.toLowerCase().indexOf(query) >= 0 ||
