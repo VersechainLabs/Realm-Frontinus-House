@@ -79,6 +79,7 @@ const CreateRound: React.FC<{}> = () => {
     flag: false,
   };
 
+
   const saveFormTitle = (value: string) => {
     const limitedTitle = value.slice(0, MAX_TITLE_LENGTH);
     setState(prevState => ({ ...prevState, title: limitedTitle }));
@@ -229,8 +230,7 @@ const CreateRound: React.FC<{}> = () => {
         dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
         navigate('/');
         console.log('Success：', round);
-      } catch (e) {
-        setFlag(false);
+      } catch (e) {    
         setIsButtonDisabled(false);
         console.log('Failed：', e);
       }

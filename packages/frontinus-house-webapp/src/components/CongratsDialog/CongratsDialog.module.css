@@ -1,0 +1,86 @@
+/* .dialogBody {
+    width: 600px;
+    height: 308px;
+    margin-top: 139px;
+    margin-left: 340px;
+    border-radius: 24px;
+    border: 1px solid #2c2c2d;
+    background-color: #1a1a1b;
+}
+
+.dialogInner {
+    width: 600px;
+    height: 253px;
+    margin-top: 20px;
+    gap: 12px;
+    background-color: #1a1a1b;
+} */
+
+.dialogText {
+    width: 600px;
+    height: 308px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 31.68px;
+    border-radius: 24px;
+    border: 1px solid #2c2c2d;
+    padding: 16px, 24px, 16px, 24px;
+    gap: 16px;
+    background-color: #1a1a1b;
+}
+
+
+.dialogTitle {
+    width: 100px;
+    height: 32px;
+    text-align: center !important;
+    color: #f5eee6;
+}
+
+.dialogDesc {
+    width: 552px;
+    height: 42px;
+    font-family: 'Inconsolata', monospace;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 21.12px;
+    text-align: center;
+    margin-top: 160px;
+    color: #a3a3a4
+}
+
+.buttonGroup .okBtn {
+    width: 96px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px;
+    padding: 0px, 16px, 0px, 16px;
+    gap: 12px;
+    background-color:#d0a059;
+    font-family: 'Inconsolata', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #111111
+  
+}
+
+.buttonGroup .okBtn:hover {
+    background-color: #F5C27C;
+}
+
+.closeBtn {
+    width: 32px;
+    height: 32px;
+    padding: 0px, 16px, 0px, 16px;
+    border-radius: 8px;
+    border: 1px solid #2c2c2d;
+    margin-top: 20px;
+    margin-left: 548px;
+}
+
+.closeBtn img{
+    width: 14px;
+    height: 14px;
+}
