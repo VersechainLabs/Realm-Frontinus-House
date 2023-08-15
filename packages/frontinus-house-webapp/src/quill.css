@@ -41,11 +41,11 @@
   font-weight: 500;
 }
 .ql-editor.ql-blank::before {
-  left: auto !important;
+  /*left: auto !important;*/
   right: auto !important;
   color: var(--brand-gray-transparent) !important;
   font-size: 16px !important;
-  font-style: italic !important;
+  font-style:normal !important;
 }
 
 .hideBorderBox {
@@ -156,11 +156,11 @@
   padding-left: 16px !important;
 }
 .ql-editor a {
-  color: var(--brand-purple) !important;
+  color: var(--brand-common-yellow) !important;
   text-decoration: underline !important;
 }
 .ql-editor a:hover {
-  text-decoration: underline !important;
+  /*text-decoration: underline !important;*/
 }
 .ql-editor :is(code, pre) {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace !important;

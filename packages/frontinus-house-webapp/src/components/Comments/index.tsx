@@ -8,7 +8,7 @@ import { LoadingButton } from '@mui/lab';
 import QuillViewer from '../QuillViewer';
 import EthAddress from '../EthAddress';
 import AddressAvatar from '../AddressAvatar';
-import { serverDateToString } from '../../utils/detailedTime';
+import { formatServerDate } from '../../utils/commentTime';
 import classes from './Comments.module.css';
 import LoadingIndicator from '../LoadingIndicator';
 import { StoredComment } from '@nouns/frontinus-house-wrapper/dist/builders';
@@ -101,8 +101,8 @@ export default function Comments(props: CommentsProps) {
           <LoadingButton
             loading={showTailLoading}
             onClick={() => loadNextPage(commentList.length)}
+            className={classes.loadMoreBtn}
             sx={{
-              display: 'flex',
               textTransform: 'none',
             }}
           >
@@ -170,10 +170,7 @@ export function CommentListItem(props: CommentListItemProps) {
         }}>
           <EthAddress address={props.comment.address} className={'commentName'} />
 
-          <div className={classes.date}>
-            <span style={{
-              marginRight: '6px',
-            }}>{' • '} </span> {serverDateToString(comment.createdDate)}
+          <div className={classes.date}>{' • '}  {formatServerDate(comment.createdDate)}
           </div>
         </div>
         <div className={classes.quillContent}>

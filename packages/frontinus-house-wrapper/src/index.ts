@@ -90,7 +90,7 @@ export class ApiWrapper {
 
     try {
       const owner = (await this.signer.getAddresses())[0];
-      const raw = (await axios.get(`${this.host}/applications/checkApplied?delegationId=${id}&address=${owner}`)).data;
+      const raw = (await axios.get(`${this.host}/applications/canCreate?delegationId=${id}&address=${owner}`)).data;
       return raw;
     } catch (e: any) {
       throw e.response.data.message;

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { StoredAuctionBase, StoredProposal } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { BiAward } from 'react-icons/bi';
 import clsx from "clsx";
-import formatTime from '../../utils/formatTime';
+import formatServerDate from '../../utils/commentTime';
 import '../QuillEditor/quill.snow.css';
 import '../QuillEditor/QuillEditor.module.css';
 
@@ -46,7 +46,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                       <div className={classes.submittedBy}>
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
-                      <span>{' • '} {formatTime(proposal.createdDate)}</span>
+                      <span>{' • '} {formatServerDate(proposal.createdDate)}</span>
                     </div>
                   </div>
                 )}
@@ -62,10 +62,9 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             </div>
           </div>
 
-          <span className={classes.proposalBody}>
+          <div className={classes.proposalBody}>
             {fields.tldr && (
               <div className={classes.tldr}>
-                <hr></hr>
                 <h2 >{t('tldr')}</h2>
                 <ReactMarkdown className={`${classes.markdown} ${classes.tldrContent}`} children={fields.tldr}></ReactMarkdown>
               </div>
@@ -96,7 +95,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
             {/*    // edge case: handle ampersands in img links encoded from sanitization*/}
             {/*  }).replaceAll('&amp;', '&')}*/}
             {/*</Markdown>*/}
-          </span>
+          </div>
         </Col>
     </>
   );

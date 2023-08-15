@@ -96,7 +96,7 @@ function App() {
 
     setTimeout(() => {
       setOpen(false);
-    }, 2000);
+    }, alert.time);
 
   }, [alertClick]);
 

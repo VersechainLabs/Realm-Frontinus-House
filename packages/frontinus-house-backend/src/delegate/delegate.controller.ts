@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Post,
   Query,
 } from '@nestjs/common';
@@ -18,9 +19,9 @@ import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.deco
 import { ApiResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { verifySignPayload } from '../utils/verifySignedPayload';
-import { APIResponses, APITransformer, VoteStates } from '../utils/error-codes';
+import { APIResponses, APITransformer } from '../utils/error-codes';
+import { VoteStates, VoteStatesClass } from '@nouns/frontinus-house-wrapper';
 import { BlockchainService } from '../blockchain/blockchain.service';
-import config from '../config/configuration';
 import { Community } from '../community/community.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -45,68 +46,29 @@ export class DelegateController {
     @Body(SignedPayloadValidationPipe) dto: CreateDelegateDto,
   ): Promise<Delegate> {
     verifySignPayload(dto, ['applicationId']);
+
+    const checkResult = await this.doDelegateCheck(
+      dto.applicationId,
+      dto.address,
+    );
+
+    if (checkResult !== VoteStates.OK) {
+      throw new HttpException(checkResult.reason, HttpStatus.BAD_REQUEST);
+    }
+
     const application = await this.applicationService.findOne(
       dto.applicationId,
     );
-    if (!application) {
-      throw new HttpException(
-        'Cannot find this application',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const currentTime = new Date();
-    if (
-      currentTime < application.delegation.proposalEndTime ||
-      currentTime > application.delegation.votingEndTime
-    ) {
-      throw new HttpException(
-        'Not in the eligible voting period.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const existDelegate = await this.delegateService.findByFromAddress(
-      application.delegationId,
-      dto.address,
-    );
-    if (existDelegate) {
-      throw new HttpException(
-        `Already delegate to ${existDelegate.toAddress}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const createdApplication = await this.applicationService.findByAddress(
-      application.delegationId,
-      dto.address,
-    );
-    if (createdApplication) {
-      throw new HttpException(
-        `Already created application. Can not delegate to ${application.address}`,
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // TODO: add communityId in delegation, remove get community by id=1
-    const community = await this.communitiesRepository.findOne(1);
-
-    // Check voting power
-    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
-      dto.address,
-      community.contractAddress,
-    );
-    if (vp <= 0) {
-      throw new HttpException('No voting power', HttpStatus.BAD_REQUEST);
-    }
 
     const delegate = new Delegate();
     delegate.delegationId = application.delegationId;
     delegate.applicationId = dto.applicationId;
     delegate.fromAddress = dto.address;
     delegate.toAddress = application.address;
+    const storedDelegate = await this.delegateService.store(delegate);
 
-    return this.delegateService.store(delegate);
+    await this.applicationService.updateDelegatorCount(application);
+    return storedDelegate;
   }
 
   @Get('/checkExist')
@@ -134,53 +96,40 @@ export class DelegateController {
     @Query('applicationId') applicationId: number,
     @Query('address') fromAddress: string,
   ): Promise<object> {
-    // Similar to /create:
-    const application = await this.applicationService.findOne(applicationId);
-    if (!application) {
-      // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
-      const dummyApplication = { voteState: {} };
-      dummyApplication.voteState = VoteStates.NO_APPLICATION;
+    const checkResult = await this.doDelegateCheck(applicationId, fromAddress);
 
-      return APITransformer(
-        APIResponses.DELEGATE.NO_APPLICATION,
-        dummyApplication,
-        `Can not find application ${applicationId}`,
-      );
-    }
+    let application = await this.applicationService.findOne(applicationId);
 
-    const currentTime = new Date();
-    if (
-      currentTime < application.delegation.proposalEndTime ||
-      currentTime > application.delegation.votingEndTime
-    ) {
-      application.voteState = VoteStates.NOT_VOTING;
-      return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
-    }
+    switch (checkResult) {
+      case VoteStates.NO_APPLICATION:
+        // 之前直接用的接口返回值。现在为了和Long那边返回值一致，加上voteState字段:
+        const dummyApplication = { voteState: {} };
+        dummyApplication.voteState = VoteStates.NO_APPLICATION;
 
-    const existDelegate = await this.delegateService.findByFromAddress(
-      application.delegationId,
-      fromAddress,
-    );
-    if (existDelegate) {
-      application.voteState = VoteStates.VOTED; // Frontend : Can cancel
-      return APITransformer(
-        APIResponses.DELEGATE.DELEGATED,
-        application,
-        `Already delegate to ${existDelegate.toAddress}`,
-      );
-    }
-
-    const createdApplication = await this.applicationService.findByAddress(
-      application.delegationId,
-      fromAddress,
-    );
-    if (createdApplication) {
-      application.voteState = VoteStates.APPLICATION_EXIST;
-      return APITransformer(
-        APIResponses.DELEGATE.OCCUPIED,
-        application,
-        `Already created application. Can not delegate to ${application.address}`,
-      );
+        return APITransformer(
+          APIResponses.DELEGATE.NO_APPLICATION,
+          dummyApplication,
+          `Can not find application ${applicationId}`,
+        );
+      case VoteStates.NOT_VOTING:
+        application.voteState = VoteStates.NOT_DELEGATING;
+        return APITransformer(APIResponses.DELEGATE.NOT_VOTING, application);
+      case VoteStates.VOTED:
+        application.voteState = VoteStates.VOTED; // Frontend : Show cancel btn
+        return APITransformer(APIResponses.DELEGATE.DELEGATED, application);
+      case VoteStates.DELEGATE_ANOTHER:
+          application.voteState = VoteStates.DELEGATE_ANOTHER; // Frontend : Show words only
+        return APITransformer(APIResponses.DELEGATE.DELEGATED, application);
+      case VoteStates.APPLICATION_EXIST:
+        application.voteState = VoteStates.APPLICATION_EXIST;
+        return APITransformer(
+          APIResponses.DELEGATE.APPLICATION_EXIST,
+          application,
+          `Already created application. Can not delegate to ${application.address}`,
+        );
+      case VoteStates.NO_DELEGATE_POWER:
+        application.voteState = VoteStates.NO_DELEGATE_POWER;
+        return APITransformer(APIResponses.DELEGATE.NO_POWER, application);
     }
 
     application.voteState = VoteStates.OK;
@@ -212,7 +161,7 @@ export class DelegateController {
   @ApiOkResponse({
     type: Delegate,
   })
-  async findOne(@Param('id') id: number): Promise<Delegate> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Delegate> {
     const foundDelegate = await this.delegateService.findOne(id);
 
     if (!foundDelegate)
@@ -279,5 +228,57 @@ export class DelegateController {
     // Start remove delegate.
     await this.delegateService.remove(foundDelegate.id);
     return true;
+  }
+
+  async doDelegateCheck(
+    applicationId: number,
+    address: string,
+  ): Promise<VoteStatesClass> {
+    const application = await this.applicationService.findOne(applicationId);
+    if (!application) {
+      return VoteStates.NO_APPLICATION;
+    }
+
+    const currentTime = new Date();
+    if (
+      currentTime < application.delegation.proposalEndTime ||
+      currentTime > application.delegation.votingEndTime
+    ) {
+      return VoteStates.NOT_VOTING;
+    }
+
+    const existDelegate = await this.delegateService.findByFromAddress(
+      application.delegationId,
+      address,
+    );
+    // Only 1 delagate is allowed in 1 delegation.
+    if (existDelegate) {
+      if (existDelegate.applicationId === applicationId)
+        return VoteStates.VOTED;  // show cancel btn
+      else
+        return VoteStates.DELEGATE_ANOTHER; // show words only
+    }
+
+    const createdApplication = await this.applicationService.findByAddress(
+      application.delegationId,
+      address,
+    );
+    if (createdApplication) {
+      return VoteStates.APPLICATION_EXIST;
+    }
+
+    // TODO: add communityId in delegation, remove get community by id=1
+    const community = await this.communitiesRepository.findOne(1);
+
+    // Check voting power
+    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+      address,
+      community.contractAddress,
+    );
+    if (vp <= 0) {
+      return VoteStates.NO_DELEGATE_POWER;
+    }
+
+    return VoteStates.OK;
   }
 }

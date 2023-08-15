@@ -28,7 +28,7 @@ import Markdown from 'markdown-to-jsx';
 import sanitizeHtml from 'sanitize-html';
 import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
 import { countDecimals } from '../../utils/countDecimals';
-import StatusDelegate from "../StatusDelegate";
+import StatusDelegate from '../StatusDelegate';
 
 const DelegateCard: React.FC<{
   round: any;
@@ -58,14 +58,14 @@ const DelegateCard: React.FC<{
             return;
           }
           // navigate(`${nameToSlug(round.title)}`);
-          navigate(`/delegateDetails/${(round.id)}`)
+          navigate(`/delegateDetails/${round.id}`);
         }}
       >
         <Card
           bgColor={CardBgColor.White}
           borderRadius={CardBorderRadius.twenty}
           classNames={clsx(
-              delegateStatus(round) === DelegateVoteStatus.DelegateEnd && classes.roundEnded,
+            delegateStatus(round) === DelegateVoteStatus.DelegateEnd && classes.roundEnded,
             classes.roundCard,
           )}
         >
@@ -96,13 +96,8 @@ const DelegateCard: React.FC<{
             <div className={clsx(classes.section, classes.funding)}>
               <p className={classes.title}>Delegation Period</p>
               <p className={classes.info}>
-                <span className="">
-                  {dayjs(round.startTime).tz().format('MMM D, YYYY')}
-                </span>
-                ~
-                <span>
-                   {dayjs(round.endTime).tz().format('MMM D, YYYY')}
-                </span>
+                <span className="">{dayjs(round.startTime).tz().format('MMM D, YYYY')}</span>~
+                <span>{dayjs(round.endTime).tz().format('MMM D, YYYY')}</span>
               </p>
             </div>
 
@@ -125,7 +120,7 @@ const DelegateCard: React.FC<{
                 tooltipContent={
                   isInfAuction(round)
                     ? `The number of votes required for a prop to be funded`
-                    : `${dayjs(delegateDeadlineTime(round)).tz().format('MMMM D, YYYY h:mm UTC+8')}`
+                    : `${dayjs(delegateDeadlineTime(round)).tz().format('MMMM D, YYYY h:mm A')}`
                 }
               />
             </div>
@@ -134,7 +129,9 @@ const DelegateCard: React.FC<{
 
             <div className={clsx(classes.section, classes.propSection)}>
               <p className={classes.title}>Applications</p>
-              <p className={classes.info}>{round.applications ? round.applications.length: round.applicationCount}</p>
+              <p className={classes.info}>
+                {round.applications ? round.applications.length : round.applicationCount}
+              </p>
             </div>
           </div>
         </Card>

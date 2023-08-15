@@ -3,6 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { Delegate } from './delegate.entity';
 
+
+// export enum DelegateErrorTypes {
+//   OK,
+//   NO_APPLICATION,
+//   NOT_VOTING,
+//   VOTED,
+//   OCCUPIED,
+//   NO_POWER
+// }
+
 @Injectable()
 export class DelegateService {
   constructor(
@@ -75,4 +85,6 @@ export class DelegateService {
   async store(proposal: Delegate): Promise<Delegate> {
     return await this.delegateRepository.save(proposal, { reload: true });
   }
+
+
 }

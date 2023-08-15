@@ -20,6 +20,11 @@ import { DelegateService } from '../delegate/delegate.service';
 import { Community } from '../community/community.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import {
+  ApplicationCreateStatus,
+  ApplicationCreateStatusMap,
+} from '@nouns/frontinus-house-wrapper';
+import { Delegation } from '../delegation/delegation.entity';
 
 @Controller('applications')
 export class ApplicationController {
@@ -78,7 +83,6 @@ export class ApplicationController {
     );
 
     if (!application) return false;
-
     return true;
   }
 
@@ -93,7 +97,6 @@ export class ApplicationController {
 
     // Delegation must exists:
     const delegation = await this.delegationService.findOne(dto.delegationId);
-
     if (!delegation) {
       throw new HttpException(
         'Delegation not found. Cannot create application',
@@ -101,58 +104,40 @@ export class ApplicationController {
       );
     }
 
-    const currentDate = new Date();
-    if (
-      currentDate < delegation.startTime ||
-      currentDate > delegation.proposalEndTime
-    ) {
-      throw new HttpException(
-        'Not in the eligible create application period.',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // Same Application must NOT exists:
-    const existingApplication = await this.applicationService.findBy({
-      where: { delegationId: dto.delegationId, address: dto.address },
-    });
-
-    if (existingApplication) {
-      throw new HttpException(
-        'Application already exists!',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // Can not create application if he already delegate to another user.
-    const existingDelegate = await this.delegateService.findOneBy({
-      where: { delegationId: dto.delegationId, fromAddress: dto.address },
-    });
-    if (existingDelegate) {
-      throw new HttpException(
-        'Already delegate to another',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    // TODO: add communityId in delegation, remove get community by id=1
-    const community = await this.communitiesRepository.findOne(1);
-
-    // Check voting power
-    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+    const canCreateStatus = await this.checkCanCreateApplication(
+      delegation,
       dto.address,
-      community.contractAddress,
     );
-    if (vp <= 0) {
-      throw new HttpException('No voting power', HttpStatus.BAD_REQUEST);
+    if (canCreateStatus.code !== ApplicationCreateStatusMap.OK.code) {
+      throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
     }
 
     // Create:
-    const newApplication = this.applicationRepository.create({
+    const newApplication = await this.applicationService.create({
       ...dto,
       delegation,
     });
-    return await this.applicationRepository.save(newApplication);
+    return await this.applicationService.store(newApplication);
+  }
+
+  @Get('/canCreate')
+  @ApiOkResponse({
+    type: ApplicationCreateStatus,
+  })
+  async check(
+    @Query('delegationId') delegationId: number,
+    @Query('address') address: string,
+  ): Promise<ApplicationCreateStatus> {
+    // Delegation must exists:
+    const delegation = await this.delegationService.findOne(delegationId);
+    if (!delegation) {
+      throw new HttpException(
+        'Delegation not found. Cannot create application',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.checkCanCreateApplication(delegation, address);
   }
 
   @Get('/:id/detail')
@@ -166,5 +151,49 @@ export class ApplicationController {
       throw new HttpException('Application not found', HttpStatus.NOT_FOUND);
 
     return foundApplication;
+  }
+
+  async checkCanCreateApplication(
+    delegation: Delegation,
+    address: string,
+  ): Promise<ApplicationCreateStatus> {
+    const delegationId = delegation.id;
+    const currentDate = new Date();
+    if (
+      currentDate < delegation.startTime ||
+      currentDate > delegation.proposalEndTime
+    ) {
+      return ApplicationCreateStatusMap.WRONG_PERIOD;
+    }
+
+    // Same Application must NOT exists:
+    const existingApplication = await this.applicationService.findBy({
+      where: { delegationId: delegationId, address: address },
+    });
+
+    if (existingApplication) {
+      return ApplicationCreateStatusMap.CREATED;
+    }
+
+    // Can not create application if he already delegate to another user.
+    const existingDelegate = await this.delegateService.findOneBy({
+      where: { delegationId: delegationId, fromAddress: address },
+    });
+    if (existingDelegate) {
+      return ApplicationCreateStatusMap.DELEGATE_TO_OTHER;
+    }
+
+    // TODO: add communityId in delegation, remove get community by id=1
+    const community = await this.communitiesRepository.findOne(1);
+    // Check voting power
+    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+      address,
+      community.contractAddress,
+    );
+    if (vp <= 0) {
+      return ApplicationCreateStatusMap.NO_VOTING_POWER;
+    }
+
+    return ApplicationCreateStatusMap.OK;
   }
 }
