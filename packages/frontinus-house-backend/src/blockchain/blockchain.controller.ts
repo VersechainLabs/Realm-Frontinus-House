@@ -2,7 +2,9 @@ import { InjectQueue } from '@nestjs/bull';
 import { Controller, Get, Post, Query } from '@nestjs/common';
 import { Queue } from 'bull';
 import { BlockchainService } from './blockchain.service';
+import { ApiExcludeController } from '@nestjs/swagger';
 
+@ApiExcludeController()
 @Controller('audio')
 export class BlockchainController {
   constructor(
@@ -27,12 +29,22 @@ export class BlockchainController {
     @Query('address') address: string,
     @Query('community') communityAddress: string,
     @Query('blocknum') blocknum: number,
+    @Query('ignoreCache') ignoreCache: boolean,
   ) {
-    return await this.blockchainService.getVotingPowerWithSnapshot(
-      address,
-      communityAddress,
-      blocknum,
-    );
+    if (ignoreCache) {
+      console.log(`Get VP: ${communityAddress}, ${address}, ${blocknum}`);
+      return await this.blockchainService.getVotingPowerOnChain(
+        address,
+        communityAddress,
+        blocknum,
+      );
+    } else {
+      return await this.blockchainService.getVotingPowerWithSnapshot(
+        address,
+        communityAddress,
+        blocknum,
+      );
+    }
   }
 
   @Get('test')

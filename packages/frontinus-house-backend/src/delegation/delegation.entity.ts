@@ -26,6 +26,7 @@ export class Delegation {
   })
   id: number;
 
+  @ApiProperty()
   @Column({ default: true })
   visible: boolean;
 
@@ -41,7 +42,8 @@ export class Delegation {
   @Field(() => String)
   description: string;
 
-  @ApiProperty({ type: () => Application, isArray: true })
+  // @ApiProperty({ type: () => Application, isArray: true })
+  @ApiProperty({ type: () => Number, isArray: true })
   @OneToMany(() => Application, (application) => application.delegation, {
     createForeignKeyConstraints: false,
   })
@@ -59,6 +61,7 @@ export class Delegation {
   @Field(() => Date)
   createdDate: Date;
 
+  @ApiProperty()
   @Column()
   @Field(() => Date, {
     description: 'After the Start Time users may submit proposals',
