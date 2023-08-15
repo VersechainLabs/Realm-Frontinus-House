@@ -143,8 +143,12 @@ const CreateRound: React.FC<{}> = () => {
     console.log(state);
   };
   const saveFormNum = (value: string) => {
-    state.numWinners = parseInt(value);
-    console.log(state);
+    setState(prevState => ({
+      ...prevState,
+      numWinners: parseInt(value.replace(/-/g, "")),
+    }));
+    // state.numWinners = parseInt(value);
+    // console.log(state);
   };
   const saveFormAmount = (value: string) => {
     state.fundingAmount = parseInt(value);
@@ -396,7 +400,9 @@ const CreateRound: React.FC<{}> = () => {
                 name={'numWinners'}
                 className={classes.input}
                 type="number" // Add type="number" to allow only numeric input
-              />
+                min="0"
+                value={state.numWinners}
+                />
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
