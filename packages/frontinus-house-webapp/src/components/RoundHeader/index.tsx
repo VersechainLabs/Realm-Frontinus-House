@@ -7,6 +7,7 @@ import Markdown from 'markdown-to-jsx';
 import { useNavigate } from 'react-router-dom';
 import formatTime from '../../utils/formatTime';
 import { nameToSlug } from '../../utils/communitySlugs';
+import Button, { ButtonColor } from '../Button';
 import ReadMore from '../ReadMore';
 import { ForceOpenInNewTab } from '../ForceOpenInNewTab';
 import { isLongName } from '../../utils/isLongName';
@@ -48,6 +49,20 @@ const RoundHeader: React.FC<{
   return (
     <Row className={classes.profileHeaderRow}>
       <Col>
+        <div className={classes.pendingMain}>
+          <div className={classes.pendingTitle}>
+            Pending Round
+          </div>
+          <Button
+              text="Approve"
+              bgColor={ButtonColor.Purple}
+              onClick={() => navigate('/create-delegate-form')}
+              classNames={classes.pendingButton}
+          />
+          <div className={classes.pendingReject}>
+            Reject
+          </div>
+        </div>
         <div
           className={classes.backToAuction}
           onClick={() => {

@@ -10,7 +10,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import RoundCard from '../../components/RoundCard';
 import DelegateCard from '../../components/DelegateCard';
 import HouseUtilityBar from '../../components/HouseUtilityBar';
-import { AuctionStatus, auctionStatus } from '../../utils/auctionStatus';
+import { AuctionStatus, auctionStatus,auctionPendingStatus } from '../../utils/auctionStatus';
 import { StoredAuctionBase } from '@nouns/frontinus-house-wrapper/dist/builders';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import ErrorMessageCard from '../../components/ErrorMessageCard';
@@ -160,8 +160,18 @@ const House = () => {
       (input.length === 0
         ? // if a filter has been clicked that isn't "All rounds" (default)
           currentRoundStatus !== RoundStatus.Active
-          ? // filter by all rounds
-            setRoundsOnDisplay(rounds)
+          ?
+              currentRoundStatus === RoundStatus.Pending
+                  ? setRoundsOnDisplay(rounds.filter(
+                  r =>
+                      auctionPendingStatus(r) === AuctionStatus.Pending,
+                  ))
+                  :
+              // filter by all rounds
+            setRoundsOnDisplay(rounds.filter(
+                r =>
+                    auctionPendingStatus(r) === AuctionStatus.Normal,
+            ))
           : // filter by active rounds (proposing & voting)
             setRoundsOnDisplay(
               rounds.filter(
