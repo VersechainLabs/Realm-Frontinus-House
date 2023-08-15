@@ -17,6 +17,7 @@ export const ProposalCreateStatusMap: Record<string, ApplicationCreateStatus> = 
   WRONG_PERIOD: { code: 412, canCreate: false, message: 'Not in the eligible create proposal period.' },
   VOTED_TO_OTHER: { code: 413, canCreate: false, message: 'Already vote to another in this round' },
   NO_VOTING_POWER: { code: 414, canCreate: false, message: 'Only Realms NFT Holder can submit proposal.' },
+  NOT_APPROVE: { code: 415, canCreate: false, message: 'Proposals cannot be created before the round is approved.' },
 };
 
 

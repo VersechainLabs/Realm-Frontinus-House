@@ -135,6 +135,7 @@ export class Proposal {
     type: Boolean,
   })
   canVote: boolean;
+
   @ApiProperty({
     description:
       'Displays the reason why the user is not allowed to vote when canVote is false. This property will be a string describing the reason, such as "You have already voted." or "Voting has been closed." If canVote is true, this property can be set to null or an empty string.',
@@ -142,9 +143,9 @@ export class Proposal {
     nullable: true,
   })
   disallowedVoteReason: string | null;
+
   @ApiProperty({
-    description:
-      'Indicates how the frontend should react based on this code.',
+    description: 'Indicates how the frontend should react based on this code.',
     type: Object,
   })
   voteState: any;
