@@ -75,7 +75,7 @@ const getErc721Balance = async (
     return new BigNumber(data as number);
   } catch (e) {
     console.warn(
-      `[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
+      `[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag}. retry=${retryCount}. with err:\n${e}`,
     );
 
     if (retryCount < 3) {
@@ -132,7 +132,7 @@ const getContractCallBalance = async (
     return new BigNumber(data as number);
   } catch (e) {
     console.warn(
-      `[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
+      `[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag}. retry=${retryCount}. with err:\n${e}`,
     );
 
     if (retryCount < 3) {
