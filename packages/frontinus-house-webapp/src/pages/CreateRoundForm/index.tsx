@@ -143,16 +143,36 @@ const CreateRound: React.FC<{}> = () => {
     console.log(state);
   };
   const saveFormNum = (value: string) => {
+
+    let newValue = value.replace(/-/g, "");
+
+    // @ts-ignore
     setState(prevState => ({
       ...prevState,
-      numWinners: parseInt(value.replace(/-/g, "")),
+      numWinners:
+          newValue ?
+              parseInt(value.replace(/-/g, ""))
+              : ''
+      ,
     }));
-    // state.numWinners = parseInt(value);
-    // console.log(state);
+
   };
   const saveFormAmount = (value: string) => {
-    state.fundingAmount = parseInt(value);
-    console.log(state);
+    // state.fundingAmount = parseInt(value);
+    // console.log(state);
+
+    let newValue = value.replace(/-/g, "");
+
+    // @ts-ignore
+    setState(prevState => ({
+      ...prevState,
+      fundingAmount:
+      newValue ?
+          Number(value.replace(/-/g, ""))
+          : ''
+        ,
+    }));
+
   };
 
   const hideAlert = () => {
@@ -425,6 +445,7 @@ const CreateRound: React.FC<{}> = () => {
                 name={'fundingAmount'}
                 className={classes.input}
                 type="number" // Add type="number" to allow only numeric input
+                value={state.fundingAmount}
               />
             </div>
             <div className={classes.button}>
