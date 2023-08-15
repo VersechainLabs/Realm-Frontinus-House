@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  Application,
+  Application, ApproveRound,
   Comment,
   Community,
   CommunityWithAuctions, DeleteApplication,
@@ -42,6 +42,16 @@ export class ApiWrapper {
     try {
       const signedPayload = await auction.signedPayload(this.signer);
       return (await axios.post(`${this.host}/auctions/create`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async approveAuction(ApproveData: ApproveRound): Promise<StoredTimedAuction[]> {
+    if (!this.signer) throw 'Please sign';
+    try {
+      const signedPayload = await ApproveData.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/auctions/approve`, signedPayload)).data;
     } catch (e: any) {
       throw e.response.data.message;
     }
@@ -131,7 +141,7 @@ export class ApiWrapper {
       const [rawTimedAuctions,
         // , rawInfAuctions
       ] = await Promise.allSettled([
-        axios.get(`${this.host}/auctions/forCommunity/${id}?visibleStatus=1`),
+        axios.get(`${this.host}/auctions/forCommunity/${id}`),
         // ,axios.get(`${this.host}/infinite-auctions/forCommunity/${id}`),
       ]);
 

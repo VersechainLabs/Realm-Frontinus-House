@@ -25,6 +25,10 @@ const StatusPill: React.FC<{ status: AuctionStatus }> = props => {
       copy = 'Ended';
       bgClass = classes.grayBg;
       break;
+    case AuctionStatus.Pending:
+      copy = 'Pending';
+      bgClass = classes.greenBg;
+      break;
   }
 
   return <span className={clsx(classes.pillContainer, bgClass)}>{copy}</span>;

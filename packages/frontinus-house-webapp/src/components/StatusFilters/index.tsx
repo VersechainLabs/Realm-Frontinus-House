@@ -3,12 +3,14 @@ import { Dispatch, Fragment, SetStateAction } from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import classes from './StatusFilters.module.css';
+import {useAppSelector} from "../../hooks";
 
 // We aren't using AuctionStatus enum becuase AuctionStatus[0] is 'not started' and we don't filter by 'not started', rather RoundStatus[0] is the default 'all rounds'
 export enum RoundStatus {
   Active,
   AllRounds,
   delegateSelection,
+  Pending,
   Proposing,
   Voting,
   Ended,
@@ -20,23 +22,9 @@ export interface Status {
   bgColor: string;
 }
 
-const statuses: Status[] = [
-  {
-    status: RoundStatus.Active,
-    title: 'Active',
-    bgColor: classes.black,
-  },
-  {
-    status: RoundStatus.AllRounds,
-    title: 'All Rounds',
-    bgColor: classes.black,
-  },
-  {
-    status: RoundStatus.delegateSelection,
-    title: 'Delegation Selection',
-    bgColor: classes.black,
-  },
-];
+
+
+
 
 const StatusFilters: React.FC<{
   numberOfRoundsPerStatus: number[];
@@ -45,6 +33,49 @@ const StatusFilters: React.FC<{
   setInput: (value: string) => void;
 }> = props => {
   const { numberOfRoundsPerStatus, currentRoundStatus, setCurrentRoundStatus, setInput } = props;
+  const userType = useAppSelector(state => state.user.type);
+  const statuses: Status[] = userType === 'Admin' ?
+      [
+        {
+          status: RoundStatus.Active,
+          title: 'Active',
+          bgColor: classes.black,
+        },
+        {
+          status: RoundStatus.AllRounds,
+          title: 'All Rounds',
+          bgColor: classes.black,
+        },
+        {
+          status: RoundStatus.delegateSelection,
+          title: 'Delegation Selection',
+          bgColor: classes.black,
+        },
+        {
+          status: RoundStatus.Pending,
+          title: 'Pending Rounds',
+          bgColor: classes.black,
+        },
+      ]
+      :
+      [
+    {
+      status: RoundStatus.Active,
+      title: 'Active',
+      bgColor: classes.black,
+    },
+    {
+      status: RoundStatus.AllRounds,
+      title: 'All Rounds',
+      bgColor: classes.black,
+    },
+    {
+      status: RoundStatus.delegateSelection,
+      title: 'Delegation Selection',
+      bgColor: classes.black,
+    },
+  ];
+
 
   const { t } = useTranslation();
 
