@@ -106,6 +106,16 @@ export class ProposalsController {
     @Param('id', ParseIntPipe) id: number,
     @Query('address') userAddress: string,
   ): Promise<Proposal> {
+
+    // var matches = userAddress.match(/\bhttps?:\/\/\S+\\/gi);
+    // console.log("matches: ", matches[0]);
+
+    // if (Array.isArray(matches) && matches.length > 0) {
+    //   console.log("matches length: ", matches.length);
+    //   const cleanImageUrl = matches[0].replace(/\"$/, '');
+    //   console.log("cleanImageUrl: ", cleanImageUrl);
+    // }
+
     const foundProposal = await this.proposalsService.findOne(id);
     if (!foundProposal)
       throw new HttpException('Proposal not found', HttpStatus.NOT_FOUND);
@@ -227,7 +237,8 @@ export class ProposalsController {
       throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
     }
 
-    var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+\\/gi);
+    console.log("what: ", createProposalDto.what);
+    var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+\"/gi);
     console.log("matches: ", matches);
 
     // Do create:
@@ -240,8 +251,11 @@ export class ProposalsController {
     proposal.createdDate = new Date();
 
     if (Array.isArray(matches) && matches.length > 0) {
-      console.log("preview: ", matches[0]);
-      proposal.previewImage = matches[0];
+      console.log("matches[0: ", matches[0]);
+      const cleanImageUrl = matches[0].replace(/\"$/, '');
+      console.log("cleanImageUrl: ", cleanImageUrl);
+
+      proposal.previewImage = cleanImageUrl;
     }
 
 
