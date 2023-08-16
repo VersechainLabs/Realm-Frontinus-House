@@ -256,7 +256,7 @@ export class ApiWrapper {
         await axios.get(`${this.host}/auctions/${auctionName}/community/${communityId}`)
       ).data;
       return StoredTimedAuction.FromResponse(rawTimedAuction);
-    } catch (e) {
+    } catch (e : any) {
       throw e.response.data.message;
     }
   }

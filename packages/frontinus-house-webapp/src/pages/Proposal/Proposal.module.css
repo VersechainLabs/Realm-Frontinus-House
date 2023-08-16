@@ -21,7 +21,9 @@
   border: 1px solid #2C2C2D;
   width: 640px;
   border-radius: 8px;
+  margin-top: 20px;
 }
+
 .voteHeader {
   display: flex;
   align-items: center;
