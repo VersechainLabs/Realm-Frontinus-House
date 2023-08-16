@@ -73,16 +73,7 @@ export class ApiWrapper {
       const rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}`)).data;
       return StoredTimedAuction.FromResponse(rawTimedAuction);
     } catch (e: any) {
-      if (e.response && e.response.status === 404) {
-        try {
-          const rawTimedAuction = (await axios.get(`${this.host}/infinite-auctions/${id}`)).data;
-          return StoredTimedAuction.FromResponse(rawTimedAuction);
-        } catch (e: any) {
-          throw e.response.data.message;
-        }
-      } else {
-        throw e.response.data.message;
-      }
+      throw e.response.data.message;
     }
   }
 
@@ -266,14 +257,7 @@ export class ApiWrapper {
       ).data;
       return StoredTimedAuction.FromResponse(rawTimedAuction);
     } catch (e) {
-      try {
-        const rawInfAuction = (
-          await axios.get(`${this.host}/infinite-auctions/${auctionName}/community/${communityId}`)
-        ).data;
-        return StoredInfiniteAuction.FromResponse(rawInfAuction);
-      } catch (e: any) {
-        throw e.response.data.message;
-      }
+      throw e.response.data.message;
     }
   }
 
