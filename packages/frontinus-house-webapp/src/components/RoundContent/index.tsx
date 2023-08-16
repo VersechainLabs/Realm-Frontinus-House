@@ -11,7 +11,6 @@ import { useDispatch } from 'react-redux';
 import { useAppSelector } from '../../hooks';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { refreshActiveProposals } from '../../utils/refreshActiveProposal';
-import { getVotingPower } from 'frontinus-house-communities';
 import ErrorMessageCard from '../ErrorMessageCard';
 import VoteConfirmationModal from '../VoteConfirmationModal';
 import SuccessVotingModal from '../SuccessVotingModal';
@@ -74,27 +73,6 @@ const RoundContent: React.FC<{
   useEffect(() => {
     client.current = new ApiWrapper(host, walletClient);
   }, [walletClient, host]);
-
-  // fetch voting power for user
-  useEffect(() => {
-    if (!account || !walletClient || !community) return;
-
-    const fetchVotes = async () => {
-      try {
-        const provider = new InfuraProvider(1, process.env.REACT_APP_INFURA_PROJECT_ID);
-        const votes = await getVotingPower(
-          account,
-          community.contractAddress,
-          provider,
-          auction.balanceBlockTag,
-        );
-        dispatch(setVotingPower(votes));
-      } catch (e) {
-        console.log('error fetching votes: ', e);
-      }
-    };
-    fetchVotes();
-  }, [account, walletClient, dispatch, community, auction.balanceBlockTag]);
 
   // update submitted votes on proposal changes
   useEffect(() => {
