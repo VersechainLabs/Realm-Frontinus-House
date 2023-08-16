@@ -86,16 +86,6 @@ export class ProposalsController {
     @Param('id', ParseIntPipe) id: number,
     @Query('address') userAddress: string,
   ): Promise<Proposal> {
-
-    // var matches = userAddress.match(/\bhttps?:\/\/\S+\\/gi);
-    // console.log("matches: ", matches[0]);
-
-    // if (Array.isArray(matches) && matches.length > 0) {
-    //   console.log("matches length: ", matches.length);
-    //   const cleanImageUrl = matches[0].replace(/\"$/, '');
-    //   console.log("cleanImageUrl: ", cleanImageUrl);
-    // }
-
     const foundProposal = await this.proposalsService.findOne(id);
     if (!foundProposal)
       throw new HttpException('Proposal not found', HttpStatus.NOT_FOUND);
@@ -197,7 +187,6 @@ export class ProposalsController {
       'title',
       'parentAuctionId',
     ]);
-    console.log("enter create() ");
 
     const foundAuction = await this.auctionsService.findOne(
       createProposalDto.parentAuctionId,
@@ -213,13 +202,10 @@ export class ProposalsController {
       createProposalDto.address,
     );
     if (canCreateStatus.code !== ProposalCreateStatusMap.OK.code) {
-      console.log("error: ", canCreateStatus.message);
       throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
     }
 
-    console.log("what: ", createProposalDto.what);
-    var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+\"/gi);
-    console.log("matches: ", matches);
+    // var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+\"/gi);
 
     // Do create:
     const proposal = new Proposal();
@@ -229,14 +215,15 @@ export class ProposalsController {
     proposal.title = createProposalDto.title;
     proposal.auction = foundAuction;
     proposal.createdDate = new Date();
+    proposal.previewImage = createProposalDto.previewImage;
 
-    if (Array.isArray(matches) && matches.length > 0) {
-      console.log("matches[0: ", matches[0]);
-      const cleanImageUrl = matches[0].replace(/\"$/, '');
-      console.log("cleanImageUrl: ", cleanImageUrl);
+    // if (Array.isArray(matches) && matches.length > 0) {
+    //   console.log("matches[0: ", matches[0]);
+    //   const cleanImageUrl = matches[0].replace(/\"$/, '');
+    //   console.log("cleanImageUrl: ", cleanImageUrl);
 
-      proposal.previewImage = cleanImageUrl;
-    }
+    //   proposal.previewImage = cleanImageUrl;
+    // }
 
 
     return this.proposalsService.store(proposal);
