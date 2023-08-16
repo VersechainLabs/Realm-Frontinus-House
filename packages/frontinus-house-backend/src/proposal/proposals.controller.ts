@@ -207,7 +207,7 @@ export class ProposalsController {
       throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
     }
 
-    var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+/gi);
+    var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+\\/gi);
     console.log("matches: ", matches);
 
     // Do create:
