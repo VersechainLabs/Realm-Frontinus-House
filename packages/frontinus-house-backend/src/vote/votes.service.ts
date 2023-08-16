@@ -232,7 +232,7 @@ export class VotesService {
     // Check if user has voted for this round, Protect against casting same vote twice
     const sameAuctionVote = await this.findBy(auction.id, address);
     if (sameAuctionVote) {
-      return VoteStates.VOTED;
+      return VoteStates.VOTED_ANOTHER;
     }
 
     if (checkVotingPower) {
