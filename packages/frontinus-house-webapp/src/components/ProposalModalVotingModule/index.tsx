@@ -8,7 +8,6 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useAppSelector } from '../../hooks';
 import { countVotesRemainingForTimedRound } from '../../utils/countVotesRemainingForTimedRound';
 import { useDispatch } from 'react-redux';
-import { getVotingPower } from 'frontinus-house-communities';
 import { setVotesByUserInActiveRound, setVotingPower } from '../../state/slices/voting';
 import VoteAllotmentTooltip from '../VoteAllotmentTooltip';
 import { StoredProposalWithVotes } from '@nouns/frontinus-house-wrapper/dist/builders';
@@ -61,24 +60,6 @@ const ProposalModalVotingModule: React.FC<{
       ? countTotalVotesAlloted(voteAllotments)
       : countVotesAllottedToProp(voteAllotments, proposal.id);
 
-  useEffect(() => {
-    if (!account || !provider || !community) return;
-
-    const fetchVotes = async () => {
-      try {
-        const votes = await getVotingPower(
-          account,
-          community.contractAddress,
-          provider,
-          round!.balanceBlockTag,
-        );
-        dispatch(setVotingPower(votes));
-      } catch (e) {
-        console.log('error fetching votes: ', e);
-      }
-    };
-    fetchVotes();
-  }, [account, provider, dispatch, community, round]);
 
   // update submitted votes on proposal changes
   useEffect(() => {
