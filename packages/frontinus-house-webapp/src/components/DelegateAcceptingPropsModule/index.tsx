@@ -43,18 +43,22 @@ const DelegateAcceptingPropsModule: React.FC<{
   useEffect(() => {
       // auction.id
       setDelegateStatus(false);
-      if(account && auction){
+      if(account && id){
           fetchDelegateStatus();
       }
 
   }, [account, id]);
 
   const fetchDelegateStatus = async () => {
-      const raw = await backendClient.current.getDelegationApplied( parseInt( id ));
+      try {
+          console.log('account',account,'id',id)
+          const raw = await backendClient.current.getDelegationApplied( parseInt( id ));
+          console.log('getDelegationApplied',raw);
+          setDelegateStatus(raw);
+      } catch (e: any) {
+          setDelegateStatus(ApplicationCreateStatusMap.OK);
+      }
 
-      console.log('getDelegationApplied',raw);
-
-      setDelegateStatus(raw);
   };
 
     const content = (
