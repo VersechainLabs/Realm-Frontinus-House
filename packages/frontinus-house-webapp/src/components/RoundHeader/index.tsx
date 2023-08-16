@@ -28,6 +28,8 @@ const RoundHeader: React.FC<{
   const { community, auction } = props;
   const navigate = useNavigate();
 
+  const md = (auction?.description as any).replace(/\n/g, "<br />");
+
   const roundDescription = (
     <>
       {/* support both markdown & html links in community's description.  */}
@@ -44,7 +46,7 @@ const RoundHeader: React.FC<{
           },
         }}
       >
-        {sanitizeHtml(auction?.description as any, {
+        {sanitizeHtml(md, {
           allowedAttributes: {
             a: ['href', 'target'],
           },
@@ -52,6 +54,7 @@ const RoundHeader: React.FC<{
       </Markdown>
     </>
   );
+  //auction?.description as any
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
   const { data: walletClient } = useWalletClient();
