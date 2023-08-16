@@ -60,6 +60,26 @@ export class ProposalsController {
     return this.proposalsService.findAll(dto);
   }
 
+  @Get('/canCreate')
+  @ApiOkResponse({
+    type: ApplicationCreateStatus,
+  })
+  async check(
+    @Query('auctionId') auctionId: number,
+    @Query('address') address: string,
+  ): Promise<ApplicationCreateStatus> {
+    const foundAuction = await this.auctionsService.findOne(auctionId);
+    if (!foundAuction) {
+      throw new HttpException(
+        'Auction not found. Cannot create proposal',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.checkCanCreateProposal(foundAuction, address);
+  }
+
+
   @Get(':id')
   @ApiOperation({ summary: 'Find proposal by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Proposal ID' })
@@ -227,26 +247,6 @@ export class ProposalsController {
 
     return this.proposalsService.store(proposal);
   }
-
-  @Get('/canCreate')
-  @ApiOkResponse({
-    type: ApplicationCreateStatus,
-  })
-  async check(
-    @Query('auctionId') auctionId: number,
-    @Query('address') address: string,
-  ): Promise<ApplicationCreateStatus> {
-    const foundAuction = await this.auctionsService.findOne(auctionId);
-    if (!foundAuction) {
-      throw new HttpException(
-        'Auction not found. Cannot create proposal',
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    return this.checkCanCreateProposal(foundAuction, address);
-  }
-
 
   async checkCanCreateProposal(
     auction: Auction,
