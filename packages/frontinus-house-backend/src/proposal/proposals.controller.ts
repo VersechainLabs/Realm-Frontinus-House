@@ -228,6 +228,26 @@ export class ProposalsController {
     return this.proposalsService.store(proposal);
   }
 
+  @Get('/canCreate')
+  @ApiOkResponse({
+    type: ApplicationCreateStatus,
+  })
+  async check(
+    @Query('auctionId') auctionId: number,
+    @Query('address') address: string,
+  ): Promise<ApplicationCreateStatus> {
+    const foundAuction = await this.auctionsService.findOne(auctionId);
+    if (!foundAuction) {
+      throw new HttpException(
+        'Auction not found. Cannot create proposal',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.checkCanCreateProposal(foundAuction, address);
+  }
+
+
   async checkCanCreateProposal(
     auction: Auction,
     address: string,
@@ -305,4 +325,16 @@ export class ProposalsController {
 
     foundProposal.voteState = VoteStates.OK;
   }
+}
+
+function updateValidFields(
+  originObj: any,
+  updateObj: any,
+  updateKeys: string[],
+) {
+  const keys = Object.keys(updateObj).filter((key) => updateKeys.includes(key));
+  Object.assign(
+    originObj,
+    ...keys.map((key) => ({ [key]: updateObj[key] })),
+  );
 }
