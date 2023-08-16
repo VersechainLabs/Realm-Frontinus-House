@@ -240,8 +240,8 @@ const CreateRound: React.FC<{}> = () => {
         )
         .then(() => {
           setIsSuccessAlertVisible(true); // 显示成功提示
-          dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
           if (userType === 'Admin') {
+            dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
             navigate('/');
           } else {
             setIsButtonDisabled(false);
@@ -274,7 +274,7 @@ const CreateRound: React.FC<{}> = () => {
             <div className={clsx('frontinusTitle', classes.title)}>Round Creation</div>
             <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
-              questions: https://discord.gg/uQnjZhZPfu.
+              questions: <a className={classes.qLink} target="_blank" href="https://discord.gg/uQnjZhZPfu">https://discord.gg/uQnjZhZPfu</a>.
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>

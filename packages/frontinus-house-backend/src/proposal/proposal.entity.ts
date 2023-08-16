@@ -42,6 +42,11 @@ export class Proposal {
   what: string;
 
   @ApiProperty()
+  @Column({ nullable: true })
+  @Field(() => String)
+  previewImage: string;
+
+  @ApiProperty()
   @Column({ type: 'text' })
   @Field(() => String)
   tldr: string;
@@ -139,7 +144,6 @@ export class Proposal {
   //   type: Boolean,
   // })
   canVote: boolean;
-
 
   // @ApiProperty({
   //   description:

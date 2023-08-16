@@ -86,7 +86,7 @@
     font-size: 14px;
     color: #a3a3a4 !important;
     margin-bottom: 8px;
-    /*margin-top: -16px;*/
+    margin-top: 8px;
     padding-top: 8px;
     border-top: 1px solid var(--brand-gray-border);
 }
