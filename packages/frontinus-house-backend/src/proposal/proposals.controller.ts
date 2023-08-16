@@ -187,6 +187,7 @@ export class ProposalsController {
       'title',
       'parentAuctionId',
     ]);
+    console.log("enter create() ");
 
     const foundAuction = await this.auctionsService.findOne(
       createProposalDto.parentAuctionId,
@@ -202,8 +203,12 @@ export class ProposalsController {
       createProposalDto.address,
     );
     if (canCreateStatus.code !== ProposalCreateStatusMap.OK.code) {
+      console.log("error: ", canCreateStatus.message);
       throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
     }
+
+    var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+/gi);
+    console.log("matches: ", matches);
 
     // Do create:
     const proposal = new Proposal();
@@ -213,6 +218,12 @@ export class ProposalsController {
     proposal.title = createProposalDto.title;
     proposal.auction = foundAuction;
     proposal.createdDate = new Date();
+
+    if (Array.isArray(matches) && matches.length > 0) {
+      console.log("preview: ", matches[0]);
+      proposal.previewImage = matches[0];
+    }
+
 
     return this.proposalsService.store(proposal);
   }
