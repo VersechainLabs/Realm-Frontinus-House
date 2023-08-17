@@ -181,6 +181,7 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     createProposalDto: CreateProposalDto,
   ): Promise<Proposal> {
+    console.log("enter proposal create");
     verifySignPayload(createProposalDto, [
       'what',
       'tldr',
@@ -188,6 +189,7 @@ export class ProposalsController {
       'parentAuctionId',
     ]);
 
+    
     const foundAuction = await this.auctionsService.findOne(
       createProposalDto.parentAuctionId,
     );
