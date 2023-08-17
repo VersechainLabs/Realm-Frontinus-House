@@ -86,7 +86,7 @@ const PropStats: React.FC<{
                 </div>
               </div>
             }
-            
+
             {/*<div className={classes.userPropItem}>*/}
             {/*  <div className={classes.userPropNounImg}>*/}
             {/*    <img src="/heads/wallet.png" alt="wallet" />*/}
