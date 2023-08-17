@@ -27,6 +27,10 @@ export class CreateProposalDto extends SignedEntity {
 
   @ApiProperty({})
   @IsString()
+  previewImage?: string;
+
+  @ApiProperty({})
+  @IsString()
   tldr: string;
 
   @ApiProperty({})
