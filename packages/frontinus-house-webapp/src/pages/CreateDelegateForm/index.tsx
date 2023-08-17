@@ -208,7 +208,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       state.title,
       state.startTime,
       state.endTime,
-      state.proposalEndTime,
+      state.proposalEndTime, 
       state.votingEndTime,
       state.description,
     );
