@@ -12,6 +12,7 @@ import { useLocation } from 'react-router-dom';
 import { isInfAuction } from '../../utils/auctionType';
 import classes from './ApplicationEditor.module.css';
 
+
 export interface FormDataType {
   title: string;
   focus?: boolean;
@@ -229,7 +230,6 @@ const ApplicationEditor: React.FC<{
         formData={formData}
         fundReqData={fundReqData}
       />
-
     </>
   );
 };

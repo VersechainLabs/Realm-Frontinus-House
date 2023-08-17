@@ -2,8 +2,8 @@ import classes from './ApplicationInputs.module.css';
 import './ApplicationInputs.css';
 import React, { useEffect, useRef, useState } from 'react';
 import { Row, Col, Form } from 'react-bootstrap';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {useLocation, useNavigate} from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useLocation, useNavigate } from 'react-router-dom';
 import 'react-quill/dist/quill.snow.css';
 import '../../quill.css';
 import clsx from 'clsx';
@@ -11,30 +11,24 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import validateInput from '../../utils/validateInput';
 import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../ApplicationEditor';
-import {useAccount, useWalletClient} from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
-import QuillEditor, {EMPTY_DELTA} from "../QuillEditor";
-import {DeltaStatic, Quill} from "quill";
-import {InfiniteAuctionProposal, Proposal} from "@nouns/frontinus-house-wrapper/dist/builders";
-import {appendProposal} from "../../state/slices/propHouse";
-import {clearProposal} from "../../state/slices/editor";
-import ProposalSuccessModal from "../ProposalSuccessModal";
-import {buildRoundPath} from "../../utils/buildRoundPath";
-import {
-  setAlert
-} from '../../state/slices/alert';
-
+import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
+import { DeltaStatic, Quill } from 'quill';
+import { InfiniteAuctionProposal, Proposal } from '@nouns/frontinus-house-wrapper/dist/builders';
+import { appendProposal } from '../../state/slices/propHouse';
+import { clearProposal } from '../../state/slices/editor';
+import ProposalSuccessModal from '../ProposalSuccessModal';
+import { buildRoundPath } from '../../utils/buildRoundPath';
+import DelegationCongrats from '../DelegationCongrats';
+import { setAlert } from '../../state/slices/alert';
 
 const ApplicationInputs: React.FC<{
   formData: FormDataType[];
   fundReqData: FundReqDataType;
   onDataChange: (data: Partial<ProposalFields>) => void;
 }> = props => {
-  const {
-    formData,
-    fundReqData,
-    onDataChange,
-  } = props;
+  const { formData, fundReqData, onDataChange } = props;
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
@@ -73,10 +67,9 @@ const ApplicationInputs: React.FC<{
     />
   );
 
-
   const navigate = useNavigate();
-    const location = useLocation();
-    const activeAuction = location.state.auction;
+  const location = useLocation();
+  const activeAuction = location.state.auction;
   const activeCommunity = location.state.community;
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
@@ -88,6 +81,8 @@ const ApplicationInputs: React.FC<{
   const { data: walletClient } = useWalletClient();
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host, walletClient));
+  const [openDelegationCongrats, setOpenDelegationCongrats] = useState(false);
+  const [showDelegationCongrats, setShowDelegationCongrats] = useState(false);
 
   useEffect(() => {
     client.current = new ApiWrapper(host, walletClient);
@@ -102,8 +97,8 @@ const ApplicationInputs: React.FC<{
   };
 
   const submit = async () => {
-
     if (content.length === 0 || !account) {
+      setOpenDelegationCongrats(true);
       return;
     }
 
@@ -111,7 +106,12 @@ const ApplicationInputs: React.FC<{
 
     let newProp: Proposal | InfiniteAuctionProposal;
 
-    newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
+    newProp = new Proposal(
+      formData[0].fieldValue,
+      content,
+      formData[1].fieldValue,
+      activeAuction.id,
+    );
 
     try {
       const proposal = await client.current.createApplication(newProp);
@@ -120,20 +120,18 @@ const ApplicationInputs: React.FC<{
       dispatch(appendProposal({ proposal }));
       dispatch(clearProposal());
       // setShowProposalSuccessModal(true);
-      navigate(`/delegateDetails/${(activeAuction.id)}`)
+      setOpenDelegationCongrats(true);
+      setShowDelegationCongrats(true);
       setLoading(false);
-
+    } catch (e) {
+      dispatch(
+        setAlert({
+          type: 'error',
+          message: e,
+        }),
+      );
     }
-    catch (e) {
-      dispatch(setAlert({
-        type : 'error',
-        message: e
-      }))
-    }
-
-
   };
-
 
   return (
     <>
@@ -179,24 +177,27 @@ const ApplicationInputs: React.FC<{
 
             {/** DESCRIPTION */}
           </Form>
-          <div className={classes.description}>
-            Description
-          </div>
-          <div className={"propEditor"}>
-
+          <div className={classes.description}>Description</div>
+          <div className={'propEditor'}>
             <QuillEditor
-                widgetKey={'Comment-proposalId'}
-                minHeightStr={'400px'}
-                onChange={handleChange}
-                title='Create Comment'
-                loading={loading}
-                onQuillInit={(q) => setQuill(q)}
-                btnText='Submit'
-                onButtonClick={submit}
-                placeholderText=''
+              widgetKey={'Comment-proposalId'}
+              minHeightStr={'400px'}
+              onChange={handleChange}
+              title="Create Comment"
+              loading={loading}
+              onQuillInit={q => setQuill(q)}
+              btnText="Submit"
+              onButtonClick={submit}
+              placeholderText=""
             />
           </div>
-
+          <DelegationCongrats
+            trigger={showDelegationCongrats}
+            onClose={() => {
+              setShowDelegationCongrats(false);
+              navigate(`/delegateDetails/${activeAuction.id}`);
+            }}
+          />
         </Col>
       </Row>
       {/*{showProposalSuccessModal && propId && (*/}
