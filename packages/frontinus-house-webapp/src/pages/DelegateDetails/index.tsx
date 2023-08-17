@@ -38,8 +38,6 @@ const DelegateDetails = () => {
   // const communityName = location.pathname.substring(1).split('/')[0];
 
   const communityName = 'frontinus';
-
-
   const id = location.pathname.substring(1).split('/')[1];
 
   const dispatch = useAppDispatch();
@@ -91,7 +89,6 @@ const DelegateDetails = () => {
 
   // if no data is found in store (ie round page is entry point), fetch data
   useEffect(() => {
-    if (round || !community) return;
 
     const fetchRound = async () => {
       try {
@@ -109,7 +106,7 @@ const DelegateDetails = () => {
     };
 
     fetchRound();
-  }, [communityName, dispatch, id, round, community]);
+  }, [dispatch, id]);
 
   // fetch proposals
   useEffect(() => {
