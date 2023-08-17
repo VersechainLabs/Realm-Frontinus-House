@@ -64,70 +64,73 @@ const NavBar = () => {
   };
 
   return (
-    <Container>
-      <Navbar bg="transparent" expand="lg" className={classes.navbar} expanded={isNavExpanded}>
-        <Link to="/" className={classes.logoGroup}>
-          <img className={classes.bulbImg} src="/bulb.png" alt="bulb" />
-          <Navbar.Brand>
-            {!isMobile() && (
-              <>
-                <div className={clsx('frontinusTitle', classes.navbarBrand)}>{t('frontinusHouse')}</div>
-              </>
-            )}
-          </Navbar.Brand>
-        </Link>
+      <div className={'bgTop'}>
+        <Container >
+          <Navbar bg="transparent" expand="lg" className={classes.navbar} expanded={isNavExpanded}>
+            <Link to="/" className={classes.logoGroup}>
+              <img className={classes.bulbImg} src="/bulb.png" alt="bulb" />
+              <Navbar.Brand>
+                {!isMobile() && (
+                    <>
+                      <div className={clsx('frontinusTitle', classes.navbarBrand)}>{t('frontinusHouse')}</div>
+                    </>
+                )}
+              </Navbar.Brand>
+            </Link>
 
-        <Navbar.Toggle
-          aria-controls="basic-navbar-nav"
-          onClick={() => setIsNavExpanded(!isNavExpanded)}
-        />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className={clsx('ms-auto', classes.navBarCollapse)}>
-            <Nav.Link as="div" className={classes.menuLink} onClick={() => setIsNavExpanded(false)}>
-              {/*<Link to="/faq" className={classes.link}>*/}
-              <a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>
-              {/*</Link>*/}
-              <span className={classes.divider}></span>
-            </Nav.Link>
-
-            <div className={classes.buttonGroup}>
-              {/*<LocaleSwitcher setIsNavExpanded={setIsNavExpanded} />*/}
-              {
-                userType === 'Admin' &&  <Nav.Link as="div" className={classes.connectBtnContainer}>
-                  <Button
-                      text="Create a Delegation Round"
-                      bgColor={ButtonColor.Purple}
-                      onClick={() => navigate('/create-delegate-form')}
-                      classNames={classes.createRoundBtn}
-                  />
+            <Navbar.Toggle
+                aria-controls="basic-navbar-nav"
+                onClick={() => setIsNavExpanded(!isNavExpanded)}
+            />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className={clsx('ms-auto', classes.navBarCollapse)}>
+                <Nav.Link as="div" className={classes.menuLink} onClick={() => setIsNavExpanded(false)}>
+                  {/*<Link to="/faq" className={classes.link}>*/}
+                  <a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>
+                  {/*</Link>*/}
+                  <span className={classes.divider}></span>
                 </Nav.Link>
-              }
 
-              {account && (
-                <Nav.Link as="div" className={classes.connectBtnContainer}>
-                  <Button
-                      text="Create a Proposal Round"
-                      bgColor={ButtonColor.Purple}
-                      onClick={() => navigate('/create-round-form')}
-                      classNames={classes.createRoundBtn}
-                  />
-                </Nav.Link>
-                )
-              }
+                <div className={classes.buttonGroup}>
+                  {/*<LocaleSwitcher setIsNavExpanded={setIsNavExpanded} />*/}
+                  {
+                    userType === 'Admin' &&  <Nav.Link as="div" className={classes.connectBtnContainer}>
+                      <Button
+                          text="Create a Delegation Round"
+                          bgColor={ButtonColor.Purple}
+                          onClick={() => navigate('/create-delegate-form')}
+                          classNames={classes.createRoundBtn}
+                      />
+                    </Nav.Link>
+                  }
+
+                  {account && (
+                      <Nav.Link as="div" className={classes.connectBtnContainer}>
+                        <Button
+                            text="Create a Proposal Round"
+                            bgColor={ButtonColor.Purple}
+                            onClick={() => navigate('/create-round-form')}
+                            classNames={classes.createRoundBtn}
+                        />
+                      </Nav.Link>
+                  )
+                  }
 
 
-              <Nav.Link as="div" className={classes.connectBtnContainer}>
-                <ConnectButton showBalance={false} label={t('connect')} />
-              </Nav.Link>
+                  <Nav.Link as="div" className={classes.connectBtnContainer}>
+                    <ConnectButton showBalance={false} label={t('connect')} />
+                  </Nav.Link>
 
-              {/*<AdminTool>*/}
-              {/*  <DevEnvDropDown />*/}
-              {/*</AdminTool>*/}
-            </div>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
-    </Container>
+                  {/*<AdminTool>*/}
+                  {/*  <DevEnvDropDown />*/}
+                  {/*</AdminTool>*/}
+                </div>
+              </Nav>
+            </Navbar.Collapse>
+          </Navbar>
+        </Container>
+      </div>
+
   );
 };
 

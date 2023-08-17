@@ -3,15 +3,16 @@ import { Community } from '../community/community.entity';
 import { Proposal } from '../proposal/proposal.entity';
 import {
   AfterLoad,
-  BeforeInsert,
-  BeforeUpdate,
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
+  UpdateDateColumn,
 } from 'typeorm';
 import { AuctionBase } from './auction-base.type';
 import { ApiProperty } from '@nestjs/swagger';
@@ -28,6 +29,7 @@ export class Auction implements AuctionBase {
   })
   id: number;
 
+  @ApiProperty()
   @Column({ default: true })
   visible: boolean;
 
@@ -89,7 +91,7 @@ export class Auction implements AuctionBase {
   })
   numWinners: number;
 
-  @ApiProperty({ type: () => Proposal, isArray: true })
+  // @ApiProperty({ type: () => Proposal, isArray: true })
   @OneToMany(() => Proposal, (proposal) => proposal.auction, {
     createForeignKeyConstraints: false,
   })
@@ -97,6 +99,7 @@ export class Auction implements AuctionBase {
   @Field(() => [Proposal])
   proposals: Proposal[];
 
+  @ApiProperty({ isArray: true })
   @RelationId((auction: Auction) => auction.proposals)
   proposalIds: number[];
 
@@ -108,7 +111,8 @@ export class Auction implements AuctionBase {
   // This attribute was previously defined in the API layer, which is quite strange - -
   numProposals: number;
 
-  @ApiProperty({ type: () => Community, isArray: true })
+  // @ApiProperty({ type: () => Community, isArray: true })
+  @ApiProperty({type: Number})
   @ManyToOne(() => Community, (community) => community.auctions, {
     createForeignKeyConstraints: false,
   })
@@ -117,14 +121,17 @@ export class Auction implements AuctionBase {
   community: Community;
 
   @ApiProperty()
-  @Column()
+  @CreateDateColumn()
   @Field(() => Date)
   createdDate: Date;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @UpdateDateColumn({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @ApiProperty()
   @Column({ default: 0 })
@@ -140,18 +147,9 @@ export class Auction implements AuctionBase {
   })
   visibleStatus: AuctionVisibleStatus;
 
-  @BeforeInsert()
-  setCreatedDate() {
-    this.createdDate = new Date();
-  }
-
-  @BeforeUpdate()
-  setUpdatedDate() {
-    this.lastUpdatedDate = new Date();
-  }
-
   public isAcceptingProposals = (): boolean =>
-    new Date() > this.startTime && new Date() <= this.proposalEndTime &&
+    new Date() > this.startTime &&
+    new Date() <= this.proposalEndTime &&
     this.visibleStatus == AuctionVisibleStatus.NORMAL;
 
   @AfterLoad()

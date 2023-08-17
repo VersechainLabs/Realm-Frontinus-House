@@ -60,6 +60,26 @@ export class ProposalsController {
     return this.proposalsService.findAll(dto);
   }
 
+  @Get('/canCreate')
+  @ApiOkResponse({
+    type: ApplicationCreateStatus,
+  })
+  async check(
+    @Query('auctionId') auctionId: number,
+    @Query('address') address: string,
+  ): Promise<ApplicationCreateStatus> {
+    const foundAuction = await this.auctionsService.findOne(auctionId);
+    if (!foundAuction) {
+      throw new HttpException(
+        'Auction not found. Cannot create proposal',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return this.checkCanCreateProposal(foundAuction, address);
+  }
+
+
   @Get(':id')
   @ApiOperation({ summary: 'Find proposal by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Proposal ID' })
@@ -188,6 +208,7 @@ export class ProposalsController {
       'parentAuctionId',
     ]);
 
+    
     const foundAuction = await this.auctionsService.findOne(
       createProposalDto.parentAuctionId,
     );
@@ -195,12 +216,6 @@ export class ProposalsController {
       throw new HttpException(
         'No auction with that ID exists',
         HttpStatus.NOT_FOUND,
-      );
-
-    if (!canSubmitProposals(foundAuction))
-      throw new HttpException(
-        'You cannot create proposals for this round at this time',
-        HttpStatus.BAD_REQUEST,
       );
 
     const canCreateStatus = await this.checkCanCreateProposal(
@@ -211,6 +226,8 @@ export class ProposalsController {
       throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
     }
 
+    // var matches = createProposalDto.what.match(/\bhttps?:\/\/\S+\"/gi);
+
     // Do create:
     const proposal = new Proposal();
     proposal.address = createProposalDto.address;
@@ -219,6 +236,16 @@ export class ProposalsController {
     proposal.title = createProposalDto.title;
     proposal.auction = foundAuction;
     proposal.createdDate = new Date();
+    proposal.previewImage = createProposalDto.previewImage;
+
+    // if (Array.isArray(matches) && matches.length > 0) {
+    //   console.log("matches[0: ", matches[0]);
+    //   const cleanImageUrl = matches[0].replace(/\"$/, '');
+    //   console.log("cleanImageUrl: ", cleanImageUrl);
+
+    //   proposal.previewImage = cleanImageUrl;
+    // }
+
 
     return this.proposalsService.store(proposal);
   }
@@ -231,10 +258,13 @@ export class ProposalsController {
     const currentDate = new Date();
     if (
       currentDate < auction.startTime ||
-      currentDate > auction.proposalEndTime ||
-      auction.visibleStatus != AuctionVisibleStatus.NORMAL
+      currentDate > auction.proposalEndTime
     ) {
       return ProposalCreateStatusMap.WRONG_PERIOD;
+    }
+
+    if (auction.visibleStatus !== AuctionVisibleStatus.NORMAL) {
+      return ProposalCreateStatusMap.NOT_APPROVE;
     }
 
     // Same Proposal must NOT exists:
@@ -297,4 +327,16 @@ export class ProposalsController {
 
     foundProposal.voteState = VoteStates.OK;
   }
+}
+
+function updateValidFields(
+  originObj: any,
+  updateObj: any,
+  updateKeys: string[],
+) {
+  const keys = Object.keys(updateObj).filter((key) => updateKeys.includes(key));
+  Object.assign(
+    originObj,
+    ...keys.map((key) => ({ [key]: updateObj[key] })),
+  );
 }

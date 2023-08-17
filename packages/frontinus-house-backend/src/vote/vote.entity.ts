@@ -23,6 +23,7 @@ export class Vote {
   @Field(() => Int)
   id: number;
 
+  @ApiProperty()
   @Column({ default: 1 })
   @Field(() => Int)
   direction: number;
@@ -33,7 +34,7 @@ export class Vote {
   @Field(() => String)
   address: Address;
 
-  @ApiProperty({ type: () => Proposal })
+  // @ApiProperty({ type: () => Proposal })
   @ManyToOne(() => Proposal, (proposal) => proposal.votes, {
     createForeignKeyConstraints: false,
   })
@@ -98,6 +99,7 @@ export class Vote {
   })
   delegateList: Vote[];
 
+  @ApiProperty()
   @CreateDateColumn()
   @Field(() => Date)
   createdDate?: Date;

@@ -114,7 +114,7 @@ const ApplicationEditor: React.FC<{
       placeholder: t('delegateTitle'),
       value: '',
       minCount: 5,
-      maxCount: 80,
+      maxCount: 100,
       error: t('titleError'),
     },
     {

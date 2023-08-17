@@ -8,6 +8,8 @@ export enum AuctionStatus {
   AuctionAcceptingProps,
   AuctionVoting,
   AuctionEnded,
+  Pending,
+  Normal,
 }
 
 export enum DelegateVoteStatus {
@@ -22,7 +24,10 @@ export enum DelegateVoteStatus {
  * Calculates auction state
  * @param auction Auction to check status of.
  */
-export const auctionStatus = (auction: StoredAuctionBase): AuctionStatus => {
+export const auctionStatus = (auction: StoredAuctionBase,flag = false): AuctionStatus => {
+  if (!flag && auction.hasOwnProperty('visibleStatus') && auction.visibleStatus == 0) {
+    return AuctionStatus.Pending;
+  }
   const _now = dayjs();
   const _auctionStartTime = dayjs(auction.startTime);
 
@@ -46,11 +51,19 @@ export const auctionStatus = (auction: StoredAuctionBase): AuctionStatus => {
   }
 };
 
+export const auctionPendingStatus = (auction: StoredAuctionBase): AuctionStatus => {
+  if (auction.hasOwnProperty('visibleStatus') && auction.visibleStatus == 0) {
+    return AuctionStatus.Pending;
+  }else {
+    return AuctionStatus.Normal;
+  }
+};
+
 /**
  * Returns copy for deadline corresponding to auction status
  */
 export const deadlineCopy = (auction: StoredAuctionBase) => {
-  const status = auctionStatus(auction);
+  const status = auctionStatus(auction,true);
   return status === AuctionStatus.AuctionNotStarted
     ? 'Round starts'
     : status === AuctionStatus.AuctionAcceptingProps

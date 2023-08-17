@@ -171,7 +171,7 @@ const NomineesCard: React.FC<{
               )}
             </div>
 
-            {showVotesSection && (
+            
               <div className={classes.timestampAndlinkContainer}>
                 <div className={clsx(classes.avatarAndPropNumber)}>
                   <div className={classes.voteCountCopy} title={detailedTime(proposal.createdDate)}>
@@ -179,7 +179,7 @@ const NomineesCard: React.FC<{
                   </div>
                 </div>
               </div>
-            )}
+
           </div>
         </Card>
       </div>

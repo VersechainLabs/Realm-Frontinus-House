@@ -1,4 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { Cache } from 'cache-manager';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import config from '../config/configuration';
 import { getCurrentBlockNum } from 'frontinus-house-communities/dist/actions/getBlockNum';
 import { getVotingPower } from 'frontinus-house-communities';
@@ -19,6 +21,7 @@ export class BlockchainService {
   constructor(
     @InjectRepository(Snapshot)
     private snapshotRepository: Repository<Snapshot>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
     this.provider = createPublicClient({
       chain: mainnet,
@@ -36,20 +39,22 @@ export class BlockchainService {
     blockTag?: number,
   ): Promise<number> {
     try {
-      // Test if there's still has Exception in server log
-      const debugCode = true;
-
-      if (!debugCode && (!blockTag || blockTag === 0)) {
-        blockTag = await this.getCurrentBlockNum();
+      if (!blockTag) {
+        blockTag = 0;
       }
-
-      if (!debugCode || blockTag > 0) {
+      const cacheKey = `${userAddress}-${communityAddress}`.toLowerCase();
+      if (blockTag > 0) {
         // First, search DB for snapshot:
         const existSnapshot = await this.snapshotRepository.findOne({
           where: { communityAddress, address: userAddress, blockNum: blockTag },
         });
         if (existSnapshot) {
           return existSnapshot.votingPower;
+        }
+      } else {
+        const value = await this.cacheManager.get<number>(cacheKey);
+        if (value) {
+          return value;
         }
       }
 
@@ -61,7 +66,7 @@ export class BlockchainService {
         blockTag,
       );
 
-      if (!debugCode || blockTag > 0) {
+      if (blockTag > 0) {
         // Then, save the on-chain voting power to DB.snapshot:
         const newSnapshot = new Snapshot();
         newSnapshot.communityAddress = communityAddress;
@@ -70,9 +75,9 @@ export class BlockchainService {
         newSnapshot.votingPower = votingPowerOnChain;
         // noinspection ES6MissingAwait . just a cache
         this.snapshotRepository.save(newSnapshot);
-
         return newSnapshot.votingPower;
       } else {
+        await this.cacheManager.set(cacheKey, votingPowerOnChain);
         return votingPowerOnChain;
       }
     } catch (e) {

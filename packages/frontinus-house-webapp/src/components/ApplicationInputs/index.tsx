@@ -97,28 +97,42 @@ const ApplicationInputs: React.FC<{
   };
 
   const submit = async () => {
-    if (content.length === 0 || !account) {
-      setOpenDelegationCongrats(true);
-      return;
-    }
-
-    setLoading(true);
-
-    let newProp: Proposal | InfiniteAuctionProposal;
-
-    newProp = new Proposal(
-      formData[0].fieldValue,
-      content,
-      formData[1].fieldValue,
-      activeAuction.id,
-    );
-
     try {
+      const titleFieldValue = formData[0].fieldValue;
+      const tldrFieldValue = formData[1].fieldValue;
+
+      if (
+        titleFieldValue.trim().length === 0 ||
+        tldrFieldValue.trim().length === 0 ||
+        content.trim().length === 0
+      ) {
+        const errorMessage = 'You must complete all the fields before submit!';
+        console.log('Error message to be dispatched:', errorMessage);
+        dispatch(setAlert({ type: 'error', message: errorMessage }));
+        return;
+      }
+
+      if (content.length === 0 || !account) {
+        setOpenDelegationCongrats(true);
+        return;
+      }
+
+      setLoading(true);
+
+      let newProp: Proposal | InfiniteAuctionProposal;
+
+      newProp = new Proposal(
+        formData[0].fieldValue,
+        content,
+        formData[1].fieldValue,
+        activeAuction.id,
+      );
+
       const proposal = await client.current.createApplication(newProp);
 
-      setPropId(proposal.id);
-      dispatch(appendProposal({ proposal }));
-      dispatch(clearProposal());
+      // setPropId(proposal.id);
+      // dispatch(appendProposal({ proposal }));
+      // dispatch(clearProposal());
       // setShowProposalSuccessModal(true);
       setOpenDelegationCongrats(true);
       setShowDelegationCongrats(true);
