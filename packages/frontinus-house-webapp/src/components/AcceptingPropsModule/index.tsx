@@ -18,7 +18,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { ProposalCreateStatusMap } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
 
-
 const AcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
   community: Community;
@@ -91,21 +90,19 @@ const AcceptingPropsModule: React.FC<{
 
       {isProposingWindow &&
         (account ? (
-          (!proposalStatus.canCreate 
-            ? <Button
-            text={proposalStatus.message}
-            bgColor={ButtonColor.Gray}
-            />:
-               <Button
-                classNames={classes.margintop28}
-                text={'proposal'}
-                bgColor={ButtonColor.Green}
-                onClick={() => {
-                  dispatch(clearProposal());
-                  navigate('/create', { state: { auction, community, proposals } });
-                }}
-                />
-          ) 
+          !proposalStatus.canCreate ? (
+            <Button text={proposalStatus.message} bgColor={ButtonColor.Gray} />
+          ) : (
+            <Button
+              classNames={classes.margintop28}
+              text={'Create your proposal'}
+              bgColor={ButtonColor.Green}
+              onClick={() => {
+                dispatch(clearProposal());
+                navigate('/create', { state: { auction, community, proposals } });
+              }}
+            />
+          )
         ) : (
           <ConnectButton classNames={classes.margintop28} color={ButtonColor.Pink} />
         ))}

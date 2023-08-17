@@ -276,7 +276,12 @@ const CreateRound: React.FC<{}> = () => {
             <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
               questions:{' '}
-              <a className={classes.qLink} target="_blank" href="https://discord.gg/uQnjZhZPfu">
+              <a
+                className={classes.qLink}
+                target="_blank"
+                href="https://discord.gg/uQnjZhZPfu"
+                style={{ color: '#1c85f1' }}
+              >
                 https://discord.gg/uQnjZhZPfu
               </a>
               .
@@ -295,6 +300,9 @@ const CreateRound: React.FC<{}> = () => {
                 name={'title'}
                 className={classes.input}
                 type="text"
+                style={{
+                  height: '40px',
+                }}
               />
             </div>
             <div className={classes.labelMargin}>

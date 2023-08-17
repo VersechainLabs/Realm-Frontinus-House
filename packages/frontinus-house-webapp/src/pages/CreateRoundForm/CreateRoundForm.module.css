@@ -27,6 +27,7 @@
   margin-bottom: 10px;
   border-bottom: 1px solid #272728; /* Add this line */
   padding-bottom: 10px;
+  margin-top: 4px;
   }
 .qLink {
     color: #1C85F1!important;
@@ -38,7 +39,8 @@
   letter-spacing: 0px;
   text-align: left;
   color:#F5EEE6;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  margin-top: 12px;
 }
 .MuiInputBase-input {
     color: red;
@@ -83,7 +85,7 @@
     text-align: center;
     margin-top: 30px;
     margin-right: calc(var(--bs-gutter-x) * .5);
-    margin-left: calc(var(--bs-gutter-x) * .5);
+    margin-left: calc(var(--bs-gutter-x) * .5 - 12px);
     font-family: 'Inconsolata'; 
 
 }
@@ -95,6 +97,7 @@
 }
 .labelMargin {
     margin-bottom: 10px;
+    margin-top: '14px',
 }
 
 .labelMargin input {
@@ -106,6 +109,7 @@
 
 .dateMain {
     width: 60%;
+    margin-top: -10px;
 }
 .flexDiv {
     display: flex;
