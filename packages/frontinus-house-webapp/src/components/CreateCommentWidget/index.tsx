@@ -61,6 +61,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
       setLoading(false);
     } catch (e) {
+
       setLoading(false);
       // dispatch(setAlert({ type: 'error', message: e }));
     }

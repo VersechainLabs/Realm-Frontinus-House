@@ -186,14 +186,17 @@ const DelegateDetails = () => {
         community &&
         round && (
           <>
-            <Container>
-              <DelegateHeader auction={round} community={community} />
-            </Container>
-            <div className={classes.stickyContainer}>
+            <div className={'bgTop'}>
               <Container>
-                <DelegateUtilityBar auction={round} />
+                <DelegateHeader auction={round} community={community} />
               </Container>
+              <div className={classes.stickyContainer}>
+                <Container>
+                  <DelegateUtilityBar auction={round} />
+                </Container>
+              </div>
             </div>
+
           </>
         )
       )}
