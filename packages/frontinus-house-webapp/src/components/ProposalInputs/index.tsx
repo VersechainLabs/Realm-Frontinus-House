@@ -31,8 +31,9 @@ const ProposalInputs: React.FC<{
   formData: FormDataType[];
   fundReqData: FundReqDataType;
   onDataChange: (data: Partial<ProposalFields>) => void;
+  setProposalSubmitted: (submitted: boolean) => void;
 }> = props => {
-  const { formData, fundReqData, onDataChange } = props;
+  const { formData, fundReqData, onDataChange, setProposalSubmitted } = props;
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
@@ -161,12 +162,15 @@ const ProposalInputs: React.FC<{
       setPropId(proposal.id);
       dispatch(appendProposal({ proposal }));
       dispatch(clearProposal());
+
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
       setOpenCongratsDialog(true); // Show the initial dialog
       setShowCongratsDialog(true);
       setLoading(false);
     } catch (e) {
+      const errorMessage = 'You have created proposal in this round.';
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
       setLoading(false);
     } finally {
       setLoading(false);
