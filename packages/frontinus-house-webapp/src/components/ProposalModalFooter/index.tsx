@@ -5,7 +5,6 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { AuctionStatus, auctionStatus } from '../../utils/auctionStatus';
 import { useAppSelector } from '../../hooks';
 import { useDispatch } from 'react-redux';
-import { getVotingPower } from 'frontinus-house-communities';
 import { setVotingPower } from '../../state/slices/voting';
 import WinningProposalBanner from '../WinningProposalBanner/WinningProposalBanner';
 import ProposalModalVotingModule from '../ProposalModalVotingModule';
@@ -58,25 +57,6 @@ const ProposalModalFooter: React.FC<{
   const isProposingWindow = round && auctionStatus(round) === AuctionStatus.AuctionAcceptingProps;
   const isVotingWindow = round && auctionStatus(round) === AuctionStatus.AuctionVoting;
   const isRoundOver = round && auctionStatus(round) === AuctionStatus.AuctionEnded;
-
-  useEffect(() => {
-    if (!account || !provider || !community) return;
-
-    const fetchVotes = async () => {
-      try {
-        const votes = await getVotingPower(
-          account,
-          community.contractAddress,
-          provider,
-          round!.balanceBlockTag,
-        );
-        dispatch(setVotingPower(votes));
-      } catch (e) {
-        console.log('error fetching votes: ', e);
-      }
-    };
-    fetchVotes();
-  }, [account, provider, dispatch, community, round]);
 
   const noVotesDiv = proposal && (
     <div className={classes.noVotesContainer}>

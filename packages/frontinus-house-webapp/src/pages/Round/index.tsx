@@ -54,6 +54,7 @@ const Round = () => {
   );
   const host = useAppSelector(state => state.configuration.backendHost);
   const modalActive = useAppSelector(state => state.propHouse.modalActive);
+  const userType = useAppSelector(state => state.user.type);
   const client = useRef(new ApiWrapper(host));
 
   const isRoundOver = round && auctionStatus(round) === AuctionStatus.AuctionEnded;
@@ -171,7 +172,7 @@ const Round = () => {
 
       {loadingComm || loadingRound ? (
         <LoadingIndicator height={isMobile() ? 416 : 332} />
-      ) : loadingCommFailed || roundfailedFetch ? (
+      ) : loadingCommFailed || roundfailedFetch || (round && round.hasOwnProperty('visibleStatus') && round.visibleStatus == 0 && userType !== 'Admin') ? (
         <NotFound />
       ) : (
         community &&

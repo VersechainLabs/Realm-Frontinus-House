@@ -219,7 +219,6 @@ export class AuctionsService {
       );
     }
 
-    const startTime = dto.startTime ? dto.startTime : new Date();
     if (
       dto.startTime >= dto.proposalEndTime ||
       dto.proposalEndTime >= dto.votingEndTime
