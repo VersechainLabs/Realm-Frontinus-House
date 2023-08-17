@@ -177,14 +177,17 @@ const Round = () => {
         community &&
         round && (
           <>
-            <Container>
-              <RoundHeader auction={round} community={community} />
-            </Container>
-            <div className={classes.stickyContainer}>
+            <div className={'bgTop'}>
               <Container>
-                <RoundUtilityBar auction={round} />
+                <RoundHeader auction={round} community={community} />
               </Container>
+              <div className={classes.stickyContainer}>
+                <Container>
+                  <RoundUtilityBar auction={round} />
+                </Container>
+              </div>
             </div>
+
           </>
         )
       )}

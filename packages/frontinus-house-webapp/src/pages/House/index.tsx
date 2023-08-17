@@ -238,21 +238,24 @@ const House = () => {
       ) : (
         community && (
           <>
-            <Container>
-              <HouseHeader community={community} />
-            </Container>
-
-            <div className={classes.stickyContainer}>
+            <div className={'bgTop'}>
               <Container>
-                <HouseUtilityBar
-                  numberOfRoundsPerStatus={numberOfRoundsPerStatus}
-                  currentRoundStatus={currentRoundStatus}
-                  setCurrentRoundStatus={setCurrentRoundStatus}
-                  input={input}
-                  setInput={setInput}
-                />
+                <HouseHeader community={community} />
               </Container>
+
+              <div className={classes.stickyContainer}>
+                <Container>
+                  <HouseUtilityBar
+                      numberOfRoundsPerStatus={numberOfRoundsPerStatus}
+                      currentRoundStatus={currentRoundStatus}
+                      setCurrentRoundStatus={setCurrentRoundStatus}
+                      input={input}
+                      setInput={setInput}
+                  />
+                </Container>
+              </div>
             </div>
+
 
             <div className={classes.houseContainer}>
               {(currentRoundStatus != RoundStatus.delegateSelection) &&  <Container>
