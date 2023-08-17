@@ -181,7 +181,6 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     createProposalDto: CreateProposalDto,
   ): Promise<Proposal> {
-    console.log("enter proposal create");
     verifySignPayload(createProposalDto, [
       'what',
       'tldr',
