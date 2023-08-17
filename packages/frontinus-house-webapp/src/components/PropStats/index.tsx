@@ -72,17 +72,32 @@ const PropStats: React.FC<{
               </div>
             </div>
 
-            <div className={classes.userPropItem}>
-              <div className={classes.userPropNounImg}>
-                <img src="/heads/wallet.png" alt="wallet" />
-              </div>
-              <div className={classes.userPropText}>
-                <div>{isVotingWindow ? t('votesNeeded') : t('votesFromFunding')}</div>
-                <div className={classes.userPropTextValue}>
-                  {votesNeededToWin(userProps[cardIndex])}
+            {
+              !isVotingWindow &&
+              <div className={classes.userPropItem}>
+                <div className={classes.userPropNounImg}>
+                  <img src="/heads/wallet.png" alt="wallet" />
+                </div>
+                <div className={classes.userPropText}>
+                  <div>{t('votesFromFunding')}</div>
+                  <div className={classes.userPropTextValue}>
+                    {votesNeededToWin(userProps[cardIndex])}
+                  </div>
                 </div>
               </div>
-            </div>
+            }
+            
+            {/*<div className={classes.userPropItem}>*/}
+            {/*  <div className={classes.userPropNounImg}>*/}
+            {/*    <img src="/heads/wallet.png" alt="wallet" />*/}
+            {/*  </div>*/}
+            {/*  <div className={classes.userPropText}>*/}
+            {/*    <div>{isVotingWindow ? t('votesNeeded') : t('votesFromFunding')}</div>*/}
+            {/*    <div className={classes.userPropTextValue}>*/}
+            {/*      {votesNeededToWin(userProps[cardIndex])}*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*</div>*/}
           </>
         )}
       </div>

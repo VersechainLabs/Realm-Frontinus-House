@@ -171,7 +171,7 @@ const NomineesCard: React.FC<{
               )}
             </div>
 
-            
+
               <div className={classes.timestampAndlinkContainer}>
                 <div className={clsx(classes.avatarAndPropNumber)}>
                   <div className={classes.voteCountCopy} title={detailedTime(proposal.createdDate)}>
