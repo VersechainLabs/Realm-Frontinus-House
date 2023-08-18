@@ -44,6 +44,11 @@ export class Application {
   @Field(() => String)
   description: string;
 
+  @ApiProperty()
+  @Column({ nullable: true })
+  @Field(() => String)
+  previewImage: string;
+
   // @ApiProperty({ type: () => Delegation, isArray: true })
   @ManyToOne(() => Delegation, {
     createForeignKeyConstraints: false,
