@@ -345,7 +345,10 @@ export class ApiWrapper {
   }
 
   async createProposal(proposal: Proposal) {
-    if (!this.signer) return;
+    if (!this.signer) {
+      console.log('no signer')
+      return;
+    }
     try {
       const signedPayload = await proposal.signedPayload(this.signer);
       return (await axios.post(`${this.host}/proposals`, signedPayload)).data;
@@ -354,7 +357,7 @@ export class ApiWrapper {
     }
   }
 
-  async createApplication(proposal: Proposal, isContract = false) {
+  async createApplication(proposal: Proposal) {
     if (!this.signer) return;
     try {
 
@@ -364,6 +367,7 @@ export class ApiWrapper {
           proposal.tldr,
           proposal.auctionId,
           proposal.parentType,
+          proposal.previewImage,
       )
 
       const signedPayload = await application.signedPayload(this.signer);
