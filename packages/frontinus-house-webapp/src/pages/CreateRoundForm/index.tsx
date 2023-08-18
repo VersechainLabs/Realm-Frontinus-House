@@ -422,15 +422,18 @@ const CreateRound: React.FC<{}> = () => {
               </div>
             </div>
             <div className={classes.labelMargin}>
-              <div className={classes.desc}>How many winners are there?*</div>
-              <input
-                onChange={event => saveFormNum(event.target.value)}
-                name={'numWinners'}
-                className={classes.input}
-                type="number" // Add type="number" to allow only numeric input
-                min="0"
-                value={state.numWinners}
-              />
+              <div className={classes.inputContainer}>
+                <div className={classes.desc}>How many winners are there?*</div>
+
+                <input
+                  onChange={event => saveFormNum(event.target.value)}
+                  name={'numWinners'}
+                  className={classes.input}
+                  type="number"
+                  min="0"
+                  value={state.numWinners}
+                />
+              </div>
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
