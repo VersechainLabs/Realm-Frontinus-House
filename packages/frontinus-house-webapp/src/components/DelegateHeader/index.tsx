@@ -67,7 +67,7 @@ const DelegateHeader: React.FC<{
                 alt="community profile"
                 className={classes.profImg}
               />
-              <div className={classes.commTitle}>{community.name}</div>
+              <div className={clsx('frontinusTitle',classes.commTitle)}>{community.name}</div>
             </>
           )}
         </div>
