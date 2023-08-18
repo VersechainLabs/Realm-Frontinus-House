@@ -1,20 +1,18 @@
-import { Field, Float, InputType, Int, ObjectType } from '@nestjs/graphql';
-import { ApiProperty } from '@nestjs/swagger';
-import { Community } from '../community/community.entity';
-import { Application } from '../delegation-application/application.entity';
-import { Proposal } from '../proposal/proposal.entity';
+import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { ApiProperty } from "@nestjs/swagger";
+import { Application } from "../delegation-application/application.entity";
 import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  JoinColumn,
   BeforeInsert,
   BeforeUpdate,
-  ManyToOne,
-  RelationId,
-} from 'typeorm';
-// import { AuctionBase } from './auction-base.type';
+  Column, CreateDateColumn, DeleteDateColumn,
+  Entity,
+  JoinColumn,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from "typeorm";
+import { Address } from "../types/address";
+import { Exclude, instanceToPlain } from "class-transformer";
 
 @Entity()
 @ObjectType()
@@ -29,6 +27,11 @@ export class Delegation {
   @ApiProperty()
   @Column({ default: true })
   visible: boolean;
+
+  @ApiProperty({ description: 'The signer address' })
+  @Column({ default: '' })
+  @Field(() => String)
+  address: Address;
 
   @ApiProperty()
   @Column()
@@ -57,7 +60,7 @@ export class Delegation {
   applicationCount: number;
 
   @ApiProperty()
-  @Column()
+  @CreateDateColumn()
   @Field(() => Date)
   createdDate: Date;
 
@@ -92,23 +95,17 @@ export class Delegation {
   endTime: Date;
 
   @ApiProperty()
-  @Column({ nullable: true })
+  @UpdateDateColumn({ nullable: true })
   @Field(() => Date)
   lastUpdatedDate: Date;
 
-  @BeforeInsert()
-  setCreatedDate() {
-    this.createdDate = new Date();
-  }
+  @Exclude({ toPlainOnly: true })
+  @DeleteDateColumn()
+  @Field(() => Date)
+  deletedDate?: Date;
 
-  @BeforeUpdate()
-  setUpdatedDate() {
-    this.lastUpdatedDate = new Date();
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
+  toJSON() {
+    return instanceToPlain(this);
   }
-
-  //   public isAcceptingProposals = (): boolean =>
-  //     new Date() > this.startTime && new Date() <= this.proposalEndTime;
 }
-
-// @InputType()
-// export class AuctionInput extends Auction {}
