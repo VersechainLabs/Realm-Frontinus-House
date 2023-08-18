@@ -97,7 +97,6 @@ export default function QuillEditor(props: QuillEditorProps) {
           return;
         }
 
-        quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
         props.imgArrayChange('https://ipfs.io/ipfs/'+data.ipfsHash);
         quillObj.root.classList.remove("ql-blank");
         quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
