@@ -8,19 +8,18 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import React from 'react';
-import classes from './CongratsDialog.module.css';
+import classes from './DelegationCongrats.module.css';
 import IconButton from '@mui/material/IconButton';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-interface CongratsDialogProps {
+interface DelegationCongratsProps {
   trigger: boolean;
   onClose: () => void;
 }
 
-const CongratsDialog: React.FC<CongratsDialogProps> = (props: CongratsDialogProps) => {
+const DelegationCongrats: React.FC<DelegationCongratsProps> = (props: DelegationCongratsProps) => {
   const location = useLocation();
   const activeAuction = location.state.auction;
-
   return (
     <>
       {props.trigger && (
@@ -86,7 +85,7 @@ const CongratsDialog: React.FC<CongratsDialogProps> = (props: CongratsDialogProp
                   className={classes.dialogDesc}
                   sx={{ maxHeight: '300px', overflowY: 'auto' }}
                 >
-                  Your proposal has been successfully submitted to{' '}
+                  Your application has been successfully submitted to{' '}
                   <span style={{ color: '#F5EEE6' }}>{activeAuction.title}</span>
                 </DialogContent>
                 <DialogActions>
@@ -113,10 +112,10 @@ const CongratsDialog: React.FC<CongratsDialogProps> = (props: CongratsDialogProp
                 </DialogActions>
               </div>
               {/* <DialogActions>
-                <Button className={classes.okBtn} onClick={props.onClose}>
-                  OK
-                </Button>
-              </DialogActions> */}
+                  <Button className={classes.okBtn} onClick={props.onClose}>
+                    OK
+                  </Button>
+                </DialogActions> */}
             </Dialog>
           </div>
         </div>
@@ -125,4 +124,4 @@ const CongratsDialog: React.FC<CongratsDialogProps> = (props: CongratsDialogProp
   );
 };
 
-export default CongratsDialog;
+export default DelegationCongrats;

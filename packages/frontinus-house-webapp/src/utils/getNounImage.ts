@@ -7,7 +7,7 @@ export const NounImage = {
   Computer: { src: '/heads/computer.png', alt: 'computer' },
   Cone: { src: '/heads/cone.png', alt: 'cone' },
   Crown: { src: '/heads/crown.png', alt: 'crown' },
-  Glasses: { src: '/heads/glasses.png', alt: 'glasses' },
+  Glasses: { src: 'https://cdn.metaforo.io/upload/20230706/d08103b6fcf9bb97b4db83e4ee43f221.jpg', alt: 'glasses' },
   Heart: { src: '/heads/heart.png', alt: 'heart' },
   Laptop: { src: '/heads/laptop.png', alt: 'laptop' },
   Thumbsup: { src: '/heads/thumbsup.png', alt: 'thumbsup' },

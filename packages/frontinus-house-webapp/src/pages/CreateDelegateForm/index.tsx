@@ -263,6 +263,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
                 value={state.title}
                 className={classes.input}
                 type="text"
+                style={{
+                  height: '40px',
+                }}
               />
             </div>
 

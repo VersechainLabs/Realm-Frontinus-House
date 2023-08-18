@@ -128,7 +128,8 @@
   color: var(--brand-black) !important;
 }
 .ql-editor img {
-  max-width: 100% !important;
+  max-width: 960px !important;
+  max-height: 360px !important;
 }
 .ql-editor :is(p, li) {
   font-family: 'Inconsolata' !important;

@@ -84,7 +84,7 @@ const RoundHeader: React.FC<{
       <Col>
         {auction && auction.hasOwnProperty('visibleStatus') && auction.visibleStatus == 0 && userType === 'Admin' && (<div className={classes.pendingMain}>
           <div className={classes.pendingTitle}>
-            Pending Round
+            Pending Rounds
           </div>
           <Button
               text="Approve"
@@ -113,7 +113,7 @@ const RoundHeader: React.FC<{
                 alt="community profile"
                 className={classes.profImg}
               />
-              <div className={classes.commTitle}>{community.name}</div>
+              <div className={clsx('frontinusTitle',classes.commTitle)}>{community.name}</div>
             </>
           )}
         </div>

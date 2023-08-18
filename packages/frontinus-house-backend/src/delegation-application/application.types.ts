@@ -35,6 +35,11 @@ export class CreateApplicationDto extends SignedEntity {
   @IsNumber()
   @IsPositive()
   delegationId: number;
+
+  @IsOptional()
+  @ApiProperty({})
+  @IsString()
+  previewImage?: string;
 }
 
 export enum Order {

@@ -239,8 +239,9 @@ const CreateRound: React.FC<{}> = () => {
           ),
         )
         .then(() => {
-          setIsSuccessAlertVisible(true); // 显示成功提示
           if (userType === 'Admin') {
+            setIsSuccessAlertVisible(true); // 显示成功提示
+
             dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
             navigate('/');
           } else {
@@ -274,7 +275,16 @@ const CreateRound: React.FC<{}> = () => {
             <div className={clsx('frontinusTitle', classes.title)}>Round Creation</div>
             <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
-              questions: <a className={classes.qLink} target="_blank" href="https://discord.gg/uQnjZhZPfu">https://discord.gg/uQnjZhZPfu</a>.
+              questions:{' '}
+              <a
+                className={classes.qLink}
+                target="_blank"
+                href="https://discord.gg/uQnjZhZPfu"
+                style={{ color: '#1c85f1' }}
+              >
+                https://discord.gg/uQnjZhZPfu
+              </a>
+              .
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
@@ -290,6 +300,9 @@ const CreateRound: React.FC<{}> = () => {
                 name={'title'}
                 className={classes.input}
                 type="text"
+                style={{
+                  height: '40px',
+                }}
               />
             </div>
             <div className={classes.labelMargin}>
@@ -409,15 +422,18 @@ const CreateRound: React.FC<{}> = () => {
               </div>
             </div>
             <div className={classes.labelMargin}>
-              <div className={classes.desc}>How many winners are there?*</div>
-              <input
-                onChange={event => saveFormNum(event.target.value)}
-                name={'numWinners'}
-                className={classes.input}
-                type="number" // Add type="number" to allow only numeric input
-                min="0"
-                value={state.numWinners}
-              />
+              <div className={classes.inputContainer}>
+                <div className={classes.desc}>How many winners are there?*</div>
+
+                <input
+                  onChange={event => saveFormNum(event.target.value)}
+                  name={'numWinners'}
+                  className={classes.input}
+                  type="number"
+                  min="0"
+                  value={state.numWinners}
+                />
+              </div>
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>

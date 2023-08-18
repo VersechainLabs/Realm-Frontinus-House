@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuctionsService } from '../auction/auctions.service';
 import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
-import { canSubmitProposals } from '../utils';
+import { canSubmitProposals, updateValidFields } from '../utils';
 import {
   ApplicationCreateStatus,
   AuctionVisibleStatus,
@@ -78,7 +78,6 @@ export class ProposalsController {
 
     return this.checkCanCreateProposal(foundAuction, address);
   }
-
 
   @Get(':id')
   @ApiOperation({ summary: 'Find proposal by ID' })
@@ -154,13 +153,8 @@ export class ProposalsController {
     @Body(ECDSASignedPayloadValidationPipe)
     updateProposalDto: UpdateProposalDto,
   ): Promise<Proposal> {
-    verifySignPayload(updateProposalDto, [
-      'what',
-      'tldr',
-      'title',
-      'parentAuctionId',
-      'id',
-    ]);
+    const updateKeys = ['what', 'tldr', 'title', 'previewImage'];
+    verifySignPayload(updateProposalDto, ['id', ...updateKeys]);
 
     const foundProposal = await this.proposalsService.findOne(
       updateProposalDto.id,
@@ -171,7 +165,7 @@ export class ProposalsController {
         HttpStatus.NOT_FOUND,
       );
 
-    if (!canSubmitProposals(await foundProposal.auction))
+    if (!canSubmitProposals(foundProposal.auction))
       throw new HttpException(
         'You cannot edit proposals for this round at this time',
         HttpStatus.BAD_REQUEST,
@@ -183,13 +177,7 @@ export class ProposalsController {
         HttpStatus.BAD_REQUEST,
       );
 
-    foundProposal.address = updateProposalDto.address;
-    foundProposal.what = updateProposalDto.what;
-    foundProposal.tldr = updateProposalDto.tldr;
-    foundProposal.title = updateProposalDto.title;
-    foundProposal.reqAmount = updateProposalDto.reqAmount
-      ? updateProposalDto.reqAmount
-      : null;
+    updateValidFields(foundProposal, updateProposalDto, updateKeys);
     return this.proposalsService.store(foundProposal);
   }
 
@@ -244,7 +232,6 @@ export class ProposalsController {
 
     //   proposal.previewImage = cleanImageUrl;
     // }
-
 
     return this.proposalsService.store(proposal);
   }
@@ -326,16 +313,4 @@ export class ProposalsController {
 
     foundProposal.voteState = VoteStates.OK;
   }
-}
-
-function updateValidFields(
-  originObj: any,
-  updateObj: any,
-  updateKeys: string[],
-) {
-  const keys = Object.keys(updateObj).filter((key) => updateKeys.includes(key));
-  Object.assign(
-    originObj,
-    ...keys.map((key) => ({ [key]: updateObj[key] })),
-  );
 }

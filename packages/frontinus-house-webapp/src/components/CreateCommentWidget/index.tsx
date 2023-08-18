@@ -14,7 +14,9 @@ type CreateCommentWidgetProps = {
   onCommentCreated: (comment: StoredComment) => void;
 }
 
-
+const handleImgArrayChange = (img : string) => {
+  return false;
+};
 export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
   const dispatch = useDispatch();
 
@@ -61,6 +63,14 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
       setLoading(false);
     } catch (e) {
+      if ( typeof(e) == 'string' ){
+        dispatch(
+            setAlert({
+              type: 'error',
+              message: e,
+            }),
+        );
+      }
       setLoading(false);
       // dispatch(setAlert({ type: 'error', message: e }));
     }
@@ -71,6 +81,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
     <QuillEditor
       widgetKey={'Comment-' + props.proposalId}
       onChange={handleChange}
+      imgArrayChange={handleImgArrayChange}
       title='Create Comment'
       loading={loading}
       minHeightStr={'100px'}
