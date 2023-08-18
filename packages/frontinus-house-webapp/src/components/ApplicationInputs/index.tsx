@@ -153,12 +153,20 @@ const ApplicationInputs: React.FC<{
       setShowDelegationCongrats(true);
       setLoading(false);
     } catch (e) {
-      dispatch(
-        setAlert({
-          type: 'error',
-          message: e,
-        }),
-      );
+
+      // console.log(typeof(e))
+
+      if ( typeof(e) == 'string' ){
+        dispatch(
+          setAlert({
+            type: 'error',
+            message: e,
+          }),
+        );
+      }
+
+      setLoading(false);
+
     }
   };
 
