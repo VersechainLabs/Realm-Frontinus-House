@@ -81,7 +81,7 @@
     text-align: center;
     margin-top: 30px;
     margin-right: calc(var(--bs-gutter-x) * .5);
-    margin-left: calc(var(--bs-gutter-x) * .5);
+    margin-left: calc(var(--bs-gutter-x) * .5 - 12px);
     font-family: 'Inconsolata'; 
 
 }
@@ -114,12 +114,15 @@
     width: 4px;
     background: #272728;
     margin-left: 6px;
+
 }
 .xian1 {
     height: 21px;
+    margin-top: -24px; 
 }
 .xian2 {
     height: 116px;
+    margin-top: -24px; 
 }
 .xian3 {
     height: 116px;
@@ -140,6 +143,7 @@
     width: 16px;
     border-radius: 8px;
     background: var(--qiu-color-default);
+    
 }
 .qiuDesc.filled {
     color: #D0A059;
@@ -150,6 +154,7 @@
     line-height: 16px;
     margin-left: 8px;
     font-weight: bold;
+    font-size: 14px;
 }
 .paddingTop {
     padding-top: 65px;

@@ -95,7 +95,7 @@ const filterInfRoundProps = (
 };
 
 export const delegateSlice = createSlice({
-  name: 'propHouse',
+  name: 'delegate',
   initialState,
   reducers: {
     setActiveRound: (state, action: PayloadAction<any | undefined>) => {

@@ -46,8 +46,8 @@ const Application = () => {
 
   const handleBackClick = () => {
     if (!proposal || !proposal.delegationId ) return;
-    // navigate(buildRoundPath(community, round)+`/${round.id}`, { replace: false });
-    navigate(`/delegateDetails/` + proposal.delegationId , { replace: false });
+    // navigate(`/delegateDetails/` + proposal.delegationId );
+    window.location.replace(`/delegateDetails/` + proposal.delegationId )
   };
 
   useEffect(() => {

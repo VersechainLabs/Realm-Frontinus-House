@@ -10,10 +10,13 @@ import RoundModuleCard from '../RoundModuleCard';
 import { isInfAuction } from '../../utils/auctionType';
 import dayjs from 'dayjs';
 import ConnectButton from '../ConnectButton';
-import { useAccount } from 'wagmi';
+import { useAccount, useWalletClient } from 'wagmi';
 import { useAppSelector } from '../../hooks';
-import TruncateThousands from "../TruncateThousands";
-import {countDecimals} from "../../utils/countDecimals";
+import TruncateThousands from '../TruncateThousands';
+import { countDecimals } from '../../utils/countDecimals';
+import React, { useEffect, useRef, useState } from 'react';
+import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
+import { ProposalCreateStatusMap } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
 
 const AcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
@@ -22,12 +25,37 @@ const AcceptingPropsModule: React.FC<{
   const { auction, community } = props;
 
   const proposals = useAppSelector(state => state.propHouse.activeProposals);
+  const { data: walletClient } = useWalletClient();
+  const [proposalSubmitted, setProposalSubmitted] = useState(false);
+  const backendHost = useAppSelector(state => state.configuration.backendHost);
 
   const isProposingWindow = auctionStatus(auction) === AuctionStatus.AuctionAcceptingProps;
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { address: account } = useAccount();
   const { t } = useTranslation();
+  const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
+  const [proposalStatus, setProposalStatus] = useState(ProposalCreateStatusMap.OK);
+
+  useEffect(() => {
+    backendClient.current = new ApiWrapper(backendHost, walletClient);
+  }, [walletClient, backendHost]);
+
+  useEffect(() => {
+    // auction.id
+    setProposalStatus(false);
+    if (account && auction) {
+      fetchProposalStatus();
+    }
+  }, [account, auction]);
+
+  const fetchProposalStatus = async () => {
+    const raw = await backendClient.current.getProposalApplied(auction.id);
+
+    console.log('getProposalApplied', raw);
+
+    setProposalStatus(raw);
+  };
 
   const content = (
     <>
@@ -36,17 +64,15 @@ const AcceptingPropsModule: React.FC<{
         <div className={classes.bulletItem}>
           <hr className={classes.bullet} />
           <div className={classes.customParagraph}>
+            <li>Anyone can submit a proposal to get funded.</li>
+            <li>Owners of the Realms NFT will vote on the best proposals.</li>
             <li>
-              Anyone can submit a proposal to get funded.
-            </li>
-            <li>
-              Owners of the Realms NFT will vote on the best proposals.
-            </li>
-            <li>
-              The top {auction.numWinners} proposal will get funded  <TruncateThousands
+              The top {auction.numWinners} proposal will get funded{' '}
+              <TruncateThousands
                 amount={auction.fundingAmount}
                 decimals={countDecimals(auction.fundingAmount) === 3 ? 3 : 2}
-            />{' '}{auction.currencyType} each
+              />{' '}
+              {auction.currencyType} each
             </li>
           </div>
         </div>
@@ -64,22 +90,26 @@ const AcceptingPropsModule: React.FC<{
 
       {isProposingWindow &&
         (account ? (
-          <Button
-            text={t('Create your proposal')}
-            bgColor={ButtonColor.Green}
-            onClick={() => {
-              dispatch(clearProposal());
-              navigate('/create', { state: { auction, community, proposals } });
-            }}
-          />
+          !proposalStatus.canCreate ? (
+            <Button text={proposalStatus.message} bgColor={ButtonColor.Gray} />
+          ) : (
+            <Button
+              classNames={classes.margintop28}
+              text={'Create your proposal'}
+              bgColor={ButtonColor.Green}
+              onClick={() => {
+                dispatch(clearProposal());
+                navigate('/create', { state: { auction, community, proposals } });
+              }}
+            />
+          )
         ) : (
-          <ConnectButton color={ButtonColor.Pink} />
+          <ConnectButton classNames={classes.margintop28} color={ButtonColor.Pink} />
         ))}
     </>
   );
 
   return (
-    
     <RoundModuleCard
       title={t('acceptingProposals')}
       subtitle={
@@ -93,7 +123,6 @@ const AcceptingPropsModule: React.FC<{
       content={content}
       type="proposing"
     />
-    
   );
 };
 
