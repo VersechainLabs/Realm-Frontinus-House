@@ -131,9 +131,10 @@ const ProposalInputs: React.FC<{
       const titleFieldValue = formData[0].fieldValue;
       const tldrFieldValue = formData[1].fieldValue;
 
-      if (titleFieldValue.trim().length === 0
-          || tldrFieldValue.trim().length === 0
-          || content.trim().length === 0
+      if (
+        titleFieldValue.trim().length === 0 ||
+        tldrFieldValue.trim().length === 0 ||
+        content.trim().length === 0
       ) {
         const errorMessage = 'You must complete all the fields before submit!';
         console.log('Error message to be dispatched:', errorMessage);
@@ -146,7 +147,6 @@ const ProposalInputs: React.FC<{
       if (!account) {
         return;
       }
-
 
       //check error
       if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
@@ -184,8 +184,6 @@ const ProposalInputs: React.FC<{
       setShowCongratsDialog(true);
       setLoading(false);
     } catch (e) {
-      const errorMessage = 'You have created proposal in this round.';
-      dispatch(setAlert({ type: 'error', message: errorMessage }));
       setLoading(false);
     } finally {
       setLoading(false);
