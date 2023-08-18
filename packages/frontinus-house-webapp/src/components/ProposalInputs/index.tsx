@@ -25,6 +25,7 @@ import { clearProposal } from '../../state/slices/editor';
 import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { setAlert } from '../../state/slices/alert';
+import { matchImg } from "../../utils/matchImg";
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
@@ -86,6 +87,7 @@ const ProposalInputs: React.FC<{
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
   const [content, setContent] = useState('');
+  const [imgArray, setImgArray] = useState(['']);
   const [loading, setLoading] = useState(false);
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
   const dispatch = useAppDispatch();
@@ -107,6 +109,13 @@ const ProposalInputs: React.FC<{
     } else {
       setContent(htmlContent);
     }
+  };
+  const handleImgArrayChange = (img : string) => {
+
+    let ary = [...imgArray];
+    ary.push(img);
+    setImgArray(ary)
+
   };
 
   const submit = async () => {
@@ -145,12 +154,17 @@ const ProposalInputs: React.FC<{
 
       let newProp: Proposal | InfiniteAuctionProposal;
 
+      let imgUrl = matchImg(imgArray, content);
+
       newProp = new Proposal(
         formData[0].fieldValue,
         content,
         formData[1].fieldValue,
         activeAuction.id,
+        'auction',
+        imgUrl,
       );
+
       const proposal = await client.current.createProposal(newProp);
 
       setPropId(proposal.id);
@@ -218,6 +232,7 @@ const ProposalInputs: React.FC<{
                 widgetKey={'Comment-proposalId'}
                 minHeightStr={'400px'}
                 onChange={handleChange}
+                imgArrayChange={handleImgArrayChange}
                 title="Create Comment"
                 loading={loading}
                 onQuillInit={q => setQuill(q)}

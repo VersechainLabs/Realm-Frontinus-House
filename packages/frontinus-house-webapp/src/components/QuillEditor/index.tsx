@@ -20,7 +20,8 @@ type QuillEditorProps = {
   onChange: (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => void;
   title: string | undefined;
   loading: boolean;
-  minHeightStr:string
+  minHeightStr:string;
+  imgArrayChange: (img : string) => void;
 
   // 用于在上层操作 quill 的内容，通常是提交之后将 quill 的内容清空时使用
   onQuillInit?: (quill: Quill) => void;
@@ -95,9 +96,10 @@ export default function QuillEditor(props: QuillEditorProps) {
           return;
         }
 
-
-
         quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
+
+        props.imgArrayChange('https://ipfs.io/ipfs/'+data.ipfsHash);
+
         quillObj.setSelection(range.index + 1);
         setShowLoading(false);
         quillObj.enable();

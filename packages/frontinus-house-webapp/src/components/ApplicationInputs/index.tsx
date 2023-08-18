@@ -23,6 +23,7 @@ import {buildRoundPath} from "../../utils/buildRoundPath";
 import {
   setAlert
 } from '../../state/slices/alert';
+import {matchImg} from "../../utils/matchImg";
 
 
 const ApplicationInputs: React.FC<{
@@ -73,7 +74,7 @@ const ApplicationInputs: React.FC<{
     />
   );
 
-
+  const [imgArray, setImgArray] = useState(['']);
   const navigate = useNavigate();
     const location = useLocation();
     const activeAuction = location.state.auction;
@@ -101,6 +102,14 @@ const ApplicationInputs: React.FC<{
     }
   };
 
+  const handleImgArrayChange = (img : string) => {
+
+    let ary = [...imgArray];
+    ary.push(img);
+    setImgArray(ary)
+
+  };
+
   const submit = async () => {
     try {
 
@@ -125,8 +134,15 @@ const ApplicationInputs: React.FC<{
 
     let newProp: Proposal | InfiniteAuctionProposal;
 
-    newProp = new Proposal(formData[0].fieldValue, content, formData[1].fieldValue, activeAuction.id);
-
+    let imgUrl = matchImg(imgArray, content);
+    newProp = new Proposal(
+        formData[0].fieldValue,
+        content,
+        formData[1].fieldValue,
+        activeAuction.id,
+        'auction',
+        imgUrl,
+    );
 
       const proposal = await client.current.createApplication(newProp);
 
@@ -200,6 +216,7 @@ const ApplicationInputs: React.FC<{
                 widgetKey={'Comment-proposalId'}
                 minHeightStr={'400px'}
                 onChange={handleChange}
+                imgArrayChange={handleImgArrayChange}
                 title='Create Comment'
                 loading={loading}
                 onQuillInit={(q) => setQuill(q)}
