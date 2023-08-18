@@ -16,7 +16,7 @@ import { DelegationState } from '../delegation/delegation.types';
 import { findByState } from '../delegation/delegation.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
-import { VoteStates } from '@nouns/frontinus-house-wrapper';
+import { VoteStates, VoteStatesClass } from "@nouns/frontinus-house-wrapper";
 import { Delegation } from '../delegation/delegation.entity';
 import { Delegate } from '../delegate/delegate.entity';
 
@@ -220,7 +220,7 @@ export class VotesService {
     auction: Auction,
     address: string,
     checkVotingPower = true,
-  ): Promise<object> {
+  ): Promise<VoteStatesClass> {
     const currentTime = new Date();
     if (
       currentTime < auction.proposalEndTime ||
@@ -232,7 +232,7 @@ export class VotesService {
     // Check if user has voted for this round, Protect against casting same vote twice
     const sameAuctionVote = await this.findBy(auction.id, address);
     if (sameAuctionVote) {
-      return VoteStates.DUPLICATE;
+      return VoteStates.VOTED_ANOTHER;
     }
 
     if (checkVotingPower) {

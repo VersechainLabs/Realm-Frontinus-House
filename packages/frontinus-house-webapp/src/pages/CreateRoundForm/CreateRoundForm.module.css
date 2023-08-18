@@ -27,7 +27,11 @@
   margin-bottom: 10px;
   border-bottom: 1px solid #272728; /* Add this line */
   padding-bottom: 10px;
+  margin-top: 4px;
   }
+.qLink {
+    color: #1C85F1!important;
+}
 .desc {
   font-size: 16px;
   font-weight: 400;
@@ -35,13 +39,15 @@
   letter-spacing: 0px;
   text-align: left;
   color:#F5EEE6;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
+  margin-top: 12px;
 }
 .MuiInputBase-input {
     color: red;
 }
 .input {
     display: block;
+    /* height: 40px; */
     width: 100%;
     padding: 0.375rem 0.75rem;
     font-size: 1rem;
@@ -80,7 +86,7 @@
     text-align: center;
     margin-top: 30px;
     margin-right: calc(var(--bs-gutter-x) * .5);
-    margin-left: calc(var(--bs-gutter-x) * .5);
+    margin-left: calc(var(--bs-gutter-x) * .5 - 12px);
     font-family: 'Inconsolata'; 
 
 }
@@ -92,10 +98,12 @@
 }
 .labelMargin {
     margin-bottom: 10px;
+    margin-top: '14px',
 }
 
 .labelMargin input {
     color: #F5EEE6;
+    
 }
 .labelMargin svg {
     color: #D0A059;
@@ -103,6 +111,7 @@
 
 .dateMain {
     width: 60%;
+    margin-top: -10px;
 }
 .flexDiv {
     display: flex;
@@ -135,6 +144,7 @@
     width: 16px;
     border-radius: 8px;
     background: var(--qiu-color-default);
+    margin-top: -2px;
 }
 .qiuDesc.filled {
     color: #D0A059;
@@ -145,6 +155,8 @@
     line-height: 16px;
     margin-left: 8px;
     font-weight: bold;
+    font-size: 14p;
+    margin-top: -2px;
 }
 .paddingTop {
     padding-top: 42px;
@@ -158,4 +170,8 @@
     color: #676b6d;  
     text-align: right;
     margin-top: -23px;
+  }
+
+  .inputContainer {
+    margin-top: -10px;
   }

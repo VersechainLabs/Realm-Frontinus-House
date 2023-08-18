@@ -40,8 +40,8 @@ const CreateRound: React.FC<{}> = () => {
   const userType = useAppSelector(state => state.user.type);
   const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
 
-  const MAX_TITLE_LENGTH = 50;
-  const MAX_DESCRIPTION_LENGTH = 1000;
+  const MAX_TITLE_LENGTH = 100;
+  const MAX_DESCRIPTION_LENGTH = 100000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const dispatch = useDispatch();
@@ -143,36 +143,25 @@ const CreateRound: React.FC<{}> = () => {
     console.log(state);
   };
   const saveFormNum = (value: string) => {
-
-    let newValue = value.replace(/-/g, "");
+    let newValue = value.replace(/-/g, '');
 
     // @ts-ignore
     setState(prevState => ({
       ...prevState,
-      numWinners:
-          newValue ?
-              parseInt(value.replace(/-/g, ""))
-              : ''
-      ,
+      numWinners: newValue ? parseInt(value.replace(/-/g, '')) : '',
     }));
-
   };
   const saveFormAmount = (value: string) => {
     // state.fundingAmount = parseInt(value);
     // console.log(state);
 
-    let newValue = value.replace(/-/g, "");
+    let newValue = value.replace(/-/g, '');
 
     // @ts-ignore
     setState(prevState => ({
       ...prevState,
-      fundingAmount:
-      newValue ?
-          Number(value.replace(/-/g, ""))
-          : ''
-        ,
+      fundingAmount: newValue ? Number(value.replace(/-/g, '')) : '',
     }));
-
   };
 
   const hideAlert = () => {
@@ -230,10 +219,10 @@ const CreateRound: React.FC<{}> = () => {
       return;
     }
 
-    if (userType === 'Admin') {
-      setIsButtonDisabled(true);
-      try {
-        const round = await client.current.createAuction(
+    setIsButtonDisabled(true);
+    try {
+      const round = await client.current
+        .createAuction(
           new TimedAuction(
             true,
             state.title,
@@ -248,21 +237,28 @@ const CreateRound: React.FC<{}> = () => {
             state.balanceBlockTag,
             state.description,
           ),
-        );
-        setIsSuccessAlertVisible(true); // 显示成功提示
-        dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-        navigate('/');
-        console.log('Success：', round);
-      } catch (e) {
-        setFlag(false);
-        setIsButtonDisabled(false);
-        console.log('Failed：', e);
-      }
-      return;
-    }
-    setIsButtonDisabled(false);
-    setFlag(true);
+        )
+        .then(() => {
+          if (userType === 'Admin') {
+            setIsSuccessAlertVisible(true); // 显示成功提示
 
+            dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
+            navigate('/');
+          } else {
+            setIsButtonDisabled(false);
+            setFlag(true);
+          }
+        })
+        .catch(e => {
+          setFlag(false);
+          setIsButtonDisabled(false);
+          console.log('Failed：', e);
+        });
+      console.log('Success：', round);
+    } catch (e) {
+      setIsButtonDisabled(false);
+      console.log('Failed：', e);
+    }
     // Proceed with the form submission logic
   };
 
@@ -279,7 +275,16 @@ const CreateRound: React.FC<{}> = () => {
             <div className={clsx('frontinusTitle', classes.title)}>Round Creation</div>
             <div className={classes.desc1}>
               Use this form to create a new round. Please visit our Discord if you have any
-              questions: https://discord.gg/uQnjZhZPfu.
+              questions:{' '}
+              <a
+                className={classes.qLink}
+                target="_blank"
+                href="https://discord.gg/uQnjZhZPfu"
+                style={{ color: '#1c85f1' }}
+              >
+                https://discord.gg/uQnjZhZPfu
+              </a>
+              .
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>
@@ -295,6 +300,9 @@ const CreateRound: React.FC<{}> = () => {
                 name={'title'}
                 className={classes.input}
                 type="text"
+                style={{
+                  height: '40px',
+                }}
               />
             </div>
             <div className={classes.labelMargin}>
@@ -414,15 +422,18 @@ const CreateRound: React.FC<{}> = () => {
               </div>
             </div>
             <div className={classes.labelMargin}>
-              <div className={classes.desc}>How many winners are there?*</div>
-              <input
-                onChange={event => saveFormNum(event.target.value)}
-                name={'numWinners'}
-                className={classes.input}
-                type="number" // Add type="number" to allow only numeric input
-                min="0"
-                value={state.numWinners}
+              <div className={classes.inputContainer}>
+                <div className={classes.desc}>How many winners are there?*</div>
+
+                <input
+                  onChange={event => saveFormNum(event.target.value)}
+                  name={'numWinners'}
+                  className={classes.input}
+                  type="number"
+                  min="0"
+                  value={state.numWinners}
                 />
+              </div>
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>

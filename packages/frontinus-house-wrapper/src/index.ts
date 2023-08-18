@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  Application,
+  Application, ApproveRound,
   Comment,
   Community,
   CommunityWithAuctions, DeleteApplication,
@@ -47,6 +47,16 @@ export class ApiWrapper {
     }
   }
 
+  async approveAuction(ApproveData: ApproveRound): Promise<StoredTimedAuction[]> {
+    if (!this.signer) throw 'Please sign';
+    try {
+      const signedPayload = await ApproveData.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/auctions/approve`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async createDelegateAuction(auction: TimedDelegate): Promise<any[]> {
     if (!this.signer) throw 'Please sign';
     try {
@@ -82,6 +92,18 @@ export class ApiWrapper {
     try {
       const owner = (await this.signer.getAddresses())[0];
       const raw = (await axios.get(`${this.host}/applications/canCreate?delegationId=${id}&address=${owner}`)).data;
+      return raw;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+  async getProposalApplied(id: number ): Promise<any> {
+    if (!this.signer) return;
+
+    try {
+      const owner = (await this.signer.getAddresses())[0];
+      const raw = (await axios.get(`${this.host}/proposals/canCreate?auctionId=${id}&address=${owner}`)).data;
       return raw;
     } catch (e: any) {
       throw e.response.data.message;

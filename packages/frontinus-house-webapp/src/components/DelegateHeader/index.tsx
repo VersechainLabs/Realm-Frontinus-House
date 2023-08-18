@@ -20,6 +20,10 @@ const DelegateHeader: React.FC<{
   const { community, auction } = props;
   const navigate = useNavigate();
 
+  const md = (auction?.description as any).replace(/\n/g, "<br />");
+
+
+
   const roundDescription = (
     <>
       {/* support both markdown & html links in community's description.  */}
@@ -36,7 +40,7 @@ const DelegateHeader: React.FC<{
           },
         }}
       >
-        {sanitizeHtml(auction?.description as any, {
+        {sanitizeHtml(md, {
           allowedAttributes: {
             a: ['href', 'target'],
           },
@@ -63,7 +67,7 @@ const DelegateHeader: React.FC<{
                 alt="community profile"
                 className={classes.profImg}
               />
-              <div className={classes.commTitle}>{community.name}</div>
+              <div className={clsx('frontinusTitle',classes.commTitle)}>{community.name}</div>
             </>
           )}
         </div>

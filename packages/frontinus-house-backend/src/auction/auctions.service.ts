@@ -201,7 +201,7 @@ export class AuctionsService {
   }
 
   async remove(id: number): Promise<void> {
-    await this.auctionsRepository.delete(id);
+    await this.auctionsRepository.softDelete(id);
   }
 
   async store(auction: Auction): Promise<Auction> {
@@ -219,7 +219,6 @@ export class AuctionsService {
       );
     }
 
-    const startTime = dto.startTime ? dto.startTime : new Date();
     if (
       dto.startTime >= dto.proposalEndTime ||
       dto.proposalEndTime >= dto.votingEndTime

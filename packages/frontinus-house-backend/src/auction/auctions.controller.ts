@@ -77,7 +77,7 @@ export class AuctionsController {
   async approveAuction(
     @Body(SignedPayloadValidationPipe) dto: ApproveAuctionDto,
   ): Promise<Auction> {
-    verifySignPayload(dto, ['id']);
+    verifySignPayload(dto, ['id', 'visibleStatus']);
     await this.adminService.ensureIsAdmin(dto.address);
 
     const foundAuction = await this.auctionsService.findOne(dto.id);
@@ -85,8 +85,17 @@ export class AuctionsController {
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
     }
 
-    foundAuction.visibleStatus = AuctionVisibleStatus.NORMAL;
-    return await this.auctionsService.store(foundAuction);
+    if (dto.visibleStatus === foundAuction.visibleStatus) {
+      return foundAuction;
+    } else {
+      foundAuction.visibleStatus = dto.visibleStatus;
+      const newAuction = await this.auctionsService.store(foundAuction);
+      if (dto.visibleStatus === AuctionVisibleStatus.REJECT) {
+        // delete reject auction
+        await this.auctionsService.remove(foundAuction.id);
+      }
+      return newAuction;
+    }
   }
 
   @Get(':id')
@@ -136,7 +145,9 @@ export class AuctionsController {
   @ApiOkResponse({
     type: Auction,
   })
-  async findWithIDForCommunity(@Param('id', ParseIntPipe) id: number): Promise<Auction> {
+  async findWithIDForCommunity(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Auction> {
     const auction = await this.auctionsService.findWithIDForCommunity(id);
     if (!auction)
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);

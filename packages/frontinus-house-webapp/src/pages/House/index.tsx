@@ -10,7 +10,7 @@ import { Col, Container, Row } from 'react-bootstrap';
 import RoundCard from '../../components/RoundCard';
 import DelegateCard from '../../components/DelegateCard';
 import HouseUtilityBar from '../../components/HouseUtilityBar';
-import { AuctionStatus, auctionStatus } from '../../utils/auctionStatus';
+import { AuctionStatus, auctionStatus,auctionPendingStatus } from '../../utils/auctionStatus';
 import { StoredAuctionBase } from '@nouns/frontinus-house-wrapper/dist/builders';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import ErrorMessageCard from '../../components/ErrorMessageCard';
@@ -114,8 +114,15 @@ const House = () => {
               auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
               auctionStatus(r) === AuctionStatus.AuctionVoting,
       ).length,
-      rounds.length,
-      delegates.length
+      rounds.filter(
+          r =>
+              auctionPendingStatus(r) === AuctionStatus.Normal,
+      ).length,
+      delegates.length,
+      rounds.filter(
+          r =>
+              auctionPendingStatus(r) === AuctionStatus.Pending,
+      ).length
     ]);
 
     // if there are no active rounds, default filter by all rounds
@@ -175,8 +182,18 @@ const House = () => {
       (input.length === 0
         ? // if a filter has been clicked that isn't "All rounds" (default)
           currentRoundStatus !== RoundStatus.Active
-          ? // filter by all rounds
-            setRoundsOnDisplay(rounds)
+          ?
+              currentRoundStatus === RoundStatus.Pending
+                  ? setRoundsOnDisplay(rounds.filter(
+                  r =>
+                      auctionPendingStatus(r) === AuctionStatus.Pending,
+                  ))
+                  :
+              // filter by all rounds
+            setRoundsOnDisplay(rounds.filter(
+                r =>
+                    auctionPendingStatus(r) === AuctionStatus.Normal,
+            ))
           : // filter by active rounds (proposing & voting)
             setRoundsOnDisplay(
               rounds.filter(
@@ -187,7 +204,10 @@ const House = () => {
             )
         : // filter by search input that matches round title or description
           setRoundsOnDisplay(
-            rounds.filter(round => {
+            rounds.filter(
+                r =>
+                    auctionPendingStatus(r) === AuctionStatus.Normal,
+            ).filter(round => {
               const query = input.toLowerCase();
               return (
                 round.title.toLowerCase().indexOf(query) >= 0 ||
@@ -218,21 +238,24 @@ const House = () => {
       ) : (
         community && (
           <>
-            <Container>
-              <HouseHeader community={community} />
-            </Container>
-
-            <div className={classes.stickyContainer}>
+            <div className={'bgTop'}>
               <Container>
-                <HouseUtilityBar
-                  numberOfRoundsPerStatus={numberOfRoundsPerStatus}
-                  currentRoundStatus={currentRoundStatus}
-                  setCurrentRoundStatus={setCurrentRoundStatus}
-                  input={input}
-                  setInput={setInput}
-                />
+                <HouseHeader community={community} />
               </Container>
+
+              <div className={classes.stickyContainer}>
+                <Container>
+                  <HouseUtilityBar
+                      numberOfRoundsPerStatus={numberOfRoundsPerStatus}
+                      currentRoundStatus={currentRoundStatus}
+                      setCurrentRoundStatus={setCurrentRoundStatus}
+                      input={input}
+                      setInput={setInput}
+                  />
+                </Container>
+              </div>
             </div>
+
 
             <div className={classes.houseContainer}>
               {(currentRoundStatus != RoundStatus.delegateSelection) &&  <Container>

@@ -18,6 +18,7 @@ import { Address } from '../types/address';
 import { ProposalParent } from './proposal.types';
 import { Float, Int } from '@nestjs/graphql/dist/scalars';
 import { IsEthereumAddress } from 'class-validator';
+import { VoteStatesClass } from '@nouns/frontinus-house-wrapper';
 
 @Entity('proposal')
 @ObjectType()
@@ -27,6 +28,7 @@ export class Proposal {
   @Field(() => Int)
   id: number;
 
+  @ApiProperty()
   @Column({ default: true })
   visible: boolean;
 
@@ -39,6 +41,11 @@ export class Proposal {
   @Column({ type: 'text' })
   @Field(() => String)
   what: string;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  @Field(() => String)
+  previewImage: string;
 
   @ApiProperty()
   @Column({ type: 'text' })
@@ -106,9 +113,11 @@ export class Proposal {
     this.lastUpdatedDate = new Date();
   }
 
+  @ApiProperty()
   @DeleteDateColumn()
   deletedAt: Date;
 
+  @ApiProperty()
   @Column({ nullable: true, type: 'numeric' })
   @Field(() => Float, {
     description:
@@ -117,11 +126,12 @@ export class Proposal {
   reqAmount: number;
 
   // @Deprecated. Previously used to distinguish whether it was an infinite auction, the infinite auction has now been removed, so this value would always be "auction".
+  @ApiProperty()
   @Column({ default: 'auction' as ProposalParent })
   @Field(() => String)
   parentType: ProposalParent;
 
-  @ApiProperty({ type: () => Auction })
+  // @ApiProperty({ type: () => Auction })
   @ManyToOne(() => Auction, (auction) => auction.proposals, {
     createForeignKeyConstraints: false,
   })
@@ -129,26 +139,28 @@ export class Proposal {
   @Field(() => Auction)
   auction: Auction;
 
-  @ApiProperty({
-    description:
-      'Indicates whether the user is allowed to vote. If true, the user can vote; if false, voting is not allowed.',
-    type: Boolean,
-  })
+  // @ApiProperty({
+  //   description:
+  //     'Indicates whether the user is allowed to vote. If true, the user can vote; if false, voting is not allowed.',
+  //   type: Boolean,
+  // })
   canVote: boolean;
-  @ApiProperty({
-    description:
-      'Displays the reason why the user is not allowed to vote when canVote is false. This property will be a string describing the reason, such as "You have already voted." or "Voting has been closed." If canVote is true, this property can be set to null or an empty string.',
-    type: String,
-    nullable: true,
-  })
-  disallowedVoteReason: string | null;
-  @ApiProperty({
-    description:
-      'Indicates how the frontend should react based on this code.',
-    type: Object,
-  })
-  voteState: any;
 
+  // @ApiProperty({
+  //   description:
+  //     'Displays the reason why the user is not allowed to vote when canVote is false. This property will be a string describing the reason, such as "You have already voted." or "Voting has been closed." If canVote is true, this property can be set to null or an empty string.',
+  //   type: String,
+  //   nullable: true,
+  // })
+  disallowedVoteReason: string | null;
+
+  @ApiProperty({
+    description: 'Indicates how the frontend should react based on this code.',
+    type: VoteStatesClass,
+  })
+  voteState: VoteStatesClass;
+
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
   toJSON() {
     if (this.votes && this.votes.length > 0) {
       this.votes = convertVoteListToDelegateVoteList(this.votes);

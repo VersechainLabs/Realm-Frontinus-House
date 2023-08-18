@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { isTimedAuction } from '../../utils/auctionType';
 import RoundModuleCard from '../RoundModuleCard';
 import classes from './RoundOverModule.module.css';
+import VotesCard from "../VotesCard";
 
 export interface RoundOverModuleProps {
   totalVotes: number | undefined;
@@ -22,7 +23,7 @@ const RoundOverModule: React.FC<RoundOverModuleProps> = (props: RoundOverModuleP
   );
 
   return isTimedAuction(round) ? (
-    <RoundModuleCard
+    <VotesCard
       title={t('votingEnded')}
       subtitle={
         <>
@@ -34,7 +35,7 @@ const RoundOverModule: React.FC<RoundOverModuleProps> = (props: RoundOverModuleP
       type="ended"
     />
   ) : (
-    <RoundModuleCard
+    <VotesCard
       title={'Round has ended'}
       subtitle={<>No awards remaining</>}
       content={<>{`${totalVotes} votes were casted to award ${numOfProposals} proposals`}</>}

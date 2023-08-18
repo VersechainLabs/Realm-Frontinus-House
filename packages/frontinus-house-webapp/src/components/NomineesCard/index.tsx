@@ -62,8 +62,11 @@ const NomineesCard: React.FC<{
     let imgUrl;
 
     const getImg = async () => {
-      imgUrl = await getFirstImageFromProp(proposal);
-      setImgUrlFromProp(imgUrl);
+      // imgUrl = await getFirstImageFromProp(proposal);
+      imgUrl = proposal.previewImage;
+      if ( imgUrl){
+        setImgUrlFromProp(imgUrl);
+      }
       setDisplayTldr(!isMobile() || (isMobile() && !imgUrl));
     };
     getImg();

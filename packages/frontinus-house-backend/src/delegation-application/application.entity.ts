@@ -44,7 +44,12 @@ export class Application {
   @Field(() => String)
   description: string;
 
-  @ApiProperty({ type: () => Delegation, isArray: true })
+  @ApiProperty()
+  @Column({ nullable: true })
+  @Field(() => String)
+  previewImage: string;
+
+  // @ApiProperty({ type: () => Delegation, isArray: true })
   @ManyToOne(() => Delegation, {
     createForeignKeyConstraints: false,
   })
@@ -52,6 +57,7 @@ export class Application {
   @Field(() => Delegation)
   delegation: Delegation;
 
+  @ApiProperty()
   @Column({})
   delegationId: number;
 
@@ -76,6 +82,7 @@ export class Application {
   @Field(() => Date)
   lastUpdatedDate: Date;
 
+  @ApiProperty()
   @Column({ nullable: true })
   @Field(() => Date)
   deletedAt: Date;

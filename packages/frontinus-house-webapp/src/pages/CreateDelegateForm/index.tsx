@@ -30,8 +30,8 @@ const CreateDelegateForm: React.FC<{}> = () => {
 
   const dispatch = useDispatch();
 
-  const MAX_TITLE_LENGTH = 50;
-  const MAX_DESCRIPTION_LENGTH = 1000;
+  const MAX_TITLE_LENGTH = 100;
+  const MAX_DESCRIPTION_LENGTH = 100000;
   const [titleLength, setTitleLength] = useState(0);
   const [descriptionLength, setDescriptionLength] = useState(0);
   const [showError, setShowError] = useState(false);
@@ -263,6 +263,9 @@ const CreateDelegateForm: React.FC<{}> = () => {
                 value={state.title}
                 className={classes.input}
                 type="text"
+                style={{
+                  height: '40px',
+                }}
               />
             </div>
 

@@ -26,17 +26,21 @@ import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { setAlert } from '../../state/slices/alert';
 import { matchImg } from "../../utils/matchImg";
+import CongratsDialog from '../CongratsDialog';
+
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
   fundReqData: FundReqDataType;
   onDataChange: (data: Partial<ProposalFields>) => void;
+  setProposalSubmitted: (submitted: boolean) => void;
 }> = props => {
-  const { formData, fundReqData, onDataChange } = props;
+  const { formData, fundReqData, onDataChange, setProposalSubmitted } = props;
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
   const [hasError, setHasError] = useState(false);
+  const [flag, setFlag] = useState(false);
 
   // const validateError = async (min: number, count: number) => {
   //       let error = validateInput(min, count);
@@ -93,6 +97,8 @@ const ProposalInputs: React.FC<{
   const dispatch = useAppDispatch();
   const { address: account } = useAccount();
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+  const [openCongratsDialog, setOpenCongratsDialog] = useState(false);
+  const [showCongratsDialog, setShowCongratsDialog] = useState(false);
 
   const { data: walletClient } = useWalletClient();
 
@@ -132,6 +138,7 @@ const ProposalInputs: React.FC<{
         const errorMessage = 'You must complete all the fields before submit!';
         console.log('Error message to be dispatched:', errorMessage);
         dispatch(setAlert({ type: 'error', message: errorMessage }));
+        setOpenCongratsDialog(true);
         setIsAlertVisible(true);
         return;
       }
@@ -170,11 +177,15 @@ const ProposalInputs: React.FC<{
       setPropId(proposal.id);
       dispatch(appendProposal({ proposal }));
       dispatch(clearProposal());
+
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
-      navigate(`/proposal/${proposal.id}`, { replace: false });
+      setOpenCongratsDialog(true); // Show the initial dialog
+      setShowCongratsDialog(true);
       setLoading(false);
     } catch (e) {
+      const errorMessage = 'You have created proposal in this round.';
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
       setLoading(false);
     } finally {
       setLoading(false);
@@ -242,8 +253,16 @@ const ProposalInputs: React.FC<{
               />
             </div>
           </div>
+          <CongratsDialog
+            trigger={showCongratsDialog}
+            onClose={() => {
+              setShowCongratsDialog(false);
+              navigate(`/proposal/${propId}`, { replace: false });
+            }}
+          />
         </Col>
       </Row>
+
       {/*{showProposalSuccessModal && propId && (*/}
       {/*    <ProposalSuccessModal*/}
       {/*        setShowProposalSuccessModal={setShowProposalSuccessModal}*/}

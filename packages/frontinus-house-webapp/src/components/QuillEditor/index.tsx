@@ -1,4 +1,4 @@
-import { DeltaStatic, Quill } from 'quill';
+import {DeltaStatic, Quill, Sources} from 'quill';
 import React, {useEffect, useRef, useState} from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
@@ -77,6 +77,7 @@ export default function QuillEditor(props: QuillEditorProps) {
       if (file) {
         // quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/QmRZoJNYQ65oPTgpcLR5gcHfDsdfvdCXQscfgvJaq8tqdW','user');
         // quillObj.setSelection(range.index + 1);
+        // console.log(quillObj.root.classList);
         // return false;
 
         setShowLoading(true);
@@ -97,9 +98,9 @@ export default function QuillEditor(props: QuillEditorProps) {
         }
 
         quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
-
         props.imgArrayChange('https://ipfs.io/ipfs/'+data.ipfsHash);
-
+        quillObj.root.classList.remove("ql-blank");
+        quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
         quillObj.setSelection(range.index + 1);
         setShowLoading(false);
         quillObj.enable();
@@ -171,6 +172,7 @@ export default function QuillEditor(props: QuillEditorProps) {
     quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
       // if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
+
       // }
     });
 

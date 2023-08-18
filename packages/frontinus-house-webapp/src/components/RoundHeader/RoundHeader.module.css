@@ -40,12 +40,12 @@
 .communityDescriptionRow p {
   font-size: 16px;
   /*color: var(--brand-gray);*/
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  line-clamp: 4;
-  -webkit-box-orient: vertical;
+  /*overflow: hidden;*/
+  /*text-overflow: ellipsis;*/
+  /*display: -webkit-box;*/
+  /*-webkit-line-clamp: 4;*/
+  /*line-clamp: 4;*/
+  /*-webkit-box-orient: vertical;*/
 }
 .communityDescriptionRow a {
   color: var(--brand-common-yellow) !important;
@@ -56,6 +56,45 @@
   text-decoration: underline !important;
   transition: all 0.15s ease-in-out;
 }
+
+.pendingMain {
+  background: #0F0F0F;
+  width: 100%;
+  height: 48px;
+  margin-bottom: 20px;
+  border-top: 1px solid #D0A059;
+  align-items: center;
+  display: flex;
+}
+
+.pendingTitle {
+  color: #F5EEE6;
+  font-weight: 700;
+  margin-left: 20px;
+}
+
+.pendingButton {
+  height: 28px;
+  background-color: #1A1A1B!important;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: normal;
+  /* identical to box height, or 175% */
+  color: #D0A059;
+  padding: 0;
+  border: 1px solid #D0A059!important;
+  border-radius: 4px;
+  margin-left: 16px;
+  cursor: pointer;
+}
+
+.pendingReject {
+  color: #F24A58;
+  padding-left: 16px;
+  padding-right: 16px;
+  cursor: pointer;
+}
+
 
 @media (max-width: 992px) {
   .titleRow {

@@ -28,10 +28,22 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
         let power;
         switch (strategy.strategyType) {
           case StrategyType.Erc721:
-            power = await getErc721Balance(userAddress, strategy.address, blockTag, provider);
+            power = await getErc721Balance(
+              userAddress,
+              strategy.address,
+              blockTag,
+              provider,
+              0,
+            );
             break;
           case StrategyType.ContractCall:
-            power = await getContractCallBalance(userAddress, strategy.address, blockTag, provider);
+            power = await getContractCallBalance(
+              userAddress,
+              strategy.address,
+              blockTag,
+              provider,
+              0,
+            );
             break;
         }
 
@@ -48,6 +60,7 @@ const getErc721Balance = async (
   strategyAddress: string,
   blockTag: number,
   provider: PublicClient,
+  retryCount: number,
 ): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
@@ -62,8 +75,39 @@ const getErc721Balance = async (
     return new BigNumber(data as number);
   } catch (e) {
     console.warn(
-      `[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
+      `[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag}. retry=${retryCount}. with err:\n${e}`,
     );
+
+    if (retryCount < 3) {
+      // There's some exception as below:
+      //
+      // BlockchainService Exception: 0x??? @ undefined
+      // Error: Error fetching name for contract 0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d
+      // [getContractCallBalance] Error fetching vp for: 0x??? @ undefined with err:
+      // ContractFunctionExecutionError: HTTP request failed.
+      //
+      // Status: 404
+      // URL: https://eth-mainnet.public.blastapi.io/???
+      // Request body: {"method":"eth_call","params":[{"data":"???","to":"???"},"latest"]}
+      //
+      // Raw Call Arguments:
+      //   to:    ???
+      //   data:  ???
+      //
+      // Contract Call:
+      //   address:   ???
+      //   function:  getNumberRealms(address _player)
+      //   args:                     (???)
+      //
+      // Docs: https://viem.sh/docs/contract/readContract.html
+      // Details: Not Found
+      // Version: viem@1.5.0
+
+      // don't know how to fix, just retry it.
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return getErc721Balance(userAddress, strategyAddress, blockTag, provider, retryCount + 1);
+    }
+
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }
 };
@@ -73,6 +117,7 @@ const getContractCallBalance = async (
   strategyAddress: string,
   blockTag: number,
   provider: PublicClient,
+  retryCount: number,
 ): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
@@ -87,8 +132,39 @@ const getContractCallBalance = async (
     return new BigNumber(data as number);
   } catch (e) {
     console.warn(
-      `[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag} with err:\n${e}`,
+      `[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag}. retry=${retryCount}. with err:\n${e}`,
     );
+
+    if (retryCount < 3) {
+      // There's some exception as below:
+      //
+      // BlockchainService Exception: 0x??? @ undefined
+      // Error: Error fetching name for contract 0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d
+      // [getContractCallBalance] Error fetching vp for: 0x??? @ undefined with err:
+      // ContractFunctionExecutionError: HTTP request failed.
+      //
+      // Status: 404
+      // URL: https://eth-mainnet.public.blastapi.io/???
+      // Request body: {"method":"eth_call","params":[{"data":"???","to":"???"},"latest"]}
+      //
+      // Raw Call Arguments:
+      //   to:    ???
+      //   data:  ???
+      //
+      // Contract Call:
+      //   address:   ???
+      //   function:  getNumberRealms(address _player)
+      //   args:                     (???)
+      //
+      // Docs: https://viem.sh/docs/contract/readContract.html
+      // Details: Not Found
+      // Version: viem@1.5.0
+
+      // don't know how to fix, just retry it.
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      return getContractCallBalance(userAddress, strategyAddress, blockTag, provider, retryCount + 1);
+    }
+
     throw Error(`Error fetching name for contract ${strategyAddress}`);
   }
 };

@@ -48,7 +48,6 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       if (content.length === 0 || !account) {
         return;
       }
-
       setLoading(true);
 
       const newComment = new Comment(content, props.proposalId, props.applicationId);
@@ -62,8 +61,9 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
       setLoading(false);
     } catch (e) {
+
       setLoading(false);
-      dispatch(setAlert({ type: 'error', message: e }));
+      // dispatch(setAlert({ type: 'error', message: e }));
     }
 
   };

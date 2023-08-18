@@ -9,7 +9,7 @@
 .subtitle {
   margin-bottom: 0;
   font-size: 14px;
-  color: var(--brand-gray);
+  color: #A3A3A4;
 }
 .subtitle b div {
   display: inline;
@@ -23,7 +23,7 @@
   justify-content: center;
 }
 .purpleText {
-  color: var(--brand-purple);
+  color: var(--text-color);
 }
 .purpleIcon {
   background: var(--brand-purple-hint);
