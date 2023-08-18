@@ -84,5 +84,9 @@
     cursor: pointer;
     margin-top: -2px;
   }
+
+  .buttonGroup .okBtn:hover {
+    background-color: #F5C27C;
+}
   
   
