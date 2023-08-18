@@ -63,7 +63,14 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
 
       setLoading(false);
     } catch (e) {
-
+      if ( typeof(e) == 'string' ){
+        dispatch(
+            setAlert({
+              type: 'error',
+              message: e,
+            }),
+        );
+      }
       setLoading(false);
       // dispatch(setAlert({ type: 'error', message: e }));
     }
