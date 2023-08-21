@@ -1,16 +1,20 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { proposalCountSubquery } from '../utils/proposal-count-subquery';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Auction } from './auction.entity';
-import { CreateAuctionDto, GetAuctionsDto, LatestDto } from './auction.types';
+import {
+  CreateAuctionDto,
+  GetAuctionsDto,
+  LatestDto,
+  UpdateAuctionDto,
+} from './auction.types';
 import { Community } from '../community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
-import { Proposal } from '../proposal/proposal.entity';
-import { ParseDate } from '../utils';
 import { Delegate } from '../delegate/delegate.entity';
 import { Delegation } from '../delegation/delegation.entity';
+import { updateValidFields } from '../utils';
 
 export type AuctionWithProposalCount = Auction & { numProposals: number };
 
@@ -21,7 +25,6 @@ export class AuctionsService {
     @InjectRepository(Community)
     private communitiesRepository: Repository<Community>,
     private readonly blockchainService: BlockchainService,
-
     @InjectRepository(Delegate)
     private delegateRepository: Repository<Delegate>,
     @InjectRepository(Delegation)
@@ -246,5 +249,60 @@ export class AuctionsService {
     );
 
     return await this.auctionsRepository.save(newAuction);
+  }
+
+  async updateAuctionByCommunity(dto: UpdateAuctionDto, isAdmin: boolean) {
+    const foundAuction = await this.auctionsRepository.findOne(dto.id, {
+      loadRelationIds: {
+        relations: ['proposals.auction', 'community'],
+      },
+    });
+    if (!foundAuction) {
+      throw new HttpException(
+        'No auction with that ID exists',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!isAdmin && dto.address != foundAuction.address) {
+      throw new HttpException(
+        "Found round does not match signed payload's address",
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const currentDate = new Date();
+    if (currentDate > foundAuction.startTime) {
+      throw new HttpException(
+        'The round has been started, you cannot edit round at this time',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const updateKeys = [
+      'startTime',
+      'proposalEndTime',
+      'votingEndTime',
+      'title',
+      'description',
+      'fundingAmount',
+      'numWinners',
+      'currencyType',
+    ];
+    updateValidFields(foundAuction, dto, updateKeys);
+
+    if (
+      foundAuction.startTime >= foundAuction.proposalEndTime ||
+      foundAuction.proposalEndTime >= foundAuction.votingEndTime
+    ) {
+      throw new HttpException('Time order incorrect!', HttpStatus.BAD_REQUEST);
+    }
+
+    // TODO: Need to confirm, if the visible status should change to pending after update auction.
+    // foundAuction.visibleStatus = isAdmin
+    //   ? AuctionVisibleStatus.NORMAL
+    //   : AuctionVisibleStatus.PENDING;
+
+    return await this.auctionsRepository.save(foundAuction);
   }
 }
