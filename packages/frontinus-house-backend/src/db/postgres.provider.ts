@@ -16,6 +16,7 @@ import { VotesModule } from '../vote/votes.module';
 import config from '../../ormconfig';
 import { SnapshotModule } from '../voting-power-snapshot/snapshot.module';
 import { BlockchainModule } from '../blockchain/blockchain.module';
+import { LangModule } from 'src/langs/langs.module';
 // import { AudioModule } from '../queue/audio.module';
 
 /**
@@ -38,6 +39,7 @@ import { BlockchainModule } from '../blockchain/blockchain.module';
     DelegateModule,
     CommentsModule,
     AdminModule,
+    LangModule,
     SnapshotModule,
     // AudioModule,
     BlockchainModule,
