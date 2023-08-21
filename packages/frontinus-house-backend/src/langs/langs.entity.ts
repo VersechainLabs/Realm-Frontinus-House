@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity(({ name: 'langs' }))
 @ObjectType()
 export class Langs {
   @ApiProperty()
