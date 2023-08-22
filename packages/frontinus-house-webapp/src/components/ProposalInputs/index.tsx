@@ -124,6 +124,23 @@ const ProposalInputs: React.FC<{
 
   };
 
+  const [getDefaultStatus, setGetDefaultStatus] = useState(false);
+  const [getDefault, setGetDefault] = useState('');
+
+  const fetchDefault = async () => {
+    if (getDefaultStatus) {
+      return;
+    }
+    setGetDefaultStatus(true);
+    await client.current.getDefaultCreation().then((res:any)=> {
+      if (res.proposalContent) {
+        setGetDefault(res.proposalContent);
+        // setGetDefaultStatus(false);
+      }
+    });
+  };
+  fetchDefault();
+
   const submit = async () => {
     try {
       console.log(content, formData);
@@ -156,6 +173,8 @@ const ProposalInputs: React.FC<{
       if (validateInput(formData[1].minCount, formData[1].fieldValue.length)) {
         return false;
       }
+
+
 
       setLoading(true);
 
@@ -247,6 +266,7 @@ const ProposalInputs: React.FC<{
                 onQuillInit={q => setQuill(q)}
                 btnText="Submit"
                 onButtonClick={submit}
+                initContent={getDefault}
                 placeholderText=""
               />
             </div>
