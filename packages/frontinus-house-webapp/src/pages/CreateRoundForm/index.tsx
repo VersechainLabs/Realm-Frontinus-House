@@ -21,6 +21,7 @@ import { LoadingButton } from '@mui/lab';
 import { setUserType } from '../../state/slices/user';
 import { utc } from 'dayjs';
 import CongratsDialog from '../../components/CongratsDialog';
+import {setActiveCommunity, setActiveRound} from "../../state/slices/propHouse";
 
 const CreateRound: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -68,6 +69,28 @@ const CreateRound: React.FC<{}> = () => {
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [showOrderWarning, setShowOrderWarning] = useState(false);
   const [showBlankWarning, setShowBlankWarning] = useState(false);
+  const [getDefaultStatus, setGetDefaultStatus] = useState(false);
+
+  const fetchDefault = async () => {
+    if (state.title || state.description || getDefaultStatus) {
+      return;
+    }
+    setGetDefaultStatus(true);
+    const defaultData = await client.current.getDefaultCreation().then((res:any)=> {
+      if (res.roundTitle || res.roundContent) {
+        setState(prevState => ({
+          ...prevState,
+          title: res.roundTitle,
+        }));
+        setState(prevState => ({
+          ...prevState,
+          description: res.roundContent,
+        }));
+        setGetDefaultStatus(false);
+      }
+    });
+  };
+  fetchDefault();
 
   const [isStartTimeFilled, setIsStartTimeFilled] = useState(false);
   const [isProposalTimeFilled, setIsProposalTimeFilled] = useState(false);
@@ -302,7 +325,7 @@ const CreateRound: React.FC<{}> = () => {
               </div>
 
               <textarea
-                rows={5}
+                rows={34}
                 onChange={event => saveFormDesc(event.target.value)}
                 value={state.description}
                 name={'description'}
