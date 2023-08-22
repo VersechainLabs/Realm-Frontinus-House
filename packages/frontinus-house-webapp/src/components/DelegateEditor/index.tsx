@@ -109,7 +109,7 @@ const DelegateEditor: React.FC<{
       type: 'input',
       fieldValue: data.title,
       fieldName: 'title',
-      placeholder: t('delegateTitle'),
+      placeholder: 'NAME OF BUILDER/TEAM - NAME OF PROJECT',
       value: '',
       minCount: 5,
       maxCount: 100,
@@ -120,7 +120,7 @@ const DelegateEditor: React.FC<{
       type: 'input',
       fieldValue: data.tldr,
       fieldName: 'tldr',
-      placeholder: t('tldrPlaceholder'),
+      placeholder: 'In the simplest language possible, explain your proposal in one sentence',
       value: '',
       minCount: 10,
       maxCount: 120,
@@ -223,6 +223,7 @@ const DelegateEditor: React.FC<{
   return (
     <>
       <div className={classes.nominateText}>Creating your proposal</div>
+      <div className={classes.nominateDesc}>A standard of how a Frontinus House Builder Proposal should be submitted. Please follow each Proposal to Frontinus house in a similar fashion. Amendments are required in sections highlighted boldly.</div>
       <ProposalInputs onDataChange={onDataChange} formData={formData} fundReqData={fundReqData} />
 
       
