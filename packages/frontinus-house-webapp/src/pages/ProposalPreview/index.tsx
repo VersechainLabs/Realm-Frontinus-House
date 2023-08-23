@@ -69,7 +69,14 @@ const ProposalPreview: React.FC<{}> = () => {
   return (
     <div className={classes.previewCard}>
       <div className={classes.title}>
-        <div className={'frontinusTitle'}>Creating Your Proposal For</div>
+        <div
+          className={'frontinusTitle'}
+          style={{
+            marginBottom: '1rem',
+          }}
+        >
+          Creating Your Proposal For
+        </div>
       </div>
       <div className={classes.previewTitle}>
         <div
@@ -87,6 +94,8 @@ const ProposalPreview: React.FC<{}> = () => {
           style={{
             fontSize: '20px',
             fontWeight: '700',
+            marginBottom: '1rem',
+            marginTop: '1.5rem',
           }}
         >
           Tldr
@@ -102,6 +111,8 @@ const ProposalPreview: React.FC<{}> = () => {
           style={{
             fontSize: '20px',
             fontWeight: '700',
+            marginBottom: '1rem',
+            marginTop: '1.5rem',
           }}
         >
           {' '}
@@ -112,7 +123,12 @@ const ProposalPreview: React.FC<{}> = () => {
           dangerouslySetInnerHTML={{ __html: proposalData.description }}
         />
       </div>
-      <div className={classes.btnContainer}>
+      <div
+        className={classes.btnContainer}
+        style={{
+          marginTop: '3.5rem',
+        }}
+      >
         <button className={classes.submitBtn} onClick={() => submit()}>
           Sign and Submit
         </button>
