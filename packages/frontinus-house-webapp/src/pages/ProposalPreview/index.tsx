@@ -15,6 +15,7 @@ import {
 import { appendProposal } from '../../state/slices/propHouse';
 import { clearProposal } from '../../state/slices/editor';
 import CongratsDialog from '../../components/CongratsDialog';
+import { setAlert } from '../../state/slices/alert';
 
 const ProposalPreview: React.FC<{}> = () => {
   const location = useLocation();
@@ -38,6 +39,17 @@ const ProposalPreview: React.FC<{}> = () => {
   const handleGoBack = () => {
     window.history.back();
   };
+
+  useEffect(() => {
+    if (!proposalData.title || !proposalData.tldr || !proposalData.description) {
+      const errorMessage = 'invalid URL';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+
+      navigate('/');
+      return;
+    }
+  });
 
   const submit = async () => {
     try {
@@ -75,7 +87,7 @@ const ProposalPreview: React.FC<{}> = () => {
             marginBottom: '1rem',
           }}
         >
-          Creating Your Proposal For
+          Creating Your Proposal
         </div>
       </div>
       <div className={classes.previewTitle}>
