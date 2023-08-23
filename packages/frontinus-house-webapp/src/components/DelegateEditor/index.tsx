@@ -11,6 +11,7 @@ import { useWalletClient } from 'wagmi';
 import { useLocation } from 'react-router-dom';
 import { isInfAuction } from '../../utils/auctionType';
 import classes from './DelegateEditor.module.css';
+import clsx from "clsx";
 
 export interface FormDataType {
   title: string;
@@ -222,7 +223,7 @@ const DelegateEditor: React.FC<{
 
   return (
     <>
-      <div className={classes.nominateText}>Creating your proposal</div>
+      <div className={clsx(classes.nominateText, 'frontinusTitle')}>Creating your proposal</div>
       <div className={classes.nominateDesc}>A standard of how a Frontinus House Builder Proposal should be submitted. Please follow each Proposal to Frontinus house in a similar fashion. Amendments are required in sections highlighted boldly.</div>
       <ProposalInputs onDataChange={onDataChange} formData={formData} fundReqData={fundReqData} />
 
