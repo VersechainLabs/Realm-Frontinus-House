@@ -25,14 +25,17 @@ import { clearProposal } from '../../state/slices/editor';
 import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { setAlert } from '../../state/slices/alert';
+import { matchImg } from "../../utils/matchImg";
 import CongratsDialog from '../CongratsDialog';
+
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
   fundReqData: FundReqDataType;
   onDataChange: (data: Partial<ProposalFields>) => void;
+  setProposalSubmitted: (submitted: boolean) => void;
 }> = props => {
-  const { formData, fundReqData, onDataChange } = props;
+  const { formData, fundReqData, onDataChange, setProposalSubmitted } = props;
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
@@ -88,6 +91,7 @@ const ProposalInputs: React.FC<{
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
   const [content, setContent] = useState('');
+  const [imgArray, setImgArray] = useState(['']);
   const [loading, setLoading] = useState(false);
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
   const dispatch = useAppDispatch();
@@ -111,6 +115,13 @@ const ProposalInputs: React.FC<{
     } else {
       setContent(htmlContent);
     }
+  };
+  const handleImgArrayChange = (img : string) => {
+
+    let ary = [...imgArray];
+    ary.push(img);
+    setImgArray(ary)
+
   };
 
   const [getDefaultStatus, setGetDefaultStatus] = useState(false);
@@ -137,9 +148,10 @@ const ProposalInputs: React.FC<{
       const titleFieldValue = formData[0].fieldValue;
       const tldrFieldValue = formData[1].fieldValue;
 
-      if (titleFieldValue.trim().length === 0
-          || tldrFieldValue.trim().length === 0
-          || content.trim().length === 0
+      if (
+        titleFieldValue.trim().length === 0 ||
+        tldrFieldValue.trim().length === 0 ||
+        content.trim().length === 0
       ) {
         const errorMessage = 'You must complete all the fields before submit!';
         console.log('Error message to be dispatched:', errorMessage);
@@ -152,7 +164,6 @@ const ProposalInputs: React.FC<{
       if (!account) {
         return;
       }
-
 
       //check error
       if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
@@ -169,17 +180,23 @@ const ProposalInputs: React.FC<{
 
       let newProp: Proposal | InfiniteAuctionProposal;
 
+      let imgUrl = matchImg(imgArray, content);
+
       newProp = new Proposal(
         formData[0].fieldValue,
         content,
         formData[1].fieldValue,
         activeAuction.id,
+        'auction',
+        imgUrl,
       );
+
       const proposal = await client.current.createProposal(newProp);
 
       setPropId(proposal.id);
       dispatch(appendProposal({ proposal }));
       dispatch(clearProposal());
+
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
       setOpenCongratsDialog(true); // Show the initial dialog
@@ -243,6 +260,7 @@ const ProposalInputs: React.FC<{
                 widgetKey={'Comment-proposalId'}
                 minHeightStr={'400px'}
                 onChange={handleChange}
+                imgArrayChange={handleImgArrayChange}
                 title="Create Comment"
                 loading={loading}
                 onQuillInit={q => setQuill(q)}

@@ -2,7 +2,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsEnum,
-  IsIn,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -16,38 +15,53 @@ import { Order } from '../utils/dto-types';
 export type ProposalParent = 'auction' | 'infinite-auction';
 
 export class CreateProposalDto extends SignedEntity {
-  @ApiProperty({})
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty({})
+  @ApiProperty()
   @IsString()
   what: string;
 
-  @ApiProperty({})
+  @IsOptional()
+  @ApiProperty()
   @IsString()
   previewImage?: string;
 
-  @ApiProperty({})
+  @ApiProperty()
   @IsString()
   tldr: string;
 
-  @ApiProperty({})
+  @ApiProperty()
   @IsNumber()
   parentAuctionId: number;
-
-  @ApiProperty({})
-  @IsString()
-  parentType: ProposalParent;
 }
 
-export class UpdateProposalDto extends CreateProposalDto {
+export class UpdateProposalDto extends SignedEntity {
+  @ApiProperty()
   @IsNumber()
   id: number;
 
+  @ApiProperty()
+  @IsString()
   @IsOptional()
-  reqAmount?: number;
+  title: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  what: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  previewImage?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  tldr: string;
 }
 
 export class DeleteProposalDto extends SignedEntity {

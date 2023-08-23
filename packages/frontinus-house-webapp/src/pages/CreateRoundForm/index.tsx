@@ -262,8 +262,9 @@ const CreateRound: React.FC<{}> = () => {
           ),
         )
         .then(() => {
-          setIsSuccessAlertVisible(true); // 显示成功提示
           if (userType === 'Admin') {
+            setIsSuccessAlertVisible(true); // 显示成功提示
+
             dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
             navigate('/');
           } else {
@@ -313,6 +314,9 @@ const CreateRound: React.FC<{}> = () => {
                 name={'title'}
                 className={classes.input}
                 type="text"
+                style={{
+                  height: '40px',
+                }}
               />
             </div>
             <div className={classes.labelMargin}>
@@ -432,15 +436,18 @@ const CreateRound: React.FC<{}> = () => {
               </div>
             </div>
             <div className={classes.labelMargin}>
-              <div className={classes.desc}>How many winners are there?*</div>
-              <input
-                onChange={event => saveFormNum(event.target.value)}
-                name={'numWinners'}
-                className={classes.input}
-                type="number" // Add type="number" to allow only numeric input
-                min="0"
-                value={state.numWinners}
-              />
+              <div className={classes.inputContainer}>
+                <div className={classes.desc}>How many winners are there?*</div>
+
+                <input
+                  onChange={event => saveFormNum(event.target.value)}
+                  name={'numWinners'}
+                  className={classes.input}
+                  type="number"
+                  min="0"
+                  value={state.numWinners}
+                />
+              </div>
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>

@@ -61,6 +61,7 @@ export class CommunitiesService {
     return qb
       .select('c.*')
       .addSelect('SUM(a."numAuctions")', 'numAuctions')
+      .addSelect('SUM(a."numPendingAuctions")', 'numPendingAuctions')
       .addSelect('SUM(a."ethFunded")', 'ethFunded')
       .addSelect('SUM(a."totalFunded")', 'totalFunded')
       .addSelect('SUM(p."numProposals")', 'numProposals')
@@ -77,7 +78,8 @@ export class CommunitiesService {
     return qb
       .select('a.id', 'id')
       .addSelect('a.communityId')
-      .addSelect('COUNT(a.id)', 'numAuctions')
+      .addSelect('COUNT(a.id) FILTER (WHERE a.visibleStatus = 1)', 'numAuctions')
+      .addSelect('COUNT(a.id) FILTER (WHERE a.visibleStatus = 0)', 'numPendingAuctions')
       .addSelect(
         `CASE WHEN a.currencyType ILIKE '%eth%' then SUM(a.fundingAmount * a.numWinners) else 0 end`,
         'ethFunded',

@@ -98,6 +98,18 @@ export class ApiWrapper {
     }
   }
 
+  async getProposalApplied(id: number ): Promise<any> {
+    if (!this.signer) return;
+
+    try {
+      const owner = (await this.signer.getAddresses())[0];
+      const raw = (await axios.get(`${this.host}/proposals/canCreate?auctionId=${id}&address=${owner}`)).data;
+      return raw;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getDelegateStatus(id: any): Promise<any> {
     if (!this.signer) throw 'Please sign';
     try {
@@ -363,7 +375,10 @@ export class ApiWrapper {
   }
 
   async createProposal(proposal: Proposal) {
-    if (!this.signer) return;
+    if (!this.signer) {
+      console.log('no signer')
+      return;
+    }
     try {
       const signedPayload = await proposal.signedPayload(this.signer);
       return (await axios.post(`${this.host}/proposals`, signedPayload)).data;
@@ -372,7 +387,7 @@ export class ApiWrapper {
     }
   }
 
-  async createApplication(proposal: Proposal, isContract = false) {
+  async createApplication(proposal: Proposal) {
     if (!this.signer) return;
     try {
 
@@ -382,6 +397,7 @@ export class ApiWrapper {
           proposal.tldr,
           proposal.auctionId,
           proposal.parentType,
+          proposal.previewImage,
       )
 
       const signedPayload = await application.signedPayload(this.signer);

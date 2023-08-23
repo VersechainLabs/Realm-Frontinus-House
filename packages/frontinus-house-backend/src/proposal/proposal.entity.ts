@@ -18,6 +18,7 @@ import { Address } from '../types/address';
 import { ProposalParent } from './proposal.types';
 import { Float, Int } from '@nestjs/graphql/dist/scalars';
 import { IsEthereumAddress } from 'class-validator';
+import { VoteStatesClass } from '@nouns/frontinus-house-wrapper';
 
 @Entity('proposal')
 @ObjectType()
@@ -58,7 +59,6 @@ export class Proposal {
 
   @ApiProperty({ description: 'The signer address' })
   @Column()
-  @IsEthereumAddress()
   @Field(() => String)
   address: Address;
 
@@ -153,12 +153,13 @@ export class Proposal {
   // })
   disallowedVoteReason: string | null;
 
-  // @ApiProperty({
-  //   description: 'Indicates how the frontend should react based on this code.',
-  //   type: Object,
-  // })
-  voteState: any;
+  @ApiProperty({
+    description: 'Indicates how the frontend should react based on this code.',
+    type: VoteStatesClass,
+  })
+  voteState: VoteStatesClass;
 
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
   toJSON() {
     if (this.votes && this.votes.length > 0) {
       this.votes = convertVoteListToDelegateVoteList(this.votes);

@@ -25,6 +25,16 @@ export class CreateCommentDto extends SignedEntity {
   applicationId: number;
 }
 
+export class UpdateCommentDto extends SignedEntity {
+  @IsString()
+  content: string;
+
+  @IsNumber()
+  @IsPositive()
+  id: number;
+}
+
+
 export enum Order {
   ASC = 'ASC',
   DESC = 'DESC',

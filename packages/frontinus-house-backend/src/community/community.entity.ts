@@ -45,7 +45,6 @@ export class Community {
   @Field(() => String)
   description: string;
 
-  @RelationId((community: Community) => community.auctions)
   @Field(() => Int)
   numAuctions: number;
 

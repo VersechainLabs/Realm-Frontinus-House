@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import {
   CreateAuctionDto,
   GetAuctionsDto,
   LatestDto,
+  UpdateAuctionDto,
 } from './auction.types';
 import { AuctionsService } from './auctions.service';
 import { ProposalsService } from '../proposal/proposals.service';
@@ -61,12 +63,37 @@ export class AuctionsController {
       'proposalEndTime',
       'votingEndTime',
       'title',
+      'description',
       'fundingAmount',
       'numWinners',
       'currencyType',
       'communityId',
     ]);
     return await this.auctionsService.createAuctionByCommunity(
+      dto,
+      await this.adminService.isAdmin(dto.address),
+    );
+  }
+
+  @Patch()
+  @ApiOkResponse({
+    type: Auction,
+  })
+  async updateForCommunity(
+    @Body(SignedPayloadValidationPipe) dto: UpdateAuctionDto,
+  ): Promise<Auction> {
+    const updateKeys = [
+      'startTime',
+      'proposalEndTime',
+      'votingEndTime',
+      'title',
+      'description',
+      'fundingAmount',
+      'numWinners',
+      'currencyType',
+    ];
+    verifySignPayload(dto, ['id', ...updateKeys]);
+    return await this.auctionsService.updateAuctionByCommunity(
       dto,
       await this.adminService.isAdmin(dto.address),
     );
