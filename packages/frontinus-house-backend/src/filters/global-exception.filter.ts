@@ -69,9 +69,15 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       );
     }
 
+    let message = exception.message;
+    if (exception instanceof HttpException) {
+      if (exception.getResponse()['message']) {
+        message = exception.getResponse()['message'];
+      }
+    }
     const responseBody = {
       status: httpStatus,
-      message: exception.message,
+      message: message,
     };
 
     httpAdapter.reply(response, responseBody, httpStatus);

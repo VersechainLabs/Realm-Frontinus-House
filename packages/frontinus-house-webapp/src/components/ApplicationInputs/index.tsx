@@ -13,6 +13,9 @@ import { ProposalFields } from '../../utils/proposalFields';
 import { FormDataType, FundReqDataType } from '../ApplicationEditor';
 import { useAccount, useWalletClient } from 'wagmi';
 import InputFormGroup from '../InputFormGroup';
+
+import {matchImg} from "../../utils/matchImg";
+
 import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
 import { DeltaStatic, Quill } from 'quill';
 import { InfiniteAuctionProposal, Proposal } from '@nouns/frontinus-house-wrapper/dist/builders';
@@ -22,6 +25,7 @@ import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import DelegationCongrats from '../DelegationCongrats';
 import { setAlert } from '../../state/slices/alert';
+
 
 const ApplicationInputs: React.FC<{
   formData: FormDataType[];
@@ -67,6 +71,7 @@ const ApplicationInputs: React.FC<{
     />
   );
 
+  const [imgArray, setImgArray] = useState(['']);
   const navigate = useNavigate();
   const location = useLocation();
   const activeAuction = location.state.auction;
@@ -96,6 +101,14 @@ const ApplicationInputs: React.FC<{
     }
   };
 
+  const handleImgArrayChange = (img : string) => {
+
+    let ary = [...imgArray];
+    ary.push(img);
+    setImgArray(ary)
+
+  };
+
   const submit = async () => {
     try {
       const titleFieldValue = formData[0].fieldValue;
@@ -119,14 +132,16 @@ const ApplicationInputs: React.FC<{
 
       setLoading(true);
 
-      let newProp: Proposal | InfiniteAuctionProposal;
-
-      newProp = new Proposal(
+    let imgUrl = matchImg(imgArray, content);
+    let newProp: Proposal | InfiniteAuctionProposal;
+    newProp = new Proposal(
         formData[0].fieldValue,
         content,
         formData[1].fieldValue,
         activeAuction.id,
-      );
+        'auction',
+        imgUrl
+    );
 
       const proposal = await client.current.createApplication(newProp);
 
@@ -138,12 +153,20 @@ const ApplicationInputs: React.FC<{
       setShowDelegationCongrats(true);
       setLoading(false);
     } catch (e) {
-      dispatch(
-        setAlert({
-          type: 'error',
-          message: e,
-        }),
-      );
+
+      // console.log(typeof(e))
+
+      if ( typeof(e) == 'string' ){
+        dispatch(
+          setAlert({
+            type: 'error',
+            message: e,
+          }),
+        );
+      }
+
+      setLoading(false);
+
     }
   };
 
@@ -197,6 +220,7 @@ const ApplicationInputs: React.FC<{
               widgetKey={'Comment-proposalId'}
               minHeightStr={'400px'}
               onChange={handleChange}
+              imgArrayChange={handleImgArrayChange}
               title="Create Comment"
               loading={loading}
               onQuillInit={q => setQuill(q)}

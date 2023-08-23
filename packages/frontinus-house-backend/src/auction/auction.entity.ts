@@ -18,6 +18,7 @@ import { AuctionBase } from './auction-base.type';
 import { ApiProperty } from '@nestjs/swagger';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 import { Exclude } from 'class-transformer';
+import { Address } from '../types/address';
 
 @Entity()
 @ObjectType()
@@ -32,6 +33,11 @@ export class Auction implements AuctionBase {
   @ApiProperty()
   @Column({ default: true })
   visible: boolean;
+
+  @ApiProperty({ description: 'The signer address' })
+  @Column({ default: '' })
+  @Field(() => String)
+  address: Address;
 
   @ApiProperty()
   @Column()
@@ -91,7 +97,6 @@ export class Auction implements AuctionBase {
   })
   numWinners: number;
 
-  // @ApiProperty({ type: () => Proposal, isArray: true })
   @OneToMany(() => Proposal, (proposal) => proposal.auction, {
     createForeignKeyConstraints: false,
   })
@@ -111,8 +116,7 @@ export class Auction implements AuctionBase {
   // This attribute was previously defined in the API layer, which is quite strange - -
   numProposals: number;
 
-  // @ApiProperty({ type: () => Community, isArray: true })
-  @ApiProperty({type: Number})
+  @ApiProperty({ type: Number })
   @ManyToOne(() => Community, (community) => community.auctions, {
     createForeignKeyConstraints: false,
   })
@@ -130,6 +134,7 @@ export class Auction implements AuctionBase {
   @Field(() => Date)
   lastUpdatedDate: Date;
 
+  @Exclude({ toPlainOnly: true })
   @DeleteDateColumn()
   deletedAt: Date;
 

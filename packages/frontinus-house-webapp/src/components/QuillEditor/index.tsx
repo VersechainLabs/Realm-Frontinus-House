@@ -1,4 +1,4 @@
-import { DeltaStatic, Quill } from 'quill';
+import {DeltaStatic, Quill, Sources} from 'quill';
 import React, {useEffect, useRef, useState} from 'react';
 import './quill.snow.css';
 import { useQuill } from 'react-quilljs';
@@ -20,13 +20,15 @@ type QuillEditorProps = {
   onChange: (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => void;
   title: string | undefined;
   loading: boolean;
-  minHeightStr:string
+  minHeightStr:string;
+  imgArrayChange: (img : string) => void;
 
   // 用于在上层操作 quill 的内容，通常是提交之后将 quill 的内容清空时使用
   onQuillInit?: (quill: Quill) => void;
   onButtonClick?: (widgetKey: string) => void;
   btnText:string | 'Submit';
   placeholderText:string;
+  initContent?:string;
 }
 
 
@@ -76,6 +78,7 @@ export default function QuillEditor(props: QuillEditorProps) {
       if (file) {
         // quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/QmRZoJNYQ65oPTgpcLR5gcHfDsdfvdCXQscfgvJaq8tqdW','user');
         // quillObj.setSelection(range.index + 1);
+        // console.log(quillObj.root.classList);
         // return false;
 
         setShowLoading(true);
@@ -94,9 +97,8 @@ export default function QuillEditor(props: QuillEditorProps) {
           alert(data.error);
           return;
         }
-
-
-
+        props.imgArrayChange('https://ipfs.io/ipfs/'+data.ipfsHash);
+        quillObj.root.classList.remove("ql-blank");
         quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
         quillObj.setSelection(range.index + 1);
         setShowLoading(false);
@@ -169,6 +171,7 @@ export default function QuillEditor(props: QuillEditorProps) {
     quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
       // if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
+
       // }
     });
 
@@ -189,6 +192,15 @@ export default function QuillEditor(props: QuillEditorProps) {
     }
   }, [props.loading, quill]);
 
+  useEffect(() => {
+    if (!quill) {
+      return;
+    }
+
+    if (props.initContent) {
+      quill!.root!.innerHTML=props.initContent;
+    }
+  }, [props.initContent, quill]);
 
   const clickBtn =  () => {
     if( showLoading ){

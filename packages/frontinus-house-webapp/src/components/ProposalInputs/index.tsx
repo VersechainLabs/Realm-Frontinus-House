@@ -25,9 +25,11 @@ import { clearProposal } from '../../state/slices/editor';
 import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { setAlert } from '../../state/slices/alert';
+import { matchImg } from '../../utils/matchImg';
 import CongratsDialog from '../CongratsDialog';
 import ProposalPreview from '../../pages/ProposalPreview';
 import { setProposalData } from '../../state/slices/proposal';
+
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
   fundReqData: FundReqDataType;
@@ -91,6 +93,7 @@ const ProposalInputs: React.FC<{
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
   const [content, setContent] = useState('');
+  const [imgArray, setImgArray] = useState(['']);
   const [loading, setLoading] = useState(false);
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
   const dispatch = useAppDispatch();
@@ -121,6 +124,28 @@ const ProposalInputs: React.FC<{
     }
     console.log(content);
   };
+  const handleImgArrayChange = (img: string) => {
+    let ary = [...imgArray];
+    ary.push(img);
+    setImgArray(ary);
+  };
+
+  const [getDefaultStatus, setGetDefaultStatus] = useState(false);
+  const [getDefault, setGetDefault] = useState('');
+
+  const fetchDefault = async () => {
+    if (getDefaultStatus) {
+      return;
+    }
+    setGetDefaultStatus(true);
+    await client.current.getDefaultCreation().then((res: any) => {
+      if (res.proposalContent) {
+        setGetDefault(res.proposalContent);
+        // setGetDefaultStatus(false);
+      }
+    });
+  };
+  fetchDefault();
 
   const generatePreviewContent = () => {
     const title = formData[0].fieldValue;
@@ -166,12 +191,17 @@ const ProposalInputs: React.FC<{
       console.log(content, formData);
       let newProp: Proposal | InfiniteAuctionProposal;
 
+      let imgUrl = matchImg(imgArray, content);
+
       newProp = new Proposal(
         formData[0].fieldValue,
         content,
         formData[1].fieldValue,
         activeAuction.id,
+        'auction',
+        imgUrl,
       );
+
       const proposal = await client.current.createProposal(newProp);
 
       setPropId(proposal.id);
@@ -241,11 +271,13 @@ const ProposalInputs: React.FC<{
                 widgetKey={'Comment-proposalId'}
                 minHeightStr={'400px'}
                 onChange={handleChange}
+                imgArrayChange={handleImgArrayChange}
                 title="Create Comment"
                 loading={loading}
                 onQuillInit={q => setQuill(q)}
                 btnText="Submit"
                 onButtonClick={submit}
+                initContent={getDefault}
                 placeholderText=""
               />
             </div>

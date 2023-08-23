@@ -47,8 +47,7 @@ describe('Test Wallet Signature', () => {
     parentType: 'auction',
   };
 
-  // param = JSON.parse('{  "visibleStatus": 2,\n' +
-  //   '  "id": 101}');
+  // param = JSON.parse('');
 
   it('Success signature validation', async () => {
     expect(walletClient.account.address).toBe(address);

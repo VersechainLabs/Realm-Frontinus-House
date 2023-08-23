@@ -231,6 +231,7 @@ export class Proposal extends Signable {
     public readonly tldr: string,
     public readonly auctionId: number,
     public readonly parentType: ProposalParent = 'auction',
+    public readonly previewImage: string = '',
   ) {
     super();
   }
@@ -242,6 +243,7 @@ export class Proposal extends Signable {
       tldr: this.tldr,
       parentAuctionId: this.auctionId,
       parentType: this.parentType,
+      previewImage: this.previewImage,
     };
   }
 }
@@ -254,6 +256,7 @@ export class Application extends Signable {
       public readonly tldr: string,
       public readonly delegationId: number,
       public readonly parentType: ProposalParent = 'auction',
+      public readonly previewImage: string = '',
   ) {
     super();
   }
@@ -265,6 +268,7 @@ export class Application extends Signable {
       tldr: this.tldr,
       delegationId: this.delegationId,
       parentType: this.parentType,
+      previewImage: this.previewImage,
     };
   }
 }
