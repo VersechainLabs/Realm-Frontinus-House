@@ -26,7 +26,8 @@ import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { setAlert } from '../../state/slices/alert';
 import CongratsDialog from '../CongratsDialog';
-
+import ProposalPreview from '../../pages/ProposalPreview';
+import { setProposalData } from '../../state/slices/proposal';
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
   fundReqData: FundReqDataType;
@@ -85,6 +86,7 @@ const ProposalInputs: React.FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const activeAuction = location.state.auction;
+  console.log(location);
   const activeCommunity = location.state.community;
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
@@ -96,6 +98,11 @@ const ProposalInputs: React.FC<{
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [openCongratsDialog, setOpenCongratsDialog] = useState(false);
   const [showCongratsDialog, setShowCongratsDialog] = useState(false);
+  // const [proposalData, setProposalData] = useState({
+  //   titlePreview: '',
+  //   tldrPreview: '',
+  //   descriptionPreview: '',
+  // });
 
   const { data: walletClient } = useWalletClient();
 
@@ -112,43 +119,51 @@ const ProposalInputs: React.FC<{
     } else {
       setContent(htmlContent);
     }
+    console.log(content);
   };
 
+  const generatePreviewContent = () => {
+    const title = formData[0].fieldValue;
+    const tldr = formData[1].fieldValue;
+    const description = quill!.root.innerHTML;
+    const id = activeAuction.id;
+    const formDataState = new Proposal(
+      formData[0].fieldValue,
+      description,
+      formData[1].fieldValue,
+      activeAuction.id,
+    );
+    console.log(formDataState);
+
+    if (title.trim().length === 0 || tldr.trim().length === 0 || description.trim().length === 0) {
+      const errorMessage = 'All fields must be filled before preview!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      return;
+    } else {
+      navigate('/preview');
+    }
+
+    if (!account) {
+      return;
+    }
+
+    //check error
+    if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
+      return false;
+    }
+
+    if (validateInput(formData[1].minCount, formData[1].fieldValue.length)) {
+      return false;
+    }
+
+    setLoading(true);
+
+    dispatch(setProposalData({ title, tldr, description, id }));
+  };
   const submit = async () => {
     try {
       console.log(content, formData);
-
-      const titleFieldValue = formData[0].fieldValue;
-      const tldrFieldValue = formData[1].fieldValue;
-
-      if (
-        titleFieldValue.trim().length === 0 ||
-        tldrFieldValue.trim().length === 0 ||
-        content.trim().length === 0
-      ) {
-        const errorMessage = 'You must complete all the fields before submit!';
-        console.log('Error message to be dispatched:', errorMessage);
-        dispatch(setAlert({ type: 'error', message: errorMessage }));
-        setOpenCongratsDialog(true);
-        setIsAlertVisible(true);
-        return;
-      }
-
-      if (!account) {
-        return;
-      }
-
-      //check error
-      if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
-        return false;
-      }
-
-      if (validateInput(formData[1].minCount, formData[1].fieldValue.length)) {
-        return false;
-      }
-
-      setLoading(true);
-
       let newProp: Proposal | InfiniteAuctionProposal;
 
       newProp = new Proposal(
@@ -235,6 +250,17 @@ const ProposalInputs: React.FC<{
               />
             </div>
           </div>
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <button
+              className={classes.btnPreview}
+              onClick={() => {
+                generatePreviewContent();
+              }}
+            >
+              Preview
+            </button>
+          </div>
+
           <CongratsDialog
             trigger={showCongratsDialog}
             onClose={() => {

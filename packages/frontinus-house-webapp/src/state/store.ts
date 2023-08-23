@@ -6,6 +6,7 @@ import votingReducer from './slices/voting';
 import editorReducer from './slices/editor';
 import alertReducer from './slices/alert';
 import userReducer from './slices/user';
+import proposalReducer from './slices/proposal';
 
 const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ const store = configureStore({
     voting: votingReducer,
     alert: alertReducer,
     user: userReducer,
+    proposal: proposalReducer,
   },
 });
 
