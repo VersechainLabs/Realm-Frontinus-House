@@ -1,7 +1,6 @@
 .previewCard{
     margin-top: 4rem;
     width: 1080px;
-    height: 689px;
     border-radius: 16px;
     margin-left: auto;
     margin-right: auto;
@@ -11,10 +10,10 @@
 
 .title {
     width: 1080px;
-    height: 61px;
     font-size: 28px;
     font-weight: 700;
     color: #f5eee6;
+    margin-top: 10px;
     border-bottom: 1px solid #2c2c2d;
 }
 
@@ -22,14 +21,12 @@
 .previewTitle {
     margin-top: 1.5rem;
     width: 1080px;
-    height: 64px;
     border: 0px, 0px, 1px, 0px;
     padding: 8px, 0px, 12px, 0px;
     gap: 8px;
 }
 .titleContent {
     width: 905px;
-    height: 32px;
     font-size: 24px;
     font-weight: 700;
     line-height: 31.68px;
@@ -37,7 +34,6 @@
 
 .previewTldr {
     width: 1080px;
-    height: 78px;
     border: 0px, 0px, 1px, 0px;
     padding: 8px, 0px, 12px, 0px;
     gap: 8px;
@@ -45,7 +41,6 @@
 
 .tldrWord {
     width: 39px;
-    height: 26px;
     line-height: 26.4px;
 }
 
@@ -59,7 +54,6 @@
 
 .previewDesc {
     width: 1080px;
-    height: 302px;
     border: 0px, 0px, 1px, 0px;
     padding: 8px, 0px, 12px, 0px;
     gap: 8px;
@@ -67,7 +61,6 @@
 
 .descWord {
     width: 39px;
-    height: 26px;
     line-height: 26.4px;
 }
 
@@ -78,14 +71,15 @@
     margin-top: 0.5rem;
 }
 
-.buttonContainer {
+.btnContainer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     align-items: center;
     gap: 16px; 
 }
 
-.btnContainer .submitBtn {
+
+.submitBtn {
     width: 152px;
     height: 40px;
     border-radius: 8px;
@@ -97,12 +91,12 @@
     line-height: 28px;
 }
 
-.btnContainer .submitBtn:hover {
+.submitBtn:hover {
     border: none;
     background-color: #F5C27C;
 }
 
-.btnContainer .goBackButton {
+.goBackButton {
     width: 112px;
     height: 28px;
     font-size: 16px;
