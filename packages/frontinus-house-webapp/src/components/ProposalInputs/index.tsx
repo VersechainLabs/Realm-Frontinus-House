@@ -201,7 +201,7 @@ const ProposalInputs: React.FC<{
         'auction',
         imgUrl,
       );
-
+      setLoading(true);
       const proposal = await client.current.createProposal(newProp);
 
       setPropId(proposal.id);
@@ -212,7 +212,7 @@ const ProposalInputs: React.FC<{
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
       setOpenCongratsDialog(true); // Show the initial dialog
       setShowCongratsDialog(true);
-      setLoading(false);
+
     } catch (e) {
       setLoading(false);
     } finally {
