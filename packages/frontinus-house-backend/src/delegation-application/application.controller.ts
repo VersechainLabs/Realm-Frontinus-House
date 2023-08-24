@@ -131,7 +131,7 @@ export class ApplicationController {
   ): Promise<Application> {
     const updateKeys = ['description', 'tldr', 'title', 'previewImage'];
 
-    // verifySignPayload(dto, ['id', ...updateKeys]);
+    verifySignPayload(dto, ['id', ...updateKeys]);
 
     // Delegation must exists:
     const foundApplication = await this.applicationService.findOne(dto.id);
