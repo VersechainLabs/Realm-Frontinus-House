@@ -144,3 +144,20 @@
   justify-content: center;
   align-items: center;
 }
+
+.btnPreview {
+    cursor: pointer;
+    right: 20px;
+    top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 32px;
+    padding: 0px 16px;
+    border-radius: 8px;
+    border: 1px solid #111111;
+    background: #111111;
+    font-weight: 700;
+    color: #a6a9ab;
+}

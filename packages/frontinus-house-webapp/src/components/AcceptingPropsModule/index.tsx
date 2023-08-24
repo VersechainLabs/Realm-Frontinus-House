@@ -90,7 +90,7 @@ const AcceptingPropsModule: React.FC<{
 
       {isProposingWindow &&
         (account ? (
-          !proposalStatus.canCreate ? (
+          proposalStatus && !proposalStatus.canCreate ? (
             <Button text={proposalStatus.message} bgColor={ButtonColor.Gray} />
           ) : (
             <Button

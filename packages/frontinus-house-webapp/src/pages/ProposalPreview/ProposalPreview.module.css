@@ -1,0 +1,108 @@
+.previewCard{
+    margin-top: 4rem;
+    width: 1080px;
+    border-radius: 16px;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 8px;
+    max-width: 100%!important;
+}
+
+.title {
+    width: 1080px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #f5eee6;
+    margin-top: 10px;
+    border-bottom: 1px solid #2c2c2d;
+}
+
+
+.previewTitle {
+    margin-top: 1.5rem;
+    width: 1080px;
+    border: 0px, 0px, 1px, 0px;
+    padding: 8px, 0px, 12px, 0px;
+    gap: 8px;
+}
+.titleContent {
+    width: 905px;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 31.68px;
+}
+
+.previewTldr {
+    width: 1080px;
+    border: 0px, 0px, 1px, 0px;
+    padding: 8px, 0px, 12px, 0px;
+    gap: 8px;
+}
+
+.tldrWord {
+    width: 39px;
+    line-height: 26.4px;
+}
+
+
+.tldrContent {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 0.5rem;
+}
+
+.previewDesc {
+    width: 1080px;
+    border: 0px, 0px, 1px, 0px;
+    padding: 8px, 0px, 12px, 0px;
+    gap: 8px;
+}
+
+.descWord {
+    width: 39px;
+    line-height: 26.4px;
+}
+
+.descContent {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    margin-top: 0.5rem;
+}
+
+.btnContainer {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 16px; 
+}
+
+
+.btnContainer .submitBtn {
+    width: 152px;
+    height: 40px;
+    border-radius: 8px;
+    border: 1px solid #d0a059;
+    gap: 12px;
+    background-color: #d0a059;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #111111;
+    font-family: 'Inconsolata';
+} 
+
+.btnContainer .submitBtn:hover {
+    border-radius: 8px;
+    border: none;
+    background-color: #F5C27C;
+}
+
+.goBackButton {
+    width: 112px;
+    height: 28px;
+    font-size: 16px;
+    line-height: 28px;
+    color: #a6a9ab
+}
