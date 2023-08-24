@@ -59,7 +59,6 @@ export class Proposal {
 
   @ApiProperty({ description: 'The signer address' })
   @Column()
-  @IsEthereumAddress()
   @Field(() => String)
   address: Address;
 
