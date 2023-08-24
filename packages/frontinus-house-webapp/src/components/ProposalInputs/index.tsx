@@ -101,6 +101,7 @@ const ProposalInputs: React.FC<{
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [openCongratsDialog, setOpenCongratsDialog] = useState(false);
   const [showCongratsDialog, setShowCongratsDialog] = useState(false);
+  const proposalData = useAppSelector(state => state.proposal);
   // const [proposalData, setProposalData] = useState({
   //   titlePreview: '',
   //   tldrPreview: '',
@@ -138,12 +139,16 @@ const ProposalInputs: React.FC<{
       return;
     }
     setGetDefaultStatus(true);
-    await client.current.getDefaultCreation().then((res: any) => {
-      if (res.proposalContent) {
-        setGetDefault(res.proposalContent);
-        // setGetDefaultStatus(false);
-      }
-    });
+    if (!proposalData.description) {
+      await client.current.getDefaultCreation().then((res: any) => {
+        if (res.proposalContent) {
+          setGetDefault(res.proposalContent);
+          // setGetDefaultStatus(false);
+        }
+      });
+    } else {
+      setGetDefault(proposalData.description);
+    }
   };
   fetchDefault();
 

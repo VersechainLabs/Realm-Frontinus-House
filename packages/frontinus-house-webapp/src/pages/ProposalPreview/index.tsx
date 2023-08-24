@@ -1,6 +1,8 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import classes from './ProposalPreview.module.css';
+import 'react-quill/dist/quill.snow.css';
+import '../../quill.css';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { FormDataType, FundReqDataType } from '../../components/DelegateEditor';
 import React, { useEffect, useRef, useState } from 'react';
@@ -16,12 +18,16 @@ import { appendProposal } from '../../state/slices/propHouse';
 import { clearProposal } from '../../state/slices/editor';
 import CongratsDialog from '../../components/CongratsDialog';
 import { setAlert } from '../../state/slices/alert';
+import { LoadingButton } from '@mui/lab';
+import Quill from 'quill';
 
 const ProposalPreview: React.FC<{}> = () => {
   const location = useLocation();
   const proposalData = useAppSelector(state => state.proposal);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
+  const quill = new Quill(document.createElement('div'));
+  const quillContainerRef = useRef<HTMLDivElement | null>(null);
   //   const activeAuction = location.state.auction;
   console.log(location);
   const [openCongratsDialog, setOpenCongratsDialog] = useState(false);
@@ -30,6 +36,7 @@ const ProposalPreview: React.FC<{}> = () => {
   const dispatch = useAppDispatch();
   const { data: walletClient } = useWalletClient();
   const navigate = useNavigate();
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host, walletClient));
@@ -61,6 +68,7 @@ const ProposalPreview: React.FC<{}> = () => {
         proposalData.tldr,
         proposalData.id,
       );
+      setIsButtonDisabled(true);
       const proposal = await client.current.createProposal(newProp);
 
       setPropId(proposal.id);
@@ -72,8 +80,10 @@ const ProposalPreview: React.FC<{}> = () => {
       setShowCongratsDialog(true);
       setLoading(false);
     } catch (e) {
+      setIsButtonDisabled(false);
       setLoading(false);
     } finally {
+      setIsButtonDisabled(false);
       setLoading(false);
     }
   };
@@ -141,13 +151,36 @@ const ProposalPreview: React.FC<{}> = () => {
           marginTop: '3.5rem',
         }}
       >
-        <button className={classes.submitBtn} onClick={() => submit()}>
-          Sign and Submit
-        </button>
-
+        {/* <div className={classes.submitBtn}> */}
+        <LoadingButton
+          className={classes.submitBtn}
+          onClick={() => submit()}
+          loading={isButtonDisabled}
+          type="submit"
+          variant="outlined"
+          disabled={isButtonDisabled}
+          style={{
+            // width: '152px',
+            // height: '40px',
+            // borderRadius: '8px',
+            // border: '1px solid #d0a059',
+            // gap: '12px',
+            // backgroundColor: '#d0a059',
+            // fontSize: '15px',
+            // fontWeight: '700',
+            // fontFamily: 'Inconsolata',
+            // color: '#111111',
+            // lineHeight: '28px',
+            textTransform: 'capitalize',
+          }}
+        >
+          {isButtonDisabled ? '' : 'Sign and Submit'}
+        </LoadingButton>
+        {/* </div> */}
         <button
           className={classes.goBackButton}
           onClick={handleGoBack}
+          disabled={isButtonDisabled}
           style={{
             backgroundColor: '#111111',
             border: '1px solid #111111',
