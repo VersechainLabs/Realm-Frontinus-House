@@ -5,11 +5,12 @@ import {
   HttpException,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { Application } from './application.entity';
-import { CreateApplicationDto, GetApplicationDto } from './application.types';
+import { CreateApplicationDto, GetApplicationDto, UpdateApplicationDto } from './application.types';
 import { ApplicationService } from './application.service';
 import { ApiOkResponse, ApiResponse } from '@nestjs/swagger';
 import { ECDSASignedPayloadValidationPipe } from '../entities/ecdsa-signed.pipe';
@@ -25,6 +26,7 @@ import {
   ApplicationCreateStatusMap,
 } from '@nouns/frontinus-house-wrapper';
 import { Delegation } from '../delegation/delegation.entity';
+import { canSubmitApplications, updateValidFields } from 'src/utils';
 
 @Controller('applications')
 export class ApplicationController {
@@ -119,6 +121,42 @@ export class ApplicationController {
     });
     return await this.applicationService.store(newApplication);
   }
+
+  @Patch('/edit')
+  @ApiOkResponse({
+    type: Application,
+  })
+  async editApplication(
+    @Body(ECDSASignedPayloadValidationPipe) dto: UpdateApplicationDto,
+  ): Promise<Application> {
+    const updateKeys = ['description', 'tldr', 'title', 'previewImage'];
+
+    // verifySignPayload(dto, ['id', ...updateKeys]);
+
+    // Delegation must exists:
+    const foundApplication = await this.applicationService.findOne(dto.id);
+    if (!foundApplication) {
+      throw new HttpException(
+        'No application with that ID exists',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    if (!canSubmitApplications(foundApplication.delegation))
+      throw new HttpException(
+        'You cannot edit application for this round at this time',
+        HttpStatus.BAD_REQUEST,
+      );
+
+    if (dto.address !== foundApplication.address)
+      throw new HttpException(
+        "Found application does not match signed payload's address",
+        HttpStatus.BAD_REQUEST,
+      );
+
+    updateValidFields(foundApplication, dto, updateKeys);
+    return await this.applicationService.store(foundApplication);
+  }  
 
   @Get('/canCreate')
   @ApiOkResponse({
