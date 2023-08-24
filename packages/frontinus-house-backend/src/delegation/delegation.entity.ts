@@ -104,6 +104,11 @@ export class Delegation {
   @Field(() => Date)
   deletedDate?: Date;
 
+  public isAcceptingApplications = (): boolean =>
+    new Date() > this.startTime &&
+    new Date() <= this.proposalEndTime &&
+    this.visible == true;
+
   // noinspection JSUnusedGlobalSymbols : use for exclude attrs
   toJSON() {
     return instanceToPlain(this);
