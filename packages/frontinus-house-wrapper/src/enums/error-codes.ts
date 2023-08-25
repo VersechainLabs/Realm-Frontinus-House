@@ -1,3 +1,5 @@
+import { VotingPower } from "frontinus-house-backend/dist/src/vote/vote.types";
+
 export class ApplicationCreateStatus {
   code: number = 0;
   canCreate: boolean = (this.code !== 200);
@@ -22,23 +24,36 @@ export const ProposalCreateStatusMap: Record<string, ApplicationCreateStatus> = 
 
 
 export class VoteStatesClass {
-  code: number = 0;
-  canVote: boolean = (this.code !== 200);
-  reason: string = '';
+  code: number;
+  canVote: boolean;
+  reason: string;
+  votingPower: number;
+
+  constructor(
+    code: number,
+    reason: string,
+    canVote?: boolean,
+    votingPower?: number,
+  ) {
+    this.code = code;
+    this.reason = reason;
+    this.canVote = canVote === undefined ? this.code === 200 : canVote;
+    this.votingPower = votingPower ?? 0;
+  }
 }
 
 export const VoteStates: Record<string, VoteStatesClass> = {
-  OK : { code: 200, canVote: true, reason: "Can vote."},
-  VOTED : { code: 311, canVote: false, reason: "You have voted for this proposal."}, // For Frontend: Show "Cancel" btn. The rest show words only.
-  NOT_VOTING : { code: 312, canVote: false, reason: "Not in the eligible voting period."},
-  VOTED_ANOTHER : { code: 313, canVote: false, reason: "You've already voted another proposal."},
-  DELEGATE_ANOTHER : { code: 320, canVote: false, reason: "You've already delegated your voting power to someone else."},
-  NO_POWER : { code: 314, canVote: false, reason: "Only Realms NFT holders have permission to approve."},
-  NO_DELEGATE_POWER : { code: 321, canVote: false, reason: "Only Realms NFT holders have permission to delegate."},
-  ALREADY_DELEGATED : { code: 319, canVote: false, reason: "User already delegated to another user."},
+  OK : new VoteStatesClass( 200,  "Can vote."),
+  VOTED : new VoteStatesClass( 311,  "You have voted for this proposal."), // For Frontend: Show "Cancel" btn. The rest show words only.
+  NOT_VOTING : new VoteStatesClass( 312,  "Not in the eligible voting period."),
+  VOTED_ANOTHER : new VoteStatesClass( 313,  "Your voting power is already used up in this round."),
+  DELEGATE_ANOTHER : new VoteStatesClass( 320,  "You've already delegated your voting power to someone else."),
+  NO_POWER : new VoteStatesClass( 314,  "Only Realms NFT holders have permission to approve."),
+  NO_DELEGATE_POWER : new VoteStatesClass( 321,  "Only Realms NFT holders have permission to delegate."),
+  ALREADY_DELEGATED : new VoteStatesClass( 319,  "User already delegated to another user."),
 
-  // For Appliation only:
-  NO_APPLICATION : { code: 315, canVote: false, reason: "Can not find application."},
-  APPLICATION_EXIST : { code: 317, canVote: false, reason: "Your campaign profile is open to accepting delegation, so you can't delegate your voting power to others."},
-  NOT_DELEGATING : { code: 318, canVote: false, reason: "Not in the eligible selection period."},
+  // For Application only:
+  NO_APPLICATION : new VoteStatesClass( 315,  "Can not find application."),
+  APPLICATION_EXIST : new VoteStatesClass( 317,  "Your campaign profile is open to accepting delegation, so you can't delegate your voting power to others."),
+  NOT_DELEGATING : new VoteStatesClass( 318,  "Not in the eligible selection period."),
 };
