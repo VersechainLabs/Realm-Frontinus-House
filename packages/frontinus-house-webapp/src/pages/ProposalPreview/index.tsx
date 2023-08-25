@@ -20,13 +20,13 @@ import CongratsDialog from '../../components/CongratsDialog';
 import { setAlert } from '../../state/slices/alert';
 import { LoadingButton } from '@mui/lab';
 import Quill from 'quill';
+import clsx from 'clsx';
 
 const ProposalPreview: React.FC<{}> = () => {
   const location = useLocation();
   const proposalData = useAppSelector(state => state.proposal);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
-  const quill = new Quill(document.createElement('div'));
   const quillContainerRef = useRef<HTMLDivElement | null>(null);
   //   const activeAuction = location.state.auction;
   console.log(location);
@@ -35,6 +35,7 @@ const ProposalPreview: React.FC<{}> = () => {
   const [propId, setPropId] = useState<null | number>(null);
   const dispatch = useAppDispatch();
   const { data: walletClient } = useWalletClient();
+  const [quill, setQuill] = useState<Quill | undefined>(undefined);
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -141,7 +142,7 @@ const ProposalPreview: React.FC<{}> = () => {
           Description{' '}
         </div>
         <div
-          className={classes.descContent}
+          className={clsx(classes.descContent, 'ql-editor')}
           dangerouslySetInnerHTML={{ __html: proposalData.description }}
         />
       </div>
