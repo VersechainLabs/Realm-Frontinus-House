@@ -291,16 +291,7 @@ export class ProposalsController {
    * @returns
    */
   async addVoteState(foundProposal: Proposal, userAddress: string) {
-    if (foundProposal.votes) {
-      for (const vote of foundProposal.votes) {
-        if (vote.address === userAddress) {
-          foundProposal.voteState = VoteStates.VOTED;
-          return;
-        }
-      }
-    }
-
-    const checkVoteState = await this.voteService.checkEligibleToVoteNew(
+    const checkVoteState = await this.voteService.checkEligibleToVote(
       foundProposal,
       foundProposal.auction,
       userAddress,
