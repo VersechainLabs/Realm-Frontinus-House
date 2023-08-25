@@ -44,7 +44,9 @@ export class VoteStatesClass {
 
 export const VoteStates: Record<string, VoteStatesClass> = {
   OK : new VoteStatesClass( 200,  "Can vote."),
-  VOTED : new VoteStatesClass( 311,  "You have voted for this proposal."), // For Frontend: Show "Cancel" btn. The rest show words only.
+  // For VOTED: Check if the current user has voted in this proposal, and if so, the frontend needs to display the "Delete Vote" button.
+  // The back-end does not need that state. The back-end can vote repeatedly on the same proposal to increase its weight.
+  VOTED : new VoteStatesClass( 311,  "You have voted for this proposal."),
   NOT_VOTING : new VoteStatesClass( 312,  "Not in the eligible voting period."),
   VOTED_ANOTHER : new VoteStatesClass( 313,  "Your voting power is already used up in this round."),
   DELEGATE_ANOTHER : new VoteStatesClass( 320,  "You've already delegated your voting power to someone else."),
