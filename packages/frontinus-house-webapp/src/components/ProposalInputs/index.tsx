@@ -139,7 +139,9 @@ const ProposalInputs: React.FC<{
       return;
     }
     setGetDefaultStatus(true);
-    if (!proposalData.description) {
+    console.log(1111111, proposalData.description);
+
+    if (!proposalData.description && !getDefault) {
       await client.current.getDefaultCreation().then((res: any) => {
         if (res.proposalContent) {
           setGetDefault(res.proposalContent);
@@ -148,6 +150,7 @@ const ProposalInputs: React.FC<{
       });
     } else {
       setGetDefault(proposalData.description);
+      dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0 }));
     }
   };
   fetchDefault();
