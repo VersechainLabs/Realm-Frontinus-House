@@ -43,6 +43,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Community } from '../community/community.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('proposals')
 export class ProposalsController {
@@ -82,7 +83,7 @@ export class ProposalsController {
   @Get(':id')
   @ApiOperation({ summary: 'Find proposal by ID' })
   @ApiParam({ name: 'id', type: Number, description: 'Proposal ID' })
-  @ApiParam({
+  @ApiQuery({
     name: 'address',
     type: String,
     description:
@@ -291,6 +292,17 @@ export class ProposalsController {
    * @returns
    */
   async addVoteState(foundProposal: Proposal, userAddress: string) {
+    if (foundProposal.votes) {
+      // Check if the current user has voted in this proposal, and if so, the frontend needs to display the "Delete Vote" button.
+      // The back-end does not need that state. The back-end can vote repeatedly on the same proposal to increase its weight.
+      for (const vote of foundProposal.votes) {
+        if (vote.address === userAddress) {
+          foundProposal.voteState = VoteStates.VOTED;
+          return;
+        }
+      }
+    }
+
     const checkVoteState = await this.voteService.checkEligibleToVote(
       foundProposal,
       foundProposal.auction,
