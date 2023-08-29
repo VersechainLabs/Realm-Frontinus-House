@@ -1,4 +1,4 @@
-import { VotingPower } from "frontinus-house-backend/dist/src/vote/vote.types";
+// import { VotingPower } from "frontinus-house-backend/dist/src/vote/vote.types";
 
 export class ApplicationCreateStatus {
   code: number = 0;
