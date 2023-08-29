@@ -87,8 +87,8 @@ const CongratsDialog: React.FC<CongratsDialogProps> = (props: CongratsDialogProp
                   className={classes.dialogDesc}
                   sx={{ maxHeight: '300px', overflowY: 'auto' }}
                 >
-                  Your proposal has been successfully submitted to{' '}
-                  <span style={{ color: '#F5EEE6' }}>{activeAuction?.title}</span>
+                  Your proposal has been successfully submitted
+                  {/*to{' '} <span style={{ color: '#F5EEE6' }}>{activeAuction?.title}</span>*/}
                 </DialogContent>
                 <DialogActions>
                   <div className={classes.buttonGroup}>

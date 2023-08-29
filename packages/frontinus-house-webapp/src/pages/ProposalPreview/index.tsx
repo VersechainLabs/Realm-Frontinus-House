@@ -10,9 +10,9 @@ import { useAccount, useWalletClient } from 'wagmi';
 import { ProposalFields } from '../../utils/proposalFields';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {
-  InfiniteAuctionProposal,
-  Proposal,
-  Vote,
+    InfiniteAuctionProposal,
+    Proposal, UpdatedProposal,
+    Vote,
 } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { appendProposal } from '../../state/slices/propHouse';
 import { clearProposal } from '../../state/slices/editor';
@@ -61,19 +61,37 @@ const ProposalPreview: React.FC<{}> = () => {
 
   const submit = async () => {
     try {
-      let newProp: Proposal | InfiniteAuctionProposal;
 
-      newProp = new Proposal(
-        proposalData.title,
-        proposalData.description,
-        proposalData.tldr,
-        proposalData.id,
-      );
-      setIsButtonDisabled(true);
-      const proposal = await client.current.createProposal(newProp);
+        if (proposalData.proposalId) {
+            const proposal = await client.current.updateProposal(
+                new UpdatedProposal(
+                    proposalData.proposalId,
+                    proposalData.title,
+                    proposalData.description,
+                    proposalData.tldr,
+                    proposalData.id,
+                    '',
+                    'auction',
+                ),
+            );
+            setPropId(proposal.id);
+            dispatch(appendProposal({ proposal }));
+        } else {
+            let newProp: Proposal | InfiniteAuctionProposal;
 
-      setPropId(proposal.id);
-      dispatch(appendProposal({ proposal }));
+            newProp = new Proposal(
+                proposalData.title,
+                proposalData.description,
+                proposalData.tldr,
+                proposalData.id,
+            );
+            setIsButtonDisabled(true);
+            const proposal = await client.current.createProposal(newProp);
+
+            setPropId(proposal.id);
+            dispatch(appendProposal({ proposal }));
+        }
+
       dispatch(clearProposal());
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });

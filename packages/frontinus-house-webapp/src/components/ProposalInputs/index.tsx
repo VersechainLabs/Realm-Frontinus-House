@@ -17,7 +17,7 @@ import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
 import { DeltaStatic, Quill } from 'quill';
 import {
   InfiniteAuctionProposal,
-  Proposal,
+  Proposal, UpdatedProposal,
   Vote,
 } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { appendProposal } from '../../state/slices/propHouse';
@@ -150,7 +150,8 @@ const ProposalInputs: React.FC<{
       });
     } else {
       setGetDefault(proposalData.description);
-      dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0 }));
+
+      // dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0 }));
     }
   };
   fetchDefault();
@@ -160,21 +161,12 @@ const ProposalInputs: React.FC<{
     const tldr = formData[1].fieldValue;
     const description = quill!.root.innerHTML;
     const id = activeAuction.id;
-    const formDataState = new Proposal(
-      formData[0].fieldValue,
-      description,
-      formData[1].fieldValue,
-      activeAuction.id,
-    );
-    console.log(formDataState);
 
     if (title.trim().length === 0 || tldr.trim().length === 0 || description.trim().length === 0) {
       const errorMessage = 'All fields must be filled before preview!';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       return;
-    } else {
-      navigate('/preview');
     }
 
     if (!account) {
@@ -191,36 +183,53 @@ const ProposalInputs: React.FC<{
     }
 
     setLoading(true);
-
-    dispatch(setProposalData({ title, tldr, description, id }));
+    dispatch(setProposalData({ title:title, tldr:tldr, description:description, id:id }));
+    navigate('/preview');
   };
   const submit = async () => {
     try {
       console.log(content, formData);
-      let newProp: Proposal | InfiniteAuctionProposal;
-
       let imgUrl = matchImg(imgArray, content);
-
-      newProp = new Proposal(
-        formData[0].fieldValue,
-        content,
-        formData[1].fieldValue,
-        activeAuction.id,
-        'auction',
-        imgUrl,
-      );
       setLoading(true);
-      const proposal = await client.current.createProposal(newProp);
 
-      setPropId(proposal.id);
-      dispatch(appendProposal({ proposal }));
+      if (proposalData.proposalId) {
+        const proposal = await client.current.updateProposal(
+            new UpdatedProposal(
+                proposalData.proposalId,
+                formData[0].fieldValue,
+                content,
+                formData[1].fieldValue,
+                activeAuction.id,
+                imgUrl,
+                'auction',
+            ),
+        );
+        setPropId(proposal.id);
+        dispatch(appendProposal({ proposal }));
+      } else {
+        let newProp: Proposal | InfiniteAuctionProposal;
+
+
+        newProp = new Proposal(
+            formData[0].fieldValue,
+            content,
+            formData[1].fieldValue,
+            activeAuction.id,
+            'auction',
+            imgUrl,
+        );
+        const proposal = await client.current.createProposal(newProp);
+        setPropId(proposal.id);
+        dispatch(appendProposal({ proposal }));
+      }
+
+
       dispatch(clearProposal());
 
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
       setOpenCongratsDialog(true); // Show the initial dialog
       setShowCongratsDialog(true);
-
     } catch (e) {
       setLoading(false);
     } finally {
