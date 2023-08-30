@@ -88,7 +88,6 @@ const ProposalInputs: React.FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const activeAuction = location.state.auction;
-  console.log(location);
   const activeCommunity = location.state.community;
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
@@ -123,7 +122,6 @@ const ProposalInputs: React.FC<{
     } else {
       setContent(htmlContent);
     }
-    console.log(content);
   };
   const handleImgArrayChange = (img: string) => {
     let ary = [...imgArray];
@@ -139,7 +137,6 @@ const ProposalInputs: React.FC<{
       return;
     }
     setGetDefaultStatus(true);
-    console.log(1111111, proposalData.description);
 
     if (!proposalData.description && !getDefault) {
       await client.current.getDefaultCreation().then((res: any) => {
@@ -188,7 +185,6 @@ const ProposalInputs: React.FC<{
   };
   const submit = async () => {
     try {
-      console.log(content, formData);
       let imgUrl = matchImg(imgArray, content);
       setLoading(true);
 
