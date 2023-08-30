@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import {setProposalData} from "../../state/slices/proposal";
 import {useNavigate} from "react-router-dom";
 import {setActiveCommunity, setActiveProposals, setActiveRound} from "../../state/slices/propHouse";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ApiWrapper} from "@nouns/frontinus-house-wrapper";
 import {useWalletClient} from "wagmi";
 import { clearProposal, updateProposal } from '../../state/slices/editor';
@@ -48,6 +48,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
   const navigate = useNavigate();
   const proposalData = useAppSelector(state => state.propHouse);
   const userAddress = useAppSelector(state => state.user.address);
+  const [flag, setFlag] = useState(false);
 
   const getProposals = async ()=> {
     const proposals = await client.current.getAuctionProposals(round ? round.id : proposalData.activeRound.id);
@@ -60,10 +61,12 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
     }
 
   }
-  let roundStatus: AuctionStatus = AuctionStatus.AuctionAcceptingProps;
   useEffect(() => {
     if (proposalData.activeRound) {
-      roundStatus = auctionStatus(proposalData.activeRound,true);
+      const roundStatus = auctionStatus(proposalData.activeRound,true);
+      if (roundStatus === AuctionStatus.AuctionAcceptingProps) {
+        setFlag(true)
+      }
     }
   }, [proposalData]);
 
@@ -96,7 +99,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
                       <span>{' • '} {formatServerDate(proposal.createdDate)}</span>
-                      {userAddress && userAddress === proposal.address && roundStatus === AuctionStatus.AuctionAcceptingProps && (<span
+                      {userAddress && userAddress === proposal.address && flag && (<span
                           onClick={editProposal}
                           className={classes.editBy}>{' • '}
                         <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
