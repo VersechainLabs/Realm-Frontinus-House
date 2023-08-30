@@ -77,7 +77,6 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
     dispatch(updateProposal({ title: proposal.title, tldr: proposal.tldr, what: proposal.what, reqAmount: null}));
 
     navigate('/create',{ state: { auction:proposalData.activeRound, community:proposalData.activeCommunity, proposals:proposalData.activeProposals }});
-    console.log(1111,proposalData.activeRound, proposalData.activeCommunity, proposalData.activeProposals)
 
   }
 
