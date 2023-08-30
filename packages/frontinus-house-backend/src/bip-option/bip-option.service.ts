@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindOneOptions, Repository } from 'typeorm';
 import { BipOption } from './bip-option.entity';
+import { GetBipOptionsDto } from './bip-option.types';
 
 @Injectable()
 export class BipOptionService {
@@ -14,26 +15,26 @@ export class BipOptionService {
     return this.bipOptionRepository.findOne(options);
   }
   
-//   findAll(dto: GetProposalsDto) {
-//     return this.proposalsRepository.find({
-//       skip: dto.skip,
-//       take: dto.limit,
-//       order: {
-//         createdDate: dto.order,
-//       },
-//       loadRelationIds: {
-//         relations: ['votes'],
-//       },
-//       where: { visible: true },
-//     });
-//   }
+  findAll(dto: GetBipOptionsDto) {
+    return this.bipOptionRepository.find({
+      skip: dto.skip,
+      take: dto.limit,
+      order: {
+        createdDate: dto.order,
+      },
+      // loadRelationIds: {
+      //   relations: ['votes'],
+      // },
+      where: { visible: true },
+    });
+  }
 
-//   findAllWithAuctionId(auctionId: number) {
-//     return this.proposalsRepository.find({
-//       relations: ['votes'],
-//       where: { visible: true, auctionId: auctionId },
-//     });
-//   }
+  async findAllWithBipRoundId(bipRoundId: number) {
+    return await this.bipOptionRepository.find({
+      // relations: ['votes'],
+      where: { bipRoundId: bipRoundId },
+    });
+  }
 
 //   async findOne(id: number) {
 //     const proposal = await this.proposalsRepository.findOne(id, {

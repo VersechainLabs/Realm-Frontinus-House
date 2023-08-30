@@ -13,6 +13,8 @@ import { Delegate } from '../delegate/delegate.entity';
 import { DelegateService } from '../delegate/delegate.service';
 import { DelegationService } from '../delegation/delegation.service';
 import { VotesService } from '../vote/votes.service';
+import { BipRoundService } from 'src/bip-round/bip-round.service';
+import { BipOptionService } from 'src/bip-option/bip-option.service';
 
 @Module({
   imports: [
@@ -28,7 +30,8 @@ import { VotesService } from '../vote/votes.service';
   controllers: [BipVoteController],
   providers: [
     BipVoteService,
-    AuctionsService,
+    BipRoundService,
+    BipOptionService,
     BlockchainService,
   ],
   exports: [TypeOrmModule],

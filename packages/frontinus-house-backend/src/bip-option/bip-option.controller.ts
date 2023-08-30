@@ -39,7 +39,7 @@ import {
   import { BlockchainService } from '../blockchain/blockchain.service';
 import { BipVoteService } from 'src/bip-vote/bip-vote.service';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
-import { CreateBipOptionDto } from './bip-option.types';
+import { CreateBipOptionDto, GetBipOptionsDto } from './bip-option.types';
   
   @Controller('bip-option')
   export class BipOptionController {
@@ -89,10 +89,13 @@ import { CreateBipOptionDto } from './bip-option.types';
       return this.bipOptionService.store(proposal);
     }
 
-    // @Get()
-    // getProposals(@Query() dto: GetProposalsDto): Promise<Proposal[]> {
-    //   return this.proposalsService.findAll(dto);
-    // }
+    @Get('/list')
+    @ApiOkResponse({
+      type: [BipOption],
+    })
+    async getBipOptionsByBipRoundId(@Query('bipRoundId') bipRoundId: number): Promise<BipOption[]> {
+      return this.bipOptionService.findAllWithBipRoundId(bipRoundId);
+    }
   
   }
   

@@ -20,9 +20,9 @@ export class CreateBipVoteDto extends SignedEntity {
   @IsOptional()
   direction: number;
 
-  @ApiProperty({ description: 'The proposal ID for vote' })
+  @ApiProperty({ description: 'The option ID for vote' })
   @IsNumber()
-  bipId: number;
+  bipOptionId: number;
 }
 
 export class DeleteBipVoteDto extends SignedEntity {
@@ -31,10 +31,10 @@ export class DeleteBipVoteDto extends SignedEntity {
   @IsOptional()
   id: number;
 
-  @ApiProperty({ description: 'The proposal ID to delete vote' })
+  @ApiProperty({ description: 'The option ID to delete vote' })
   @IsNumber()
   @IsOptional()
-  bipId: number;
+  bipOptionId: number;
 }
 
 export class DelegatedBipVoteDto extends CreateBipVoteDto {
