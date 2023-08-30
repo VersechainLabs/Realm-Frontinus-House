@@ -15,12 +15,15 @@ import { DelegationService } from '../delegation/delegation.service';
 import { VotesService } from '../vote/votes.service';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
+import { BipRound } from 'src/bip-round/bip-round.entity';
+import { BipOption } from 'src/bip-option/bip-option.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       BipVote,
-      Auction,
+      BipRound,
+      BipOption,
       Community,
       Snapshot,
       Delegate,

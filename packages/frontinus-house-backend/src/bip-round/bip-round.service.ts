@@ -21,8 +21,6 @@ export type AuctionWithProposalCount = BipRound & { numProposals: number };
 export class BipRoundService {
   constructor(
     @InjectRepository(BipRound) private bipRoundRepository: Repository<BipRound>,
-    @InjectRepository(Community)
-    private communitiesRepository: Repository<Community>,
     private readonly blockchainService: BlockchainService,
     @InjectRepository(Delegate)
     private delegateRepository: Repository<Delegate>,

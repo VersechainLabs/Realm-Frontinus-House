@@ -36,18 +36,18 @@ export class BipOptionService {
     });
   }
 
-//   async findOne(id: number) {
-//     const proposal = await this.proposalsRepository.findOne(id, {
-//       relations: ['votes', 'auction', 'auction.community'],
-//       where: { visible: true },
-//     });
+  async findOne(id: number) {
+    const proposal = await this.bipOptionRepository.findOne(id, {
+      relations: ['bipVotes', 'bipRound'],
+      where: { visible: true },
+    });
 
-//     if (!proposal || !proposal.auction) {
-//       return null;
-//     }
-//     proposal.auctionId = proposal.auction.id;
-//     return proposal;
-//   }
+    if (!proposal || !proposal.bipRound) {
+      return null;
+    }
+    proposal.bipRoundId = proposal.bipRound.id;
+    return proposal;
+  }
 
 //   findBetween(start: Date = new Date('1900-01-01'), end: Date) {
 //     return this.proposalsRepository
