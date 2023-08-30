@@ -4,7 +4,7 @@ import { FindOneOptions, Repository } from 'typeorm';
 import { BipOption } from './bip-option.entity';
 
 @Injectable()
-export class BipService {
+export class BipOptionService {
   constructor(
     @InjectRepository(BipOption)
     private bipOptionRepository: Repository<BipOption>,
@@ -69,7 +69,7 @@ export class BipService {
 //     await this.proposalsRepository.save(foundProposal);
 //   }
 
-//   async store(proposal: Proposal) {
-//     return await this.proposalsRepository.save(proposal);
-//   }
+  async store(bipOption: BipOption) {
+    return await this.bipOptionRepository.save(bipOption);
+  }
 }

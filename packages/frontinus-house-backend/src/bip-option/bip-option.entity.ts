@@ -21,7 +21,7 @@ import { VoteStatesClass } from '@nouns/frontinus-house-wrapper';
 import { BipVote } from 'src/bip-vote/bip-vote.entity';
 import { BipRound } from 'src/bip-round/bip-round.entity';
 
-@Entity('bip-option')
+@Entity()
 @ObjectType()
 export class BipOption {
   @ApiProperty()

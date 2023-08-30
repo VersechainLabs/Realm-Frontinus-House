@@ -12,7 +12,7 @@ import {
 import { SignedEntity } from '../entities/signed';
 import { Order } from '../utils/dto-types';
 
-export class CreateBipProposalDto extends SignedEntity {
+export class CreateBipOptionDto extends SignedEntity {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
@@ -33,10 +33,10 @@ export class CreateBipProposalDto extends SignedEntity {
 
   @ApiProperty()
   @IsNumber()
-  parentAuctionId: number;
+  parentBipRoundId: number;
 }
 
-export class UpdateBipProposalDto extends SignedEntity {
+export class UpdateBipOptionDto extends SignedEntity {
   @ApiProperty()
   @IsNumber()
   id: number;
@@ -62,12 +62,12 @@ export class UpdateBipProposalDto extends SignedEntity {
   tldr: string;
 }
 
-export class DeleteBipProposalDto extends SignedEntity {
+export class DeleteBipOptionDto extends SignedEntity {
   @IsNumber()
   id: number;
 }
 
-export class GetBipProposalsDto {
+export class GetBipOptionsDto {
   @IsOptional()
   @IsInt()
   @Min(1)

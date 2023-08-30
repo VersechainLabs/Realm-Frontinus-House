@@ -15,7 +15,7 @@ import { DelegationService } from '../delegation/delegation.service';
 import { Delegation } from '../delegation/delegation.entity';
 import { AdminService } from '../admin/admin.service';
 import { Admin } from '../admin/admin.entity';
-import { BipService } from 'src/bip-option/bip-option.service';
+import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipOptionModule } from 'src/bip-option/bip-option.module';
 
 @Module({
@@ -34,7 +34,7 @@ import { BipOptionModule } from 'src/bip-option/bip-option.module';
   controllers: [BipRoundController],
   providers: [
     BipRoundService,
-    BipService,
+    BipOptionService,
     AdminService,
     BlockchainService,
     DelegateService,

@@ -41,6 +41,14 @@ export class BipRoundService {
     });
   }
 
+  findOne(id: number): Promise<BipRound> {
+    return this.bipRoundRepository.findOne(id, {
+      // relations: ['bipOption'],
+      where: { visible: true },
+    });
+  }
+
+
   async createBipRound(dto: CreateBipRoundDto): Promise<BipRound> {
     if (
       dto.startTime >= dto.endTime

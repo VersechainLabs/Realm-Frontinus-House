@@ -23,7 +23,7 @@ import {
   import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
   import { verifySignPayload } from '../utils/verifySignedPayload';
   import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
-import { BipService } from 'src/bip-option/bip-option.service';
+import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipRoundService } from './bip-round.service';
 import { CreateBipRoundDto } from './bip-round.types';
   
@@ -33,11 +33,11 @@ import { CreateBipRoundDto } from './bip-round.types';
   
     constructor(
       private readonly bipRoundService: BipRoundService,
-      private readonly bipService: BipService,
+      private readonly bipOptionService: BipOptionService,
       private readonly adminService: AdminService,
     ) {}
   
-    @Get()
+    @Get('/list')
     @ApiOkResponse({
       type: [BipRound],
     })

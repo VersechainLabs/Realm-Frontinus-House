@@ -21,7 +21,7 @@ import {
     VoteStates,
   } from '@nouns/frontinus-house-wrapper';
   import { BipOption } from './bip-option.entity';
-  import { BipService } from './bip-option.service';
+  import { BipOptionService } from './bip-option.service';
   import {
     ApiNotFoundResponse,
     ApiOkResponse,
@@ -37,17 +37,58 @@ import {
   import { InjectRepository } from '@nestjs/typeorm';
   import { Community } from '../community/community.entity';
   import { BlockchainService } from '../blockchain/blockchain.service';
+import { BipVoteService } from 'src/bip-vote/bip-vote.service';
+import { BipRoundService } from 'src/bip-round/bip-round.service';
+import { CreateBipOptionDto } from './bip-option.types';
   
   @Controller('bip-option')
   export class BipOptionController {
     constructor(
-      private readonly bipService: BipService,
-      private readonly voteService: VotesService,
+      private readonly bipRoundService: BipRoundService,
+      private readonly bipOptionService: BipOptionService,
+      private readonly bipVoteService: BipVoteService,
       private readonly blockchainService: BlockchainService,
-      @InjectRepository(Community)
-      private communitiesRepository: Repository<Community>,
     ) {}
+
+
+    @Post('/create')
+    @ApiOkResponse({
+      type: BipOption,
+    })
+    async create(
+      @Body(ECDSASignedPayloadValidationPipe)
+      dto: CreateBipOptionDto,
+    ): Promise<BipOption> {
+      // verifySignPayload(dto, [
+      //   'what',
+      //   'tldr',
+      //   'title',
+      //   'parentBipRoundId',
+      // ]);
   
+      const foundAuction = await this.bipRoundService.findOne(
+        dto.parentBipRoundId,
+      );
+      if (!foundAuction)
+        throw new HttpException(
+          'No round with that ID exists',
+          HttpStatus.NOT_FOUND,
+        );
+  
+  
+      // Do create:
+      const proposal = new BipOption();
+      proposal.address = dto.address;
+      proposal.what = dto.what;
+      proposal.tldr = dto.tldr;
+      proposal.title = dto.title;
+      proposal.bipRound = foundAuction;
+      proposal.createdDate = new Date();
+      proposal.previewImage = dto.previewImage;
+  
+      return this.bipOptionService.store(proposal);
+    }
+
     // @Get()
     // getProposals(@Query() dto: GetProposalsDto): Promise<Proposal[]> {
     //   return this.proposalsService.findAll(dto);
