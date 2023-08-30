@@ -12,7 +12,7 @@ import {
   import { ProposalsService } from '../proposal/proposals.service';
   import {
     verifySignPayload,
-    verifySignPayloadForVote,
+    // verifySignPayloadForVote,
   } from '../utils/verifySignedPayload';
   import { convertVoteListToDelegateVoteList, BipVote } from './bip-vote.entity';
 //   import {
