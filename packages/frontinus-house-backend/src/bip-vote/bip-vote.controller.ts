@@ -33,9 +33,10 @@ import {
   } from '@nestjs/swagger/dist/decorators/api-response.decorator';
   import { ApiQuery } from '@nestjs/swagger/dist/decorators/api-query.decorator';
   import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
-import { CreateBipVoteDto } from './bip-vote.types';
+import { CreateBipVoteDto, DelegatedBipVoteDto } from './bip-vote.types';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
+import { DelegatedVoteDto } from 'src/vote/vote.types';
   
   @Controller('bipVotes')
   export class BipVoteController {
@@ -56,98 +57,98 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
      * - casting vote does not exceed > voting power
      * @param createVoteDto
      */
-    // @Post('/create')
-    // @ApiOperation({ summary: 'Create vote' })
-    // @ApiResponse({
-    //   status: 201,
-    //   description: 'The vote has been successfully created.',
-    //   type: [BipVote],
-    // })
-    // @ApiResponse({ status: 400, description: 'Bad request.' })
-    // async create(
-    //   @Body(SignedPayloadValidationPipe) createVoteDto: CreateBipVoteDto,
-    // ): Promise<BipVote[]> {
-    //   // verifySignPayloadForVote(createVoteDto);
+    @Post('/create')
+    @ApiOperation({ summary: 'Create vote' })
+    @ApiResponse({
+      status: 201,
+      description: 'The vote has been successfully created.',
+      type: [BipVote],
+    })
+    @ApiResponse({ status: 400, description: 'Bad request.' })
+    async create(
+      @Body(SignedPayloadValidationPipe) createVoteDto: CreateBipVoteDto,
+    ): Promise<BipVote[]> {
+      // verifySignPayloadForVote(createVoteDto);
 
-    //   const foundProposal = await this.bipOptionService.findOne(
-    //     createVoteDto.bipOptionId,
-    //   );
-    //   // Verify that proposal exist
-    //   if (!foundProposal) {
-    //     throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
-    //   }
+      const foundOption = await this.bipOptionService.findOne(
+        createVoteDto.bipOptionId,
+      );
+      // Verify that proposal exist
+      if (!foundOption) {
+        throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+      }
 
-    //   const foundAuction = foundProposal.auction;
-    //   await this.bipVotesService.checkEligibleToVote(
-    //     foundProposal,
-    //     foundAuction,
-    //     createVoteDto.address,
-    //     false,
-    //   );
+      const foundRound = foundOption.bipRound;
+      await this.bipVotesService.checkEligibleToVote(
+        foundOption,
+        foundRound,
+        createVoteDto.address,
+        false,
+      );
 
-    //   const delegateList = await this.votesService.getDelegateListByAuction(
-    //     createVoteDto.address,
-    //     foundAuction,
-    //   );
+      const delegateList = await this.bipVotesService.getDelegateListByAuction(
+        createVoteDto.address,
+        foundRound,
+      );
 
-    //   const voteList: DelegatedVoteDto[] = [];
-    //   const vp = await this.blockchainService.getVotingPowerWithSnapshot(
-    //     createVoteDto.address,
-    //     foundAuction.community.contractAddress,
-    //     foundAuction.balanceBlockTag,
-    //   );
-    //   voteList.push({
-    //     ...createVoteDto,
-    //     delegateId: null,
-    //     delegate: null,
-    //     blockHeight: foundAuction.balanceBlockTag,
-    //     weight: vp,
-    //     actualWeight: vp,
-    //   } as DelegatedVoteDto);
-    //   for (const delegate of delegateList) {
-    //     const vp = await this.blockchainService.getVotingPowerWithSnapshot(
-    //       delegate.fromAddress,
-    //       foundAuction.community.contractAddress,
-    //       foundAuction.balanceBlockTag,
-    //     );
-    //     if (vp === 0) {
-    //       // vp is 0, don't record it.
-    //       continue;
-    //     }
-    //     voteList.push({
-    //       ...createVoteDto,
-    //       address: delegate.fromAddress,
-    //       delegateId: delegate.id,
-    //       delegateAddress: delegate.toAddress,
-    //       delegate: delegate,
-    //       blockHeight: foundAuction.balanceBlockTag,
-    //       weight: 0, //  weight is 0 because they are delegated by other.
-    //       actualWeight: vp,
-    //     } as DelegatedVoteDto);
-    //   }
+      const voteList: DelegatedBipVoteDto[] = [];
+      const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+        createVoteDto.address,
+        process.env.COMMUNITY_ADDRESS,
+        foundRound.balanceBlockTag,
+      );
+      voteList.push({
+        ...createVoteDto,
+        delegateId: null,
+        delegate: null,
+        blockHeight: foundRound.balanceBlockTag,
+        weight: vp,
+        actualWeight: vp,
+      } as DelegatedBipVoteDto);
+      for (const delegate of delegateList) {
+        const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+          delegate.fromAddress,
+          process.env.COMMUNITY_ADDRESS,
+          foundRound.balanceBlockTag,
+        );
+        if (vp === 0) {
+          // vp is 0, don't record it.
+          continue;
+        }
+        voteList.push({
+          ...createVoteDto,
+          address: delegate.fromAddress,
+          delegateId: delegate.id,
+          delegateAddress: delegate.toAddress,
+          delegate: delegate,
+          blockHeight: foundRound.balanceBlockTag,
+          weight: 0, //  weight is 0 because they are delegated by other.
+          actualWeight: vp,
+        } as DelegatedBipVoteDto);
+      }
 
-    //   // Verify that signer has voting power
-    //   const votingPower = voteList.reduce(
-    //     (acc, vote) => acc + vote.actualWeight,
-    //     0,
-    //   );
+      // Verify that signer has voting power
+      const votingPower = voteList.reduce(
+        (acc, vote) => acc + vote.actualWeight,
+        0,
+      );
 
-    //   if (votingPower === 0) {
-    //     throw new HttpException(
-    //       'Signer does not have voting power',
-    //       HttpStatus.BAD_REQUEST,
-    //     );
-    //   } else {
-    //     voteList[0].weight = votingPower;
-    //   }
+      if (votingPower === 0) {
+        throw new HttpException(
+          'Signer does not have voting power',
+          HttpStatus.BAD_REQUEST,
+        );
+      } else {
+        voteList[0].weight = votingPower;
+      }
 
-    //   const voteResultList = await this.votesService.createNewVoteList(
-    //     voteList,
-    //     foundProposal,
-    //   );
+      const voteResultList = await this.bipVotesService.createNewVoteList(
+        voteList,
+        foundOption,
+      );
 
-    //   await this.proposalService.rollupVoteCount(foundProposal.id);
+      await this.bipOptionService.rollupVoteCount(foundOption.id);
 
-    //   return convertVoteListToDelegateVoteList(voteResultList);
-    // }
+      return convertVoteListToDelegateVoteList(voteResultList);
+    }
   }
