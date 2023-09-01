@@ -145,10 +145,7 @@ export class AuctionsController {
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
 
     if (address) {
-      foundAuction['myVotes'] = this.auctionsService.calculateMyVoteForRound(
-        foundAuction,
-        address,
-      );
+      await this.auctionsService.calculateMyVoteForRound(foundAuction, address);
     }
 
     return foundAuction;
