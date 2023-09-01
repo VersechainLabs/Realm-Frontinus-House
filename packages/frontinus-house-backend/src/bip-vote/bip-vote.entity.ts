@@ -15,6 +15,7 @@ import { Address } from '../types/address';
 import { IsEthereumAddress } from 'class-validator';
 import { Exclude, instanceToPlain } from 'class-transformer';
 import { BipOption } from 'src/bip-option/bip-option.entity';
+import { BipRound } from 'src/bip-round/bip-round.entity';
 
 @Entity()
 @ObjectType()
@@ -42,10 +43,24 @@ export class BipVote {
   @JoinColumn()
   bipOption: BipOption;
 
+  // bipRound: any;
+
+  @ManyToOne(() => BipRound, (bipRound) => bipRound.bipVotes, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  bipRound: BipRound;
+
+
   @ApiProperty()
   @Column()
   @Field(() => Int)
   bipOptionId: number;
+
+  @ApiProperty()
+  @Column()
+  @Field(() => Int)
+  bipRoundId: number;
 
   @ApiProperty({
     description:
