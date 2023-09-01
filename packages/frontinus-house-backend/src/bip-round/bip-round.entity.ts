@@ -19,6 +19,7 @@ import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 import { Exclude } from 'class-transformer';
 import { Address } from '../types/address';
 import { BipOption } from 'src/bip-option/bip-option.entity';
+import { BipVote } from 'src/bip-vote/bip-vote.entity';
 
 @Entity()
 @ObjectType()
@@ -73,6 +74,15 @@ export class BipRound {
   @ApiProperty({ isArray: true })
   @RelationId((bipRound: BipRound) => bipRound.bipOptions)
   bipOptionIds: number[];
+
+
+  @OneToMany(() => BipVote, (bipVote) => bipVote.bipRound, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => [BipVote])
+  bipVotes: BipVote[];
+
 
   @ApiProperty()
   @Column({ default: 0 })

@@ -41,7 +41,7 @@ export class BipRoundService {
 
   findOne(id: number): Promise<BipRound> {
     return this.bipRoundRepository.findOne(id, {
-      relations: ['bipOptions'],
+      relations: ['bipOptions', 'bipVotes'],
       where: { visible: true },
     });
   }
