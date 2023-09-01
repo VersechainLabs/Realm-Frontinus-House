@@ -7,6 +7,7 @@ import {
   CreateAuctionDto,
   GetAuctionsDto,
   LatestDto,
+  MyVoteDto,
   UpdateAuctionDto,
 } from './auction.types';
 import { Community } from '../community/community.entity';
@@ -171,7 +172,7 @@ export class AuctionsService {
 
   findOne(id: number): Promise<Auction> {
     return this.auctionsRepository.findOne(id, {
-      relations: ['proposals'],
+      relations: ['proposals', 'proposals.votes'],
       loadRelationIds: {
         relations: ['community'],
       },
@@ -304,5 +305,27 @@ export class AuctionsService {
     //   : AuctionVisibleStatus.PENDING;
 
     return await this.auctionsRepository.save(foundAuction);
+  }
+
+  calculateMyVoteForRound(auction: Auction, address: string): MyVoteDto[] {
+    const result: MyVoteDto[] = [];
+    for (const proposal of auction.proposals) {
+      if (!proposal.votes) {
+        continue;
+      }
+
+      for (const vote of proposal.votes) {
+        if (vote.address.toLowerCase() == address.toLowerCase()) {
+          const proposalCopy = { ...proposal };
+          delete proposalCopy.votes; // remove duplicate votes attr
+          result.push({
+            proposal: proposalCopy,
+            vote: vote,
+          } as MyVoteDto);
+          break;
+        }
+      }
+    }
+    return result;
   }
 }

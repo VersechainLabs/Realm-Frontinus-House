@@ -31,6 +31,7 @@ import { AdminService } from '../admin/admin.service';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 import { verifySignPayload } from '../utils/verifySignedPayload';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('auctions')
 export class AuctionsController {
@@ -126,13 +127,30 @@ export class AuctionsController {
   }
 
   @Get(':id')
+  @ApiParam({ name: 'id', type: Number, description: 'Auction ID' })
+  @ApiQuery({
+    name: 'address',
+    description: 'The current user\'s address, calculate "my_votes"',
+    required: false,
+  })
   @ApiOkResponse({
     type: Auction,
   })
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<Auction> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('address') address?: string,
+  ): Promise<Auction> {
     const foundAuction = await this.auctionsService.findOne(id);
     if (!foundAuction)
       throw new HttpException('Auction not found', HttpStatus.NOT_FOUND);
+
+    if (address) {
+      foundAuction['myVotes'] = this.auctionsService.calculateMyVoteForRound(
+        foundAuction,
+        address,
+      );
+    }
+
     return foundAuction;
   }
 
