@@ -173,9 +173,6 @@ export class AuctionsService {
   findOne(id: number): Promise<Auction> {
     return this.auctionsRepository.findOne(id, {
       relations: ['proposals', 'proposals.votes', 'community'],
-      loadRelationIds: {
-        relations: ['community'],
-      },
       where: { visible: true },
     });
   }
@@ -307,9 +304,12 @@ export class AuctionsService {
     return await this.auctionsRepository.save(foundAuction);
   }
 
-  async calculateMyVoteForRound(auction: Auction, address: string) {
-    let remainVotingPower = 0;
-    let totalVotingPower = 0;
+  async calculateMyVoteForRound(
+    auction: Auction,
+    address: string,
+    totalVotingPower: number,
+  ) {
+    let remainVotingPower = totalVotingPower;
 
     const result: MyVoteDto[] = [];
     for (const proposal of auction.proposals) {
@@ -326,28 +326,15 @@ export class AuctionsService {
             vote: vote,
           } as MyVoteDto);
 
-          if (totalVotingPower === 0) {
-            totalVotingPower = vote.actualWeight;
-            remainVotingPower = totalVotingPower - vote.weight;
-          } else {
-            remainVotingPower -= vote.weight;
-          }
+          remainVotingPower -= vote.weight;
           break;
         }
       }
     }
 
-    if (result.length === 0) {
-      totalVotingPower =
-        await this.blockchainService.getVotingPowerWithSnapshot(
-          address,
-          auction.community.contractAddress,
-          auction.balanceBlockTag,
-        );
-      remainVotingPower = totalVotingPower;
-    }
     auction['myVotes'] = {
       totalVotingPower: totalVotingPower,
+      spentVotingPower: totalVotingPower - remainVotingPower,
       remainVotingPower: remainVotingPower,
       list: result,
     };
