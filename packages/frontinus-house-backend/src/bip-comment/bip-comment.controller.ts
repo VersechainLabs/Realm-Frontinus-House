@@ -35,7 +35,7 @@ import { BipComment } from './bip-comment.entity';
       return await this.commentsService.createComment(createCommentDto);
     }
   
-    @Patch()
+    @Patch('/edit')
     @ApiOkResponse({
       type: BipComment,
     })
@@ -48,7 +48,7 @@ import { BipComment } from './bip-comment.entity';
       return await this.commentsService.updateComment(dto);
     }
   
-    @Get('/byProposal/:proposalId')
+    @Get('/byBipRound/:bipRoundId')
     @ApiOkResponse({
       type: [BipComment],
     })
@@ -71,10 +71,10 @@ import { BipComment } from './bip-comment.entity';
       required: false,
     })
     async findByProposal(
-      @Param('proposalId', ParseIntPipe) proposalId: number,
+      @Param('bipRoundId', ParseIntPipe) bipRoundId: number,
       @Query() dto: GetBipCommentsDto,
     ): Promise<BipComment[]> {
-      const comments = await this.commentsService.findByProposal(proposalId, dto);
+      const comments = await this.commentsService.findByProposal(bipRoundId, dto);
       if (!comments)
         throw new HttpException('Comment not found', HttpStatus.NOT_FOUND);
       return comments;

@@ -21,11 +21,11 @@ export class BipCommentsService {
   ) {}
 
   async findByProposal(
-    proposalId: number,
+    bipRoundId: number,
     dto: GetBipCommentsDto,
   ): Promise<BipComment[]> {
     return await this.commentsRepository.find({
-      where: { proposalId },
+      where: { bipRoundId },
       take: dto.limit,
       skip: dto.skip,
       order: { id: dto.order },
