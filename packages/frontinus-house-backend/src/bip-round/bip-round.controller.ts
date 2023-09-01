@@ -79,5 +79,12 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
       return newRound;
     }    
 
+    @Get('/detail/:id')
+    @ApiOkResponse({
+      type: [BipRound],
+    })
+    async getDetail(@Param('id', ParseIntPipe) id: number): Promise<BipRound> {
+      return await this.bipRoundService.findOne(id);
+    }
 }
   
