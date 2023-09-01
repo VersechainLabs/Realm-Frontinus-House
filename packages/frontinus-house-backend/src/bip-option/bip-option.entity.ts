@@ -60,11 +60,6 @@ export class BipOption {
   @Column()
   bipRoundId: number;
 
-  @ApiProperty()
-  @Column({ nullable: true })
-  @Field(() => String)
-  previewImage: string;
-
   @ApiProperty({ type: () => BipVote, isArray: true })
   @OneToMany(() => BipVote, (bipVote) => bipVote.bipOption, {
     createForeignKeyConstraints: false,

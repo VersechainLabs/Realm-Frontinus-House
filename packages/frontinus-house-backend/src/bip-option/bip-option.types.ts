@@ -43,10 +43,6 @@ export class UpdateBipOptionDto extends SignedEntity {
   @IsOptional()
   description: string;
 
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  previewImage?: string;
 }
 
 export class DeleteBipOptionDto extends SignedEntity {
