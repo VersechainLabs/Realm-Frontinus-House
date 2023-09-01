@@ -79,12 +79,12 @@ import { CreateBipOptionDto, GetBipOptionsDto } from './bip-option.types';
       // Do create:
       const proposal = new BipOption();
       proposal.address = dto.address;
-      proposal.what = dto.what;
-      proposal.tldr = dto.tldr;
-      proposal.title = dto.title;
+      proposal.description = dto.description;
+      proposal.optionType = dto.optionType;
+      // proposal.title = dto.title;
       proposal.bipRound = foundAuction;
       proposal.createdDate = new Date();
-      proposal.previewImage = dto.previewImage;
+      // proposal.previewImage = dto.previewImage;
   
       return this.bipOptionService.store(proposal);
     }
