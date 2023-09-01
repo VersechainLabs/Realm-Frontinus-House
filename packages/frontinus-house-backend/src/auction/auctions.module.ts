@@ -15,6 +15,8 @@ import { DelegationService } from '../delegation/delegation.service';
 import { Delegation } from '../delegation/delegation.entity';
 import { AdminService } from '../admin/admin.service';
 import { Admin } from '../admin/admin.entity';
+import { VotesService } from "../vote/votes.service";
+import { Vote } from "../vote/vote.entity";
 
 @Module({
   imports: [
@@ -26,6 +28,7 @@ import { Admin } from '../admin/admin.entity';
       Snapshot,
       Delegate,
       Delegation,
+      Vote,
     ]),
   ],
   controllers: [AuctionsController],
@@ -37,6 +40,7 @@ import { Admin } from '../admin/admin.entity';
     BlockchainService,
     DelegateService,
     DelegationService,
+    VotesService,
   ],
   exports: [TypeOrmModule],
 })
