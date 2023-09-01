@@ -111,6 +111,8 @@ export class BipRound {
   @Field(() => String)
   balanceBlockTag: number;
 
+  comments: any;
+
   @ApiProperty()
   @Column({
     type: 'int',
@@ -124,6 +126,7 @@ export class BipRound {
     new Date() > this.startTime &&
     new Date() <= this.endTime &&
     this.visibleStatus == AuctionVisibleStatus.NORMAL;
+
 
   // @AfterLoad()
   // public countProposals() {
