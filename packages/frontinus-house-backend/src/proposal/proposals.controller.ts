@@ -268,7 +268,7 @@ export class ProposalsController {
       where: { auctionId: auctionId, address: address },
     });
     if (existingVote) {
-      return ProposalCreateStatusMap.DELEGATE_TO_OTHER;
+      return ProposalCreateStatusMap.VOTED_TO_OTHER;
     }
 
     // Long: Create Proposal don't need Realms NFT:
