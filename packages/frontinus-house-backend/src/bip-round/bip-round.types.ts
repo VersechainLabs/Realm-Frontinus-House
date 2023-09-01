@@ -10,6 +10,7 @@ import {
   IsPositive,
   IsString,
   Min,
+  isArray,
 } from 'class-validator';
 import { SignedEntity } from '../entities/signed';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
@@ -32,6 +33,16 @@ export class CreateBipRoundDto extends SignedEntity {
   @ApiProperty()
   @IsString()
   description: string;
+
+  @ApiProperty()
+  @IsArray()
+  options: string[];  
+  // @IsString()
+  // options: string;  
+
+  @ApiProperty()
+  @IsNumber()
+  optionType: number;
 }
 
 export class UpdateBipRoundDto extends SignedEntity {

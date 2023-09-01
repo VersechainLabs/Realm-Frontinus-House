@@ -16,20 +16,17 @@ export class CreateBipOptionDto extends SignedEntity {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  title: string;
+  description: string;
 
   @ApiProperty()
-  @IsString()
-  what: string;
+  @IsNumber()
+  optionType: number;
 
-  @IsOptional()
-  @ApiProperty()
-  @IsString()
-  previewImage?: string;
+  // @IsOptional()
+  // @ApiProperty()
+  // @IsString()
+  // previewImage?: string;
 
-  @ApiProperty()
-  @IsString()
-  tldr: string;
 
   @ApiProperty()
   @IsNumber()
@@ -44,22 +41,12 @@ export class UpdateBipOptionDto extends SignedEntity {
   @ApiProperty()
   @IsString()
   @IsOptional()
-  title: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  what: string;
+  description: string;
 
   @ApiProperty()
   @IsString()
   @IsOptional()
   previewImage?: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsOptional()
-  tldr: string;
 }
 
 export class DeleteBipOptionDto extends SignedEntity {

@@ -26,6 +26,7 @@ import {
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipRoundService } from './bip-round.service';
 import { CreateBipRoundDto } from './bip-round.types';
+import { BipOption } from 'src/bip-option/bip-option.entity';
   
   @Controller('bip-round')
   export class BipRoundController {
@@ -52,6 +53,10 @@ import { CreateBipRoundDto } from './bip-round.types';
     async createForCommunity(
       @Body(SignedPayloadValidationPipe) dto: CreateBipRoundDto,
     ): Promise<BipRound> {
+
+      // var obj2 = JSON.parse(dto.options);
+      // console.log(dto.options);
+
       verifySignPayload(dto, [
         'startTime',
         'endTime',
@@ -59,9 +64,22 @@ import { CreateBipRoundDto } from './bip-round.types';
         'description',
       ]);
 
-      return await this.bipRoundService.createBipRound(
+      const newRound = await this.bipRoundService.createBipRound(
         dto,
       );
+
+      dto.options.forEach(async (optionDesc) => {
+        const proposal = new BipOption();
+        proposal.address = dto.address;
+        proposal.description = optionDesc;
+        proposal.optionType = dto.optionType;
+        proposal.bipRound = newRound;
+        proposal.createdDate = new Date();
+    
+        await this.bipOptionService.store(proposal);
+      });
+
+      return newRound;
     }    
 
 }

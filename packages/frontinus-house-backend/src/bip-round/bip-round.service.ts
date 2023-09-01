@@ -61,17 +61,5 @@ export class BipRoundService {
       balanceBlockTag
     });
 
-    // newAuction.balanceBlockTag =
-    //   await this.blockchainService.getCurrentBlockNum();
-
-    // noinspection ES6MissingAwait: Just a cache, no need await
-    // this.blockchainService.cacheAll(
-    //   this.delegateRepository,
-    //   this.delegationRepository,
-    //   community.contractAddress,
-    //   newAuction.balanceBlockTag,
-    // );
-
-    // return await this.bipRoundRepository.save(newAuction);
   }
 }

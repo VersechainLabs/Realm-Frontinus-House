@@ -34,20 +34,19 @@ export class BipOption {
   @Field(() => String)
   address: Address;
 
+  // @ApiProperty()
+  // @Column()
+  // @Field(() => String)
+  // description: string;
+
+  @ApiProperty()
+  @Column({ type: 'text' })
+  @Field(() => String)
+  description: string;
+
   @ApiProperty()
   @Column()
-  @Field(() => String)
-  title: string;
-
-  @ApiProperty()
-  @Column({ type: 'text' })
-  @Field(() => String)
-  what: string;
-
-  @ApiProperty()
-  @Column({ type: 'text' })
-  @Field(() => String)
-  tldr: string;
+  optionType: number;
 
   // @ApiProperty({ type: () => Auction })
   @ManyToOne(() => BipRound, (bipRound) => bipRound.bipOptions, {
