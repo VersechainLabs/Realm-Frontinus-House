@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { sortByVotesAndHandleTies } from '../../utils/sortByVotesAndHandleTies';
 
 export interface PropHouseSlice {
+  activeBIP?:StoredProposalWithVotes;
   activeRound?: StoredAuctionBase;
   activeProposal?: StoredProposalWithVotes;
   activeProposals?: StoredProposalWithVotes[];
@@ -97,6 +98,10 @@ export const propHouseSlice = createSlice({
   name: 'propHouse',
   initialState,
   reducers: {
+    setActiveBIP:(state, action: PayloadAction<StoredAuctionBase | undefined>) => {
+      state.activeBIP = action.payload;
+    },
+
     setActiveRound: (state, action: PayloadAction<StoredAuctionBase | undefined>) => {
       state.activeRound = action.payload;
     },
@@ -145,6 +150,7 @@ export const propHouseSlice = createSlice({
 export const {
   setActiveRound,
   setActiveProposal,
+  setActiveBIP,
   setActiveProposals,
   appendProposal,
   sortTimedRoundProposals,

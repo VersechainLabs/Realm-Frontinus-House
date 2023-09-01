@@ -268,23 +268,24 @@ export default function QuillEditor(props: QuillEditorProps) {
                       >
                         <span><img src="/loading.gif" alt="" width={'40'}/></span>
                       </div>
-                  ) :  (
+                  ) :  props.btnText && (
+
                       <div
                           id="custom-button"
                           onClick={clickBtn}
                       >
                         <span>{ props.btnText }</span>
                       </div>
+
                   )
               ) : (
-                  <div  id="custom-button-connect">
-                    <ConnectButton
-                    />
-                  </div>
+                  props.btnText &&(
+                      <div  id="custom-button-connect">
+                        <ConnectButton
+                        />
+                      </div>
+                  )
               )}
-
-
-
             </div>
           </>
         </div>

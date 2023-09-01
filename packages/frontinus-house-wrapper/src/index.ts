@@ -190,6 +190,25 @@ export class ApiWrapper {
     }
   }
 
+  async getBipForCommunity(): Promise<StoredAuctionBase[]> {
+    try {
+      const [rawTimedAuctions] = await Promise.allSettled([
+        axios.get(`${this.host}/bip-round/list/`),
+      ]);
+
+      const timed =
+          rawTimedAuctions.status === 'fulfilled'
+              ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
+              : [];
+
+      return timed;
+    } catch (e: any) {
+      throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
+    }
+  }
+
+
+
   async getActiveAuctions(skip = 5, limit = 5): Promise<StoredTimedAuction[]> {
     try {
       const rawAuctions = (
@@ -348,6 +367,19 @@ export class ApiWrapper {
       throw e.response.data.message;
     }
   }
+
+  async getBIP(id: number, address?: string) {
+    try {
+      return (await axios.get(`${this.host}/bip-round/detail/${id}`, {
+        params: {
+          address,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
 
   async getApplication(id: number) {
     try {
@@ -655,6 +687,20 @@ export class ApiWrapper {
     }
   }
 
+  async getCommentListByBIP(bipId: number, skip: number, limit = 10, order = 'DESC'): Promise<StoredComment[]> {
+    try {
+      return (await axios.get(`${this.host}/bip-comments/byBipRound/${bipId}`, {
+        params: {
+          'skip': skip,
+          'limit': limit,
+          'order': order,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getCommentListByApplication(applicationId: number, skip: number, limit = 10, order = 'DESC'): Promise<StoredComment[]> {
     try {
       return (await axios.get(`${this.host}/comments/byApplication/${applicationId}`, {
@@ -671,10 +717,17 @@ export class ApiWrapper {
 
   async createComment(comment: Comment): Promise<StoredComment | undefined> {
     if (!this.signer) return undefined;
-    if (!comment.proposalId && !comment.applicationId) return undefined;
+    if (!comment.proposalId && !comment.applicationId && !comment.bipRoundId) return undefined;
     try {
+
       const signedPayload = await comment.signedPayload(this.signer);
-      return (await axios.post(`${this.host}/comments/create`, signedPayload)).data;
+
+      if ( comment.bipRoundId ){
+        return (await axios.post(`${this.host}/bip-comments/create`, signedPayload)).data;
+      }else{
+        return (await axios.post(`${this.host}/comments/create`, signedPayload)).data;
+      }
+
     } catch (e: any) {
       console.log(e);
       throw e.response.data.message;

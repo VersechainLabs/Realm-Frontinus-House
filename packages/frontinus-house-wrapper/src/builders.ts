@@ -471,6 +471,8 @@ export class Comment extends Signable {
     public readonly content: string,
     public readonly proposalId?: number,
     public readonly applicationId?: number,
+    public readonly bipRoundId?: number,
+
   ) {
     super();
   }
@@ -480,6 +482,7 @@ export class Comment extends Signable {
       content: this.content,
       proposalId: this.proposalId,
       applicationId: this.applicationId,
+      bipRoundId:this.bipRoundId,
     };
   }
 }
