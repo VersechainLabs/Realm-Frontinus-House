@@ -49,26 +49,26 @@ export class BipOptionService {
     return proposal;
   }
 
-//   findBetween(start: Date = new Date('1900-01-01'), end: Date) {
-//     return this.proposalsRepository
-//       .createQueryBuilder('proposal')
-//       .where('proposal.createdDate > :start', { start: start.toISOString() })
-//       .andWhere('proposal.createdDate <= :end', {
-//         end: (end ?? new Date()).toISOString(),
-//       })
-//       .getMany();
-//   }
+  findBetween(start: Date = new Date('1900-01-01'), end: Date) {
+    return this.bipOptionRepository
+      .createQueryBuilder('proposal')
+      .where('proposal.createdDate > :start', { start: start.toISOString() })
+      .andWhere('proposal.createdDate <= :end', {
+        end: (end ?? new Date()).toISOString(),
+      })
+      .getMany();
+  }
 
-//   async remove(id: number): Promise<void> {
-//     await this.proposalsRepository.delete(id);
-//   }
+  async remove(id: number): Promise<void> {
+    await this.bipOptionRepository.delete(id);
+  }
 
-//   async rollupVoteCount(id: number) {
-//     const foundProposal = await this.findOne(id);
-//     if (!foundProposal) return;
-//     foundProposal.updateVoteCount();
-//     await this.proposalsRepository.save(foundProposal);
-//   }
+  async rollupVoteCount(id: number) {
+    const foundProposal = await this.findOne(id);
+    if (!foundProposal) return;
+    foundProposal.updateVoteCount();
+    await this.bipOptionRepository.save(foundProposal);
+  }
 
   async store(bipOption: BipOption) {
     return await this.bipOptionRepository.save(bipOption);

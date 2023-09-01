@@ -45,6 +45,11 @@ export class BipRound {
   title: string;
 
   @ApiProperty()
+  @Column({ nullable: true })
+  @Field(() => String)
+  content: string;
+
+  @ApiProperty()
   @Column()
   @Field(() => Date, {
     description: 'After the Start Time users may submit proposals',
@@ -69,14 +74,18 @@ export class BipRound {
   @RelationId((bipRound: BipRound) => bipRound.bipOptions)
   bipOptionIds: number[];
 
-  @ApiProperty({
-    type: Number,
-    description: 'The number of proposals related to the auction',
-  })
-  @Exclude()
-  // This attribute was previously defined in the API layer, which is quite strange - -
-  numProposals: number;
-
+  @ApiProperty()
+  @Column({ default: 0 })
+  @Field(() => String)
+  optionCount: number;
+  @ApiProperty()
+  @Column({ default: 0 })
+  @Field(() => String)
+  voteCount: number;
+  @ApiProperty()
+  @Column({ default: 0 })
+  @Field(() => String)
+  commentCount: number;
 
   @ApiProperty()
   @Column({ nullable: true })
