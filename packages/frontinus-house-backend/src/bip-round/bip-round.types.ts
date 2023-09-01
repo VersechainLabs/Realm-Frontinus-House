@@ -43,6 +43,11 @@ export class CreateBipRoundDto extends SignedEntity {
   @ApiProperty()
   @IsNumber()
   optionType: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  previewImage?: string;
 }
 
 export class UpdateBipRoundDto extends SignedEntity {
@@ -69,6 +74,11 @@ export class UpdateBipRoundDto extends SignedEntity {
   @IsString()
   @IsOptional()
   description: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  previewImage?: string;  
 }
 
 

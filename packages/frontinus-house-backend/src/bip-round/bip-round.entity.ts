@@ -77,13 +77,11 @@ export class BipRound {
   // This attribute was previously defined in the API layer, which is quite strange - -
   numProposals: number;
 
-//   @ApiProperty({ type: Number })
-//   @ManyToOne(() => Community, (community) => community.auctions, {
-//     createForeignKeyConstraints: false,
-//   })
-//   @JoinColumn()
-//   @Field(() => Community)
-//   community: Community;
+
+  @ApiProperty()
+  @Column({ nullable: true })
+  @Field(() => String)
+  previewImage: string;
 
   @ApiProperty()
   @CreateDateColumn()
