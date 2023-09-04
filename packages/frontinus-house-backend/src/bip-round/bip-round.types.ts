@@ -30,9 +30,9 @@ export class CreateBipRoundDto extends SignedEntity {
   @IsNotEmpty()
   title: string;
 
-  @ApiProperty()
-  @IsString()
-  description: string;
+  // @ApiProperty()
+  // @IsString()
+  // description: string;
 
   @ApiProperty()
   @IsArray()
