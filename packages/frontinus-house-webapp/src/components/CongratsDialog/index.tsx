@@ -11,6 +11,7 @@ import React from 'react';
 import classes from './CongratsDialog.module.css';
 import IconButton from '@mui/material/IconButton';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 
 interface CongratsDialogProps {
   trigger: boolean;
@@ -19,7 +20,7 @@ interface CongratsDialogProps {
 
 const CongratsDialog: React.FC<CongratsDialogProps> = (props: CongratsDialogProps) => {
   const location = useLocation();
-  const activeAuction = location.state.auction;
+  const activeAuction = useAppSelector(state => state.propHouse.activeRound);
 
   return (
     <>
@@ -86,8 +87,8 @@ const CongratsDialog: React.FC<CongratsDialogProps> = (props: CongratsDialogProp
                   className={classes.dialogDesc}
                   sx={{ maxHeight: '300px', overflowY: 'auto' }}
                 >
-                  Your proposal has been successfully submitted to{' '}
-                  <span style={{ color: '#F5EEE6' }}>{activeAuction.title}</span>
+                  Your proposal has been successfully submitted
+                  {/*to{' '} <span style={{ color: '#F5EEE6' }}>{activeAuction?.title}</span>*/}
                 </DialogContent>
                 <DialogActions>
                   <div className={classes.buttonGroup}>

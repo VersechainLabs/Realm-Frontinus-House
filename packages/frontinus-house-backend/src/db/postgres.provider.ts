@@ -16,6 +16,11 @@ import { VotesModule } from '../vote/votes.module';
 import config from '../../ormconfig';
 import { SnapshotModule } from '../voting-power-snapshot/snapshot.module';
 import { BlockchainModule } from '../blockchain/blockchain.module';
+import { LangModule } from 'src/langs/langs.module';
+import { BipRoundModule } from 'src/bip-round/bip-round.module';
+import { BipOptionModule } from 'src/bip-option/bip-option.module';
+import { BipVoteModule } from 'src/bip-vote/bip-vote.module';
+import { BipCommentsModule } from 'src/bip-comment/bip-comment.module';
 // import { AudioModule } from '../queue/audio.module';
 
 /**
@@ -38,9 +43,13 @@ import { BlockchainModule } from '../blockchain/blockchain.module';
     DelegateModule,
     CommentsModule,
     AdminModule,
+    LangModule,
     SnapshotModule,
-    // AudioModule,
     BlockchainModule,
+    BipRoundModule,
+    BipOptionModule,
+    BipVoteModule,
+    BipCommentsModule,
     TypeOrmModule.forRoot(config),
   ],
 })

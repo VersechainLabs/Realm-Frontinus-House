@@ -12,7 +12,9 @@ import {
   Min,
 } from 'class-validator';
 import { SignedEntity } from '../entities/signed';
-import { AuctionVisibleStatus } from "@nouns/frontinus-house-wrapper";
+import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+import { Vote } from "../vote/vote.entity";
+import { Proposal } from "../proposal/proposal.entity";
 
 export class CreateAuctionDto extends SignedEntity {
   @ApiProperty()
@@ -34,6 +36,10 @@ export class CreateAuctionDto extends SignedEntity {
   title: string;
 
   @ApiProperty()
+  @IsString()
+  description: string;
+
+  @ApiProperty()
   @IsNumber()
   @IsPositive()
   fundingAmount: number;
@@ -52,6 +58,55 @@ export class CreateAuctionDto extends SignedEntity {
   @IsNumber()
   @IsPositive()
   communityId: number;
+}
+
+export class UpdateAuctionDto extends SignedEntity {
+  @ApiProperty()
+  @IsNumber()
+  id: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  startTime: Date;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  proposalEndTime: Date;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  votingEndTime: Date;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  title: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  fundingAmount: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  @IsInt()
+  @IsOptional()
+  numWinners: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  currencyType: string;
 }
 
 export class ApproveAuctionDto extends SignedEntity {
@@ -103,4 +158,9 @@ export class LatestDto {
   @Min(1)
   @Transform(({ value }) => Number(value))
   auctionId: number;
+}
+
+export class MyVoteDto {
+  vote: Vote;
+  proposal: Proposal;
 }

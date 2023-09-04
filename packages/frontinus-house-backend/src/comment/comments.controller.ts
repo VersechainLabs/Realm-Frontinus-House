@@ -6,18 +6,26 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
 import { Comment } from './comment.entity';
-import { CreateCommentDto, GetCommentsDto, Order } from './comment.types';
+import {
+  CreateCommentDto,
+  GetCommentsDto,
+  Order,
+  UpdateCommentDto,
+} from './comment.types';
 import { CommentsService } from './comments.service';
 import { ApiOkResponse, ApiQuery } from '@nestjs/swagger';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
+import { verifySignPayload } from '../utils/verifySignedPayload';
 
 @Controller('comments')
 export class CommentsController {
   [x: string]: any;
+
   constructor(private readonly commentsService: CommentsService) {}
 
   @Post('/create')
@@ -29,6 +37,19 @@ export class CommentsController {
     createCommentDto: CreateCommentDto,
   ): Promise<Comment> {
     return await this.commentsService.createComment(createCommentDto);
+  }
+
+  @Patch()
+  @ApiOkResponse({
+    type: Comment,
+  })
+  async update(
+    @Body(SignedPayloadValidationPipe)
+    dto: UpdateCommentDto,
+  ): Promise<Comment> {
+    verifySignPayload(dto, ['id']);
+
+    return await this.commentsService.updateComment(dto);
   }
 
   @Get('/byProposal/:proposalId')
@@ -49,8 +70,7 @@ export class CommentsController {
   })
   @ApiQuery({
     name: 'order',
-    description:
-      'Search results in Desc or Asc order',
+    description: 'Search results in Desc or Asc order',
     enum: Order,
     required: false,
   })

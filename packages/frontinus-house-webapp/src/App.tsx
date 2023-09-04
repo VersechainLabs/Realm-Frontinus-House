@@ -20,7 +20,12 @@ import OpenGraphHouseCard from './components/OpenGraphHouseCard';
 import OpenGraphRoundCard from './components/OpenGraphRoundCard';
 import OpenGraphProposalCard from './components/OpenGraphProposalCard';
 import Proposal from './pages/Proposal';
-import { AvatarComponent, darkTheme, getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import {
+  AvatarComponent,
+  darkTheme,
+  getDefaultWallets,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, mainnet, WagmiConfig } from 'wagmi';
 import Application from './pages/Application';
 import { infuraProvider } from 'wagmi/providers/infura';
@@ -38,34 +43,28 @@ import Snackbar from '@mui/material/Snackbar';
 import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { clearClick } from './state/slices/alert';
+import ProposalPreview from './pages/ProposalPreview';
 
 const { chains, publicClient } = configureChains(
-    [mainnet],
-    [
-      infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }),
-      publicProvider()
-    ]
+  [mainnet],
+  [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
 );
 
 const { connectors } = getDefaultWallets({
   appName: 'Frontinus',
   projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID!,
-  chains
+  chains,
 });
 
 const wagmiConfig = createConfig({
   autoConnect: true,
   connectors,
-  publicClient
-})
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props,
-    ref,
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+  publicClient,
 });
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 localStorage.setItem('devEnv', 'development');
 
@@ -88,8 +87,7 @@ function App() {
   };
 
   useEffect(() => {
-
-    if(alertClick){
+    if (alertClick) {
       setOpen(true);
       dispatch(clearClick());
     }
@@ -97,7 +95,6 @@ function App() {
     setTimeout(() => {
       setOpen(false);
     }, alert.time);
-
   }, [alertClick]);
 
   useEffect(() => {
@@ -113,7 +110,7 @@ function App() {
     location.pathname === '/' || location.pathname === '/faq' || location.pathname === '/create';
   const rainbowKitTheme = darkTheme({
     accentColor: 'var(--brand-common-yellow)',
-    accentColorForeground:'#212529'
+    accentColorForeground: '#212529',
   });
   rainbowKitTheme.fonts.body = 'Inconsolata';
 
@@ -125,12 +122,11 @@ function App() {
             style={{ height: size, width: size }}
             className={clsx(!ensImage && classes.glasses)}
             src={ensImage!}
-            alt='avatar'
+            alt="avatar"
           />
         ) : (
           <Jazzicon diameter={size} seed={jsNumberForAddress(address)} />
-        )
-        }
+        )}
       </div>
     );
   };
@@ -144,11 +140,7 @@ function App() {
             <Route path="/house/:id/card" element={<OpenGraphHouseCard />} />
           </Routes>
         ) : (
-          <RainbowKitProvider
-            chains={chains}
-            theme={rainbowKitTheme}
-            avatar={CustomAvatar}
-          >
+          <RainbowKitProvider chains={chains} theme={rainbowKitTheme} avatar={CustomAvatar}>
             <Suspense fallback={<LoadingIndicator />}>
               <div className={clsx(bgColorForPage(location.pathname), 'wrapper')}>
                 {/*{!noNavPath && <NavBar />}*/}
@@ -165,10 +157,7 @@ function App() {
                       </ProtectedRoute>
                     }
                   />
-                  <Route
-                    path="application/create"
-                    element={ <ApplicationCreate /> }
-                  />
+                  <Route path="application/create" element={<ApplicationCreate />} />
                   <Route path="/create-round" element={<CreateRound />} />
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
@@ -180,7 +169,7 @@ function App() {
                   {/*<Route path="/:title" element={<Round />} />*/}
                   <Route path="/:id/:title" element={<Round />} />
                   <Route path="/comment/:proposalId" element={<CommentsPage />} />
-
+                  <Route path="/preview" element={<ProposalPreview />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
 
@@ -191,14 +180,16 @@ function App() {
         )}
 
         <Snackbar
-            anchorOrigin={{
-              vertical: 'top' ,
-              horizontal:'center'
-            }}
-            open={open} autoHideDuration={alert.time} onClose={handleClose}>
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+          open={open}
+          autoHideDuration={alert.time}
+          onClose={handleClose}
+        >
           <Alert severity={alert.type}>{alert.message}</Alert>
-         </Snackbar>
-
+        </Snackbar>
       </WagmiConfig>
     </>
   );

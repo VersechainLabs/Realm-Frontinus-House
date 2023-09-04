@@ -53,7 +53,7 @@ export class Vote {
 
   @ApiProperty({
     description:
-      'The weight cast by the user is calculated according to the delegate relationship',
+      'The weight cast by the user is calculated according to the delegate relationship. Maybe less than actual weight (because user can spilt their weight to different proposal)',
   })
   @Column({ default: 0 })
   @Field(() => Int)
@@ -157,6 +157,11 @@ export function convertVoteListToDelegateVoteList(voteList: Vote[]) {
       } as Vote;
       selfVote.delegateList = [];
       v.delegateList.unshift(selfVote);
+
+      v.actualWeight = v.delegateList.reduce(
+        (actualWeight, vote) => actualWeight + vote.actualWeight,
+        0,
+      );
     }
   });
 

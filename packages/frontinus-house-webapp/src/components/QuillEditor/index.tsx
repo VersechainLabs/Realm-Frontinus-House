@@ -28,6 +28,7 @@ type QuillEditorProps = {
   onButtonClick?: (widgetKey: string) => void;
   btnText:string | 'Submit';
   placeholderText:string;
+  initContent?:string;
 }
 
 
@@ -191,6 +192,15 @@ export default function QuillEditor(props: QuillEditorProps) {
     }
   }, [props.loading, quill]);
 
+  useEffect(() => {
+    if (!quill) {
+      return;
+    }
+
+    if (props.initContent) {
+      quill!.root!.innerHTML=props.initContent;
+    }
+  }, [props.initContent, quill]);
 
   const clickBtn =  () => {
     if( showLoading ){

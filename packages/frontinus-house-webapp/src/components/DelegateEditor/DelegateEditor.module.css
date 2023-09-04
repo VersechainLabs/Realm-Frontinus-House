@@ -43,10 +43,14 @@
     color: #f5eee6;
     line-height: 36.54px;
     margin-top: 4rem;
-    padding-bottom: 1rem;
+    padding-bottom: 8px;
     font-weight: 700;
-    border-bottom: 1px solid #272728;
   }
+.nominateDesc{
+  font-size: 14px;
+  color: #F5EEE6;
+  padding-bottom: 1rem;
+}
   .input:focus {
     box-shadow: none;
     border: 1px rgba(0, 0, 0, 0.1) solid;

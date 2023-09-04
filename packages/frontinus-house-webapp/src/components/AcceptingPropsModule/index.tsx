@@ -17,6 +17,7 @@ import { countDecimals } from '../../utils/countDecimals';
 import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { ProposalCreateStatusMap } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
+import { setProposalData } from '../../state/slices/proposal';
 
 const AcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
@@ -52,7 +53,6 @@ const AcceptingPropsModule: React.FC<{
   const fetchProposalStatus = async () => {
     const raw = await backendClient.current.getProposalApplied(auction.id);
 
-    console.log('getProposalApplied', raw);
 
     setProposalStatus(raw);
   };
@@ -90,7 +90,7 @@ const AcceptingPropsModule: React.FC<{
 
       {isProposingWindow &&
         (account ? (
-          !proposalStatus.canCreate ? (
+          proposalStatus && !proposalStatus.canCreate ? (
             <Button text={proposalStatus.message} bgColor={ButtonColor.Gray} />
           ) : (
             <Button
@@ -99,6 +99,7 @@ const AcceptingPropsModule: React.FC<{
               bgColor={ButtonColor.Green}
               onClick={() => {
                 dispatch(clearProposal());
+                dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0, proposalId: 0}));
                 navigate('/create', { state: { auction, community, proposals } });
               }}
             />

@@ -17,7 +17,7 @@ import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
 import { DeltaStatic, Quill } from 'quill';
 import {
   InfiniteAuctionProposal,
-  Proposal,
+  Proposal, UpdatedProposal,
   Vote,
 } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { appendProposal } from '../../state/slices/propHouse';
@@ -25,9 +25,10 @@ import { clearProposal } from '../../state/slices/editor';
 import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import { setAlert } from '../../state/slices/alert';
-import { matchImg } from "../../utils/matchImg";
+import { matchImg } from '../../utils/matchImg';
 import CongratsDialog from '../CongratsDialog';
-
+import ProposalPreview from '../../pages/ProposalPreview';
+import { setProposalData } from '../../state/slices/proposal';
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
@@ -99,6 +100,12 @@ const ProposalInputs: React.FC<{
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [openCongratsDialog, setOpenCongratsDialog] = useState(false);
   const [showCongratsDialog, setShowCongratsDialog] = useState(false);
+  const proposalData = useAppSelector(state => state.proposal);
+  // const [proposalData, setProposalData] = useState({
+  //   titlePreview: '',
+  //   tldrPreview: '',
+  //   descriptionPreview: '',
+  // });
 
   const { data: walletClient } = useWalletClient();
 
@@ -116,73 +123,109 @@ const ProposalInputs: React.FC<{
       setContent(htmlContent);
     }
   };
-  const handleImgArrayChange = (img : string) => {
-
+  const handleImgArrayChange = (img: string) => {
     let ary = [...imgArray];
     ary.push(img);
-    setImgArray(ary)
-
+    setImgArray(ary);
   };
 
+  const [getDefaultStatus, setGetDefaultStatus] = useState(false);
+  const [getDefault, setGetDefault] = useState('');
+
+  const fetchDefault = async () => {
+    if (getDefaultStatus) {
+      return;
+    }
+    setGetDefaultStatus(true);
+
+    if (!proposalData.description && !getDefault) {
+      await client.current.getDefaultCreation().then((res: any) => {
+        if (res.proposalContent) {
+          setGetDefault(res.proposalContent);
+          // setGetDefaultStatus(false);
+        }
+      });
+    } else {
+      setGetDefault(proposalData.description);
+
+      // dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0 }));
+    }
+  };
+  fetchDefault();
+
+  const generatePreviewContent = () => {
+    const title = formData[0].fieldValue;
+    const tldr = formData[1].fieldValue;
+    const description = quill!.root.innerHTML;
+    const id = activeAuction.id;
+
+    if (title.trim().length === 0 || tldr.trim().length === 0 || description.trim().length === 0) {
+      const errorMessage = 'All fields must be filled before preview!';
+      console.log('Error message to be dispatched:', errorMessage);
+      dispatch(setAlert({ type: 'error', message: errorMessage }));
+      return;
+    }
+
+    if (!account) {
+      return;
+    }
+
+    //check error
+    if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
+      return false;
+    }
+
+    if (validateInput(formData[1].minCount, formData[1].fieldValue.length)) {
+      return false;
+    }
+
+    setLoading(true);
+    dispatch(setProposalData({ title:title, tldr:tldr, description:description, id:id }));
+    navigate('/preview');
+  };
   const submit = async () => {
     try {
-      console.log(content, formData);
-
-      const titleFieldValue = formData[0].fieldValue;
-      const tldrFieldValue = formData[1].fieldValue;
-
-      if (
-        titleFieldValue.trim().length === 0 ||
-        tldrFieldValue.trim().length === 0 ||
-        content.trim().length === 0
-      ) {
-        const errorMessage = 'You must complete all the fields before submit!';
-        console.log('Error message to be dispatched:', errorMessage);
-        dispatch(setAlert({ type: 'error', message: errorMessage }));
-        setOpenCongratsDialog(true);
-        setIsAlertVisible(true);
-        return;
-      }
-
-      if (!account) {
-        return;
-      }
-
-      //check error
-      if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
-        return false;
-      }
-
-      if (validateInput(formData[1].minCount, formData[1].fieldValue.length)) {
-        return false;
-      }
-
+      let imgUrl = matchImg(imgArray, content);
       setLoading(true);
 
-      let newProp: Proposal | InfiniteAuctionProposal;
+      if (proposalData.proposalId) {
+        const proposal = await client.current.updateProposal(
+            new UpdatedProposal(
+                proposalData.proposalId,
+                formData[0].fieldValue,
+                content,
+                formData[1].fieldValue,
+                activeAuction.id,
+                imgUrl,
+                'auction',
+            ),
+        );
+        setPropId(proposal.id);
+        dispatch(appendProposal({ proposal }));
+      } else {
+        let newProp: Proposal | InfiniteAuctionProposal;
 
-      let imgUrl = matchImg(imgArray, content);
 
-      newProp = new Proposal(
-        formData[0].fieldValue,
-        content,
-        formData[1].fieldValue,
-        activeAuction.id,
-        'auction',
-        imgUrl,
-      );
+        newProp = new Proposal(
+            formData[0].fieldValue,
+            content,
+            formData[1].fieldValue,
+            activeAuction.id,
+            'auction',
+            imgUrl,
+        );
+        const proposal = await client.current.createProposal(newProp);
+        setPropId(proposal.id);
+        dispatch(appendProposal({ proposal }));
+      }
 
-      const proposal = await client.current.createProposal(newProp);
 
-      setPropId(proposal.id);
-      dispatch(appendProposal({ proposal }));
       dispatch(clearProposal());
 
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
       setOpenCongratsDialog(true); // Show the initial dialog
       setShowCongratsDialog(true);
-      setLoading(false);
     } catch (e) {
       setLoading(false);
     } finally {
@@ -247,10 +290,22 @@ const ProposalInputs: React.FC<{
                 onQuillInit={q => setQuill(q)}
                 btnText="Submit"
                 onButtonClick={submit}
+                initContent={getDefault}
                 placeholderText=""
               />
             </div>
           </div>
+          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+            <button
+              className={classes.btnPreview}
+              onClick={() => {
+                generatePreviewContent();
+              }}
+            >
+              Preview
+            </button>
+          </div>
+
           <CongratsDialog
             trigger={showCongratsDialog}
             onClose={() => {

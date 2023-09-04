@@ -139,6 +139,14 @@ export class ApiWrapper {
     }
   }
 
+  async getDefaultCreation(): Promise<any> {
+    try {
+      return (await axios.get(`${this.host}/langs/defaultsForCreation`)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getAuctionsForCommunity(id: number): Promise<StoredAuctionBase[]> {
     try {
       const [rawTimedAuctions,
