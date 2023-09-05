@@ -1,18 +1,9 @@
 .card {
-  /*border: 1px solid var(--border-light);*/
-  /*padding: 1rem 1.25rem;*/
+  border: 1px solid var(--border-light);
+  padding: 1rem 1.25rem;
   margin: 0.75rem 0;
-  /*transition: box-shadow 0.3s;*/
-  /*box-shadow: none;*/
-
-  background: #0f0f0f;
-  border: 1px solid #2c2c2d;
-  width: 336px;
-  /*height: 322px;*/
-  display: flex;
-  flex-direction: column;
-  /*justify-content: space-between !important;*/
-  padding: 16px;
+  transition: box-shadow 0.3s;
+  box-shadow: none;
 }
 
 a {
@@ -25,11 +16,11 @@ a {
 }
 
 .darkPurpleBg {
-  background-color: #0f0f0f;
+  background-color: #ece8f0;
 }
 
 .whiteBg {
-  background-color: #0f0f0f;
+  background-color: var(--bg-light);
 }
 
 .borderRadius10 {
@@ -47,4 +38,3 @@ a {
 .onHoverEffect:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-

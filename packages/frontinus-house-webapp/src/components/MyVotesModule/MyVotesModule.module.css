@@ -63,3 +63,13 @@
   word-break: break-all;
   word-wrap: break-word;
 }
+
+.CardStyle1 {
+  background: #0f0f0f;
+  border: 1px solid #2c2c2d;
+  /*height: 322px;*/
+  display: flex;
+  flex-direction: column;
+  /*justify-content: space-between !important;*/
+  padding: 16px;
+}
