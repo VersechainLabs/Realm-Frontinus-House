@@ -153,7 +153,7 @@ export class BipRound {
   // }
   // noinspection JSUnusedGlobalSymbols : use for exclude attrs
   toJSON() {
-    console.log("round toJson");
+    // console.log("round toJson cc");
     if (this.bipVotes && this.bipVotes.length > 0) {
       this.bipVotes = convertBipVoteListToDelegateVoteList(this.bipVotes);
     }
