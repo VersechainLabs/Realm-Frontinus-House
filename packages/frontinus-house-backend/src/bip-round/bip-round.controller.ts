@@ -96,6 +96,9 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
       roundRecord.bipOptions.forEach(option => {
         option.percentage = option.voteCount / totalVoteCount * 100;
       });
+
+      // roundRecord.quorum = parseInt(process.env.BIP_VOTE_QUORUM); // Fix number 1500, ask Yao
+      roundRecord.quorum = 1500; // Fix number 1500, ask Yao
       
       return roundRecord;
     }
