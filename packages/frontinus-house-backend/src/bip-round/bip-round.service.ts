@@ -28,7 +28,9 @@ export class BipRoundService {
     private delegationRepository: Repository<Delegation>,
   ) {}
 
-  findAll(): Promise<BipRound[]> {
+  findAll(dto: GetBipRoundDto): Promise<BipRound[]> {
+    console.log("order: ", dto.order);
+
     return this.bipRoundRepository.find({
       // loadRelationIds: {
       //   relations: ['bipOption.bipRound'],
@@ -36,6 +38,9 @@ export class BipRoundService {
       where: {
         visible: true,
       },
+      take: dto.limit,
+      skip: dto.skip,
+      order: { id: dto.order },
     });
   }
 

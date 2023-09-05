@@ -25,7 +25,7 @@ import {
   import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipRoundService } from './bip-round.service';
-import { CreateBipRoundDto } from './bip-round.types';
+import { CreateBipRoundDto, GetBipRoundDto } from './bip-round.types';
 import { BipOption } from 'src/bip-option/bip-option.entity';
   
   @Controller('bip-round')
@@ -42,8 +42,8 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
     @ApiOkResponse({
       type: [BipRound],
     })
-    getAll(): Promise<BipRound[]> {
-      return this.bipRoundService.findAll();
+    getAll(@Query() dto: GetBipRoundDto): Promise<BipRound[]> {
+      return this.bipRoundService.findAll(dto);
     }
 
     @Post('/create')
