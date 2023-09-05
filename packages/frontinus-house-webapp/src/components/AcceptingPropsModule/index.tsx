@@ -53,7 +53,6 @@ const AcceptingPropsModule: React.FC<{
   const fetchProposalStatus = async () => {
     const raw = await backendClient.current.getProposalApplied(auction.id);
 
-    console.log('getProposalApplied', raw);
 
     setProposalStatus(raw);
   };

@@ -39,7 +39,6 @@ const StatusRoundCards = () => {
           account ? Object.keys(await getRelevantComms(account, publicClient, Number(block))) : [],
         );
       } catch (e) {
-        console.log('Error fetching relevant comms: ', e);
         setRelevantCommunites([]);
       }
       setFetchingRelComms(false);

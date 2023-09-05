@@ -85,7 +85,13 @@ export class ApiWrapper {
 
   async getAuction(id: number): Promise<StoredTimedAuction> {
     try {
-      const rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}`)).data;
+      let rawTimedAuction: any;
+      if (this.signer){
+        const owner = (await this.signer.getAddresses())[0];
+        rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}?address=${owner}`)).data;
+      } else {
+        rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}`)).data;
+      }
       return StoredTimedAuction.FromResponse(rawTimedAuction);
     } catch (e: any) {
       throw e.response.data.message;
