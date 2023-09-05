@@ -18,10 +18,11 @@ type CommentsProps = {
   proposalId?: number;
   applicationId?: number;
   commentCount?:number;
+  bipId?:number;
 }
 
 export default function Comments(props: CommentsProps) {
-  const { proposalId, applicationId,commentCount } = props;
+  const { proposalId, applicationId,commentCount ,bipId} = props;
 
   const [commentList, setCommentList] = useState<StoredComment[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
@@ -53,8 +54,10 @@ export default function Comments(props: CommentsProps) {
     let getCommentPromise;
     if (proposalId) {
       getCommentPromise = client.current.getCommentListByProposal(Number(proposalId), skip);
-    } else {
+    } else if (applicationId) {
       getCommentPromise = client.current.getCommentListByApplication(Number(applicationId), skip);
+    } else if(bipId){
+      getCommentPromise = client.current.getCommentListByBIP(Number(bipId), skip);
     }
     getCommentPromise.then(
       async (res) => {
@@ -64,7 +67,7 @@ export default function Comments(props: CommentsProps) {
         } else {
           list = commentList.concat(res);
         }
-
+      console.log(res);
         if (res.length < 10) {
           setShowLoadMore(false);
         }
@@ -88,7 +91,7 @@ export default function Comments(props: CommentsProps) {
   const itemList = [] as JSX.Element[];
   if (commentList.length === 0) {
     itemList.push(
-      <ListItem>No comment yet</ListItem>,
+      <ListItem key={'no-data'}>No comment yet</ListItem>,
     );
   } else {
     commentList.forEach((comment) => {
@@ -122,10 +125,19 @@ export default function Comments(props: CommentsProps) {
         proposalId ? <CreateCommentWidget
           proposalId={Number(proposalId)}
           onCommentCreated={onCommentCreated}
-        /> : <CreateCommentWidget
-          applicationId={Number(applicationId)}
-          onCommentCreated={onCommentCreated}
-        />
+        /> :(
+            applicationId ? (
+                <CreateCommentWidget
+                    applicationId={Number(applicationId)}
+                    onCommentCreated={onCommentCreated}
+                />
+            ):(
+                <CreateCommentWidget
+                    bipRoundId={Number(bipId)}
+                    onCommentCreated={onCommentCreated}
+                />
+            )
+        )
       }
 
       <div className={classes.listBar}>

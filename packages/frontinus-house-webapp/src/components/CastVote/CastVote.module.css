@@ -1,0 +1,71 @@
+.castVote{
+    border-radius: 8px;
+    border: 1px solid #2C2C2D;
+    width: 600px;
+    margin-top: 24px;
+    padding: 16px 24px;
+}
+
+.title{
+    color: #F5EEE6;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 150%; /* 27px */
+}
+
+.options{
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+
+
+.item{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    width: 100%;
+    text-align: center;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    color: #D0A059;
+
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 150%; /* 24px */
+
+    border-radius: 8px;
+    border: 1px solid #2C2C2D;
+    background: #1A1A1B;
+    height: 40px;
+}
+
+.activeItem{
+    border: 1px solid #856433;
+
+}
+
+
+.item:hover{
+    border: 1px solid #856433;
+}
+
+.approveSvg {
+    margin-left: 8px;
+}
+
+.voteBtn {
+    cursor: pointer;
+    background: #D0A059;
+    font-size: 16px;
+    color: #111111;
+    border-radius: 8px;
+    font-weight: bold;
+    padding: 4px 16px;
+    border: 1px solid #D0A059;
+    text-align: center;
+}

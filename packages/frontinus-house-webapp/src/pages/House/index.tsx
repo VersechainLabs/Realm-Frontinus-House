@@ -25,6 +25,14 @@ import { markdownComponentToPlainText } from '../../utils/markdownToPlainText';
 import { useTranslation } from 'react-i18next';
 import { useWalletClient } from 'wagmi';
 import { isMobile } from 'web3modal';
+import ProposalCard from "../../components/ProposalCard";
+import {cardStatus} from "../../utils/cardStatus";
+import isWinner from "../../utils/isWinner";
+import getWinningIds from "../../utils/getWinningIds";
+import BIPContent from "../../components/BIPContent";
+import clsx from "clsx";
+import {Swiper, SwiperSlide} from "swiper/react";
+import BIPRightCard from "../../components/BIPRightCard";
 
 const House = () => {
   const location = useLocation();
@@ -50,8 +58,14 @@ const House = () => {
 
   const [delegates, setDelegates] = useState<StoredAuctionBase[]>([]);
   const [delegatesOnDisplay, setDelegatesOnDisplay] = useState<StoredAuctionBase[]>([]);
+
   const [loadingDelegates, setLoadingDelegates] = useState(false);
+
+  const [bips, setBips] = useState<StoredAuctionBase[]>([]);
+
+  const [loadingBIPs, setLoadingBIPs] = useState(false);
   const [failedLoadingDelegates, setFailedLoadingDelegates] = useState(false);
+  const [failedLoadingBIPs, setFailedLoadingBIPs] = useState(false);
 
   const [numberOfRoundsPerStatus, setNumberOfRoundsPerStatus] = useState<number[]>([]);
 
@@ -122,7 +136,11 @@ const House = () => {
       rounds.filter(
           r =>
               auctionPendingStatus(r) === AuctionStatus.Pending,
-      ).length
+      ).length,
+      0,
+      0,
+      0,
+      bips.length
     ]);
 
     // if there are no active rounds, default filter by all rounds
@@ -132,7 +150,7 @@ const House = () => {
             auctionStatus(r) === AuctionStatus.AuctionVoting,
     ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
 
-  }, [rounds, delegates]);
+  }, [rounds, delegates,bips]);
 
   // fetch delegate
   useEffect(() => {
@@ -176,6 +194,28 @@ const House = () => {
 
   }, [community ]);
 
+
+
+
+  // fetch bips
+  useEffect(() => {
+    if (!community) return;
+
+    const fetchBIP = async () => {
+      try {
+        setLoadingBIPs(true);
+        const bips = await client.current.getBipForCommunity();
+        setBips(bips);
+        setLoadingBIPs(false);
+      } catch (e) {
+        setLoadingBIPs(false);
+        setFailedLoadingBIPs(true);
+      }
+    };
+    fetchBIP();
+  }, [community]);
+
+
   useEffect(() => {
     rounds &&
       // check if searching via input
@@ -216,8 +256,9 @@ const House = () => {
             }),
           ));
 
-
   }, [input, currentRoundStatus, rounds]);
+
+
 
   return (
     <>
@@ -258,7 +299,7 @@ const House = () => {
 
 
             <div className={classes.houseContainer}>
-              {(currentRoundStatus != RoundStatus.delegateSelection) &&  <Container>
+              {(currentRoundStatus != RoundStatus.delegateSelection && currentRoundStatus != RoundStatus.BIP) &&  <Container>
 
                 <Row>
                   {loadingRounds ? (
@@ -301,6 +342,36 @@ const House = () => {
                   ) : (
                       <NoSearchResults />
                   )}
+                </Row>
+              </Container>}
+
+              {/*bips*/}
+              {(currentRoundStatus == RoundStatus.BIP) &&  <Container>
+
+                <Row>
+                  {loadingBIPs ? (
+                      <LoadingIndicator />
+                  ) : !loadingBIPs && failedLoadingBIPs ? (
+                      <ErrorMessageCard message={t('noBIPAvailable')} />
+                  ) :(
+                      <Row>
+                          <Col xl={8}>
+                            {
+                              bips.length > 0 && (
+                                bips.map((round, index) => (
+                                            <Col key={index}><BIPContent bip={round}/></Col>
+                              ))
+                              )
+                            }
+                          </Col>
+
+                          <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
+                              <BIPRightCard/>
+                          </Col>
+                      </Row>
+                  )
+
+                  }
                 </Row>
               </Container>}
 

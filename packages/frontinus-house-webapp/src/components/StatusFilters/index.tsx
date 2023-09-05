@@ -14,6 +14,7 @@ export enum RoundStatus {
   Proposing,
   Voting,
   Ended,
+  BIP
 }
 
 export interface Status {
@@ -56,6 +57,11 @@ const StatusFilters: React.FC<{
           title: 'Pending Rounds',
           bgColor: classes.black,
         },
+        {
+          status: RoundStatus.BIP,
+          title: 'BIPs',
+          bgColor: classes.black,
+        },
       ]
       :
       [
@@ -72,6 +78,11 @@ const StatusFilters: React.FC<{
     {
       status: RoundStatus.delegateSelection,
       title: 'Delegation Selection',
+      bgColor: classes.black,
+    },
+    {
+      status: RoundStatus.BIP,
+      title: 'BIPs',
       bgColor: classes.black,
     },
   ];
@@ -101,7 +112,9 @@ const StatusFilters: React.FC<{
               >
                 <div className={classes.filterText}>
                   <span className={clsx('frontinusTitle',classes.filterName)}>{t(s.title)}</span>
-                  <span className={classes.filterNumber}>{numberOfRoundsPerStatus[index]}</span>
+                  <span className={classes.filterNumber}>{
+                    s.status == RoundStatus.BIP ? numberOfRoundsPerStatus[RoundStatus.BIP] : numberOfRoundsPerStatus[index]
+                  }</span>
                 </div>
               </div>
               {index === 0 && <div className={classes.divider}></div>}
@@ -114,7 +127,7 @@ const StatusFilters: React.FC<{
       <div className={clsx(classes.dropdown, 'houseDropdown')}>
         <Dropdown>
           <Dropdown.Toggle variant="success" id="dropdown-basic">
-            {t(`${statuses[currentRoundStatus].title}`)}
+            {currentRoundStatus == RoundStatus.BIP ? "BIPs": t(`${statuses[currentRoundStatus].title}`)}
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
@@ -122,7 +135,9 @@ const StatusFilters: React.FC<{
               <Fragment key={index}>
                 <Dropdown.Item key={index} onClick={() => handleClick(s.status)}>
                   <span>{t(`${s.title}`)}</span>
+
                   <span className={classes.count}>{numberOfRoundsPerStatus[index]}</span>
+
                 </Dropdown.Item>
               </Fragment>
             ))}

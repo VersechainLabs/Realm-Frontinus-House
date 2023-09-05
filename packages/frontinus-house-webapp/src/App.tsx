@@ -34,6 +34,7 @@ import { publicProvider } from 'wagmi/providers/public';
 import '@rainbow-me/rainbowkit/styles.css';
 import StatusRoundCards from './components/StatusRoundCards';
 import CreateRound from './pages/CreateRound';
+import CreateBIP from './pages/CreateBIPForm';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
 import CommentsPage from './pages/CommentsPage';
@@ -44,6 +45,7 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { clearClick } from './state/slices/alert';
 import ProposalPreview from './pages/ProposalPreview';
+import BIP from "./pages/BIP";
 
 const { chains, publicClient } = configureChains(
   [mainnet],
@@ -161,8 +163,10 @@ function App() {
                   <Route path="/create-round" element={<CreateRound />} />
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
+                  <Route path="/create-bip" element={<CreateBIP />} />
                   {/*<Route path="/faq" element={<FAQ />} />*/}
                   <Route path="/proposal/:id" element={<Proposal />} />
+                  <Route path="/bip/:id" element={<BIP />} />
                   <Route path="/application/:id" element={<Application />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   {/*<Route path="/:house" element={<House />} />*/}

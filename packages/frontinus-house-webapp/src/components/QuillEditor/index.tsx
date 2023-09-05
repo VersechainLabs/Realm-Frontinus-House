@@ -162,16 +162,18 @@ export default function QuillEditor(props: QuillEditorProps) {
       props.onQuillInit(quill);
     }
 
-    // quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
-    //   if (source === 'user') {
-    //     props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-    //   }
-    // });
+
+    if ( props.widgetKey == 'BIP' ){
+      quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
+        props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
+      });
+    }
+
 
     quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
       // if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-
+        // console.log(delta, oldDelta, source);
       // }
     });
 
@@ -268,23 +270,24 @@ export default function QuillEditor(props: QuillEditorProps) {
                       >
                         <span><img src="/loading.gif" alt="" width={'40'}/></span>
                       </div>
-                  ) :  (
+                  ) :  props.btnText && (
+
                       <div
                           id="custom-button"
                           onClick={clickBtn}
                       >
                         <span>{ props.btnText }</span>
                       </div>
+
                   )
               ) : (
-                  <div  id="custom-button-connect">
-                    <ConnectButton
-                    />
-                  </div>
+                  props.btnText &&(
+                      <div  id="custom-button-connect">
+                        <ConnectButton
+                        />
+                      </div>
+                  )
               )}
-
-
-
             </div>
           </>
         </div>
