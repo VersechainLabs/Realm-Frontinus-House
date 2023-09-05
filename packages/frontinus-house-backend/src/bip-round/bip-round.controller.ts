@@ -94,13 +94,22 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
       });
 
       roundRecord.bipOptions.forEach(option => {
-        option.percentage = option.voteCount / totalVoteCount * 100;
+        option.percentage = (option.voteCount / totalVoteCount * 100).toFixed(2);
+        // option.percentage = this.roundUpNumber(option.voteCount / totalVoteCount * 100);
+        // option.percentage = Math.round( option.voteCount / totalVoteCount * 100 * 1e2 ) / 1e2;
       });
 
       // roundRecord.quorum = parseInt(process.env.BIP_VOTE_QUORUM); // Fix number 1500, ask Yao
       roundRecord.quorum = 1500; // Fix number 1500, ask Yao
+      // roundRecord.quorumPercentage = this.roundUpNumber(totalVoteCount / 1500);
+      roundRecord.quorumPercentage = (totalVoteCount / 1500).toFixed(2);
       
       return roundRecord;
+    }
+
+    // e.g: 42.008 => 42.01
+    roundUpNumber(val: number) {
+      return Math.round( val * 1e2 ) / 1e2;
     }
 }
   
