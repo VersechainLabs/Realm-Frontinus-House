@@ -21,6 +21,7 @@ import Button, { ButtonColor } from '../../components/Button';
 import AddressAvatar from '../../components/AddressAvatar';
 import VoteListPopup from '../../components/VoteListPopup';
 import EthAddress from '../../components/EthAddress';
+import RenderedBIPFields from "../../components/RenderBIPFields";
 
 const BIP = () => {
     const params = useParams();
@@ -130,15 +131,14 @@ const BIP = () => {
                 )}
                 {bip && !loading ? (
                     <Container>
-                        {/*<RenderedProposalFields*/}
-                        {/*    proposal={bip}*/}
-                        {/*    community={community}*/}
-                        {/*    backButton={*/}
-                        {/*        <div className={classes.backToAuction} onClick={() => handleBackClick()}>*/}
-                        {/*            <IoArrowBackCircleOutline size={'1.5rem'} /> View Home*/}
-                        {/*        </div>*/}
-                        {/*    }*/}
-                        {/*/>*/}
+                        <RenderedBIPFields
+                            bip={bip}
+                            backButton={
+                                <div className={classes.backToAuction} onClick={() => handleBackClick()}>
+                                    <IoArrowBackCircleOutline size={'1.5rem'} /> View Home
+                                </div>
+                            }
+                        />
                     </Container>
                 ) : failedFetch ? (
                     <NotFound />

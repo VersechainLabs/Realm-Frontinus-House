@@ -162,16 +162,18 @@ export default function QuillEditor(props: QuillEditorProps) {
       props.onQuillInit(quill);
     }
 
-    // quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
-    //   if (source === 'user') {
-    //     props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-    //   }
-    // });
+
+    if ( props.widgetKey == 'BIP' ){
+      quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
+        props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
+      });
+    }
+
 
     quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
       // if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-
+        // console.log(delta, oldDelta, source);
       // }
     });
 

@@ -6,11 +6,11 @@ import React, { useEffect, useState, useRef } from 'react';
 import ProposalEditor from '../../components/ProposalEditor';
 import DelegateEditor from '../../components/DelegateEditor';
 import BipForm, {FormDataType} from '../../components/BipForm';
-
+import { useNavigate } from 'react-router-dom';
 import Preview from '../Preview';
 import { clearProposal, patchProposal } from '../../state/slices/editor';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import {InfiniteAuctionProposal, Proposal, TimedAuction} from '@nouns/frontinus-house-wrapper/dist/builders';
+import {InfiniteAuctionProposal, Proposal, TimedAuction,TimedBIP} from '@nouns/frontinus-house-wrapper/dist/builders';
 import { appendProposal } from '../../state/slices/propHouse';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import isAuctionActive from '../../utils/isAuctionActive';
@@ -29,8 +29,10 @@ import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DemoContainer} from "@mui/x-date-pickers/internals/demo";
 import {DateTimePicker} from "@mui/x-date-pickers/DateTimePicker";
-import dayjs from "dayjs";
-import {setAlert} from "../../state/slices/alert";
+import dayjs, {Dayjs, utc} from "dayjs";
+import BIPPreview from "../../components/BIPPreview";
+import { setAlert } from '../../state/slices/alert';
+import { matchImg } from '../../utils/matchImg';
 
 const CreateBIPForm: React.FC<{
     fields?: ProposalFields;
@@ -45,7 +47,7 @@ const CreateBIPForm: React.FC<{
         voteType:1,
         voteOptions:["",""],
         voteStartTime: new Date(),
-        voteEndTime: new Date(),
+        voteEndTime: "",
     });
 
 
@@ -53,13 +55,13 @@ const CreateBIPForm: React.FC<{
     const client = useRef(new ApiWrapper(host));
     const { address: account } = useAccount();
     const { data: walletClient } = useWalletClient();
-
-    useEffect(() => {
-        client.current = new ApiWrapper(host, walletClient);
-    }, [walletClient, host]);
-
-
     const [content, setContent] = useState('');
+
+    const [imgArray, setImgArray] = useState(['']);
+
+
+
+    const navigate = useNavigate();
 
 
     const { t } = useTranslation();
@@ -68,21 +70,39 @@ const CreateBIPForm: React.FC<{
     const [showPreview, setShowPreview] = useState(false);
     const [showStep1, setShowStep1] = useState(true);
     const [showStep2, setShowStep2] = useState(false);
+    const [publishLoading, setPublishLoading] = useState(false);
     const [quill, setQuill] = useState<Quill | undefined>(undefined);
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(false);
+    const MIN_TITLE_LENGTH = 5;
     const MAX_TITLE_LENGTH = 100;
     const [titleLength, setTitleLength] = useState(0);
+
+    useEffect(() => {
+        client.current = new ApiWrapper(host, walletClient);
+    }, [walletClient, host,quill]);
 
 
     const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
         if (plainText.trim().length === 0) {
-            setContent('');
+            if( !htmlContent ){
+                setContent('');
+            }else{
+                setContent(htmlContent);
+            }
         } else {
             setContent(htmlContent);
         }
-        console.log(content);
     };
+
+    // const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
+    //     console.log(content);
+    //     // if (plainText.trim().length === 0) {
+    //     //     setContent('');
+    //     // } else {
+    //         setContent(htmlContent);
+    //     // }
+    // };
 
     const handleImgArrayChange = (img: string) => {
         let ary = [...imgArray];
@@ -97,6 +117,11 @@ const CreateBIPForm: React.FC<{
     };
 
     const onClickContinue = () => {
+        let flag = checkStep1();
+        if ( !flag ){
+            return false;
+        }
+
         setShowStep1(false);
         setShowStep2(true);
     }
@@ -116,27 +141,134 @@ const CreateBIPForm: React.FC<{
         setState(prevState => ({ ...prevState, voteOptions: state.voteOptions }));
     }
 
+    const onClickPreview = ()=>{
+        setShowStep1(false);
+        setShowStep2(false);
+        setShowPreview(true);
+    }
 
     const onClickBack = ()=>{
         setShowStep1(true);
         setShowStep2(false);
+        setShowPreview(false);
     }
+
+
+    const onClickPreviewBack = ()=>{
+        setShowStep1(true);
+        setShowStep2(false);
+        setShowPreview(false);
+    }
+
+    const setStartTime = (value: Dayjs | null) => {
+        if ( !value ){
+            return;
+        }
+        const utcValue = utc(value.format());
+        setState(prevState => ({
+            ...prevState,
+            voteStartTime: utcValue.toDate(),
+        }));
+    };
+
+    const setEndTime = (value: Dayjs | null) => {
+        if ( !value ){
+            return;
+        }
+        const utcValue = utc(value.format());
+        setState(prevState => ({
+            ...prevState,
+            voteEndTime: utcValue.toDate(),
+        }));
+    };
+
+
+    const checkStep1 = ()=>{
+        //check title
+        if ( state.title.length < MIN_TITLE_LENGTH ){
+            dispatch(setAlert({ type: 'error', message: "The minmum length of title is "+MIN_TITLE_LENGTH }));
+            return false;
+        }
+        // console.log(content);
+
+        if (content == '<p><br></p>'){
+            dispatch(setAlert({ type: 'error', message: "Please input the description" }));
+            return false;
+        }
+
+        return true;
+    }
+
+    const checkStep2 = ()=>{
+        //check title
+
+        let len = 0;
+
+        for(let i=0;i<state.voteOptions.length;i++){
+            if(state.voteOptions[i].trim() == ''){
+                continue;
+            }
+            len++;
+        }
+
+        if ( len < 2 ){
+            dispatch(setAlert({ type: 'error', message: "Please input at least two choices!" }));
+            return false;
+        }
+        // console.log(content);
+
+        if ( !state.voteStartTime ){
+            dispatch(setAlert({ type: 'error', message: "Please select the startTime" }));
+            return false;
+        }
+
+        if ( !state.voteEndTime ){
+            dispatch(setAlert({ type: 'error', message: "Please select the endTime" }));
+            return false;
+        }
+
+        if ( state.voteEndTime <= state.voteStartTime){
+            dispatch(setAlert({ type: 'error', message: "EndTime should be bigger than startTime" }));
+            return false;
+        }
+
+
+
+        return true;
+    }
+
+
+
 
     const onClickPublish = async ()=>{
         try {
-            console.log(content);
-            // const round = await client.current
-            //     .createAuction(
-            //
-            //     )
-            //     .then(() => {
-            //
-            //     })
-            //     .catch(e => {
-            //
-            //     });
-        } catch (e) {
 
+            let flag = checkStep2();
+            if ( !flag ){
+                return false;
+            }
+
+
+            let imgUrl = matchImg(imgArray, content);
+
+            await client.current
+                .createBIP(
+                    new TimedBIP(
+                        state.title,
+                        state.voteType,
+                        state.voteOptions,
+                        state.voteStartTime,
+                        state.voteEndTime,
+                        content,
+                    ),
+                )
+                .then((data:any) => {
+                    navigate("/bip/"+data.id);
+                })
+                .catch(e => {
+
+                });
+        } catch (e) {
 
         }
     }
@@ -185,7 +317,7 @@ const CreateBIPForm: React.FC<{
                                                         onQuillInit={(q)  => setQuill(q)}
                                                         btnText=""
                                                         onButtonClick={()=>function () {}}
-                                                        initContent={content}
+                                                        initContent={""}
                                                         placeholderText=""
                                                     />
                                                 </div>
@@ -196,11 +328,31 @@ const CreateBIPForm: React.FC<{
                                                     text={'Continue'}
                                                     onClick={onClickContinue}
                                                 />
-                                                <div className={classes.preview}>Preview</div>
+                                                <div className={classes.preview} onClick={onClickPreview}>Preview</div>
                                             </div>
                                         </Col>
                                     </Row>
                             }
+
+
+
+                            {
+
+                                <Row className={!showPreview && classes.hide}>
+                                    <Col xl={12}>
+                                        <BIPPreview
+                                            onClickGoBack={onClickPreviewBack}
+                                            title={state.title}
+                                            description={content}
+                                    />
+                                    </Col>
+                                </Row>
+
+                            }
+
+
+
+
                             {
                                     <Row className={!showStep2 && classes.hide}>
                                         <Col xl={12}>
@@ -268,9 +420,11 @@ const CreateBIPForm: React.FC<{
                                                                         <DemoContainer components={['DateTimePicker']}>
                                                                             <DateTimePicker
                                                                                 onChange={newValue => {
+                                                                                    setStartTime(newValue)
                                                                                     // saveFormStart(newValue); // Save the value to the state as before
                                                                                     // setProposingStartTime(newValue); // Save the value to the proposingStartTime state
                                                                                 }}
+                                                                                value={dayjs()}
                                                                                 className={classes.input}
                                                                                 minDate={dayjs()} //set minDate to the current date and time
                                                                                 ampm={false}
@@ -288,7 +442,7 @@ const CreateBIPForm: React.FC<{
                                                                                 <DateTimePicker
                                                                                     onChange={newValue => {
                                                                                         // saveFormStart(newValue); // Save the value to the state as before
-                                                                                        // setProposingStartTime(newValue); // Save the value to the proposingStartTime state
+                                                                                        setEndTime(newValue); // Save the value to the proposingStartTime state
                                                                                     }}
                                                                                     className={classes.input}
                                                                                     minDate={dayjs()} //set minDate to the current date and time

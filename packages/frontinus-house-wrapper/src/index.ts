@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  Application, ApproveRound,
+  Application, ApproveRound, BIPVote,
   Comment,
   Community,
   CommunityWithAuctions, DeleteApplication,
@@ -11,9 +11,10 @@ import {
   StoredFile,
   StoredInfiniteAuction,
   StoredTimedAuction,
+  StoredTimedBIP,
   StoredVote,
   StoredVoteWithProposal,
-  TimedAuction, TimedDelegate,
+  TimedAuction, TimedBIP, TimedDelegate,
   UpdatedProposal,
   Vote,
 } from './builders';
@@ -46,6 +47,20 @@ export class ApiWrapper {
       throw e.response.data.message;
     }
   }
+
+  async createBIP(bip:TimedBIP ): Promise<StoredTimedBIP[]> {
+    if (!this.signer) throw 'Please sign';
+    try {
+      const signedPayload = await bip.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/bip-round/create`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+
+
+
 
   async approveAuction(ApproveData: ApproveRound): Promise<StoredTimedAuction[]> {
     if (!this.signer) throw 'Please sign';
@@ -513,6 +528,19 @@ export class ApiWrapper {
       throw e.response.data.message;
     }
   }
+
+  async createBIPVote(vote: BIPVote) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await vote.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/bip-votes/create`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+
+
 
   async deleteVote(deleteVote: DeleteVote) {
     if (!this.signer) return;
