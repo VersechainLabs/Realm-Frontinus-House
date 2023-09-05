@@ -150,11 +150,16 @@ export function convertBipVoteListToDelegateVoteList(voteList: BipVote[]) {
   const result = [];
   voteList.forEach((v) => {
     if (v.delegateAddress) {
-      if (_map[v.delegateAddress].delegateList) {
-        _map[v.delegateAddress].delegateList.push(v);
-      } else {
-        _map[v.delegateAddress].delegateList = [v];
-      }
+      // try {
+        if (_map[v.delegateAddress].delegateList) {
+          _map[v.delegateAddress].delegateList.push(v);
+        } else {
+          _map[v.delegateAddress].delegateList = [v];
+        }
+      // } catch (error) {
+      //   console.log("error:", error);
+      // }
+
     } else {
       result.push(v);
     }

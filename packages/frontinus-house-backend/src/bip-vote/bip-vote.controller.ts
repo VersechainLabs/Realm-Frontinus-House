@@ -76,7 +76,7 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
 
       // Verify that proposal exist
       if (!foundOption) {
-        throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+        throw new HttpException('No Option with that ID', HttpStatus.NOT_FOUND);
       }
 
       const foundRound = foundOption.bipRound;
