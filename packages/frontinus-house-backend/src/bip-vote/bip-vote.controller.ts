@@ -11,9 +11,7 @@ import {
   } from '@nestjs/common';
   import { ProposalsService } from '../proposal/proposals.service';
   import {
-    verifySignPayload,
     verifySignPayloadForBipVote,
-    verifySignPayloadForVote,
   } from '../utils/verifySignedPayload';
   import { convertBipVoteListToDelegateVoteList, BipVote } from './bip-vote.entity';
 //   import {
