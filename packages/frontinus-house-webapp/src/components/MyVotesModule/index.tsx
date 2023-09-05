@@ -25,7 +25,7 @@ const MyVotesModule: React.FC<MyVotesModuleProps> = (props: MyVotesModuleProps) 
       <Card
           bgColor={CardBgColor.White}
           borderRadius={CardBorderRadius.thirty}
-          classNames={classes.sidebarContainerCard}
+          classNames={classes.CardStyle1}
       >
           <div className={classes.myVoteBlock} >
               <span className={classes.title}>
