@@ -122,6 +122,8 @@ export class BipRound {
   balanceBlockTag: number;
 
   comments: any;
+  
+  quorum: number;
 
   @ApiProperty()
   @Column({
@@ -154,6 +156,7 @@ export class BipRound {
   //   if (this.bipVotes && this.bipVotes.length > 0) {
   //     this.bipVotes = convertBipVoteListToDelegateVoteList(this.bipVotes);
   //   }
+  //   console.log("after convertBipVoteListToDelegateVoteList()");
 
   //   const thisPlain = instanceToPlain(this);
   //   return { ...thisPlain };
