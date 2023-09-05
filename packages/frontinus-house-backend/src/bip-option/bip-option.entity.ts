@@ -18,7 +18,7 @@ import { Address } from '../types/address';
 import { Float, Int } from '@nestjs/graphql/dist/scalars';
 import { IsEthereumAddress } from 'class-validator';
 import { VoteStatesClass } from '@nouns/frontinus-house-wrapper';
-import { BipVote } from 'src/bip-vote/bip-vote.entity';
+import { BipVote, convertBipVoteListToDelegateVoteList } from 'src/bip-vote/bip-vote.entity';
 import { BipRound } from 'src/bip-round/bip-round.entity';
 
 @Entity()
@@ -118,9 +118,9 @@ export class BipOption {
 
   // noinspection JSUnusedGlobalSymbols : use for exclude attrs
   toJSON() {
-    // if (this.votes && this.votes.length > 0) {
-    //   this.votes = convertVoteListToDelegateVoteList(this.votes);
-    // }
+    if (this.bipVotes && this.bipVotes.length > 0) {
+      this.bipVotes = convertBipVoteListToDelegateVoteList(this.bipVotes);
+    }
 
     const thisPlain = instanceToPlain(this);
     return { ...thisPlain };

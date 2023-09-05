@@ -124,7 +124,7 @@ export class BipVote {
     if (opts) {
       this.address = opts.address;
       this.direction = opts.direction;
-      this.bipOption = opts.bipOption;
+      this.bipRoundId = opts.bipRoundId;
       this.bipOptionId = opts.bipOptionId;
       this.weight = opts.weight;
       this.actualWeight = opts.actualWeight;
@@ -140,7 +140,7 @@ export class BipVote {
   }
 }
 
-export function convertVoteListToDelegateVoteList(voteList: BipVote[]) {
+export function convertBipVoteListToDelegateVoteList(voteList: BipVote[]) {
   const _map = {};
   voteList.forEach((v) => {
     _map[v.address] = v;

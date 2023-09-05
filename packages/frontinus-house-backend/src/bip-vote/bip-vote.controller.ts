@@ -12,9 +12,10 @@ import {
   import { ProposalsService } from '../proposal/proposals.service';
   import {
     verifySignPayload,
-    // verifySignPayloadForVote,
+    verifySignPayloadForBipVote,
+    verifySignPayloadForVote,
   } from '../utils/verifySignedPayload';
-  import { convertVoteListToDelegateVoteList, BipVote } from './bip-vote.entity';
+  import { convertBipVoteListToDelegateVoteList, BipVote } from './bip-vote.entity';
 //   import {
 //     CreateVoteDto,
 //     DelegatedVoteDto,
@@ -38,7 +39,7 @@ import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { DelegatedVoteDto } from 'src/vote/vote.types';
   
-  @Controller('bipVotes')
+  @Controller('bip-votes')
   export class BipVoteController {
     constructor(
       private readonly bipVotesService: BipVoteService,
@@ -68,17 +69,20 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
     async create(
       @Body(SignedPayloadValidationPipe) createVoteDto: CreateBipVoteDto,
     ): Promise<BipVote[]> {
-      // verifySignPayloadForVote(createVoteDto);
+
+      verifySignPayloadForBipVote(createVoteDto);
 
       const foundOption = await this.bipOptionService.findOne(
         createVoteDto.bipOptionId,
       );
+
       // Verify that proposal exist
       if (!foundOption) {
         throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
       }
 
       const foundRound = foundOption.bipRound;
+
       await this.bipVotesService.checkEligibleToVote(
         foundOption,
         foundRound,
@@ -91,12 +95,17 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
         foundRound,
       );
 
+
       const voteList: DelegatedBipVoteDto[] = [];
+
+
       const vp = await this.blockchainService.getVotingPowerWithSnapshot(
         createVoteDto.address,
         process.env.COMMUNITY_ADDRESS,
         foundRound.balanceBlockTag,
       );
+// const vp = 1;
+
       voteList.push({
         ...createVoteDto,
         delegateId: null,
@@ -105,6 +114,7 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
         weight: vp,
         actualWeight: vp,
       } as DelegatedBipVoteDto);
+
       for (const delegate of delegateList) {
         const vp = await this.blockchainService.getVotingPowerWithSnapshot(
           delegate.fromAddress,
@@ -127,6 +137,7 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
         } as DelegatedBipVoteDto);
       }
 
+
       // Verify that signer has voting power
       const votingPower = voteList.reduce(
         (acc, vote) => acc + vote.actualWeight,
@@ -142,6 +153,7 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
         voteList[0].weight = votingPower;
       }
 
+
       const voteResultList = await this.bipVotesService.createNewVoteList(
         voteList,
         foundOption,
@@ -149,6 +161,6 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
 
       await this.bipOptionService.rollupVoteCount(foundOption.id);
 
-      return convertVoteListToDelegateVoteList(voteResultList);
+      return convertBipVoteListToDelegateVoteList(voteResultList);
     }
   }
