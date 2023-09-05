@@ -72,6 +72,7 @@ export class BipOption {
   @Column({ type: 'integer', default: 0 })
   @Field(() => Int)
   voteCount: number;
+  percentage: number;
 
 
   @BeforeUpdate()

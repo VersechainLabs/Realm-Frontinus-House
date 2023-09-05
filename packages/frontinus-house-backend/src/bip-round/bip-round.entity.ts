@@ -149,15 +149,15 @@ export class BipRound {
   //   }
   // }
   // noinspection JSUnusedGlobalSymbols : use for exclude attrs
-  toJSON() {
-    console.log("round toJson");
-    if (this.bipVotes && this.bipVotes.length > 0) {
-      this.bipVotes = convertBipVoteListToDelegateVoteList(this.bipVotes);
-    }
+  // toJSON() {
+  //   console.log("round toJson");
+  //   if (this.bipVotes && this.bipVotes.length > 0) {
+  //     this.bipVotes = convertBipVoteListToDelegateVoteList(this.bipVotes);
+  //   }
 
-    const thisPlain = instanceToPlain(this);
-    return { ...thisPlain };
-  }
+  //   const thisPlain = instanceToPlain(this);
+  //   return { ...thisPlain };
+  // }
 
 }
 
