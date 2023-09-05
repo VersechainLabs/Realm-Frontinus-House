@@ -111,6 +111,12 @@ export class BipVoteService {
     });
   }
 
+  async findByOptionId(bipOptionId: number, conditions?: FindConditions<BipVote>) {
+    return this.votesRepository.find({
+      where: { ...conditions, bipOptionId },
+    });
+  }
+
   async getNumVotesByAccountAndRoundId(account: string, roundId: number) {
     const votes = await this.votesRepository
       .createQueryBuilder('v')

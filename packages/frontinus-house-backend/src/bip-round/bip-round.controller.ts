@@ -84,7 +84,20 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
       type: [BipRound],
     })
     async getDetail(@Param('id', ParseIntPipe) id: number): Promise<BipRound> {
-      return await this.bipRoundService.findOne(id);
+
+      const roundRecord = await this.bipRoundService.findOne(id);
+
+      // Add vote percentage for "Vote Results":
+      let totalVoteCount = 0;
+      roundRecord.bipOptions.forEach(option => {
+        totalVoteCount += option.voteCount;
+      });
+
+      roundRecord.bipOptions.forEach(option => {
+        option.percentage = option.voteCount / totalVoteCount * 100;
+      });
+      
+      return roundRecord;
     }
 }
   
