@@ -380,6 +380,7 @@ export class Vote extends Signable {
   constructor(
     // public readonly direction: Direction,
     public readonly proposalId: number,
+    public readonly weight : number,
   ) {
     super();
   }
@@ -389,6 +390,7 @@ export class Vote extends Signable {
       // No need direction
       // direction: this.direction,
       proposalId: this.proposalId,
+      weight : this.weight,
     };
   }
 }
