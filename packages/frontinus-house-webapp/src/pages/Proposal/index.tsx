@@ -235,7 +235,7 @@ const Proposal = () => {
                   <div>
 
                     <button
-                        disabled={(inputValue < 0)}
+                        disabled={(inputValue < 1)}
                         className={classes.approveButton}
                         onClick={async () => {
                           // TODO: 按钮需要加 loading
