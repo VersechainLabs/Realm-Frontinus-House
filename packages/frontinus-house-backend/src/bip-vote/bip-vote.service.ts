@@ -78,9 +78,9 @@ export class BipVoteService {
     return this.votesRepository.findOne(opt);
   }
 
-  findBy(auctionId: number, address: string): Promise<BipVote> {
+  findBy(bipOptionId: number, address: string): Promise<BipVote> {
     return this.votesRepository.findOne({
-      where: { address, auctionId },
+      where: { address, bipOptionId },
     });
   }
 
@@ -182,15 +182,15 @@ export class BipVoteService {
    * - The address has voting power
    */
   async checkEligibleToVote(
-    proposal: BipOption,
-    auction: BipRound,
+    bipOption: BipOption,
+    bipRound: BipRound,
     address: string,
     checkVotingPower = true,
   ): Promise<boolean> {
     const currentTime = new Date();
     if (
-      currentTime < auction.startTime ||
-      currentTime > auction.endTime
+      currentTime < bipRound.startTime ||
+      currentTime > bipRound.endTime
     ) {
       throw new HttpException(
         'Not in the eligible voting period.',
@@ -199,16 +199,16 @@ export class BipVoteService {
     }
 
     // Check if user has voted for this round, Protect against casting same vote twice
-    const sameAuctionVote = await this.findBy(auction.id, address);
+    const sameAuctionVote = await this.findBy(bipOption.id, address);
     if (sameAuctionVote) {
       throw new HttpException(
-        `Vote for prop ${proposal.id} failed because user has already been voted in this round`,
+        `Vote for prop ${bipOption.id} failed because user has already been voted in this round`,
         HttpStatus.FORBIDDEN,
       );
     }
 
     if (checkVotingPower) {
-      const vp = await this.getVotingPower(address, auction, true);
+      const vp = await this.getVotingPower(address, bipRound, true);
       if (vp.weight === 0) {
         throw new HttpException('No Voting power.', HttpStatus.FORBIDDEN);
       }
@@ -252,15 +252,18 @@ export class BipVoteService {
     // return true;
   }
 
-  async createNewVoteList(voteDtoList: DelegatedBipVoteDto[], proposal: BipOption) {
+  async createNewVoteList(voteDtoList: DelegatedBipVoteDto[], bipOption: BipOption) {
     const voteList = [];
+
     for (const createVoteDto of voteDtoList) {
+
       voteList.push(
         new BipVote({
           address: createVoteDto.address,
           direction: createVoteDto.direction,
           bipOptionId: createVoteDto.bipOptionId,
-          // auctionId: proposal. auctionId,
+          bipRoundId : bipOption.bipRoundId,
+          // auctionId: bipOption. auctionId,
           weight: createVoteDto.weight,
           actualWeight: createVoteDto.actualWeight,
           blockHeight: createVoteDto.blockHeight,
@@ -269,6 +272,7 @@ export class BipVoteService {
         }),
       );
     }
+
     return await this.storeMany(voteList);
   }
 

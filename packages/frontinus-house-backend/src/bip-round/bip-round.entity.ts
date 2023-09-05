@@ -16,10 +16,10 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
-import { Exclude } from 'class-transformer';
+import { Exclude, instanceToPlain } from 'class-transformer';
 import { Address } from '../types/address';
 import { BipOption } from 'src/bip-option/bip-option.entity';
-import { BipVote } from 'src/bip-vote/bip-vote.entity';
+import { BipVote, convertBipVoteListToDelegateVoteList } from 'src/bip-vote/bip-vote.entity';
 
 @Entity()
 @ObjectType()
@@ -148,5 +148,16 @@ export class BipRound {
   //     this.numProposals = 0;
   //   }
   // }
+  // noinspection JSUnusedGlobalSymbols : use for exclude attrs
+  toJSON() {
+    console.log("round toJson");
+    if (this.bipVotes && this.bipVotes.length > 0) {
+      this.bipVotes = convertBipVoteListToDelegateVoteList(this.bipVotes);
+    }
+
+    const thisPlain = instanceToPlain(this);
+    return { ...thisPlain };
+  }
+
 }
 

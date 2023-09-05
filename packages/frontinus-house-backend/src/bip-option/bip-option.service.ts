@@ -39,7 +39,6 @@ export class BipOptionService {
   async findOne(id: number) {
     const proposal = await this.bipOptionRepository.findOne(id, {
       relations: ['bipVotes', 'bipRound'],
-      where: { visible: true },
     });
 
     if (!proposal || !proposal.bipRound) {
@@ -67,6 +66,7 @@ export class BipOptionService {
     const foundProposal = await this.findOne(id);
     if (!foundProposal) return;
     foundProposal.updateVoteCount();
+
     await this.bipOptionRepository.save(foundProposal);
   }
 
