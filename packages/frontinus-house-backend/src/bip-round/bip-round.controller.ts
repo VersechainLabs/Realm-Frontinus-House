@@ -115,7 +115,7 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
       return Math.round( val * 1e2 ) / 1e2;
     }
     roundUpNumberToString(count: number, total: number):string {
-      if (total == 0) return "0.00";
+      if (total == 0) return "0.00"; // otherwise it will return "NaN"
 
       return (count / total * 100).toFixed(2);
     }
