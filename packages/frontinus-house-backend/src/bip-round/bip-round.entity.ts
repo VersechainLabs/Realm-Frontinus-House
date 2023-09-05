@@ -124,6 +124,7 @@ export class BipRound {
   comments: any;
   
   quorum: number;
+  quorumPercentage: string;
 
   @ApiProperty()
   @Column({
