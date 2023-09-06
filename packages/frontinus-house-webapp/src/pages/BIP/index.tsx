@@ -53,7 +53,7 @@ const BIP = () => {
 
 
     const handleBackClick = () => {
-        navigate(`/`);
+        navigate(`/?tab=bip`);
     };
 
     useEffect(() => {
@@ -135,7 +135,7 @@ const BIP = () => {
                             bip={bip}
                             backButton={
                                 <div className={classes.backToAuction} onClick={() => handleBackClick()}>
-                                    <IoArrowBackCircleOutline size={'1.5rem'} /> View Home
+                                    <IoArrowBackCircleOutline size={'1.5rem'} /> View BIPs
                                 </div>
                             }
                         />

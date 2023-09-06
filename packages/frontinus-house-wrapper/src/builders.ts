@@ -66,6 +66,7 @@ export class TimedBIP extends Signable {
       public readonly startTime: Date,
       public readonly endTime: Date,
       public readonly content: string,
+      public readonly previewImage:string,
   ) {
     super();
   }
@@ -78,6 +79,7 @@ export class TimedBIP extends Signable {
       startTime: this.startTime.toISOString(),
       endTime: this.endTime.toISOString(),
       content: this.content,
+      previewImage:this.previewImage,
     };
   }
 }

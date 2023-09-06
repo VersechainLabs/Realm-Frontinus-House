@@ -178,6 +178,7 @@
 }
 
 .addBar{
+    width: 120px;
     display: flex;
     cursor: pointer;
 }
