@@ -411,10 +411,10 @@ const Proposal = () => {
                           <EthAddress address={child.address} />
                           {/*<div>X3 vote</div>*/}
                         </div>
-                        <div className={classes.voteTotal}>
-                          {child.actualWeight} BIBLIO
-                          {/*123 BIBLIO*/}
-                        </div>
+                        {/*<div className={classes.voteTotal}>*/}
+                        {/*  {child.actualWeight} BIBLIO*/}
+                        {/*  /!*123 BIBLIO*!/*/}
+                        {/*</div>*/}
                       </div>
                   ))}
                 </div>

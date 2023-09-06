@@ -108,10 +108,10 @@ const VoteListPopup: React.FC<PopupProps> = (props: PopupProps) => {
                         <div className={classes.voteUserAddress}></div>
                         <EthAddress address={child.address} />
                       </div>
-                      <div className={classes.voteTotal}>
-                        {child.actualWeight} BIBLIO
-                        {/*123 BIBLIO*/}
-                      </div>
+                      {/*<div className={classes.voteTotal}>*/}
+                      {/*  {child.actualWeight} BIBLIO*/}
+                      {/*  /!*123 BIBLIO*!/*/}
+                      {/*</div>*/}
                     </div>
                 ))}
               </div>
