@@ -27,6 +27,7 @@ export default function Comments(props: CommentsProps) {
   const [commentList, setCommentList] = useState<StoredComment[]>([]);
   const [showFullLoading, setShowFullLoading] = useState(false);
   const [showTailLoading, setShowTailLoading] = useState(false);
+  const [replyCount, setReplyCount] = useState(0);
 
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
@@ -36,6 +37,7 @@ export default function Comments(props: CommentsProps) {
 
   useEffect(() => {
     loadNextPage(0);
+    setReplyCount(Number(commentCount));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [proposalId, applicationId,commentCount]);
 
@@ -86,6 +88,9 @@ export default function Comments(props: CommentsProps) {
 
   const onCommentCreated = (newComment: StoredComment) => {
     setCommentList([newComment].concat(commentList));
+    if ( newComment ){
+      setReplyCount(replyCount+1);
+    }
   };
 
   const itemList = [] as JSX.Element[];
@@ -140,12 +145,21 @@ export default function Comments(props: CommentsProps) {
         )
       }
 
-      <div className={classes.listBar}>
-        <div className={clsx('frontinusTitle',classes.listTitle)}>Comments {props.commentCount}</div>
-        {/*<div className={classes.listFilter}>Sort By : {filter}</div>*/}
-      </div>
-      {!loading ? <List>{itemList}</List> : (
-        <LoadingIndicator />
+      {/*<div className={classes.listBar}>*/}
+      {/*  <div className={clsx('frontinusTitle',classes.listTitle)}>Comments {replyCount}</div>*/}
+      {/*  /!*<div className={classes.listFilter}>Sort By : {filter}</div>*!/*/}
+      {/*</div>*/}
+
+
+      {loading ? (
+          <LoadingIndicator />
+      ) : (
+         <>
+           <div className={classes.listBar}>
+             <div className={clsx('frontinusTitle',classes.listTitle)}>Comments {replyCount}</div>
+           </div>
+           <List>{itemList}</List>
+         </>
       )}
 
     </Container>

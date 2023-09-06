@@ -64,8 +64,8 @@ const VoteLists: React.FC<{
                                          <div className={classes.voteListChild}>
                                              <AddressAvatar address={item.address} size={20} />
                                              {/*<div className={classes.voteUserAddress}>{item.address} </div>*/}
-                                             <div className={classes.voteUserAddress}></div>
-                                             <EthAddress address={item.address} />
+                                             {/*<div className={classes.voteUserAddress}></div>*/}
+                                             <EthAddress address={item.address} className={classes.voteUserAddress}/>
                                              {item.delegateList && item.delegateList.length>0 && (<div className={classes.voteCount} onClick={()=> {
                                                  const index = showChild.indexOf(item.id);
                                                  if (index !== -1) {

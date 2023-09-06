@@ -6,7 +6,7 @@ import NotFound from '../../components/NotFound';
 import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useDispatch } from 'react-redux';
-import { setActiveCommunity, setActiveProposal, setActiveRound,setActiveBIP } from '../../state/slices/propHouse';
+import { setActiveCommunity, setActiveProposal, setActiveRound,setActiveBIP,setHouseTab } from '../../state/slices/propHouse';
 import { IoArrowBackCircleOutline } from 'react-icons/io5';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import {DeleteVote, StoredProposalWithVotes, Vote} from '@nouns/frontinus-house-wrapper/dist/builders';
@@ -22,6 +22,7 @@ import AddressAvatar from '../../components/AddressAvatar';
 import VoteListPopup from '../../components/VoteListPopup';
 import EthAddress from '../../components/EthAddress';
 import RenderedBIPFields from "../../components/RenderBIPFields";
+import {RoundStatus} from "../../components/StatusFilters";
 
 const BIP = () => {
     const params = useParams();
@@ -53,7 +54,8 @@ const BIP = () => {
 
 
     const handleBackClick = () => {
-        navigate(`/?tab=bip`);
+        dispatch(setHouseTab(RoundStatus.BIP));
+        navigate(`/`);
     };
 
     useEffect(() => {

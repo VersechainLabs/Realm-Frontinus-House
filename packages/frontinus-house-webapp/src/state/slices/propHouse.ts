@@ -15,6 +15,7 @@ export interface PropHouseSlice {
   activeProposals?: StoredProposalWithVotes[];
   activeCommunity?: Community;
   modalActive: boolean;
+  houseTab:number;
   infRoundFilteredProposals?: StoredProposalWithVotes[];
   infRoundFilterType: InfRoundFilterType;
 }
@@ -38,6 +39,7 @@ export enum InfRoundFilterType {
 
 const initialState: PropHouseSlice = {
   modalActive: false,
+  houseTab:0,
   infRoundFilterType: InfRoundFilterType.Active,
 };
 
@@ -101,7 +103,6 @@ export const propHouseSlice = createSlice({
     setActiveBIP:(state, action: PayloadAction<StoredAuctionBase | undefined>) => {
       state.activeBIP = action.payload;
     },
-
     setActiveRound: (state, action: PayloadAction<StoredAuctionBase | undefined>) => {
       state.activeRound = action.payload;
     },
@@ -143,6 +144,10 @@ export const propHouseSlice = createSlice({
     setModalActive: (state, action: PayloadAction<boolean>) => {
       state.modalActive = action.payload;
     },
+    setHouseTab: (state, action: PayloadAction<number>) => {
+      state.houseTab = action.payload;
+      },
+
   },
 });
 
@@ -157,6 +162,7 @@ export const {
   filterInfRoundProposals,
   setActiveCommunity,
   setModalActive,
+  setHouseTab,
   setInfRoundFilterType,
 } = propHouseSlice.actions;
 

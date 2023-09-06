@@ -58,11 +58,12 @@
 
 .percent{
     width: 50px;
+    text-align: right;
+    margin-left: 10px;
 }
 
 .symbol{
     margin-left: 10px;
-    margin-right: 10px;
 }
 
 
