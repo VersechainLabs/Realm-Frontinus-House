@@ -35,7 +35,7 @@ export const VoteStates: Record<string, VoteStatesClass> = {
   DELEGATE_ANOTHER : { code: 320, canVote: false, reason: "You've already delegated your voting power to someone else."},
   NO_POWER : { code: 314, canVote: false, reason: "Only Realms NFT holders have permission to approve."},
   NO_DELEGATE_POWER : { code: 321, canVote: false, reason: "Only Realms NFT holders have permission to delegate."},
-  ALREADY_DELEGATED : { code: 319, canVote: false, reason: "User already delegated to another user."},
+  ALREADY_DELEGATED : { code: 319, canVote: false, reason: "You've already delegated your voting power to someone else."},
 
   // For Appliation only:
   NO_APPLICATION : { code: 315, canVote: false, reason: "Can not find application."},

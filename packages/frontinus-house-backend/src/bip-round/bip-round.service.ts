@@ -29,8 +29,6 @@ export class BipRoundService {
   ) {}
 
   findAll(dto: GetBipRoundDto): Promise<BipRound[]> {
-    console.log("order: ", dto.order);
-
     return this.bipRoundRepository.find({
       // loadRelationIds: {
       //   relations: ['bipOption.bipRound'],
