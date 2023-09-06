@@ -281,7 +281,7 @@ export class UpdatedProposal extends Proposal {
     public readonly what: string,
     public readonly tldr: string,
     public readonly auctionId: number,
-    public readonly reqAmount: number | null,
+    public readonly previewImage: string = '',
     public readonly parentType: ProposalParent = 'auction',
   ) {
     super(title, what, tldr, auctionId, parentType);
@@ -290,7 +290,6 @@ export class UpdatedProposal extends Proposal {
   toPayload() {
     return {
       id: this.id,
-      reqAmount: this.reqAmount,
       ...super.toPayload(),
     };
   }

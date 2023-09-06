@@ -10,10 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProposalsService } from '../proposal/proposals.service';
-import {
-  verifySignPayload,
-  verifySignPayloadForVote,
-} from '../utils/verifySignedPayload';
+import { verifySignPayload } from '../utils/verifySignedPayload';
 import { convertVoteListToDelegateVoteList, Vote } from './vote.entity';
 import {
   CreateVoteDto,
@@ -33,6 +30,7 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-response.decorator';
 import { ApiQuery } from '@nestjs/swagger/dist/decorators/api-query.decorator';
 import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
+import { VoteStates } from '@nouns/frontinus-house-wrapper';
 
 @Controller('votes')
 export class VotesController {
@@ -122,8 +120,8 @@ export class VotesController {
 
   @Get('getVotingEligibility')
   async isEligibleToVote(
-    @Query() proposalId: number,
-    @Query() address: string,
+    @Query('proposalId') proposalId: number,
+    @Query('address') address: string,
   ): Promise<boolean> {
     const foundProposal = await this.proposalService.findOne(proposalId);
     if (!foundProposal) {
@@ -136,11 +134,16 @@ export class VotesController {
       throw new HttpException('No auction with that ID', HttpStatus.NOT_FOUND);
     }
 
-    return await this.votesService.checkEligibleToVote(
+    const voteStatus = await this.votesService.checkEligibleToVote(
       foundProposal,
       foundProposalAuction,
       address,
     );
+    if (voteStatus == VoteStates.OK) {
+      return true;
+    } else {
+      throw new HttpException(voteStatus.reason, HttpStatus.BAD_REQUEST);
+    }
   }
 
   /**
@@ -164,7 +167,7 @@ export class VotesController {
   async create(
     @Body(SignedPayloadValidationPipe) createVoteDto: CreateVoteDto,
   ): Promise<Vote[]> {
-    verifySignPayloadForVote(createVoteDto);
+    verifySignPayload(createVoteDto, ['proposalId', 'weight']);
 
     const foundProposal = await this.proposalService.findOne(
       createVoteDto.proposalId,
@@ -175,18 +178,22 @@ export class VotesController {
     }
 
     const foundAuction = foundProposal.auction;
-    await this.votesService.checkEligibleToVote(
+    const voteStatus = await this.votesService.checkEligibleToVote(
       foundProposal,
       foundAuction,
       createVoteDto.address,
       false,
     );
+    if (voteStatus.code !== VoteStates.OK.code) {
+      throw new HttpException(voteStatus.reason, HttpStatus.BAD_REQUEST);
+    }
 
     const delegateList = await this.votesService.getDelegateListByAuction(
       createVoteDto.address,
       foundAuction,
     );
 
+    // Create vote list, checking voting power
     const voteList: DelegatedVoteDto[] = [];
     const vp = await this.blockchainService.getVotingPowerWithSnapshot(
       createVoteDto.address,
@@ -198,7 +205,7 @@ export class VotesController {
       delegateId: null,
       delegate: null,
       blockHeight: foundAuction.balanceBlockTag,
-      weight: vp,
+      weight: createVoteDto.weight,
       actualWeight: vp,
     } as DelegatedVoteDto);
     for (const delegate of delegateList) {
@@ -229,19 +236,56 @@ export class VotesController {
       0,
     );
 
+    // Check if current user has voted in this round
+    const sameAuctionVoteList = await this.votesService.findBy(
+      foundAuction.id,
+      createVoteDto.address,
+    );
+    let currentProposalVote: Vote = null;
+    let prevVpSum = 0;
+    for (const vote of sameAuctionVoteList) {
+      prevVpSum += vote.weight;
+
+      if (vote.proposalId === createVoteDto.proposalId) {
+        currentProposalVote = vote;
+      }
+    }
+
     if (votingPower === 0) {
       throw new HttpException(
         'Signer does not have voting power',
         HttpStatus.BAD_REQUEST,
       );
-    } else {
-      voteList[0].weight = votingPower;
+    } else if (votingPower - prevVpSum < createVoteDto.weight) {
+      throw new HttpException(
+        'Signer does not have enough voting power',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    const voteResultList = await this.votesService.createNewVoteList(
-      voteList,
-      foundProposal,
-    );
+    let voteResultList;
+    if (currentProposalVote != null) {
+      // update previous vote
+      currentProposalVote.weight += createVoteDto.weight;
+      await this.votesService.store(currentProposalVote);
+      voteResultList = await this.votesService.findAll({
+        where: [
+          {
+            proposalId: createVoteDto.proposalId,
+            address: createVoteDto.address,
+          },
+          {
+            proposalId: createVoteDto.proposalId,
+            delegateAddress: createVoteDto.address,
+          },
+        ],
+      });
+    } else {
+      voteResultList = await this.votesService.createNewVoteList(
+        voteList,
+        foundProposal,
+      );
+    }
 
     await this.proposalService.rollupVoteCount(foundProposal.id);
 

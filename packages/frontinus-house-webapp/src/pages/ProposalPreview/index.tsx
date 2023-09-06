@@ -10,9 +10,9 @@ import { useAccount, useWalletClient } from 'wagmi';
 import { ProposalFields } from '../../utils/proposalFields';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {
-  InfiniteAuctionProposal,
-  Proposal,
-  Vote,
+    InfiniteAuctionProposal,
+    Proposal, UpdatedProposal,
+    Vote,
 } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { appendProposal } from '../../state/slices/propHouse';
 import { clearProposal } from '../../state/slices/editor';
@@ -20,13 +20,13 @@ import CongratsDialog from '../../components/CongratsDialog';
 import { setAlert } from '../../state/slices/alert';
 import { LoadingButton } from '@mui/lab';
 import Quill from 'quill';
+import clsx from 'clsx';
 
 const ProposalPreview: React.FC<{}> = () => {
   const location = useLocation();
   const proposalData = useAppSelector(state => state.proposal);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
-  const quill = new Quill(document.createElement('div'));
   const quillContainerRef = useRef<HTMLDivElement | null>(null);
   //   const activeAuction = location.state.auction;
   console.log(location);
@@ -35,6 +35,7 @@ const ProposalPreview: React.FC<{}> = () => {
   const [propId, setPropId] = useState<null | number>(null);
   const dispatch = useAppDispatch();
   const { data: walletClient } = useWalletClient();
+  const [quill, setQuill] = useState<Quill | undefined>(undefined);
   const navigate = useNavigate();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
@@ -60,19 +61,37 @@ const ProposalPreview: React.FC<{}> = () => {
 
   const submit = async () => {
     try {
-      let newProp: Proposal | InfiniteAuctionProposal;
 
-      newProp = new Proposal(
-        proposalData.title,
-        proposalData.description,
-        proposalData.tldr,
-        proposalData.id,
-      );
-      setIsButtonDisabled(true);
-      const proposal = await client.current.createProposal(newProp);
+        if (proposalData.proposalId) {
+            const proposal = await client.current.updateProposal(
+                new UpdatedProposal(
+                    proposalData.proposalId,
+                    proposalData.title,
+                    proposalData.description,
+                    proposalData.tldr,
+                    proposalData.id,
+                    '',
+                    'auction',
+                ),
+            );
+            setPropId(proposal.id);
+            dispatch(appendProposal({ proposal }));
+        } else {
+            let newProp: Proposal | InfiniteAuctionProposal;
 
-      setPropId(proposal.id);
-      dispatch(appendProposal({ proposal }));
+            newProp = new Proposal(
+                proposalData.title,
+                proposalData.description,
+                proposalData.tldr,
+                proposalData.id,
+            );
+            setIsButtonDisabled(true);
+            const proposal = await client.current.createProposal(newProp);
+
+            setPropId(proposal.id);
+            dispatch(appendProposal({ proposal }));
+        }
+
       dispatch(clearProposal());
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
@@ -141,7 +160,7 @@ const ProposalPreview: React.FC<{}> = () => {
           Description{' '}
         </div>
         <div
-          className={classes.descContent}
+          className={clsx(classes.descContent, 'ql-editor')}
           dangerouslySetInnerHTML={{ __html: proposalData.description }}
         />
       </div>

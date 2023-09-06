@@ -5,6 +5,7 @@ const initialState = {
   tldr: '',
   description: '',
   id: 0,
+  proposalId: 0,
 };
 
 const proposalSlice = createSlice({
