@@ -20,6 +20,7 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {useWalletClient} from "wagmi";
 import React, {useEffect, useRef, useState} from "react";
 import {setAlert} from "../../state/slices/alert";
+import VoteLists from "../VoteLists";
 
 
 export interface RenderedBIPProps {
@@ -167,8 +168,17 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                         options={bip.bipOptions}
                         quorum={bip.quorum}
                         voteCount={bip.voteCount}
+                        quorumPercentage={bip.quorumPercentage}
+                        symbol={'BIBLIO'}
                     />
 
+                </div>
+
+                <div className={classes.voteLists}>
+                    <VoteLists
+                        bipVotes={bip.bipVotes}
+                        voteCount={bip.voteCount}
+                    />
                 </div>
 
             </Col>

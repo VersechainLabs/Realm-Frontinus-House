@@ -61,12 +61,15 @@
     align-items: center;
     width: 80px;
     height: 32px;
-    padding: 0px 16px;
-    border-radius: 8px;
-    border: 1px solid #D0A059;
+    padding: 0px 16px!important;
+    border-radius: 8px!important;
+    border: 1px solid #D0A059 !important;
     background: #D0A059 !important;
-    font-weight: 700;
-    color: var(--bg-dark);
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    color: var(--bg-dark) !important;
+    text-transform: none !important;
+    font-family: 'Inconsolata' !important;
 }
 
 .continueBtn:hover{

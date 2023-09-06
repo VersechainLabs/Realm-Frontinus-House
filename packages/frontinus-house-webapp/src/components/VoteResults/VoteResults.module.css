@@ -49,13 +49,30 @@
     font-style: normal;
     font-weight: 700;
     line-height: 150%; /* 24px */
+
+    max-width: 50%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
+
+.percent{
+    width: 42px;
+}
+
+.symbol{
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+
 
 .right{
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 150%; /* 21px */
+    display: flex;
 }
 
 
@@ -79,9 +96,10 @@
 }
 
 .line {
-    width: 90%;
+    width: 0%;
     background-color: #D0A059;
 }
+
 
 
 
