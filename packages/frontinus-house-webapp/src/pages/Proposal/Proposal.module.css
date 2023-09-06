@@ -165,7 +165,7 @@ input.voteWeight[type=number] {
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  margin-left: 20px;
+  margin-left: 16px;
 }
 
 .approveIcon{
@@ -176,7 +176,7 @@ input.voteWeight[type=number] {
 .xIcon{
   width:8px;
   margin-left: 8px;
-  margin-right: 8px;
+  margin-right: 4px;
 }
 
 /*.slider > span {*/
