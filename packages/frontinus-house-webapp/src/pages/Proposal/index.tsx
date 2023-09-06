@@ -109,7 +109,7 @@ const Proposal = () => {
     if (!proposal) return;
     const fetchCommunity = async () => {
       const round = await backendClient.current.getAuction(proposal.auctionId);
-      const community = await backendClient.current.getCommunityWithId(round.community);
+      const community = await backendClient.current.getCommunityWithId(round.community.id);
       dispatch(setActiveCommunity(community));
       dispatch(setActiveRound(round));
     };
