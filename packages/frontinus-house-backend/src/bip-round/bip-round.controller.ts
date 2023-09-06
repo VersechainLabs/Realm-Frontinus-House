@@ -54,12 +54,12 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
       @Body(SignedPayloadValidationPipe) dto: CreateBipRoundDto,
     ): Promise<BipRound> {
 
-      // verifySignPayload(dto, [
-      //   'startTime',
-      //   'endTime',
-      //   'title',
-      //   'description',
-      // ]);
+      verifySignPayload(dto, [
+        'startTime',
+        'endTime',
+        'title',
+        'description',
+      ]);
 
       const newRound = await this.bipRoundService.createBipRound(
         dto,

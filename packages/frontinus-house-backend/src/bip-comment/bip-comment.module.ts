@@ -17,6 +17,7 @@ import { BipCommentsService } from './bip-comment.service';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BlockchainService } from 'src/blockchain/blockchain.service';
 import { SnapshotModule } from 'src/voting-power-snapshot/snapshot.module';
+import { BipOptionService } from 'src/bip-option/bip-option.service';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SnapshotModule } from 'src/voting-power-snapshot/snapshot.module';
   providers: [
     BipCommentsService,
     BipRoundService,
+    BipOptionService,
     BlockchainService,
     ApplicationService,
   ],

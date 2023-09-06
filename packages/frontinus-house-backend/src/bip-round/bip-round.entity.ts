@@ -3,6 +3,7 @@ import { Community } from '../community/community.entity';
 import { Proposal } from '../proposal/proposal.entity';
 import {
   AfterLoad,
+  BeforeUpdate,
   Column,
   CreateDateColumn,
   DeleteDateColumn,

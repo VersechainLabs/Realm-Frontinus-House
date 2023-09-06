@@ -159,6 +159,8 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
 
       await this.bipOptionService.rollupVoteCount(foundOption.id);
 
+      await this.bipRoundService.updateBipRoundVoteCount(foundRound);
+      
       return convertBipVoteListToDelegateVoteList(voteResultList);
     }
   }
