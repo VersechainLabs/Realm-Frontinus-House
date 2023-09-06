@@ -1,5 +1,5 @@
 import classes from './House.module.css';
-import { useLocation } from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import HouseHeader from '../../components/HouseHeader';
 import React, { useEffect, useRef, useState } from 'react';
@@ -39,8 +39,12 @@ const House = () => {
   // const slug = location.pathname.substring(1, location.pathname.length);
   const slug = 'frontinus';
 
+  const search = window.location.search;
+  const params = new URLSearchParams(search);
+  const tab = params.get('tab');
+
   // const { data: signer } = useSigner();
-  const { data: walletClient } = useWalletClient()
+  const { data: walletClient } = useWalletClient();
   const dispatch = useAppDispatch();
   const community = useAppSelector(state => state.propHouse.activeCommunity);
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -255,6 +259,9 @@ const House = () => {
               );
             }),
           ));
+          if ( tab == 'bip'){
+            setCurrentRoundStatus(RoundStatus.BIP);
+          }
 
   }, [input, currentRoundStatus, rounds]);
 

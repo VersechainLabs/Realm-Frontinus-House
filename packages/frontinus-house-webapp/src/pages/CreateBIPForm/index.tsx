@@ -192,7 +192,7 @@ const CreateBIPForm: React.FC<{
 
         // console.log(content);
 
-        if (content == '<p><br></p>' || state.title.length == 0){
+        if (content == '' ||content == '<p><br></p>' || state.title.length == 0){
             dispatch(setAlert({ type: 'error', message: "All fields must be filled before preview!" }));
             return false;
         }
@@ -212,6 +212,12 @@ const CreateBIPForm: React.FC<{
             if(state.voteOptions[i].trim() == ''){
                 continue;
             }
+
+            if(state.voteOptions[i].length >= 500){
+                dispatch(setAlert({ type: 'error', message: "Choice is too long!" }));
+                return false;
+            }
+
             len++;
         }
 
@@ -272,6 +278,7 @@ const CreateBIPForm: React.FC<{
                         state.voteStartTime,
                         state.voteEndTime,
                         content,
+                        imgUrl
                     ),
                 )
                 .then((data:any) => {
@@ -378,9 +385,21 @@ const CreateBIPForm: React.FC<{
                                                             <div className={classes.desc}>
                                                                 Type
                                                             </div>
-                                                            <select className={classes.voteType}>
-                                                                <option value="1">Single Choice Voting</option>
-                                                            </select>
+
+                                                            <input
+                                                                value={'Single Choice Voting'}
+                                                                name={'title'}
+                                                                className={classes.input}
+                                                                type="text"
+                                                                style={{
+                                                                    height: '40px',
+                                                                }}
+                                                                readOnly={true}
+                                                            />
+                                                            {/*<select className={classes.voteType}>*/}
+                                                            {/*    <option value="1">Single Choice Voting</option>*/}
+                                                            {/*</select>*/}
+
                                                         </div>
                                                         <div className={classes.labelMargin}>
                                                             <div className={classes.desc}>

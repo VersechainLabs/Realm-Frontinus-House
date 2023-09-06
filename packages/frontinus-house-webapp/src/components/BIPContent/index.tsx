@@ -29,6 +29,8 @@ import getFirstImageFromProp from '../../utils/getFirstImageFromProp';
 import { useEffect, useState } from 'react';
 import { isTimedAuction } from '../../utils/auctionType';
 import { isMobile } from 'web3modal';
+import sanitizeHtml from "sanitize-html";
+import Markdown from "markdown-to-jsx";
 
 const BIPCard: React.FC<{
     bip: StoredProposalWithVotes;
@@ -41,7 +43,11 @@ const BIPCard: React.FC<{
     const community = useAppSelector(state => state.propHouse.activeCommunity);
     const [imgUrlFromProp, setImgUrlFromProp] = useState<string | undefined>(undefined);
     const [displayTldr, setDisplayTldr] = useState<boolean | undefined>();
+    // overrides any tag to become a <p> tag
+    const changeTagToParagraph = ({ children }: changeTagProps) => <p>{children}</p>;
 
+    // overrides any tag to become a <span> tag
+    const changeTagToSpan = ({ children }: changeTagProps) => <span>{children}</span>;
     useEffect(() => {
         let imgUrl;
 
@@ -81,19 +87,33 @@ const BIPCard: React.FC<{
                                 <div className={classes.titleContainer}>
                                     <div className={clsx('frontinusTitle',classes.propTitle)}>{bip.title}</div>
                                 </div>
+                                <Markdown
+                                    className={classes.truncatedTldr}
+                                    options={{
+                                        overrides: {
+                                            h1: changeTagToParagraph,
+                                            h2: changeTagToParagraph,
+                                            h3: changeTagToParagraph,
+                                            a: changeTagToSpan,
+                                            br: changeTagToSpan,
+                                        },
+                                    }}
+                                >
+                                    {sanitizeHtml(bip.content)}
+                                </Markdown>
 
-                                {displayTldr && (
-                                    <ReactMarkdown
-                                        className={classes.truncatedTldr}
-                                        children={bip.content}
-                                        disallowedElements={['img', '']}
-                                        components={{
-                                            h1: 'p',
-                                            h2: 'p',
-                                            h3: 'p',
-                                        }}
-                                    />
-                                )}
+
+                                    {/*<ReactMarkdown*/}
+                                    {/*    className={classes.truncatedTldr}*/}
+                                    {/*    children={bip.content}*/}
+                                    {/*    disallowedElements={['img', '']}*/}
+                                    {/*    components={{*/}
+                                    {/*        h1: 'p',*/}
+                                    {/*        h2: 'p',*/}
+                                    {/*        h3: 'p',*/}
+                                    {/*    }}*/}
+                                    {/*/>*/}
+
                             </div>
                         </div>
 
