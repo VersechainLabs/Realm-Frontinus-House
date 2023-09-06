@@ -152,7 +152,11 @@ const Proposal = () => {
             setCanVote(1);
           } else if (proposal.voteState.code === 311) {
             setCanVote(2);
-          } else if (proposal.voteState.code === 314 || proposal.voteState.code === 312 || proposal.voteState.code === 313) {
+          } else if (proposal.voteState.code === 314 ||
+              proposal.voteState.code === 312 ||
+              proposal.voteState.code === 313 ||
+              proposal.voteState.code === 319
+          ) {
             setCanVote(3);
           }
 
