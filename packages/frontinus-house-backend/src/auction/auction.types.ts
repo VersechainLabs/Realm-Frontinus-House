@@ -125,6 +125,13 @@ export enum Order {
   DESC = 'DESC',
 }
 
+
+export enum VotingPeriod {
+  VOTING = 'Voting',
+  END = 'Ended',
+  NOT_START = 'Not Started',
+}
+
 export class GetAuctionsDto {
   @IsOptional()
   @IsInt()
