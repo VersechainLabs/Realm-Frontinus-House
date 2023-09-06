@@ -10,6 +10,8 @@ const VoteResults: React.FC<{
     options: any[];
     quorum:number;
     voteCount:number;
+    quorumPercentage:string;
+    symbol?:string;
 }> = props => {
     const { options,quorum } = props;
 
@@ -30,7 +32,9 @@ const VoteResults: React.FC<{
                                 <div className={classes.first}>
                                     <div className={classes.left}>{item.description}</div>
                                     <div className={classes.right}>
-                                        {item.voteCount}&ensp;&ensp;{item.percentage}%
+                                        <div>{item.voteCount}</div>
+                                        <div className={classes.symbol}>{props.symbol}</div>
+                                        <div className={classes.percent}>{item.percentage}%</div>
                                     </div>
                                 </div>
 
@@ -50,14 +54,14 @@ const VoteResults: React.FC<{
                         <div className={classes.first}>
                             <div className={classes.left}>Quorum</div>
                             <div className={classes.right}>
-                                {props.voteCount}&ensp;&ensp;{props.quorum}
+                                {props.voteCount}&ensp;/&ensp;{props.quorum}
                             </div>
                         </div>
 
                         <div className={classes.progress}>
                             <div className={clsx(classes.bgLine,classes.bg)}>
                                 <div className={clsx(classes.line,classes.inner)} style={{
-                                    width:'0%'
+                                    width:props.quorumPercentage+'0%'
                                 }}></div>
                             </div>
                         </div>

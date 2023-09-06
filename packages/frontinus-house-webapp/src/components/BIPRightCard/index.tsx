@@ -50,7 +50,7 @@ const BIPRightCard: React.FC<{
                         }}
                     />
                 ) : (
-                    <ConnectButton classNames={classes.margintop40} color={ButtonColor.Pink} />
+                    <ConnectButton classNames={clsx('connectBtn',classes.margintop40)} color={ButtonColor.Pink} />
                 )}
         </>
     );

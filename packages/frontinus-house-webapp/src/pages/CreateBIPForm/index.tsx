@@ -33,6 +33,8 @@ import dayjs, {Dayjs, utc} from "dayjs";
 import BIPPreview from "../../components/BIPPreview";
 import { setAlert } from '../../state/slices/alert';
 import { matchImg } from '../../utils/matchImg';
+import LoadingIndicator from "../../components/LoadingIndicator";
+import {LoadingButton} from "@mui/lab";
 
 const CreateBIPForm: React.FC<{
     fields?: ProposalFields;
@@ -56,6 +58,8 @@ const CreateBIPForm: React.FC<{
     const { address: account } = useAccount();
     const { data: walletClient } = useWalletClient();
     const [content, setContent] = useState('');
+    const [publishLoading,setPublishLoading] = useState(false);
+
 
     const [imgArray, setImgArray] = useState(['']);
 
@@ -70,7 +74,7 @@ const CreateBIPForm: React.FC<{
     const [showPreview, setShowPreview] = useState(false);
     const [showStep1, setShowStep1] = useState(true);
     const [showStep2, setShowStep2] = useState(false);
-    const [publishLoading, setPublishLoading] = useState(false);
+
     const [quill, setQuill] = useState<Quill | undefined>(undefined);
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(false);
@@ -185,17 +189,17 @@ const CreateBIPForm: React.FC<{
 
     const checkStep1 = ()=>{
         //check title
+
+        // console.log(content);
+
+        if (content == '<p><br></p>' || state.title.length == 0){
+            dispatch(setAlert({ type: 'error', message: "All fields must be filled before preview!" }));
+            return false;
+        }
         if ( state.title.length < MIN_TITLE_LENGTH ){
             dispatch(setAlert({ type: 'error', message: "The minmum length of title is "+MIN_TITLE_LENGTH }));
             return false;
         }
-        // console.log(content);
-
-        if (content == '<p><br></p>'){
-            dispatch(setAlert({ type: 'error', message: "Please input the description" }));
-            return false;
-        }
-
         return true;
     }
 
@@ -243,6 +247,11 @@ const CreateBIPForm: React.FC<{
     const onClickPublish = async ()=>{
         try {
 
+            if ( publishLoading ){
+                return false;
+            }
+
+
             let flag = checkStep2();
             if ( !flag ){
                 return false;
@@ -250,6 +259,9 @@ const CreateBIPForm: React.FC<{
 
 
             let imgUrl = matchImg(imgArray, content);
+
+            setPublishLoading(true);
+
 
             await client.current
                 .createBIP(
@@ -263,13 +275,12 @@ const CreateBIPForm: React.FC<{
                     ),
                 )
                 .then((data:any) => {
+                    setPublishLoading(false);
                     navigate("/bip/"+data.id);
                 })
-                .catch(e => {
 
-                });
         } catch (e) {
-
+            setPublishLoading(false);
         }
     }
 
@@ -457,11 +468,14 @@ const CreateBIPForm: React.FC<{
 
                                                         <div className={classes.footer}>
                                                             <div className={classes.publishBtn}>
-                                                                <Button
-                                                                    classNames={classes.continueBtn}
-                                                                    text={'Publish'}
+
+                                                                <LoadingButton
+                                                                    loading={publishLoading}
                                                                     onClick={onClickPublish}
-                                                                />
+                                                                    className={classes.continueBtn}
+                                                                >
+                                                                    {publishLoading ? '':'Publish'}
+                                                                </LoadingButton>
                                                             </div>
 
                                                             <div className={classes.back} onClick={onClickBack}>Back</div>
