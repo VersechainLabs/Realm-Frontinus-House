@@ -69,20 +69,14 @@ export class BipRoundService {
 
 
   async updateBipRoundVoteCount(bipRound: BipRound) {
-    console.log("enter updateBipRoundVoteCount() - bipRound:", bipRound);
-
     let totalCount = 0;
 
     for (const optionId of bipRound.bipOptionIds) {
       const option = await this.bipOptionService.findOne(optionId);
 
       totalCount += option.voteCount;
-      console.log("totalCount:", totalCount);
     }
 
-    // bipRound.voteCount = totalCount;
-
-    // console.log("before update - bipRound:", bipRound);
     await this.bipRoundRepository.update(bipRound.id, {
       voteCount: totalCount
    });
