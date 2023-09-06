@@ -162,6 +162,7 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                         options={bip.bipOptions}
                         canVote={0}
                         voteOptionId={1}
+                        endTime={bip.endTime}
                     />
 
                     <VoteResults

@@ -83,10 +83,13 @@ const BIPCard: React.FC<{
                 >
                     <div className={classes.propInfo}>
                         <div className={classes.textContainter}>
-                            <div>
-                                <div className={classes.titleContainer}>
-                                    <div className={clsx('frontinusTitle',classes.propTitle)}>{bip.title}</div>
-                                </div>
+
+                            <div className={classes.titleContainer}>
+                                <div className={clsx('frontinusTitle',classes.propTitle)}>{bip.title}</div>
+                                <div className={clsx(classes.statusBlock,bip.votingPeriod=='Voting' && classes.statusVoting,bip.votingPeriod=='Not Started' && classes.statusNotStarted)}>{bip.votingPeriod}</div>
+                            </div>
+
+                            <div className={classes.secondLine}>
                                 <Markdown
                                     className={classes.truncatedTldr}
                                     options={{
@@ -113,15 +116,16 @@ const BIPCard: React.FC<{
                                     {/*        h3: 'p',*/}
                                     {/*    }}*/}
                                     {/*/>*/}
-
+                                {imgUrlFromProp && (
+                                    <div className={classes.propImgContainer}>
+                                        <img src={imgUrlFromProp} alt="propCardImage" />
+                                    </div>
+                                )}
                             </div>
+
                         </div>
 
-                        {imgUrlFromProp && (
-                            <div className={classes.propImgContainer}>
-                                <img src={imgUrlFromProp} alt="propCardImage" />
-                            </div>
-                        )}
+
                     </div>
 
                     <Divider narrow />

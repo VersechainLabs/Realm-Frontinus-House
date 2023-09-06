@@ -4,6 +4,8 @@ import { Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import classes from './StatusFilters.module.css';
 import {useAppSelector} from "../../hooks";
+import {setHouseTab} from "../../state/slices/propHouse";
+import {useDispatch} from "react-redux";
 
 // We aren't using AuctionStatus enum becuase AuctionStatus[0] is 'not started' and we don't filter by 'not started', rather RoundStatus[0] is the default 'all rounds'
 export enum RoundStatus {
@@ -89,10 +91,12 @@ const StatusFilters: React.FC<{
 
 
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const handleClick = (status: RoundStatus) => {
     setInput('');
     setCurrentRoundStatus(status);
+    dispatch(setHouseTab(0));
   };
 
   return (

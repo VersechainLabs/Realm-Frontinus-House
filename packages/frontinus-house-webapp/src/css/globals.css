@@ -509,3 +509,29 @@ p {
 .connectBtn{
   color: #212529 !important;
 }
+
+.castVoteEnds{
+  color: #676B6D;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+.castVoteEnds{
+  color: #676B6D;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+.castVoteEnds .num{
+  color: #F5EEE6;
+}
+
+.castVoteEnded{
+  color:#D2A04C;
+}
+
+

@@ -82,6 +82,7 @@
 .voteUserAddress {
     display: inline-block;
     margin-left: 8px;
+    color:var(--text-color);
 }
 .voteTotal {
     font-size: 14px;

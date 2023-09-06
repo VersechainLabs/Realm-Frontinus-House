@@ -14,6 +14,7 @@ import NotFound from "../NotFound";
 import LoadingIndicator from "../LoadingIndicator";
 import ConnectButton from "../ConnectButton";
 import {ButtonColor} from "../Button";
+import {LoadingButton} from "@mui/lab";
 
 type QuillEditorProps = {
   widgetKey: string;
@@ -263,13 +264,22 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               {account ? (
                   props.loading ? (
-                      <div
-                          id="custom-button"
-                          className={'btnDisabled'}
+                          <LoadingButton
+                              loading={true}
+                              id="custom-button"
+                              style={{
+                                marginRight:'0px'
+                              }}
+                          >
+                          </LoadingButton>
 
-                      >
-                        <span><img src="/loading.gif" alt="" width={'40'}/></span>
-                      </div>
+                      // <div
+                      //     id="custom-button"
+                      //     className={'btnDisabled'}
+                      //
+                      // >
+                      //   <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                      // </div>
                   ) :  props.btnText && (
 
                       <div

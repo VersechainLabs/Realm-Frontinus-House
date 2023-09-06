@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import HouseHeader from '../../components/HouseHeader';
 import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
-import { setActiveCommunity } from '../../state/slices/propHouse';
+import {setActiveCommunity, setHouseTab} from '../../state/slices/propHouse';
 import { slugToName } from '../../utils/communitySlugs';
 import { Col, Container, Row } from 'react-bootstrap';
 import RoundCard from '../../components/RoundCard';
@@ -39,15 +39,18 @@ const House = () => {
   // const slug = location.pathname.substring(1, location.pathname.length);
   const slug = 'frontinus';
 
-  const search = window.location.search;
-  const params = new URLSearchParams(search);
-  const tab = params.get('tab');
+  // const search = window.location.search;
+  // const params = new URLSearchParams(search);
+  // const tab = params.get('tab');
 
   // const { data: signer } = useSigner();
   const { data: walletClient } = useWalletClient();
   const dispatch = useAppDispatch();
   const community = useAppSelector(state => state.propHouse.activeCommunity);
   const host = useAppSelector(state => state.configuration.backendHost);
+  const tab  =  useAppSelector(state => state.propHouse.houseTab);
+
+
   const client = useRef(new ApiWrapper(host));
 
   const [rounds, setRounds] = useState<StoredAuctionBase[]>([]);
@@ -259,7 +262,9 @@ const House = () => {
               );
             }),
           ));
-          if ( tab == 'bip'){
+    // console.log(tab);
+    //for the back bip
+          if ( tab == RoundStatus.BIP ){
             setCurrentRoundStatus(RoundStatus.BIP);
           }
 

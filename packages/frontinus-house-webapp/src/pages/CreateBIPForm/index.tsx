@@ -193,7 +193,7 @@ const CreateBIPForm: React.FC<{
         // console.log(content);
 
         if (content == '' ||content == '<p><br></p>' || state.title.length == 0){
-            dispatch(setAlert({ type: 'error', message: "All fields must be filled before preview!" }));
+            dispatch(setAlert({ type: 'error', message: "All fields must be filled!" }));
             return false;
         }
         if ( state.title.length < MIN_TITLE_LENGTH ){
