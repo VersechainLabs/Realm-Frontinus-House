@@ -52,7 +52,7 @@ export const VoteStates: Record<string, VoteStatesClass> = {
   DELEGATE_ANOTHER : new VoteStatesClass( 320,  "You've already delegated your voting power to someone else."),
   NO_POWER : new VoteStatesClass( 314,  "Only Realms NFT holders have permission to approve."),
   NO_DELEGATE_POWER : new VoteStatesClass( 321,  "Only Realms NFT holders have permission to delegate."),
-  ALREADY_DELEGATED : new VoteStatesClass( 319,  "User already delegated to another user."),
+  ALREADY_DELEGATED : new VoteStatesClass( 319,  "You've already delegated your voting power to someone else."),
 
   // For Application only:
   NO_APPLICATION : new VoteStatesClass( 315,  "Can not find application."),
