@@ -31,7 +31,6 @@
     text-align: center;
     margin-top: 12px;
     margin-bottom: 12px;
-    color: #D0A059;
 
     font-size: 16px;
     font-style: normal;
@@ -44,14 +43,25 @@
     height: 40px;
 }
 
+.desc{
+    padding: 0px 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
 .activeItem{
     border: 1px solid #856433;
+    color: #D0A059;
 
 }
 
 
 .item:hover{
     border: 1px solid #856433;
+    color: #D0A059;
+
 }
 
 .approveSvg {

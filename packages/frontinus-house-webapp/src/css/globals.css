@@ -505,3 +505,7 @@ p {
 .bgTop{
   background: #1A1A1B !important;
 }
+
+.connectBtn{
+  color: #212529 !important;
+}

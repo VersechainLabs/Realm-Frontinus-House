@@ -208,7 +208,7 @@ export class ApiWrapper {
   async getBipForCommunity(): Promise<StoredAuctionBase[]> {
     try {
       const [rawTimedAuctions] = await Promise.allSettled([
-        axios.get(`${this.host}/bip-round/list/`),
+        axios.get(`${this.host}/bip-round/list?order=Desc`),
       ]);
 
       const timed =
