@@ -27,6 +27,7 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipRoundService } from './bip-round.service';
 import { CreateBipRoundDto, GetBipRoundDto } from './bip-round.types';
 import { BipOption } from 'src/bip-option/bip-option.entity';
+import { VotingPeriod } from 'src/auction/auction.types';
   
   @Controller('bip-round')
   export class BipRoundController {
@@ -42,8 +43,17 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
     @ApiOkResponse({
       type: [BipRound],
     })
-    getAll(@Query() dto: GetBipRoundDto): Promise<BipRound[]> {
-      return this.bipRoundService.findAll(dto);
+    async getAll(@Query() dto: GetBipRoundDto): Promise<BipRound[]> {
+      const roundList = await this.bipRoundService.findAll(dto);
+
+      // Add voting period:
+      roundList.forEach(bipRound => {
+        if (new Date() < bipRound.startTime) bipRound.votingPeriod = VotingPeriod.NOT_START;
+        else if (new Date() > bipRound.endTime) bipRound.votingPeriod = VotingPeriod.END;
+        else bipRound.votingPeriod = VotingPeriod.VOTING;
+      });
+
+      return roundList;
     }
 
     @Post('/create')

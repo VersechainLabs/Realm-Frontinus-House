@@ -126,6 +126,7 @@ export class BipRound {
   
   quorum: number;
   quorumPercentage: string;
+  votingPeriod: string;
 
   @ApiProperty()
   @Column({
