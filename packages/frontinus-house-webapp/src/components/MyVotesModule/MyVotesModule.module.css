@@ -1,0 +1,76 @@
+.winnersText {
+  font-weight: 700;
+  color: #a3a3a4;
+  font-size: 14px;
+}
+.blackIcon {
+  border: 1px solid var(--border-med);
+}
+
+.divider {
+  margin: 18px 0px;
+}
+
+.myVoteBlock{
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.title{
+  color: #F5EEE6;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.num{
+  color: #D0A059;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  height: 24px;
+  line-height: 24px;
+}
+
+.dotBlock{
+  width: 15px;
+  height: 21px;
+  display: flex;
+  align-items:center;
+  justify-content: center;
+}
+
+.dot{
+  margin: auto;
+  width: 3px;
+  height: 3px;
+  background-color: #F5EEE6;
+  border-radius: 50%;
+}
+
+.content{
+  color: #F5EEE6;
+  font-size: 14px;
+  display: flex;
+  margin-left: 4px;
+}
+
+.titleContent{
+  max-width: 250px;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+.CardStyle1 {
+  background: #0f0f0f;
+  border: 1px solid #2c2c2d;
+  /*height: 322px;*/
+  display: flex;
+  flex-direction: column;
+  /*justify-content: space-between !important;*/
+  padding: 12px 20px;
+}

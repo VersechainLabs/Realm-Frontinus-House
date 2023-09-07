@@ -45,6 +45,14 @@ const RoundContent: React.FC<{
   const [signerIsContract, setSignerIsContract] = useState(false);
   const [numPropsVotedFor, setNumPropsVotedFor] = useState(0);
   const [showErrorVotingModal, setShowErrorVotingModal] = useState(false);
+  const [myVotes, setMyVotes] = useState({
+    list : [],
+    remainVotingPower : 0,
+    spentVotingPower : 0,
+    totalVotingPower : 0,
+  });
+
+
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -70,6 +78,9 @@ const RoundContent: React.FC<{
     ? 'Proposals that meet quorum will show up here.'
     : 'Proposals that did not meet quorum before voting period ended will show up here.';
 
+
+
+
   useEffect(() => {
     client.current = new ApiWrapper(host, walletClient);
   }, [walletClient, host]);
@@ -80,6 +91,25 @@ const RoundContent: React.FC<{
     if (proposals && account && votes.length > 0)
       dispatch(setVotesByUserInActiveRound(votes.filter(v => v.address === account)));
   }, [proposals, account, dispatch]);
+
+
+  useEffect(() => {
+
+    const fetch = async () => {
+      const round = await client.current.getAuction(auction.id);
+      setMyVotes(round.myVotes);
+
+      console.log('round',round.myVotes)
+      console.log('myVotes',myVotes)
+
+    };
+
+    if(account){
+      fetch()
+    }
+
+
+  }, [ account, dispatch]);
 
   const _signerIsContract = async () => {
     if (!provider || !account) {
@@ -170,7 +200,9 @@ const RoundContent: React.FC<{
                 proposals={proposals}
                 community={community}
                 setShowVotingModal={setShowVoteConfirmationModal}
+                myVotes={myVotes}
               />
+
             </Row>
           )}
         </>

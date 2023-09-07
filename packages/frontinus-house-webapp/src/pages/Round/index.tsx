@@ -186,7 +186,9 @@ const Round = () => {
                 <Container>
                   <RoundUtilityBar auction={round} />
                 </Container>
+
               </div>
+
             </div>
 
           </>

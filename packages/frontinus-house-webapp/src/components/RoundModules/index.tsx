@@ -12,6 +12,7 @@ import UserPropCard from '../UserPropCard';
 import AcceptingPropsModule from '../AcceptingPropsModule';
 import TimedRoundVotingModule from '../TimedRoundVotingModule';
 import RoundOverModule from '../RoundOverModule';
+import MyVotesModule from '../MyVotesModule';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { isSameAddress } from '../../utils/isSameAddress';
 import { isInfAuction, isTimedAuction } from '../../utils/auctionType';
@@ -31,8 +32,9 @@ const RoundModules: React.FC<{
   proposals: StoredProposalWithVotes[];
   community: Community;
   setShowVotingModal: Dispatch<SetStateAction<boolean>>;
+  myVotes:any;
 }> = props => {
-  const { auction, proposals, community, setShowVotingModal } = props;
+  const { auction, proposals, community, setShowVotingModal, myVotes } = props;
 
   const { address: account } = useAccount();
   const votingPower = useAppSelector(state => state.voting.votingPower);
@@ -125,6 +127,13 @@ const RoundModules: React.FC<{
       />
     );
 
+  const myVotesModule = myVotes.spentVotingPower > 0 && (
+      <MyVotesModule
+          myVotes={myVotes}
+      />
+  );
+
+
   const modules = [
     acceptingPropsModule,
     timedRoundVotingModule,
@@ -133,6 +142,7 @@ const RoundModules: React.FC<{
     roundStaleModule,
     roundOverModule,
     userPropCardModule,
+    myVotesModule,
   ];
 
   return (
