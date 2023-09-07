@@ -152,7 +152,11 @@ const Proposal = () => {
             setCanVote(1);
           } else if (proposal.voteState.code === 311) {
             setCanVote(2);
-          } else if (proposal.voteState.code === 314 || proposal.voteState.code === 312 || proposal.voteState.code === 313) {
+          } else if (proposal.voteState.code === 314 ||
+              proposal.voteState.code === 312 ||
+              proposal.voteState.code === 313 ||
+              proposal.voteState.code === 319
+          ) {
             setCanVote(3);
           }
 
@@ -183,7 +187,7 @@ const Proposal = () => {
     if (!proposal) return;
     const fetchCommunity = async () => {
       const round = await backendClient.current.getAuction(proposal.auctionId);
-      const community = await backendClient.current.getCommunityWithId(round.community);
+      const community = await backendClient.current.getCommunityWithId(round.community.id);
       dispatch(setActiveCommunity(community));
       dispatch(setActiveRound(round));
     };
