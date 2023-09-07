@@ -14,6 +14,7 @@ import NotFound from "../NotFound";
 import LoadingIndicator from "../LoadingIndicator";
 import ConnectButton from "../ConnectButton";
 import {ButtonColor} from "../Button";
+import {LoadingButton} from "@mui/lab";
 
 type QuillEditorProps = {
   widgetKey: string;
@@ -162,16 +163,18 @@ export default function QuillEditor(props: QuillEditorProps) {
       props.onQuillInit(quill);
     }
 
-    // quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
-    //   if (source === 'user') {
-    //     props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-    //   }
-    // });
+
+    if ( props.widgetKey == 'BIP' ){
+      quill.on('text-change', (delta: any, oldDelta: any, source: any) => {
+        props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
+      });
+    }
+
 
     quill.on('selection-change', (delta: any, oldDelta: any, source: any) => {
       // if (source === 'user') {
         props.onChange(quill!.getContents(), quill!.root.innerHTML, quill.getText());
-
+        // console.log(delta, oldDelta, source);
       // }
     });
 
@@ -261,30 +264,40 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               {account ? (
                   props.loading ? (
-                      <div
-                          id="custom-button"
-                          className={'btnDisabled'}
+                          <LoadingButton
+                              loading={true}
+                              id="custom-button"
+                              style={{
+                                marginRight:'0px'
+                              }}
+                          >
+                          </LoadingButton>
 
-                      >
-                        <span><img src="/loading.gif" alt="" width={'40'}/></span>
-                      </div>
-                  ) :  (
+                      // <div
+                      //     id="custom-button"
+                      //     className={'btnDisabled'}
+                      //
+                      // >
+                      //   <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                      // </div>
+                  ) :  props.btnText && (
+
                       <div
                           id="custom-button"
                           onClick={clickBtn}
                       >
                         <span>{ props.btnText }</span>
                       </div>
+
                   )
               ) : (
-                  <div  id="custom-button-connect">
-                    <ConnectButton
-                    />
-                  </div>
+                  props.btnText &&(
+                      <div  id="custom-button-connect">
+                        <ConnectButton
+                        />
+                      </div>
+                  )
               )}
-
-
-
             </div>
           </>
         </div>

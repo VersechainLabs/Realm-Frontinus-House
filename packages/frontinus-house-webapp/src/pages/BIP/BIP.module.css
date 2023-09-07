@@ -1,0 +1,134 @@
+.backToAuction {
+    /*color: var(--brand-black-transparent);*/
+    cursor: pointer;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    width: max-content;
+    align-items: center;
+    font-size: 1rem;
+}
+
+.backToAuction:hover {
+    color: var(--brand-black);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke,
+    opacity, box-shadow, transform, filter, backdrop-filter;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+}
+
+.voteMain {
+    border: 1px solid #2C2C2D;
+    width: 640px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.voteHeader {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 1px solid #2C2C2D;
+}
+
+.voteHeaderText {
+    color: #F5EEE6;
+    font-weight: bold;
+    font-size: 16px;
+}
+.voteHeaderNum {
+    background: #454343;
+    border-radius: 10px;
+    height: 20px;
+    line-height: 20px;
+    padding: 0 4px;
+    font-size: 14px;
+    margin-left: 8px;
+    font-weight: bold;
+}
+
+.voteList {
+
+}
+.voteCount {
+    color: #676B6D;
+    margin-left: 8px;
+    font-size: 14px;
+}
+.voteSvg {
+    margin-left: 4px;
+}
+.seeMore {
+    padding: 10px 20px;
+    text-align: center;
+    color: #D0A059;
+    cursor: pointer;
+}
+.voteContent {
+    display: flex;
+    padding: 10px 20px;
+    border-bottom: 1px solid #2C2C2D;
+    justify-content: space-between
+}
+.voteContent2 {
+    display: flex;
+    padding: 10px 20px;
+    padding-left: 40px;
+    justify-content: space-between
+}
+.voteContent2:last-child{
+    border-bottom: 1px solid #2C2C2D;
+}
+
+.approveSvg {
+    margin-left: 8px;
+}
+
+.noPow {
+    color: #A3A3A4;
+    margin-bottom: 5px;
+}
+
+.approveButton {
+    background: #D0A059;
+    font-size: 16px;
+    color: #111111;
+    border-radius: 8px;
+    font-weight: bold;
+    padding: 4px 16px;
+    border: 1px solid #D0A059;
+    text-align: center;
+}
+.disApproveButton {
+    background: #272728;
+    font-size: 16px;
+    color: #F5EEE699;
+    border-radius: 8px;
+    font-weight: bold;
+    padding: 4px 16px;
+    border: 1px solid #272728;
+    text-align: center;
+}
+
+.voteListChild {
+    display: flex;
+}
+.voteUserAvatar {
+    height: 20px;
+    width: 20px;
+    border-radius: 10px;
+}
+.voteUserAddress {
+    display: inline-block;
+    margin-left: 8px;
+}
+.voteTotal {
+    font-size: 14px;
+}
+
+@media (min-width: 577px) {
+    .backToAuction svg {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+}

@@ -11,6 +11,7 @@ import {useDispatch} from "react-redux";
 type CreateCommentWidgetProps = {
   proposalId?: number;
   applicationId?: number;
+  bipRoundId?:number;
   onCommentCreated: (comment: StoredComment) => void;
 }
 
@@ -52,7 +53,7 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       }
       setLoading(true);
 
-      const newComment = new Comment(content, props.proposalId, props.applicationId);
+      const newComment = new Comment(content, props.proposalId, props.applicationId,props.bipRoundId);
       const commentCreateResponse = await client.current.createComment(newComment);
       if (commentCreateResponse) {
         props.onCommentCreated(commentCreateResponse);

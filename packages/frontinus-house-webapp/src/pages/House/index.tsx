@@ -1,10 +1,10 @@
 import classes from './House.module.css';
-import { useLocation } from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import HouseHeader from '../../components/HouseHeader';
 import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
-import { setActiveCommunity } from '../../state/slices/propHouse';
+import {setActiveCommunity, setHouseTab} from '../../state/slices/propHouse';
 import { slugToName } from '../../utils/communitySlugs';
 import { Col, Container, Row } from 'react-bootstrap';
 import RoundCard from '../../components/RoundCard';
@@ -25,17 +25,32 @@ import { markdownComponentToPlainText } from '../../utils/markdownToPlainText';
 import { useTranslation } from 'react-i18next';
 import { useWalletClient } from 'wagmi';
 import { isMobile } from 'web3modal';
+import ProposalCard from "../../components/ProposalCard";
+import {cardStatus} from "../../utils/cardStatus";
+import isWinner from "../../utils/isWinner";
+import getWinningIds from "../../utils/getWinningIds";
+import BIPContent from "../../components/BIPContent";
+import clsx from "clsx";
+import {Swiper, SwiperSlide} from "swiper/react";
+import BIPRightCard from "../../components/BIPRightCard";
 
 const House = () => {
   const location = useLocation();
   // const slug = location.pathname.substring(1, location.pathname.length);
   const slug = 'frontinus';
 
+  // const search = window.location.search;
+  // const params = new URLSearchParams(search);
+  // const tab = params.get('tab');
+
   // const { data: signer } = useSigner();
-  const { data: walletClient } = useWalletClient()
+  const { data: walletClient } = useWalletClient();
   const dispatch = useAppDispatch();
   const community = useAppSelector(state => state.propHouse.activeCommunity);
   const host = useAppSelector(state => state.configuration.backendHost);
+  const tab  =  useAppSelector(state => state.propHouse.houseTab);
+
+
   const client = useRef(new ApiWrapper(host));
 
   const [rounds, setRounds] = useState<StoredAuctionBase[]>([]);
@@ -50,8 +65,14 @@ const House = () => {
 
   const [delegates, setDelegates] = useState<StoredAuctionBase[]>([]);
   const [delegatesOnDisplay, setDelegatesOnDisplay] = useState<StoredAuctionBase[]>([]);
+
   const [loadingDelegates, setLoadingDelegates] = useState(false);
+
+  const [bips, setBips] = useState<StoredAuctionBase[]>([]);
+
+  const [loadingBIPs, setLoadingBIPs] = useState(false);
   const [failedLoadingDelegates, setFailedLoadingDelegates] = useState(false);
+  const [failedLoadingBIPs, setFailedLoadingBIPs] = useState(false);
 
   const [numberOfRoundsPerStatus, setNumberOfRoundsPerStatus] = useState<number[]>([]);
 
@@ -122,7 +143,11 @@ const House = () => {
       rounds.filter(
           r =>
               auctionPendingStatus(r) === AuctionStatus.Pending,
-      ).length
+      ).length,
+      0,
+      0,
+      0,
+      bips.length
     ]);
 
     // if there are no active rounds, default filter by all rounds
@@ -132,7 +157,7 @@ const House = () => {
             auctionStatus(r) === AuctionStatus.AuctionVoting,
     ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
 
-  }, [rounds, delegates]);
+  }, [rounds, delegates,bips]);
 
   // fetch delegate
   useEffect(() => {
@@ -176,6 +201,28 @@ const House = () => {
 
   }, [community ]);
 
+
+
+
+  // fetch bips
+  useEffect(() => {
+    if (!community) return;
+
+    const fetchBIP = async () => {
+      try {
+        setLoadingBIPs(true);
+        const bips = await client.current.getBipForCommunity();
+        setBips(bips);
+        setLoadingBIPs(false);
+      } catch (e) {
+        setLoadingBIPs(false);
+        setFailedLoadingBIPs(true);
+      }
+    };
+    fetchBIP();
+  }, [community]);
+
+
   useEffect(() => {
     rounds &&
       // check if searching via input
@@ -215,9 +262,15 @@ const House = () => {
               );
             }),
           ));
-
+    // console.log(tab);
+    //for the back bip
+          if ( tab == RoundStatus.BIP ){
+            setCurrentRoundStatus(RoundStatus.BIP);
+          }
 
   }, [input, currentRoundStatus, rounds]);
+
+
 
   return (
     <>
@@ -258,7 +311,7 @@ const House = () => {
 
 
             <div className={classes.houseContainer}>
-              {(currentRoundStatus != RoundStatus.delegateSelection) &&  <Container>
+              {(currentRoundStatus != RoundStatus.delegateSelection && currentRoundStatus != RoundStatus.BIP) &&  <Container>
 
                 <Row>
                   {loadingRounds ? (
@@ -301,6 +354,36 @@ const House = () => {
                   ) : (
                       <NoSearchResults />
                   )}
+                </Row>
+              </Container>}
+
+              {/*bips*/}
+              {(currentRoundStatus == RoundStatus.BIP) &&  <Container>
+
+                <Row>
+                  {loadingBIPs ? (
+                      <LoadingIndicator />
+                  ) : !loadingBIPs && failedLoadingBIPs ? (
+                      <ErrorMessageCard message={t('noBIPAvailable')} />
+                  ) :(
+                      <Row>
+                          <Col xl={8}>
+                            {
+                              bips.length > 0 && (
+                                bips.map((round, index) => (
+                                            <Col key={index}><BIPContent bip={round}/></Col>
+                              ))
+                              )
+                            }
+                          </Col>
+
+                          <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
+                              <BIPRightCard/>
+                          </Col>
+                      </Row>
+                  )
+
+                  }
                 </Row>
               </Container>}
 
