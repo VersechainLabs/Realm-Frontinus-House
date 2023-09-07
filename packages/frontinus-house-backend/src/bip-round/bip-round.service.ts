@@ -51,7 +51,6 @@ export class BipRoundService {
     });
   }
 
-
   async createBipRound(dto: CreateBipRoundDto): Promise<BipRound> {
     if (
       dto.startTime >= dto.endTime

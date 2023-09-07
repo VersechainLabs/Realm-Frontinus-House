@@ -123,10 +123,10 @@ export class BipRound {
   balanceBlockTag: number;
 
   comments: any;
-  
   quorum: number;
   quorumPercentage: string;
   votingPeriod: string;
+  currentUserVotedOptionId: number;
 
   @ApiProperty()
   @Column({
