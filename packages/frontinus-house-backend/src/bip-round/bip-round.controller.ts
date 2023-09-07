@@ -122,6 +122,13 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
       // Add voteState:
       await this.addVoteState(roundRecord, userAddress);
 
+      // Add current user voted option:
+      const voteHistory = await this.bipVoteService.findOneByRound(roundRecord.id, userAddress);
+      if (voteHistory) 
+        roundRecord.currentUserVotedOptionId = voteHistory.bipOptionId;
+      else 
+      roundRecord.currentUserVotedOptionId = 0; // not voted in this round yet
+
       return roundRecord;
     }
 
