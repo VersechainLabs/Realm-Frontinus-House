@@ -127,7 +127,7 @@ const RoundModules: React.FC<{
       />
     );
 
-  const myVotesModule = myVotes.spentVotingPower > 0 && (
+  const myVotesModule = (myVotes && myVotes.spentVotingPower > 0) && (
       <MyVotesModule
           myVotes={myVotes}
       />
