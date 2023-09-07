@@ -59,12 +59,11 @@ import { CreateBipOptionDto, GetBipOptionsDto } from './bip-option.types';
       @Body(ECDSASignedPayloadValidationPipe)
       dto: CreateBipOptionDto,
     ): Promise<BipOption> {
-      // verifySignPayload(dto, [
-      //   'what',
-      //   'tldr',
-      //   'title',
-      //   'parentBipRoundId',
-      // ]);
+      verifySignPayload(dto, [
+        'description',
+        'optionType',
+        'parentBipRoundId',
+      ]);
   
       const foundAuction = await this.bipRoundService.findOne(
         dto.parentBipRoundId,
