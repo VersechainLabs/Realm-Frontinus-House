@@ -224,7 +224,7 @@ export class BipVoteService {
   }
 
   async checkEligibleToVoteNew(
-    proposal: BipOption,
+    // proposal: BipOption,
     auction: BipRound,
     address: string,
     checkVotingPower = true,

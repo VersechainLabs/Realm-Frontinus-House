@@ -17,6 +17,7 @@ import { AdminService } from '../admin/admin.service';
 import { Admin } from '../admin/admin.entity';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipOptionModule } from 'src/bip-option/bip-option.module';
+import { BipVoteService } from 'src/bip-vote/bip-vote.service';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { BipOptionModule } from 'src/bip-option/bip-option.module';
   providers: [
     BipRoundService,
     BipOptionService,
+    BipVoteService,
     AdminService,
     BlockchainService,
     DelegateService,
