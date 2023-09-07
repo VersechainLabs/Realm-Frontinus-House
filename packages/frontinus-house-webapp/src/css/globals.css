@@ -394,6 +394,18 @@ p {
   color: var(--bg-dark);
 }
 
+
+#loading-button{
+  width: 92px;
+  height: 32px;
+  /*padding: 4px 16px;*/
+  border-radius: 8px;
+  border: 1px solid #D0A059;
+  background: #D0A059;
+  font-weight: 700;
+}
+
+
 #custom-button-connect{
   cursor: pointer;
   position: absolute;
