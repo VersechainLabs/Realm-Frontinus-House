@@ -181,6 +181,7 @@ const DelegateEditor: React.FC<{
   };
   const theme = 'snow';
   const placeholder = descriptionData.placeholder;
+  const proposalData = useAppSelector(state => state.proposal);
 
   const { quill, quillRef, Quill } = useQuill({
     theme,
@@ -223,8 +224,8 @@ const DelegateEditor: React.FC<{
 
   return (
     <>
-      <div className={clsx(classes.nominateText, 'frontinusTitle')}>Creating your proposal</div>
-      <div className={classes.nominateDesc}>A standard of how a Frontinus House Builder Proposal should be submitted. Please follow each Proposal to Frontinus house in a similar fashion. Amendments are required in sections highlighted boldly.</div>
+      {proposalData.proposalId ? (<div className={clsx(classes.nominateText, 'frontinusTitle')}>Edit Proposal</div>) : (<div className={clsx(classes.nominateText, 'frontinusTitle')}>Creating your proposal</div>)}
+      {!proposalData.proposalId && (<div className={classes.nominateDesc}>A standard of how a Frontinus House Builder Proposal should be submitted. Please follow each Proposal to Frontinus house in a similar fashion. Amendments are required in sections highlighted boldly.</div>)}
       <ProposalInputs onDataChange={onDataChange} formData={formData} fundReqData={fundReqData} />
 
       

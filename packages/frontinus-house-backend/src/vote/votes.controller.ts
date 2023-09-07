@@ -256,7 +256,7 @@ export class VotesController {
         'Signer does not have voting power',
         HttpStatus.BAD_REQUEST,
       );
-    } else if (votingPower - prevVpSum <= createVoteDto.weight) {
+    } else if (votingPower - prevVpSum < createVoteDto.weight) {
       throw new HttpException(
         'Signer does not have enough voting power',
         HttpStatus.BAD_REQUEST,

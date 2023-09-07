@@ -220,12 +220,20 @@ const CreateDelegateForm: React.FC<{}> = () => {
         dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
         navigate('/delegateDetails/' + round.id);
       })
-      .catch(e => {
+      .catch(e  => {
         setIsButtonDisabled(false);
         setFlag(false);
-        // dispatch(setAlert({ type: 'error', message: e }));
-        // setIsAlertVisible(true); // 显示alert弹出框
-        // return;
+
+        if ( typeof(e) == 'string' ){
+          dispatch(
+              setAlert({
+                type: 'error',
+                message: e,
+              }),
+          );
+          setIsAlertVisible(true); // 显示alert弹出框
+        }
+
       });
   };
 

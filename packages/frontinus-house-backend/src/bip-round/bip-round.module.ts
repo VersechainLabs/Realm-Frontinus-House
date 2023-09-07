@@ -4,9 +4,9 @@ import { Community } from '../community/community.entity';
 import { CommunitiesService } from '../community/community.service';
 import { Proposal } from '../proposal/proposal.entity';
 import { ProposalsService } from '../proposal/proposals.service';
-import { Auction } from './auction.entity';
-import { AuctionsController } from './auctions.controller';
-import { AuctionsService } from './auctions.service';
+import { BipRound } from './bip-round.entity';
+import { BipRoundController } from './bip-round.controller';
+import { BipRoundService } from './bip-round.service';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
 import { DelegateService } from '../delegate/delegate.service';
@@ -15,33 +15,31 @@ import { DelegationService } from '../delegation/delegation.service';
 import { Delegation } from '../delegation/delegation.entity';
 import { AdminService } from '../admin/admin.service';
 import { Admin } from '../admin/admin.entity';
-import { VotesService } from "../vote/votes.service";
-import { Vote } from "../vote/vote.entity";
+import { BipOptionService } from 'src/bip-option/bip-option.service';
+import { BipOptionModule } from 'src/bip-option/bip-option.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Admin,
-      Auction,
+      BipRound,
       Proposal,
       Community,
       Snapshot,
       Delegate,
       Delegation,
-      Vote,
     ]),
+    BipOptionModule,
   ],
-  controllers: [AuctionsController],
+  controllers: [BipRoundController],
   providers: [
+    BipRoundService,
+    BipOptionService,
     AdminService,
-    AuctionsService,
-    ProposalsService,
-    CommunitiesService,
     BlockchainService,
     DelegateService,
     DelegationService,
-    VotesService,
   ],
   exports: [TypeOrmModule],
 })
-export class AuctionsModule {}
+export class BipRoundModule {}

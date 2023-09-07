@@ -43,7 +43,7 @@ const VotesCard: React.FC<{
                         {/*) : (*/}
                         {/*    <VoteIcon />*/}
                         {/*)}*/}
-                        <img src={'/vote-icon.png'} style={{ width: '36px', height: '36px' }} />
+                        <img src={'/vote-icon1.png'} style={{ width: '36px', height: '36px' }} />
 
                     </div>
                     <div className={classes.textContainer}>

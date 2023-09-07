@@ -14,10 +14,16 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import {setProposalData} from "../../state/slices/proposal";
 import {useNavigate} from "react-router-dom";
 import {setActiveCommunity, setActiveProposals, setActiveRound} from "../../state/slices/propHouse";
-import {useEffect, useRef} from "react";
+import {useEffect, useRef, useState} from "react";
 import {ApiWrapper} from "@nouns/frontinus-house-wrapper";
 import {useWalletClient} from "wagmi";
 import { clearProposal, updateProposal } from '../../state/slices/editor';
+import {
+  auctionStatus,
+  AuctionStatus,
+  deadlineCopy,
+  deadlineTime,
+} from '../../utils/auctionStatus';
 
 
 
@@ -42,25 +48,37 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
   const navigate = useNavigate();
   const proposalData = useAppSelector(state => state.propHouse);
   const userAddress = useAppSelector(state => state.user.address);
+  const [flag, setFlag] = useState(false);
 
   const getProposals = async ()=> {
-    const proposals = await client.current.getAuctionProposals(round.id);
+    const proposals = await client.current.getAuctionProposals(round ? round.id : proposalData.activeRound.id);
     dispatch(setActiveProposals(proposals));
   }
 
   if (!proposalData.activeProposals) {
-    getProposals();
+    if (round || proposalData.activeRound) {
+      getProposals();
+    }
+
   }
+  useEffect(() => {
+    if (proposalData.activeRound) {
+      const roundStatus = auctionStatus(proposalData.activeRound,true);
+      if (roundStatus === AuctionStatus.AuctionAcceptingProps) {
+        setFlag(true)
+      }
+    }
+  }, [proposalData]);
+
+
 
   const editProposal = ()=> {
     dispatch(setProposalData({ title: proposal.title, tldr: proposal.tldr, description: proposal.what, id: proposal.auctionId, proposalId:proposal.id }));
     dispatch(updateProposal({ title: proposal.title, tldr: proposal.tldr, what: proposal.what, reqAmount: null}));
 
     navigate('/create',{ state: { auction:proposalData.activeRound, community:proposalData.activeCommunity, proposals:proposalData.activeProposals }});
-    console.log(proposalData);
-  }
 
-  console.log('round from rednered fields:  ', round);
+  }
 
   return (
     <>
@@ -80,7 +98,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
                         <EthAddress address={proposal.address} className={classes.submittedBy} />
                       </div>
                       <span>{' • '} {formatServerDate(proposal.createdDate)}</span>
-                      {userAddress && userAddress === proposal.address && (<span
+                      {userAddress && userAddress === proposal.address && flag && (<span
                           onClick={editProposal}
                           className={classes.editBy}>{' • '}
                         <svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg">
