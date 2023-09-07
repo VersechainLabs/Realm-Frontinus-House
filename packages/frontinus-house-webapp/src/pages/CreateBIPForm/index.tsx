@@ -41,6 +41,8 @@ const CreateBIPForm: React.FC<{
     onDataChange: (data: Partial<ProposalFields>) => void;
 }> = () => {
 
+    // const utc = require('dayjs/plugin/utc');
+    // dayjs.extend(utc)
 
     //data
     const [state, setState] = useState({
@@ -48,7 +50,7 @@ const CreateBIPForm: React.FC<{
         content: '',
         voteType:1,
         voteOptions:["",""],
-        voteStartTime: new Date(),
+        voteStartTime: dayjs(),
         voteEndTime: "",
     });
 
@@ -176,6 +178,7 @@ const CreateBIPForm: React.FC<{
     };
 
     const setEndTime = (value: Dayjs | null) => {
+
         if ( !value ){
             return;
         }
@@ -454,7 +457,7 @@ const CreateBIPForm: React.FC<{
                                                                                     // saveFormStart(newValue); // Save the value to the state as before
                                                                                     // setProposingStartTime(newValue); // Save the value to the proposingStartTime state
                                                                                 }}
-                                                                                value={dayjs()}
+                                                                                defaultValue={dayjs()}
                                                                                 className={classes.input}
                                                                                 minDate={dayjs()} //set minDate to the current date and time
                                                                                 ampm={false}

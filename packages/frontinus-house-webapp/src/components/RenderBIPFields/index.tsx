@@ -3,7 +3,12 @@ import { Row, Col } from 'react-bootstrap';
 import proposalFields from '../../utils/proposalFields';
 import EthAddress from '../EthAddress';
 import ReactMarkdown from 'react-markdown';
-import { StoredAuctionBase, StoredProposal,BIPVote } from '@nouns/frontinus-house-wrapper/dist/builders';
+import {
+    StoredAuctionBase,
+    StoredProposal,
+    BIPVote,
+    StoredProposalWithVotes
+} from '@nouns/frontinus-house-wrapper/dist/builders';
 import clsx from "clsx";
 import formatServerDate from '../../utils/commentTime';
 import '../QuillEditor/quill.snow.css';
@@ -17,10 +22,11 @@ import {LoadingButton} from "@mui/lab";
 import {Vote} from "@nouns/frontinus-house-wrapper/dist/builders";
 import {useAppDispatch, useAppSelector} from "../../hooks";
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
-import {useWalletClient} from "wagmi";
+import {useAccount, useWalletClient} from "wagmi";
 import React, {useEffect, useRef, useState} from "react";
 import {setAlert} from "../../state/slices/alert";
 import VoteLists from "../VoteLists";
+import {setActiveBIP} from "../../state/slices/propHouse";
 
 
 export interface RenderedBIPProps {
@@ -34,6 +40,7 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
     const { t } = useTranslation();
     const [disabled, setDisabled] = useState(false);
 
+    const {address: account} = useAccount();
 
     const { data: walletClient } = useWalletClient();
     const backendHost = useAppSelector(state => state.configuration.backendHost);
@@ -60,6 +67,8 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                     return false;
                 }
 
+                setDisabled(true);
+
                 await backendClient.current.createBIPVote(
                     new BIPVote(
                         bip.id,
@@ -67,6 +76,12 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                     )
                 );
 
+                // const freshBIP = (await backendClient.current.getBIP(
+                //     Number(id),
+                //     account,
+                // )) as StoredProposalWithVotes;
+                //
+                // dispatch(setActiveBIP(freshBIP));
                 window.location.reload();
 
             } catch (e) {
@@ -160,9 +175,10 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                     <CastVote
                         onClickVote={onClickVote}
                         options={bip.bipOptions}
-                        canVote={0}
-                        voteOptionId={1}
+                        voteState={bip.voteState}
+                        voteOptionId={bip.currentUserVotedOptionId}
                         endTime={bip.endTime}
+                        loading={disabled}
                     />
 
                     <VoteResults

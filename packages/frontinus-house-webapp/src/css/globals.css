@@ -288,7 +288,7 @@ p {
   font-style: normal !important;
   font-weight: 700 !important;
   font-size: 20px !important;
-  line-height: 25px !important;
+  line-height: 40px !important;
   /*letter-spacing: 0.02em !important;*/
 }
 .proposalCopy h2 {
@@ -393,6 +393,18 @@ p {
 
   color: var(--bg-dark);
 }
+
+
+#loading-button{
+  width: 92px;
+  height: 32px;
+  /*padding: 4px 16px;*/
+  border-radius: 8px;
+  border: 1px solid #D0A059;
+  background: #D0A059;
+  font-weight: 700;
+}
+
 
 #custom-button-connect{
   cursor: pointer;

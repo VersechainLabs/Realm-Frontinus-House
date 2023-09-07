@@ -78,17 +78,17 @@ const BIP = () => {
                 setLoading(false);
 
                 document.title = `${bip.title}`;
-                if (bip && bip.voteState) {
-                    if (bip.voteState.code === 200) {
-                        setCanVote(1);
-                    } else if (bip.voteState.code === 311) {
-                        setCanVote(2);
-                    } else if (bip.voteState.code === 314
-                                    || bip.voteState.code === 312
-                                       || bip.voteState.code === 313) {
-                        setCanVote(3);
-                    }
-                }
+                // if (bip && bip.voteState) {
+                //     if (bip.voteState.code === 200) {
+                //         setCanVote(1);
+                //     } else if (bip.voteState.code === 311) {
+                //         setCanVote(2);
+                //     } else if (bip.voteState.code === 314
+                //                     || bip.voteState.code === 312
+                //                        || bip.voteState.code === 313) {
+                //         setCanVote(3);
+                //     }
+                // }
 
                 dispatch(setActiveBIP(bip));
 

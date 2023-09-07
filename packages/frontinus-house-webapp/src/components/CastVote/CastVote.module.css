@@ -6,7 +6,7 @@
     padding: 16px 24px;
 }
 
-.endDay{
+.endDay,.reason{
     color: #676B6D;
     font-size: 14px;
     font-style: normal;
@@ -87,3 +87,18 @@
     border: 1px solid #D0A059;
     text-align: center;
 }
+
+.loadingBtn{
+    width: 60px !important;
+    height: 24px !important;
+    cursor: pointer;
+    background-color: #D0A059 !important;
+    padding: 4px 16px !important;
+    border: 1px solid #D0A059 !important;
+    border-radius: 8px !important;
+    text-align: center;
+}
+
+
+
+
