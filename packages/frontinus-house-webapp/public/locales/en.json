@@ -136,6 +136,7 @@
   "faq21answer": "See you in <a href=\"https://discord.gg/SKPzM8GHts\" target=\"_blank\">discord!</a>",
   "noRoundsAvailable": "No rounds available",
   "noDelegateAvailable": "No delegates available",
+  "noBIPAvailable": "No BIPs available",
   "noHousesFound": "No houses found",
   "DelegationRoundStartingSoon": "Delegation round starting soon",
   "ProposalRoundStartingSoon": "Proposal round starting soon",

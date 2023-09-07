@@ -17,7 +17,7 @@ import QuillEditor, { EMPTY_DELTA } from '../QuillEditor';
 import { DeltaStatic, Quill } from 'quill';
 import {
   InfiniteAuctionProposal,
-  Proposal,
+  Proposal, UpdatedProposal,
   Vote,
 } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { appendProposal } from '../../state/slices/propHouse';
@@ -88,7 +88,6 @@ const ProposalInputs: React.FC<{
   const navigate = useNavigate();
   const location = useLocation();
   const activeAuction = location.state.auction;
-  console.log(location);
   const activeCommunity = location.state.community;
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
@@ -101,6 +100,7 @@ const ProposalInputs: React.FC<{
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [openCongratsDialog, setOpenCongratsDialog] = useState(false);
   const [showCongratsDialog, setShowCongratsDialog] = useState(false);
+  const proposalData = useAppSelector(state => state.proposal);
   // const [proposalData, setProposalData] = useState({
   //   titlePreview: '',
   //   tldrPreview: '',
@@ -122,7 +122,6 @@ const ProposalInputs: React.FC<{
     } else {
       setContent(htmlContent);
     }
-    console.log(content);
   };
   const handleImgArrayChange = (img: string) => {
     let ary = [...imgArray];
@@ -138,12 +137,19 @@ const ProposalInputs: React.FC<{
       return;
     }
     setGetDefaultStatus(true);
-    await client.current.getDefaultCreation().then((res: any) => {
-      if (res.proposalContent) {
-        setGetDefault(res.proposalContent);
-        // setGetDefaultStatus(false);
-      }
-    });
+
+    if (!proposalData.description && !getDefault) {
+      await client.current.getDefaultCreation().then((res: any) => {
+        if (res.proposalContent) {
+          setGetDefault(res.proposalContent);
+          // setGetDefaultStatus(false);
+        }
+      });
+    } else {
+      setGetDefault(proposalData.description);
+
+      // dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0 }));
+    }
   };
   fetchDefault();
 
@@ -152,21 +158,12 @@ const ProposalInputs: React.FC<{
     const tldr = formData[1].fieldValue;
     const description = quill!.root.innerHTML;
     const id = activeAuction.id;
-    const formDataState = new Proposal(
-      formData[0].fieldValue,
-      description,
-      formData[1].fieldValue,
-      activeAuction.id,
-    );
-    console.log(formDataState);
 
     if (title.trim().length === 0 || tldr.trim().length === 0 || description.trim().length === 0) {
       const errorMessage = 'All fields must be filled before preview!';
       console.log('Error message to be dispatched:', errorMessage);
       dispatch(setAlert({ type: 'error', message: errorMessage }));
       return;
-    } else {
-      navigate('/preview');
     }
 
     if (!account) {
@@ -183,36 +180,52 @@ const ProposalInputs: React.FC<{
     }
 
     setLoading(true);
-
-    dispatch(setProposalData({ title, tldr, description, id }));
+    dispatch(setProposalData({ title:title, tldr:tldr, description:description, id:id }));
+    navigate('/preview');
   };
   const submit = async () => {
     try {
-      console.log(content, formData);
-      let newProp: Proposal | InfiniteAuctionProposal;
-
       let imgUrl = matchImg(imgArray, content);
+      setLoading(true);
 
-      newProp = new Proposal(
-        formData[0].fieldValue,
-        content,
-        formData[1].fieldValue,
-        activeAuction.id,
-        'auction',
-        imgUrl,
-      );
+      if (proposalData.proposalId) {
+        const proposal = await client.current.updateProposal(
+            new UpdatedProposal(
+                proposalData.proposalId,
+                formData[0].fieldValue,
+                content,
+                formData[1].fieldValue,
+                activeAuction.id,
+                imgUrl,
+                'auction',
+            ),
+        );
+        setPropId(proposal.id);
+        dispatch(appendProposal({ proposal }));
+      } else {
+        let newProp: Proposal | InfiniteAuctionProposal;
 
-      const proposal = await client.current.createProposal(newProp);
 
-      setPropId(proposal.id);
-      dispatch(appendProposal({ proposal }));
+        newProp = new Proposal(
+            formData[0].fieldValue,
+            content,
+            formData[1].fieldValue,
+            activeAuction.id,
+            'auction',
+            imgUrl,
+        );
+        const proposal = await client.current.createProposal(newProp);
+        setPropId(proposal.id);
+        dispatch(appendProposal({ proposal }));
+      }
+
+
       dispatch(clearProposal());
 
       // setShowProposalSuccessModal(true);
       // navigate(buildRoundPath(activeCommunity, activeAuction)+`/${proposal.id}`, { replace: false });
       setOpenCongratsDialog(true); // Show the initial dialog
       setShowCongratsDialog(true);
-      setLoading(false);
     } catch (e) {
       setLoading(false);
     } finally {

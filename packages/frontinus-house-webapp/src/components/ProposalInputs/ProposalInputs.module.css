@@ -1,6 +1,6 @@
 /* Form Styles */
 .form {
-  margin-top: 3rem;
+  border-top: 1px solid #272728;
 }
 
 .inputLabel {

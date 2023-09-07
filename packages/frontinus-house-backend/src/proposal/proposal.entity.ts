@@ -17,7 +17,6 @@ import { ApiProperty } from '@nestjs/swagger/dist/decorators/api-property.decora
 import { Address } from '../types/address';
 import { ProposalParent } from './proposal.types';
 import { Float, Int } from '@nestjs/graphql/dist/scalars';
-import { IsEthereumAddress } from 'class-validator';
 import { VoteStatesClass } from '@nouns/frontinus-house-wrapper';
 
 @Entity('proposal')

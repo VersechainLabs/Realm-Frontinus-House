@@ -42,6 +42,32 @@ export class CreateApplicationDto extends SignedEntity {
   previewImage?: string;
 }
 
+export class UpdateApplicationDto extends SignedEntity {
+  @ApiProperty()
+  @IsNumber()
+  id: number;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  title: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  tldr: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  description: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  previewImage?: string;
+}
+
 export enum Order {
   ASC = 'ASC',
   DESC = 'DESC',

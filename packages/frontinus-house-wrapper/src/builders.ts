@@ -56,6 +56,38 @@ export abstract class Signable {
   }
 }
 
+
+
+export class TimedBIP extends Signable {
+  constructor(
+      public readonly title: string,
+      public readonly optionType: number,
+      public readonly options: Array<string>,
+      public readonly startTime: Date,
+      public readonly endTime: Date,
+      public readonly content: string,
+      public readonly previewImage:string,
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      title: this.title,
+      optionType: this.optionType,
+      options:this.options,
+      startTime: this.startTime.toISOString(),
+      endTime: this.endTime.toISOString(),
+      content: this.content,
+      previewImage:this.previewImage,
+    };
+  }
+}
+
+
+
+
+
 export class TimedAuction extends Signable {
   constructor(
     public readonly visible: boolean,
@@ -146,6 +178,22 @@ export class StoredTimedAuction extends TimedAuction {
       startTime: new Date(response.startTime),
       proposalEndTime: new Date(response.proposalEndTime),
       votingEndTime: new Date(response.votingEndTime),
+    };
+    return parsed;
+  }
+}
+
+export class StoredTimedBIP extends TimedAuction {
+  //@ts-ignore
+  public readonly id: number;
+  //@ts-ignore
+  public readonly createdDate: Date;
+
+  static FromResponse(response: any): StoredTimedAuction {
+    const parsed = {
+      ...response,
+      startTime: new Date(response.startTime),
+      endTime: new Date(response.endTime),
     };
     return parsed;
   }
@@ -281,7 +329,7 @@ export class UpdatedProposal extends Proposal {
     public readonly what: string,
     public readonly tldr: string,
     public readonly auctionId: number,
-    public readonly reqAmount: number | null,
+    public readonly previewImage: string = '',
     public readonly parentType: ProposalParent = 'auction',
   ) {
     super(title, what, tldr, auctionId, parentType);
@@ -290,7 +338,6 @@ export class UpdatedProposal extends Proposal {
   toPayload() {
     return {
       id: this.id,
-      reqAmount: this.reqAmount,
       ...super.toPayload(),
     };
   }
@@ -381,6 +428,7 @@ export class Vote extends Signable {
   constructor(
     // public readonly direction: Direction,
     public readonly proposalId: number,
+    public readonly weight : number,
   ) {
     super();
   }
@@ -390,9 +438,33 @@ export class Vote extends Signable {
       // No need direction
       // direction: this.direction,
       proposalId: this.proposalId,
+      weight : this.weight,
     };
   }
 }
+
+
+export class BIPVote extends Signable {
+  constructor(
+      // public readonly direction: Direction,
+      public readonly bipRoundId: number,
+      public readonly bipOptionId: number,
+
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      // No need direction
+      // direction: this.direction,
+      bipRoundId: this.bipRoundId,
+      bipOptionId: this.bipOptionId,
+    };
+  }
+}
+
+
 
 export class DeleteVote extends Signable {
   constructor(
@@ -472,6 +544,8 @@ export class Comment extends Signable {
     public readonly content: string,
     public readonly proposalId?: number,
     public readonly applicationId?: number,
+    public readonly bipRoundId?: number,
+
   ) {
     super();
   }
@@ -481,6 +555,7 @@ export class Comment extends Signable {
       content: this.content,
       proposalId: this.proposalId,
       applicationId: this.applicationId,
+      bipRoundId:this.bipRoundId,
     };
   }
 }

@@ -13,6 +13,8 @@ import {
 } from 'class-validator';
 import { SignedEntity } from '../entities/signed';
 import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+import { Vote } from "../vote/vote.entity";
+import { Proposal } from "../proposal/proposal.entity";
 
 export class CreateAuctionDto extends SignedEntity {
   @ApiProperty()
@@ -123,6 +125,13 @@ export enum Order {
   DESC = 'DESC',
 }
 
+
+export enum VotingPeriod {
+  VOTING = 'Voting',
+  END = 'Ended',
+  NOT_START = 'Not Started',
+}
+
 export class GetAuctionsDto {
   @IsOptional()
   @IsInt()
@@ -156,4 +165,9 @@ export class LatestDto {
   @Min(1)
   @Transform(({ value }) => Number(value))
   auctionId: number;
+}
+
+export class MyVoteDto {
+  vote: Vote;
+  proposal: Proposal;
 }

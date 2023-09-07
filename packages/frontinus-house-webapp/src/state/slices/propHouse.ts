@@ -9,11 +9,13 @@ import dayjs from 'dayjs';
 import { sortByVotesAndHandleTies } from '../../utils/sortByVotesAndHandleTies';
 
 export interface PropHouseSlice {
+  activeBIP?:StoredProposalWithVotes;
   activeRound?: StoredAuctionBase;
   activeProposal?: StoredProposalWithVotes;
   activeProposals?: StoredProposalWithVotes[];
   activeCommunity?: Community;
   modalActive: boolean;
+  houseTab:number;
   infRoundFilteredProposals?: StoredProposalWithVotes[];
   infRoundFilterType: InfRoundFilterType;
 }
@@ -37,6 +39,7 @@ export enum InfRoundFilterType {
 
 const initialState: PropHouseSlice = {
   modalActive: false,
+  houseTab:0,
   infRoundFilterType: InfRoundFilterType.Active,
 };
 
@@ -97,6 +100,9 @@ export const propHouseSlice = createSlice({
   name: 'propHouse',
   initialState,
   reducers: {
+    setActiveBIP:(state, action: PayloadAction<StoredAuctionBase | undefined>) => {
+      state.activeBIP = action.payload;
+    },
     setActiveRound: (state, action: PayloadAction<StoredAuctionBase | undefined>) => {
       state.activeRound = action.payload;
     },
@@ -138,6 +144,10 @@ export const propHouseSlice = createSlice({
     setModalActive: (state, action: PayloadAction<boolean>) => {
       state.modalActive = action.payload;
     },
+    setHouseTab: (state, action: PayloadAction<number>) => {
+      state.houseTab = action.payload;
+      },
+
   },
 });
 
@@ -145,12 +155,14 @@ export const propHouseSlice = createSlice({
 export const {
   setActiveRound,
   setActiveProposal,
+  setActiveBIP,
   setActiveProposals,
   appendProposal,
   sortTimedRoundProposals,
   filterInfRoundProposals,
   setActiveCommunity,
   setModalActive,
+  setHouseTab,
   setInfRoundFilterType,
 } = propHouseSlice.actions;
 

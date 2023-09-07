@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
-  Application, ApproveRound,
+  Application, ApproveRound, BIPVote,
   Comment,
   Community,
   CommunityWithAuctions, DeleteApplication,
@@ -11,9 +11,10 @@ import {
   StoredFile,
   StoredInfiniteAuction,
   StoredTimedAuction,
+  StoredTimedBIP,
   StoredVote,
   StoredVoteWithProposal,
-  TimedAuction, TimedDelegate,
+  TimedAuction, TimedBIP, TimedDelegate,
   UpdatedProposal,
   Vote,
 } from './builders';
@@ -47,6 +48,20 @@ export class ApiWrapper {
     }
   }
 
+  async createBIP(bip:TimedBIP ): Promise<StoredTimedBIP[]> {
+    if (!this.signer) throw 'Please sign';
+    try {
+      const signedPayload = await bip.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/bip-round/create`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+
+
+
+
   async approveAuction(ApproveData: ApproveRound): Promise<StoredTimedAuction[]> {
     if (!this.signer) throw 'Please sign';
     try {
@@ -70,7 +85,13 @@ export class ApiWrapper {
 
   async getAuction(id: number): Promise<StoredTimedAuction> {
     try {
-      const rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}`)).data;
+      let rawTimedAuction: any;
+      if (this.signer){
+        const owner = (await this.signer.getAddresses())[0];
+        rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}?address=${owner}`)).data;
+      } else {
+        rawTimedAuction = (await axios.get(`${this.host}/auctions/${id}`)).data;
+      }
       return StoredTimedAuction.FromResponse(rawTimedAuction);
     } catch (e: any) {
       throw e.response.data.message;
@@ -189,6 +210,25 @@ export class ApiWrapper {
       throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
     }
   }
+
+  async getBipForCommunity(): Promise<StoredAuctionBase[]> {
+    try {
+      const [rawTimedAuctions] = await Promise.allSettled([
+        axios.get(`${this.host}/bip-round/list?order=Desc`),
+      ]);
+
+      const timed =
+          rawTimedAuctions.status === 'fulfilled'
+              ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
+              : [];
+
+      return timed;
+    } catch (e: any) {
+      throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
+    }
+  }
+
+
 
   async getActiveAuctions(skip = 5, limit = 5): Promise<StoredTimedAuction[]> {
     try {
@@ -349,6 +389,19 @@ export class ApiWrapper {
     }
   }
 
+  async getBIP(id: number, address?: string) {
+    try {
+      return (await axios.get(`${this.host}/bip-round/detail/${id}`, {
+        params: {
+          address,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+
   async getApplication(id: number) {
     try {
       return (await axios.get(`${this.host}/applications/${id}/detail`)).data;
@@ -481,6 +534,19 @@ export class ApiWrapper {
       throw e.response.data.message;
     }
   }
+
+  async createBIPVote(vote: BIPVote) {
+    if (!this.signer) return;
+    try {
+      const signedPayload = await vote.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/bip-votes/create`, signedPayload)).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
+
+
 
   async deleteVote(deleteVote: DeleteVote) {
     if (!this.signer) return;
@@ -655,6 +721,20 @@ export class ApiWrapper {
     }
   }
 
+  async getCommentListByBIP(bipId: number, skip: number, limit = 10, order = 'DESC'): Promise<StoredComment[]> {
+    try {
+      return (await axios.get(`${this.host}/bip-comments/byBipRound/${bipId}`, {
+        params: {
+          'skip': skip,
+          'limit': limit,
+          'order': order,
+        },
+      })).data;
+    } catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
+
   async getCommentListByApplication(applicationId: number, skip: number, limit = 10, order = 'DESC'): Promise<StoredComment[]> {
     try {
       return (await axios.get(`${this.host}/comments/byApplication/${applicationId}`, {
@@ -671,10 +751,17 @@ export class ApiWrapper {
 
   async createComment(comment: Comment): Promise<StoredComment | undefined> {
     if (!this.signer) return undefined;
-    if (!comment.proposalId && !comment.applicationId) return undefined;
+    if (!comment.proposalId && !comment.applicationId && !comment.bipRoundId) return undefined;
     try {
+
       const signedPayload = await comment.signedPayload(this.signer);
-      return (await axios.post(`${this.host}/comments/create`, signedPayload)).data;
+
+      if ( comment.bipRoundId ){
+        return (await axios.post(`${this.host}/bip-comments/create`, signedPayload)).data;
+      }else{
+        return (await axios.post(`${this.host}/comments/create`, signedPayload)).data;
+      }
+
     } catch (e: any) {
       console.log(e);
       throw e.response.data.message;

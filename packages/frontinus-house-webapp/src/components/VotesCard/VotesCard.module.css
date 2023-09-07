@@ -6,7 +6,7 @@
     display: flex;
     flex-direction: column;
     /*justify-content: space-between !important;*/
-    padding: 16px;
+    padding: 12px 20px;
 }
 
 .sidebarContainerCard button {
@@ -46,10 +46,11 @@
 
 .title {
     font-size: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     color: #f5eee6;
     font-family: 'EB Garamond';
     font-weight: 700;
+    line-height: 22px;
 }
 
 .icon {

@@ -4,9 +4,9 @@ import {
   IsEnum,
   IsInt,
   IsNumber,
-  IsOptional,
-  Min,
-} from 'class-validator';
+  IsOptional, IsPositive,
+  Min
+} from "class-validator";
 import { SignedEntity } from '../entities/signed';
 import { Delegate } from '../delegate/delegate.entity';
 import {
@@ -15,14 +15,14 @@ import {
 } from '@nestjs/swagger/dist/decorators/api-property.decorator';
 
 export class CreateVoteDto extends SignedEntity {
-  @ApiProperty({ deprecated: true })
-  @IsNumber()
-  @IsOptional()
-  direction: number;
-
   @ApiProperty({ description: 'The proposal ID for vote' })
   @IsNumber()
   proposalId: number;
+
+  @ApiProperty({ description: 'Voting weight for this vote. Must larger than 0' })
+  @IsInt()
+  @IsPositive()
+  weight: number;
 }
 
 export class DeleteVoteDto extends SignedEntity {
@@ -38,7 +38,6 @@ export class DeleteVoteDto extends SignedEntity {
 }
 
 export class DelegatedVoteDto extends CreateVoteDto {
-  weight: number;
   actualWeight: number;
   delegateId: number;
   delegateAddress: string;

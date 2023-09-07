@@ -79,19 +79,22 @@
 }
 
 
-.submitBtn {
+.btnContainer .submitBtn {
     width: 152px;
     height: 40px;
     border-radius: 8px;
     border: 1px solid #d0a059;
     gap: 12px;
     background-color: #d0a059;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     line-height: 28px;
-}
+    color: #111111;
+    font-family: 'Inconsolata';
+} 
 
-.submitBtn:hover {
+.btnContainer .submitBtn:hover {
+    border-radius: 8px;
     border: none;
     background-color: #F5C27C;
 }

@@ -7,6 +7,7 @@
   font-size: 30px !important;
   margin-top: 20px;
   margin-bottom: 20px;
+  line-height: 1.2 !important;
 }
 
 .proposalBody h2{
@@ -72,6 +73,13 @@ hr {
 .submittedBy {
   display: flex;
   align-items: flex-end;
+  color: var(--brand-proposql-yellow);
+  font-weight: 700;
+  font-size: 1rem;
+  gap: 5px;
+}
+.editBy {
+  cursor: pointer;
   color: var(--brand-proposql-yellow);
   font-weight: 700;
   font-size: 1rem;
