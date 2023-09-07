@@ -16,7 +16,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
-import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+import { AuctionVisibleStatus, VoteStatesClass } from '@nouns/frontinus-house-wrapper';
 import { Exclude, instanceToPlain } from 'class-transformer';
 import { Address } from '../types/address';
 import { BipOption } from 'src/bip-option/bip-option.entity';
@@ -123,10 +123,10 @@ export class BipRound {
   balanceBlockTag: number;
 
   comments: any;
-  
   quorum: number;
   quorumPercentage: string;
   votingPeriod: string;
+  currentUserVotedOptionId: number;
 
   @ApiProperty()
   @Column({
@@ -136,6 +136,14 @@ export class BipRound {
     comment: '0 means pending, 1 means normal',
   })
   visibleStatus: AuctionVisibleStatus;
+
+
+  @ApiProperty({
+    description: 'Indicates how the frontend should react based on this code.',
+    type: VoteStatesClass,
+  })
+  voteState: VoteStatesClass;
+
 
   public isAcceptingProposals = (): boolean =>
     new Date() > this.startTime &&

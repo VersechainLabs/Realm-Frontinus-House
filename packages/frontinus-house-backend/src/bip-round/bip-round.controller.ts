@@ -22,12 +22,13 @@ import {
   import { AdminService } from '../admin/admin.service';
   import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
   import { verifySignPayload } from '../utils/verifySignedPayload';
-  import { AuctionVisibleStatus } from '@nouns/frontinus-house-wrapper';
+  import { AuctionVisibleStatus, VoteStates } from '@nouns/frontinus-house-wrapper';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipRoundService } from './bip-round.service';
 import { CreateBipRoundDto, GetBipRoundDto } from './bip-round.types';
 import { BipOption } from 'src/bip-option/bip-option.entity';
 import { VotingPeriod } from 'src/auction/auction.types';
+import { BipVoteService } from 'src/bip-vote/bip-vote.service';
   
   @Controller('bip-round')
   export class BipRoundController {
@@ -36,6 +37,7 @@ import { VotingPeriod } from 'src/auction/auction.types';
     constructor(
       private readonly bipRoundService: BipRoundService,
       private readonly bipOptionService: BipOptionService,
+      private readonly bipVoteService: BipVoteService,
       private readonly adminService: AdminService,
     ) {}
   
@@ -93,8 +95,10 @@ import { VotingPeriod } from 'src/auction/auction.types';
     @ApiOkResponse({
       type: [BipRound],
     })
-    async getDetail(@Param('id', ParseIntPipe) id: number): Promise<BipRound> {
-
+    async getDetail(
+      @Param('id', ParseIntPipe) id: number, 
+      @Query('address') userAddress: string
+      ): Promise<BipRound> {
       const roundRecord = await this.bipRoundService.findOne(id);
 
       // Add vote percentage for "Vote Results":
@@ -115,6 +119,16 @@ import { VotingPeriod } from 'src/auction/auction.types';
       // roundRecord.quorumPercentage = (totalVoteCount / 1500).toFixed(2);
       roundRecord.quorumPercentage = this.roundUpNumberToString(totalVoteCount, 1500);
       
+      // Add voteState:
+      await this.addVoteState(roundRecord, userAddress);
+
+      // Add current user voted option:
+      const voteHistory = await this.bipVoteService.findOneByRound(roundRecord.id, userAddress);
+      if (voteHistory) 
+        roundRecord.currentUserVotedOptionId = voteHistory.bipOptionId;
+      else 
+      roundRecord.currentUserVotedOptionId = 0; // not voted in this round yet
+
       return roundRecord;
     }
 
@@ -129,5 +143,37 @@ import { VotingPeriod } from 'src/auction/auction.types';
 
       return (count / total * 100).toFixed(2);
     }
+
+  /**
+   * Add canVote|disallowedVoteReason|stateCode to proposal entity.
+   * @param foundProposal
+   * @param userAddress
+   * @returns
+   */
+  async addVoteState(foundRound: BipRound, userAddress: string) {
+    if (foundRound.bipVotes) {
+      // Check if the current user has voted in this proposal, and if so, the frontend needs to display the "Delete Vote" button.
+      // The back-end does not need that state. The back-end can vote repeatedly on the same proposal to increase its weight.
+      for (const vote of foundRound.bipVotes) {
+        if (vote.address === userAddress) {
+          foundRound.voteState = VoteStates.VOTED;
+          return;
+        }
+      }
+    }
+
+    const checkVoteState = await this.bipVoteService.checkEligibleToVoteNew(
+      foundRound,
+      userAddress,
+      true,
+    );
+    if (checkVoteState) {
+      foundRound.voteState = checkVoteState;
+      return;
+    }
+
+    foundRound.voteState = VoteStates.OK;
+  }
+
 }
   

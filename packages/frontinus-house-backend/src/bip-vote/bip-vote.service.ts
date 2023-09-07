@@ -84,6 +84,12 @@ export class BipVoteService {
     });
   }
 
+  findOneByRound(bipRoundId: number, address: string): Promise<BipVote> {
+    return this.votesRepository.findOne({
+      where: { address, bipRoundId },
+    });
+  }
+
   findOneBy(opt?: FindOneOptions<BipVote>): Promise<BipVote> {
     return this.votesRepository.findOne(opt);
   }
@@ -224,7 +230,7 @@ export class BipVoteService {
   }
 
   async checkEligibleToVoteNew(
-    proposal: BipOption,
+    // proposal: BipOption,
     auction: BipRound,
     address: string,
     checkVotingPower = true,
