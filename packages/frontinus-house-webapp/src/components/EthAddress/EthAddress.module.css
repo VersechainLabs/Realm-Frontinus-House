@@ -1,7 +1,7 @@
 .ethAddress a {
   cursor: pointer;
   text-decoration: none !important;
-  color: var(--text-color);
+  color: var(--text-color) !important;
   font-weight: bold;
   margin: 0 !important;
   display: flex;
@@ -11,6 +11,7 @@
 }
 
 .ethAddress a:visited {
+  text-decoration: none !important;
   color: inherit;
 }
 
