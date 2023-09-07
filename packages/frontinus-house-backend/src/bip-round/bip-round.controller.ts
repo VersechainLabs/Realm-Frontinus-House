@@ -109,16 +109,21 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
 
       roundRecord.bipOptions.forEach(option => {
         option.percentage = this.roundUpNumberToString(option.voteCount, totalVoteCount);
-        // option.percentage = this.roundUpNumber(option.voteCount / totalVoteCount * 100);
-        // option.percentage = Math.round( option.voteCount / totalVoteCount * 100 * 1e2 ) / 1e2;
       });
 
-      // roundRecord.quorum = parseInt(process.env.BIP_VOTE_QUORUM); // Fix number 1500, ask Yao
       roundRecord.quorum = 1500; // Fix number 1500, ask Yao
-      // roundRecord.quorumPercentage = this.roundUpNumber(totalVoteCount / 1500);
-      // roundRecord.quorumPercentage = (totalVoteCount / 1500).toFixed(2);
       roundRecord.quorumPercentage = this.roundUpNumberToString(totalVoteCount, 1500);
       
+      // Sort options by create-date:
+      roundRecord.bipOptions.sort(function(a, b) {
+        var keyA = new Date(a.createdDate),
+          keyB = new Date(b.createdDate);
+        // Compare the 2 dates
+        if (keyA < keyB) return -1;
+        if (keyA > keyB) return 1;
+        return 0;
+      });
+
       // Add voteState:
       await this.addVoteState(roundRecord, userAddress);
 
