@@ -134,7 +134,7 @@ const CastVote: React.FC<{
 
                         ):(
                             <div className={classes.reason}>
-                                {voteState.reason}
+                                {voteState.reason.replace("approve", "vote")}
                             </div>
                             )
 
