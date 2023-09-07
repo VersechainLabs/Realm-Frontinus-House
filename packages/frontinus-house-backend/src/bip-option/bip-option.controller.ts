@@ -50,43 +50,42 @@ import { CreateBipOptionDto, GetBipOptionsDto } from './bip-option.types';
       private readonly blockchainService: BlockchainService,
     ) {}
 
-
-    @Post('/create')
-    @ApiOkResponse({
-      type: BipOption,
-    })
-    async create(
-      @Body(ECDSASignedPayloadValidationPipe)
-      dto: CreateBipOptionDto,
-    ): Promise<BipOption> {
-      verifySignPayload(dto, [
-        'description',
-        'optionType',
-        'parentBipRoundId',
-      ]);
+    // @Post('/create')
+    // @ApiOkResponse({
+    //   type: BipOption,
+    // })
+    // async create(
+    //   @Body(ECDSASignedPayloadValidationPipe)
+    //   dto: CreateBipOptionDto,
+    // ): Promise<BipOption> {
+    //   verifySignPayload(dto, [
+    //     'description',
+    //     'optionType',
+    //     'parentBipRoundId',
+    //   ]);
   
-      const foundAuction = await this.bipRoundService.findOne(
-        dto.parentBipRoundId,
-      );
-      if (!foundAuction)
-        throw new HttpException(
-          'No round with that ID exists',
-          HttpStatus.NOT_FOUND,
-        );
+    //   const foundAuction = await this.bipRoundService.findOne(
+    //     dto.parentBipRoundId,
+    //   );
+    //   if (!foundAuction)
+    //     throw new HttpException(
+    //       'No round with that ID exists',
+    //       HttpStatus.NOT_FOUND,
+    //     );
   
   
-      // Do create:
-      const proposal = new BipOption();
-      proposal.address = dto.address;
-      proposal.description = dto.description;
-      proposal.optionType = dto.optionType;
-      // proposal.title = dto.title;
-      proposal.bipRound = foundAuction;
-      proposal.createdDate = new Date();
-      // proposal.previewImage = dto.previewImage;
+    //   // Do create:
+    //   const proposal = new BipOption();
+    //   proposal.address = dto.address;
+    //   proposal.description = dto.description;
+    //   proposal.optionType = dto.optionType;
+    //   // proposal.title = dto.title;
+    //   proposal.bipRound = foundAuction;
+    //   proposal.createdDate = new Date();
+    //   // proposal.previewImage = dto.previewImage;
   
-      return this.bipOptionService.store(proposal);
-    }
+    //   return this.bipOptionService.store(proposal);
+    // }
 
     @Get('/list')
     @ApiOkResponse({
