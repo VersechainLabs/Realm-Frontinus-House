@@ -42,7 +42,10 @@ const CastVote: React.FC<{
     const  countDown = ()=> {
         setIsEnd(false);
 
+
+
         let nowtime = new Date();
+
 
         let endtime = new Date(dayjs(endTime).tz().format('YYYY-MM-DD HH:mm'));
         let lefttime = parseInt((endtime.getTime() - nowtime.getTime()) / 1000);
@@ -62,8 +65,8 @@ const CastVote: React.FC<{
         m = addZero(m);
 
         let dStr = d <= 1 ? 'day':'days';
-        let hStr = d <= 1 ? 'hour':'hours';
-        let mStr = d <= 1 ? 'minute':'minutes';
+        let hStr = h <= 1 ? 'hour':'hours';
+        let mStr = m <= 1 ? 'minute':'minutes';
 
 
         document.querySelector(".count").innerHTML = `<span class="castVoteEnds">Voting ends in <span class="num">${d}</span> ${dStr} <span class="num">${h}</span> ${hStr}  <span class="num">${m}</span> ${mStr}</span>`;
