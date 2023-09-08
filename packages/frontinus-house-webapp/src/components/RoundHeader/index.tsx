@@ -99,24 +99,24 @@ const RoundHeader: React.FC<{
             Reject
           </div>
         </div>)}
-        <div
-          className={classes.backToAuction}
-          onClick={() => {
-            // community && navigate(`/${nameToSlug(community.name)}`);
-            community && navigate(`/`);
-          }}
-        >
-          {community && (
-            <>
-              <img
-                src={community.profileImageUrl}
-                alt="community profile"
-                className={classes.profImg}
-              />
-              <div className={clsx('frontinusTitle',classes.commTitle)}>{community.name}</div>
-            </>
-          )}
-        </div>
+        {/*<div*/}
+        {/*  className={classes.backToAuction}*/}
+        {/*  onClick={() => {*/}
+        {/*    // community && navigate(`/${nameToSlug(community.name)}`);*/}
+        {/*    community && navigate(`/`);*/}
+        {/*  }}*/}
+        {/*>*/}
+        {/*  {community && (*/}
+        {/*    <>*/}
+        {/*      <img*/}
+        {/*        src={community.profileImageUrl}*/}
+        {/*        alt="community profile"*/}
+        {/*        className={classes.profImg}*/}
+        {/*      />*/}
+        {/*      <div className={clsx('frontinusTitle',classes.commTitle)}>{community.name}</div>*/}
+        {/*    </>*/}
+        {/*  )}*/}
+        {/*</div>*/}
 
         <Col lg={12} className={classes.communityInfoCol}>
           <div className={clsx('frontinusTitle',classes.date)}>

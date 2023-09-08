@@ -76,13 +76,13 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                     )
                 );
 
-                // const freshBIP = (await backendClient.current.getBIP(
-                //     Number(id),
-                //     account,
-                // )) as StoredProposalWithVotes;
-                //
-                // dispatch(setActiveBIP(freshBIP));
-                window.location.reload();
+                const freshBIP = await backendClient.current.getBIP(
+                    Number(bip.id),
+                    account,
+                );
+
+                dispatch(setActiveBIP(freshBIP));
+                //window.location.reload();
 
             } catch (e) {
 

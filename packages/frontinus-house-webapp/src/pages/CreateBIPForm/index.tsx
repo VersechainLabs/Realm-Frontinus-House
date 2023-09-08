@@ -82,7 +82,9 @@ const CreateBIPForm: React.FC<{
     const [loading, setLoading] = useState(false);
     const MIN_TITLE_LENGTH = 5;
     const MAX_TITLE_LENGTH = 100;
+    const MAX_DESC_LENGTH = 20000;
     const [titleLength, setTitleLength] = useState(0);
+    const [descLength, setDescLength] = useState(0);
 
     useEffect(() => {
         client.current = new ApiWrapper(host, walletClient);
@@ -93,13 +95,16 @@ const CreateBIPForm: React.FC<{
         if (plainText.trim().length === 0) {
             if( !htmlContent ){
                 setContent('');
+                setDescLength(0);
             }else{
                 setContent(htmlContent);
             }
         } else {
             setContent(htmlContent);
+            setDescLength(plainText.trim().length);
         }
     };
+
 
     // const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
     //     console.log(content);
@@ -148,6 +153,10 @@ const CreateBIPForm: React.FC<{
     }
 
     const onClickPreview = ()=>{
+        let flag = checkStep1();
+        if ( !flag ){
+            return false;
+        }
         setShowStep1(false);
         setShowStep2(false);
         setShowPreview(true);
@@ -326,7 +335,12 @@ const CreateBIPForm: React.FC<{
                                             </div>
                                             {/** DESCRIPTION */}
                                             <div className={'bipEditor'}>
-                                                <div className={classes.desc}>Description</div>
+                                                <div className={classes.desc}>
+                                                    Description
+                                                    <span className={classes.characterCount}>
+                                                          {descLength}/{MAX_DESC_LENGTH}
+                                                        </span>
+                                                </div>
                                                 <div>
                                                     <QuillEditor
                                                         widgetKey={'BIP'}
