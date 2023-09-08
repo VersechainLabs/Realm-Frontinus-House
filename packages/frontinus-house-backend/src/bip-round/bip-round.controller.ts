@@ -161,8 +161,15 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
       // The back-end does not need that state. The back-end can vote repeatedly on the same proposal to increase its weight.
       for (const vote of foundRound.bipVotes) {
         if (vote.address === userAddress) {
-          foundRound.voteState = VoteStates.VOTED;
-          return;
+          // "delegated vote" has same record as normal vote in db, only diff is extra delegateId & delegateAddress field
+          if (vote.delegateId) {
+            foundRound.voteState = VoteStates.ALREADY_DELEGATED;
+            return;
+          }
+          else {
+            foundRound.voteState = VoteStates.VOTED;
+            return;
+          }
         }
       }
     }
