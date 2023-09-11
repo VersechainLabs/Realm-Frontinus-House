@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import classes from './TimedRoundVotingModule.module.css';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import { useAppSelector } from '../../hooks';
 import { countVotesRemainingForTimedRound } from '../../utils/countVotesRemainingForTimedRound';
@@ -11,16 +11,25 @@ import { countNumVotes } from '../../utils/countNumVotes';
 import ConnectButton from '../ConnectButton';
 import { useTranslation } from 'react-i18next';
 import { useAccount } from 'wagmi';
+import {StoredProposalWithVotes} from "@nouns/frontinus-house-wrapper/dist/builders";
+import {auctionStatus, AuctionStatus} from "../../utils/auctionStatus";
+import {isInfAuction} from "../../utils/auctionType";
 
 export interface TimedRoundVotingModuleProps {
   communityName: string;
   totalVotes: number | undefined;
   setShowVotingModal: Dispatch<SetStateAction<boolean>>;
+  showFlag: boolean;
+  userProps: StoredProposalWithVotes[];
+  status: AuctionStatus;
+  proposals: StoredProposalWithVotes[] | undefined;
+  numOfWinners: number;
+  winningIds: number[];
 }
 const TimedRoundVotingModule: React.FC<TimedRoundVotingModuleProps> = (
   props: TimedRoundVotingModuleProps,
 ) => {
-  const { communityName, totalVotes, setShowVotingModal } = props;
+  const { communityName, totalVotes, setShowVotingModal, showFlag, userProps, winningIds, proposals, status, numOfWinners } = props;
   const { address: account } = useAccount();
 
   const voteAllotments = useAppSelector(state => state.voting.voteAllotments);
@@ -121,6 +130,12 @@ const TimedRoundVotingModule: React.FC<TimedRoundVotingModuleProps> = (
       }
       content={content}
       type="voting"
+      showFlag={showFlag}
+      userProps={userProps}
+      proposals={proposals}
+      numOfWinners={numOfWinners}
+      status={status}
+      winningIds={winningIds}
     />
   );
 };

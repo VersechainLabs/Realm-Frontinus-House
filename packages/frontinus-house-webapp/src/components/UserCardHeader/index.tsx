@@ -56,7 +56,7 @@ const UserCardHeader: React.FC<{
         </div>
       </div>
 
-      <hr className={classes.divider} />
+      {/*<hr className={classes.divider} />*/}
     </>
   );
 };
