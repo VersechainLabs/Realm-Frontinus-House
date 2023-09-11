@@ -1,0 +1,52 @@
+.userPropCard {
+  border: 1px solid var(--border-med);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.userPropTitle {
+  font-weight: 700;
+  font-size: 18px;
+}
+.userPropInfo {
+  display: flex;
+  margin-bottom: 8px;
+  margin-top: 16px;
+}
+.userPropItem {
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*gap: 8px;*/
+  width: 50%;
+}
+.userPropNounImg {
+  display: flex;
+  align-items: center;
+  max-width: 24px;
+}
+.userPropNounImg img {
+  width: 100%;
+}
+.userPropText {
+  /*display: flex;*/
+  justify-content: space-between;
+  width: 100%;
+  text-align: center;
+}
+.userPropTextTitle {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  letter-spacing: 0px;
+  text-align: center;
+  color: #676B6D;
+
+}
+.userPropTextValue {
+  /*color: var(--brand-gray);*/
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 29px;
+  letter-spacing: 0px;
+  text-align: center;
+  color: #D0A059;
+}

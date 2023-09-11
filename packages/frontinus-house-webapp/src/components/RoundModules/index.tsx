@@ -84,6 +84,19 @@ const RoundModules: React.FC<{
       communityName={community.name}
       setShowVotingModal={setShowVotingModal}
       totalVotes={getVoteTotal()}
+      showFlag={(isInfAuction(auction)
+          ? infRoundFilter === InfRoundFilterType.Active
+          : true) &&
+      !auctionNotStarted &&
+      account &&
+      userProposals &&
+      userProposals.length > 0 &&
+      fetchedUserProps}
+      userProps={userProposals}
+      proposals={proposals}
+      numOfWinners={isInfAuction(auction) ? 0 : auction.numWinners}
+      status={auctionStatus(auction)}
+      winningIds={winningIds && winningIds}
     />
   );
 
@@ -107,6 +120,19 @@ const RoundModules: React.FC<{
       numOfProposals={proposals.length}
       totalVotes={getVoteTotal()}
       round={auction}
+      showFlag={(isInfAuction(auction)
+          ? infRoundFilter === InfRoundFilterType.Active
+          : true) &&
+        !auctionNotStarted &&
+        account &&
+        userProposals &&
+        userProposals.length > 0 &&
+        fetchedUserProps}
+      userProps={userProposals}
+      proposals={proposals}
+      numOfWinners={isInfAuction(auction) ? 0 : auction.numWinners}
+      status={auctionStatus(auction)}
+      winningIds={winningIds && winningIds}
     />
   );
 
