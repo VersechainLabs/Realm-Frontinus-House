@@ -61,7 +61,7 @@ const PropNewStats: React.FC<{
                   getNumberWithOrdinal(
                       proposals
                           .slice()
-                          .sort((a, b) => (a.voteCount < b.voteCount ? 1 : -1))
+                          .sort((a, b) => (a.voteCount <= b.voteCount ? 1 : -1))
                           .findIndex(p => p.id === userProps[cardIndex].id) + 1,
                   )}
                 </div>
