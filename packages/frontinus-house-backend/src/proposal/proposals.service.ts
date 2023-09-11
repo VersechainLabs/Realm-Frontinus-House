@@ -33,6 +33,9 @@ export class ProposalsService {
     return this.proposalsRepository.find({
       relations: ['votes'],
       where: { visible: true, auctionId: auctionId },
+      order: {
+        id: "DESC",
+      },
     });
   }
 
