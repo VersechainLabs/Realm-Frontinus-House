@@ -94,17 +94,41 @@
   align-items: center;
 }
 
-.approveButton {
+.approveButton button {
   background: #D0A059;
   font-size: 16px;
   color: #111111;
   border-radius: 8px;
   font-weight: bold;
   padding: 4px 16px;
-  border: 1px solid #D0A059;
+  /*border: 1px solid #D0A059;*/
+  height: 32px;
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  font-family: 'Inconsolata';
+  border: none;
 }
-.disApproveButton {
+.approveButton button:hover {
+  border: none;
+  background-color: #F5C27C;
+
+}
+
+.disApproveButton button:hover {
+  border: none;
+  background-color: #272728;
+
+}
+
+.disApproveButton button {
+  border: none;
   height: 32px;
   background: #272728;
   font-size: 16px;
@@ -112,8 +136,13 @@
   border-radius: 8px;
   font-weight: bold;
   padding: 4px 16px;
-  border: 1px solid #272728;
+  /*border: 1px solid #272728;*/
   text-align: center;
+  font-family: 'Inconsolata';
+}
+
+.disApproveButton button .MuiLoadingButton-loadingIndicator {
+  color: #F5EEE699!important;
 }
 
 .voteListChild {
