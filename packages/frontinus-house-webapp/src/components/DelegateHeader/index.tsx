@@ -52,25 +52,25 @@ const DelegateHeader: React.FC<{
   return (
     <Row className={classes.profileHeaderRow}>
       <Col>
-        <div
-          className={classes.backToAuction}
-          onClick={() => {
-            // community && navigate(`/${nameToSlug(community.name)}`);
-            community && navigate(`/`);
+        {/*<div*/}
+        {/*  className={classes.backToAuction}*/}
+        {/*  onClick={() => {*/}
+        {/*    // community && navigate(`/${nameToSlug(community.name)}`);*/}
+        {/*    community && navigate(`/`);*/}
 
-          }}
-        >
-          {community && (
-            <>
-              <img
-                src={community.profileImageUrl}
-                alt="community profile"
-                className={classes.profImg}
-              />
-              <div className={clsx('frontinusTitle',classes.commTitle)}>{community.name}</div>
-            </>
-          )}
-        </div>
+        {/*  }}*/}
+        {/*>*/}
+        {/*  {community && (*/}
+        {/*    <>*/}
+        {/*      <img*/}
+        {/*        src={community.profileImageUrl}*/}
+        {/*        alt="community profile"*/}
+        {/*        className={classes.profImg}*/}
+        {/*      />*/}
+        {/*      <div className={clsx('frontinusTitle',classes.commTitle)}>{community.name}</div>*/}
+        {/*    </>*/}
+        {/*  )}*/}
+        {/*</div>*/}
 
         <Col lg={12} className={classes.communityInfoCol}>
           <div className={classes.date}>

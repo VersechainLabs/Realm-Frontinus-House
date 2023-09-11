@@ -60,7 +60,7 @@ const BIP = () => {
 
     useEffect(() => {
         backendClient.current = new ApiWrapper(backendHost, walletClient);
-    }, [walletClient, backendHost]);
+    }, [walletClient, backendHost,bip]);
 
 
 
