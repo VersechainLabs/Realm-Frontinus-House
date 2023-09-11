@@ -136,14 +136,14 @@ const RoundModules: React.FC<{
     />
   );
 
-  const userPropCardModule = (isInfAuction(auction)
+  const userPropCardModule = false && (isInfAuction(auction)
     ? infRoundFilter === InfRoundFilterType.Active
     : true) &&
     !auctionNotStarted &&
     account &&
     userProposals &&
     userProposals.length > 0 &&
-    fetchedUserProps && (
+    fetchedUserProps &&  (
       <UserPropCard
         userProps={userProposals}
         proposals={proposals}
