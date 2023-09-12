@@ -175,7 +175,7 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
       description: 'The vote has been successfully deleted.',
     })
     @ApiResponse({ status: 400, description: 'Bad request.' })
-    @Post()
+    @Post('/remove')
     async deleteOne(
         @Body(SignedPayloadValidationPipe) deleteVoteDto: DeleteVoteDto,
     ): Promise<boolean> {

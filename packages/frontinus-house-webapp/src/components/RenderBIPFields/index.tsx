@@ -113,12 +113,12 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
 
             setDisabled(true);
 
-            // await backendClient.current.createBIPVote(
-            //     new BIPVote(
-            //         bip.id,
-            //         Number(optionId)
-            //     )
-            // );
+            await backendClient.current.deleteVote(
+                new BIPVote(
+                    bip.id,
+                    Number(optionId)
+                )
+            );
 
             const freshBIP = await backendClient.current.getBIP(
                 Number(bip.id),
