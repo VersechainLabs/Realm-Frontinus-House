@@ -15,7 +15,7 @@ export const sortByVotesAndHandleTies = (
       (dayjs(getLastUpdatedDate(a)) as any) - (dayjs(getLastUpdatedDate(b)) as any);
 
     return eq
-      ? ascending
+      ? !ascending
         ? sortedByUpdatedAsc
         : sortedByUpdatedDes
       : gt
