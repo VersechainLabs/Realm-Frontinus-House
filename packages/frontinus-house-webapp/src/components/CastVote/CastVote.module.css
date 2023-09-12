@@ -14,6 +14,19 @@
     line-height: 150%;
 }
 
+.disApproveButton {
+    cursor: pointer;
+    height: 32px;
+    background: #D0A059;
+    font-size: 16px;
+    color: #111111;
+    border-radius: 8px;
+    font-weight: bold;
+    padding: 4px 16px;
+    border: 1px solid #D0A059;
+    text-align: center;
+}
+
 .title{
     color: #F5EEE6;
     font-size: 18px;

@@ -102,6 +102,50 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
     }
 
 
+    const onCancelVote = async ()=>{
+        // console.log('5555');
+        // console.log(id);
+        try {
+
+            if ( disabled  ){
+                return false;
+            }
+
+            setDisabled(true);
+
+            // await backendClient.current.createBIPVote(
+            //     new BIPVote(
+            //         bip.id,
+            //         Number(optionId)
+            //     )
+            // );
+
+            const freshBIP = await backendClient.current.getBIP(
+                Number(bip.id),
+                account,
+            );
+
+            dispatch(setActiveBIP(freshBIP));
+            //window.location.reload();
+
+        } catch (e) {
+
+            if ( typeof(e) == 'string'){
+                dispatch(setAlert({ type: 'error', message: e }));
+            }
+
+            setDisabled(false);
+
+        } finally {
+
+            setDisabled(false);
+
+        }
+
+
+    }
+
+
     return (
         <>
             <Col xl={12} className="proposalCopy">
@@ -172,13 +216,16 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                 </div>
 
                 <div className={classes.voteBlock}>
+
                     <CastVote
                         onClickVote={onClickVote}
+                        onCancelVote={onCancelVote}
                         options={bip.bipOptions}
                         voteState={bip.voteState}
                         voteOptionId={bip.currentUserVotedOptionId}
                         endTime={bip.endTime}
                         loading={disabled}
+                        code={bip.voteState.code}
                     />
 
                     <VoteResults

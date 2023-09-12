@@ -465,6 +465,24 @@ export class BIPVote extends Signable {
 }
 
 
+export class DeleteBIPVote extends Signable {
+  constructor(
+      public readonly bipRoundId: number,
+  ) {
+    super();
+  }
+
+  toPayload() {
+    return {
+      // No need direction
+      // direction: this.direction,
+      bipRoundId: this.bipRoundId,
+    };
+  }
+}
+
+
+
 
 export class DeleteVote extends Signable {
   constructor(
