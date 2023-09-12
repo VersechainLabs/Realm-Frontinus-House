@@ -21,6 +21,7 @@ import Button, { ButtonColor } from '../../components/Button';
 import AddressAvatar from '../../components/AddressAvatar';
 import VoteListPopup from '../../components/VoteListPopup';
 import EthAddress from '../../components/EthAddress';
+import { setAlert } from '../../state/slices/alert';
 import { LoadingButton } from '@mui/lab';
 
 import Slider, { SliderThumb, SliderValueLabelProps } from '@mui/material/Slider';
@@ -275,6 +276,10 @@ const Proposal = () => {
                           onClick={async () => {
                             // TODO: 按钮需要加 loading
                             try {
+                              if (inputValue <= 0) {
+                                dispatch(setAlert({ type: 'error', message: 'Unable to cast 0 vote. Please slide the orange dot on the right to increase your vote count.' }));
+                                return;
+                              }
                               setIsButtonDisabled(true);
                               console.log(proposal.id );
                               const voteResult = await backendClient.current.createVote(new Vote(proposal.id, inputValue));
