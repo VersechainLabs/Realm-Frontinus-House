@@ -240,8 +240,11 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
       if (delegateVoteList.length > 0) {
         ids.push(...delegateVoteList.map((v) => v.id));
       }
+
+
       await this.bipVotesService.removeMany(ids);
       await this.bipRoundService.rollupVoteCount(foundVote);
+
       return true;
     }
 
