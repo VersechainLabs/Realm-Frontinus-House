@@ -67,17 +67,36 @@ export class BipRoundService {
   }
 
 
-  async updateBipRoundVoteCount(bipRound: BipRound) {
-    let totalCount = 0;
+  // async updateBipRoundVoteCount(bipRound: BipRound) {
+  //   let totalCount = 0;
+  //
+  //   for (const optionId of bipRound.bipOptionIds) {
+  //     const option = await this.bipOptionService.findOne(optionId);
+  //
+  //     totalCount += option.voteCount;
+  //   }
+  //
+  //   await this.bipRoundRepository.update(bipRound.id, {
+  //     voteCount: totalCount
+  //  });
+  // }
 
-    for (const optionId of bipRound.bipOptionIds) {
-      const option = await this.bipOptionService.findOne(optionId);
-
-      totalCount += option.voteCount;
+  async rollupVoteCount(bipRoundId: number,optionId:number) {
+    if ( !bipRoundId || !optionId ){
+      return;
     }
 
-    await this.bipRoundRepository.update(bipRound.id, {
-      voteCount: totalCount
-   });
-  } 
+    const option = await this.bipOptionService.findOne(optionId);
+    if ( !option ){
+      return;
+    }
+
+    await this.bipRoundRepository.update(bipRoundId, {
+      voteCount: option.voteCount-1 > 0 ? option.voteCount-1 : 0
+    });
+
+  }
+
+
+
 }
