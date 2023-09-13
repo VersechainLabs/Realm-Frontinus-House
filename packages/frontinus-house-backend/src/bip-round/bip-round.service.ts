@@ -15,6 +15,7 @@ import { Delegate } from '../delegate/delegate.entity';
 import { Delegation } from '../delegation/delegation.entity';
 import { updateValidFields } from '../utils';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
+import {BipVote} from "../bip-vote/bip-vote.entity";
 
 export type AuctionWithProposalCount = BipRound & { numProposals: number };
 
@@ -81,22 +82,17 @@ export class BipRoundService {
    });
   }
 
-  async rollupVoteCount(bipRoundId: number,optionId:number) {
-    if ( !bipRoundId || !optionId ){
+  async rollupVoteCount(bipVote:BipVote) {
+    if ( !bipVote ){
       return;
     }
 
-    const option = await this.bipOptionService.findOne(optionId);
-    if ( !option ){
-      return;
-    }
+    //update the option number
+    await this.bipOptionService.decrVoteCount(bipVote.bipOptionId,bipVote.weight);
 
-    await this.bipRoundRepository.update(bipRoundId, {
-      voteCount: option.voteCount-1 > 0 ? option.voteCount-1 : 0
-    });
-
+    //update bip round vote count
+    await this.bipRoundRepository.decrement({
+      id:bipVote.bipRoundId
+    },'',bipVote.weight);
   }
-
-
-
 }
