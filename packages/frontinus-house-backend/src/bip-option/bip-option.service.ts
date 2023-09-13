@@ -75,7 +75,7 @@ export class BipOptionService {
   }
 
   async decrVoteCount(id:number,weight:number){
-    return await this.bipOptionRepository.decrement({id:id},'weight',weight);
+    return await this.bipOptionRepository.decrement({id:id},'voteCount',weight);
   }
 
 }
