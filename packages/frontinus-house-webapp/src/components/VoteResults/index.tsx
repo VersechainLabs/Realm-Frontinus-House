@@ -13,10 +13,11 @@ const VoteResults: React.FC<{
     quorumPercentage:string;
     symbol?:string;
 }> = props => {
-    const { options,quorum } = props;
+    const { options } = props;
 
     useEffect(() => {
-    },[]);
+
+    },[options]);
 
 
 

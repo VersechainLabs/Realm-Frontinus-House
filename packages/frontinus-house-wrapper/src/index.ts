@@ -3,7 +3,7 @@ import {
   Application, ApproveRound, BIPVote,
   Comment,
   Community,
-  CommunityWithAuctions, DeleteApplication,
+  CommunityWithAuctions, DeleteApplication, DeleteBIPVote,
   DeleteProposal, DeleteVote,
   Proposal, ProposalParent,
   StoredAuctionBase,
@@ -546,7 +546,17 @@ export class ApiWrapper {
   }
 
 
-
+  async deleteBIPVote(deleteVote: DeleteBIPVote) {
+    if (!this.signer)
+      return;
+    try {
+      const signedPayload = await deleteVote.signedPayload(this.signer);
+      return (await axios.post(`${this.host}/bip-votes/remove`, signedPayload)).data;
+    }
+    catch (e: any) {
+      throw e.response.data.message;
+    }
+  }
 
   async deleteVote(deleteVote: DeleteVote) {
     if (!this.signer) return;

@@ -73,4 +73,9 @@ export class BipOptionService {
   async store(bipOption: BipOption) {
     return await this.bipOptionRepository.save(bipOption);
   }
+
+  async decrVoteCount(id:number,weight:number){
+    return await this.bipOptionRepository.decrement({id:id},'voteCount',weight);
+  }
+
 }

@@ -39,7 +39,7 @@ export enum InfRoundFilterType {
 
 const initialState: PropHouseSlice = {
   modalActive: false,
-  houseTab:0,
+  houseTab:1,
   infRoundFilterType: InfRoundFilterType.Active,
 };
 

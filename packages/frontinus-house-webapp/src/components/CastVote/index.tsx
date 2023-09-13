@@ -6,19 +6,22 @@ import {LoadingButton} from "@mui/lab";
 import {useAccount} from "wagmi";
 import ConnectButton from "../ConnectButton";
 import dayjs from "dayjs";
+import {DeleteVote} from "@nouns/frontinus-house-wrapper/dist/builders";
 
 
 
 const CastVote: React.FC<{
     onClickVote: (id:number) => void;
+    onCancelVote: () => void;
     options: any[];
     voteState:any[];
     voteOptionId:number;
     loading?:boolean;
     endTime:string;
+    code?:number;
 }> = props => {
 
-    const { options,voteOptionId,endTime,voteState } = props;
+    const { options,voteOptionId,endTime,voteState,code } = props;
     const [optionId, setOptionId] = useState(0);
     const { address: account } = useAccount();
     const [isEnd,setIsEnd] = useState(false);
@@ -136,9 +139,35 @@ const CastVote: React.FC<{
 
 
                         ):(
-                            <div className={classes.reason}>
-                                {voteState.reason.replace("approve", "vote")}
-                            </div>
+
+                            code == 311 ? (
+
+                                props.loading ? (
+                                    <LoadingButton
+                                        loading={true}
+                                        id="loading-button"
+                                    >
+                                    </LoadingButton>
+                                ):(
+                                    <button
+                                        className={classes.disApproveButton}
+                                        onClick={event => {
+                                            props.onCancelVote()
+                                        }}
+                                    >
+                                        Cancel Vote
+                                    </button>
+                                    )
+
+
+                                ) : (
+                                    <div className={classes.reason}>
+                                        {voteState.reason.replace("approve", "vote")}
+                                    </div>
+                                )
+
+
+
                             )
 
 
