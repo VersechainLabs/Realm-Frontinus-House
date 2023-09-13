@@ -93,6 +93,6 @@ export class BipRoundService {
     //update bip round vote count
     await this.bipRoundRepository.decrement({
       id:bipVote.bipRoundId
-    },'',bipVote.weight);
+    },'voteCount',bipVote.weight);
   }
 }
