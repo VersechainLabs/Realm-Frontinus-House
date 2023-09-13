@@ -7,7 +7,7 @@ import {
     StoredAuctionBase,
     StoredProposal,
     BIPVote,
-    StoredProposalWithVotes
+    StoredProposalWithVotes, DeleteVote
 } from '@nouns/frontinus-house-wrapper/dist/builders';
 import clsx from "clsx";
 import formatServerDate from '../../utils/commentTime';
@@ -27,6 +27,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {setAlert} from "../../state/slices/alert";
 import VoteLists from "../VoteLists";
 import {setActiveBIP} from "../../state/slices/propHouse";
+import {DeleteBIPVote} from '@nouns/frontinus-house-wrapper/dist/builders';
 
 
 export interface RenderedBIPProps {
@@ -113,10 +114,9 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
 
             setDisabled(true);
 
-            await backendClient.current.deleteVote(
-                new BIPVote(
+            await backendClient.current.deleteBIPVote(
+                new DeleteBIPVote(
                     bip.id,
-                    Number(optionId)
                 )
             );
 
@@ -129,7 +129,7 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
             //window.location.reload();
 
         } catch (e) {
-
+            console.log(e)
             if ( typeof(e) == 'string'){
                 dispatch(setAlert({ type: 'error', message: e }));
             }
