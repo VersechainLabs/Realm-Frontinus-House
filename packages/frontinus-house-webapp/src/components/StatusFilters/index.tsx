@@ -96,7 +96,7 @@ const StatusFilters: React.FC<{
   const handleClick = (status: RoundStatus) => {
     setInput('');
     setCurrentRoundStatus(status);
-    dispatch(setHouseTab(0));
+    dispatch(setHouseTab(status));
   };
 
   return (

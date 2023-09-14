@@ -7,7 +7,7 @@ import {
     StoredAuctionBase,
     StoredProposal,
     BIPVote,
-    StoredProposalWithVotes
+    StoredProposalWithVotes, DeleteVote
 } from '@nouns/frontinus-house-wrapper/dist/builders';
 import clsx from "clsx";
 import formatServerDate from '../../utils/commentTime';
@@ -27,6 +27,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {setAlert} from "../../state/slices/alert";
 import VoteLists from "../VoteLists";
 import {setActiveBIP} from "../../state/slices/propHouse";
+import {DeleteBIPVote} from '@nouns/frontinus-house-wrapper/dist/builders';
 
 
 export interface RenderedBIPProps {
@@ -76,13 +77,13 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                     )
                 );
 
-                // const freshBIP = (await backendClient.current.getBIP(
-                //     Number(id),
-                //     account,
-                // )) as StoredProposalWithVotes;
-                //
-                // dispatch(setActiveBIP(freshBIP));
-                window.location.reload();
+                const freshBIP = await backendClient.current.getBIP(
+                    Number(bip.id),
+                    account,
+                );
+
+                dispatch(setActiveBIP(freshBIP));
+                //window.location.reload();
 
             } catch (e) {
 
@@ -97,6 +98,49 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                 setDisabled(false);
 
             }
+
+
+    }
+
+
+    const onCancelVote = async ()=>{
+        // console.log('5555');
+        // console.log(id);
+        try {
+
+            if ( disabled  ){
+                return false;
+            }
+
+            setDisabled(true);
+
+            await backendClient.current.deleteBIPVote(
+                new DeleteBIPVote(
+                    bip.id,
+                )
+            );
+
+            const freshBIP = await backendClient.current.getBIP(
+                Number(bip.id),
+                account,
+            );
+
+            dispatch(setActiveBIP(freshBIP));
+            //window.location.reload();
+
+        } catch (e) {
+            console.log(e)
+            if ( typeof(e) == 'string'){
+                dispatch(setAlert({ type: 'error', message: e }));
+            }
+
+            setDisabled(false);
+
+        } finally {
+
+            setDisabled(false);
+
+        }
 
 
     }
@@ -172,13 +216,16 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
                 </div>
 
                 <div className={classes.voteBlock}>
+
                     <CastVote
                         onClickVote={onClickVote}
+                        onCancelVote={onCancelVote}
                         options={bip.bipOptions}
                         voteState={bip.voteState}
                         voteOptionId={bip.currentUserVotedOptionId}
                         endTime={bip.endTime}
                         loading={disabled}
+                        code={bip.voteState.code}
                     />
 
                     <VoteResults

@@ -37,6 +37,14 @@ export class DeleteBipVoteDto extends SignedEntity {
   bipOptionId: number;
 }
 
+export class DeleteVoteDto extends SignedEntity {
+  @ApiProperty({ description: 'The bip ID to delete vote' })
+  @IsNumber()
+  @IsOptional()
+  bipRoundId: number;
+}
+
+
 export class DelegatedBipVoteDto extends CreateBipVoteDto {
   weight: number;
   actualWeight: number;

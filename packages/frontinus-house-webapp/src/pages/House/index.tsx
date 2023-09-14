@@ -262,12 +262,9 @@ const House = () => {
               );
             }),
           ));
-    // console.log(tab);
-    //for the back bip
-          if ( tab == RoundStatus.BIP ){
-            setCurrentRoundStatus(RoundStatus.BIP);
-          }
 
+          //for the back tab
+          setCurrentRoundStatus(tab);
   }, [input, currentRoundStatus, rounds]);
 
 

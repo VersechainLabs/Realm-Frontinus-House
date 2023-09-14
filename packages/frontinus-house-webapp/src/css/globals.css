@@ -423,6 +423,11 @@ p {
   font-size: 16px;
 }
 
+
+.ql-snow.ql-toolbar .ql-picker-label:hover{
+  color:var(--brand-common-yellow) !important;
+}
+
 .btnDisabled{
   border: 1px solid gray !important;
   background: gray !important;
@@ -472,7 +477,7 @@ p {
 
 
 .ql-snow.ql-toolbar button:hover .ql-stroke{
-  stroke:#06c !important;
+  stroke:var(--brand-common-yellow) !important;
 }
 
 .ql-snow .ql-picker-options{
@@ -481,8 +486,20 @@ p {
 
 
 .ql-snow.ql-toolbar button.ql-active .ql-stroke{
-  stroke:#06c !important;
+  stroke:var(--brand-common-yellow) !important;
 }
+
+.ql-snow.ql-toolbar .ql-picker-label:hover .ql-stroke{
+  stroke:var(--brand-common-yellow) !important;
+}
+
+.ql-snow.ql-toolbar .ql-picker-label.ql-active{
+  color:var(--brand-common-yellow) !important;
+}
+
+/*.ql-snow .ql-fill, .ql-snow .ql-stroke.ql-fill:hover {*/
+/*  fill: var(--brand-common-yellow) !important;*/
+/*}*/
 
 .quill-viewer .ql-container{
   background: unset !important;

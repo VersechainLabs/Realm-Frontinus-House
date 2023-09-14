@@ -11,8 +11,9 @@ import {
   } from '@nestjs/common';
   import { ProposalsService } from '../proposal/proposals.service';
   import {
-    verifySignPayloadForBipVote,
-  } from '../utils/verifySignedPayload';
+    verifySignPayload,
+  verifySignPayloadForBipVote,
+} from '../utils/verifySignedPayload';
   import { convertBipVoteListToDelegateVoteList, BipVote } from './bip-vote.entity';
 //   import {
 //     CreateVoteDto,
@@ -32,11 +33,11 @@ import {
   } from '@nestjs/swagger/dist/decorators/api-response.decorator';
   import { ApiQuery } from '@nestjs/swagger/dist/decorators/api-query.decorator';
   import { Delete } from '@nestjs/common/decorators/http/request-mapping.decorator';
-import { CreateBipVoteDto, DelegatedBipVoteDto } from './bip-vote.types';
+import { CreateBipVoteDto, DelegatedBipVoteDto,DeleteVoteDto} from './bip-vote.types';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
-import { DelegatedVoteDto } from 'src/vote/vote.types';
-  
+
+
   @Controller('bip-votes')
   export class BipVoteController {
     constructor(
@@ -163,4 +164,89 @@ import { DelegatedVoteDto } from 'src/vote/vote.types';
       
       return convertBipVoteListToDelegateVoteList(voteResultList);
     }
+
+    @ApiOperation({
+      summary: 'Remove bip vote',
+      description:
+          'At the same time, it will remove the votes of others that it delegated.',
+    })
+    @ApiResponse({
+      status: 200,
+      description: 'The vote has been successfully deleted.',
+    })
+    @ApiResponse({ status: 400, description: 'Bad request.' })
+    @Post('/remove')
+    async deleteOne(
+        @Body(SignedPayloadValidationPipe) deleteVoteDto: DeleteVoteDto,
+    ): Promise<boolean> {
+
+      verifySignPayload(deleteVoteDto, ['bipRoundId']);
+
+      let foundVote;
+      if (deleteVoteDto.bipRoundId) {
+        foundVote = await this.bipVotesService.findOne({
+          where: {
+            address: deleteVoteDto.address,
+            bipRoundId: deleteVoteDto.bipRoundId,
+          },
+        });
+      } else {
+        throw new HttpException(
+            'Missing bipRoundId',
+            HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      if (!foundVote) {
+        throw new HttpException('No Vote with that ID', HttpStatus.NOT_FOUND);
+      }
+
+      if (
+          foundVote.address.toLowerCase() !== deleteVoteDto.address.toLowerCase()
+      ) {
+        throw new HttpException(
+            'Can not cancel this Vote',
+            HttpStatus.BAD_REQUEST,
+        );
+      }
+
+
+      const foundBIP = await this.bipRoundService.findOne(
+          foundVote.bipRoundId,
+      );
+      // Should never happen ( Unless Chao manually modifies the database )
+      // if (!foundProposal) {
+      //   throw new HttpException('No Proposal with that ID', HttpStatus.NOT_FOUND);
+      // }
+      const currentTime = new Date();
+      if (currentTime > foundBIP.endTime) {
+        throw new HttpException('BIP had been ended.', HttpStatus.BAD_REQUEST);
+      }
+      if (foundVote.delegateId && foundVote.delegateId > 0) {
+        throw new HttpException(
+            'Unable to undo votes delegated by others.',
+            HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // Start remove vote.
+      const ids = [foundVote.id];
+      const delegateVoteList = await this.bipVotesService.findAll({
+        where: {
+          bipRoundId: foundVote.bipRoundId,
+          delegateAddress: foundVote.address,
+        },
+      });
+      if (delegateVoteList.length > 0) {
+        ids.push(...delegateVoteList.map((v) => v.id));
+      }
+
+
+      await this.bipVotesService.removeMany(ids);
+      await this.bipRoundService.rollupVoteCount(foundVote);
+
+      return true;
+    }
+
+
   }
