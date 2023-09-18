@@ -58,4 +58,5 @@ export const VoteStates: Record<string, VoteStatesClass> = {
   NO_APPLICATION : new VoteStatesClass( 315,  "Can not find application."),
   APPLICATION_EXIST : new VoteStatesClass( 317,  "Your campaign profile is open to accepting delegation, so you can't delegate your voting power to others."),
   NOT_DELEGATING : new VoteStatesClass( 318,  "Not in the eligible selection period."),
+  NOT_LOGIN : new VoteStatesClass( 400,  "Please login."),
 };

@@ -35,15 +35,18 @@
 
 .btnPurpleBg {
   background-color: var(--brand-common-yellow);
+  color: #212529;
   border: none;
 }
 .btnPurpleBg:hover {
   background-color: var(--brand-common-yellow);
+  color: #212529;
 }
 .btnPurpleBg:active,
 .btnPurpleBg:focus {
   background-color: var(--brand-common-yellow);
   box-shadow: 0 0 0 0.25rem var(--brand-common-yellow) !important;
+  color: #212529;
 }
 
 /* PURPLE LIGHT BG */
