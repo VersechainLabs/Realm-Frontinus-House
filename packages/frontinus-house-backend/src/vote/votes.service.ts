@@ -199,7 +199,7 @@ export class VotesService {
       for (const vote of proposal.votes) {
         if (vote.address === address) {
           proposal.voteState = VoteStates.VOTED;
-          return;
+          return VoteStates.VOTED;
         }
       }
     }
