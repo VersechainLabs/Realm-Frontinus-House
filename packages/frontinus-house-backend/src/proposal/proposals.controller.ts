@@ -292,10 +292,13 @@ export class ProposalsController {
    * @returns
    */
   async addVoteState(foundProposal: Proposal, userAddress: string) {
+
     // if (foundProposal.votes) {
+    //   console.log("proposal has votes");
     //   // Check if the current user has voted in this proposal, and if so, the frontend needs to display the "Delete Vote" button.
     //   // The back-end does not need that state. The back-end can vote repeatedly on the same proposal to increase its weight.
     //   for (const vote of foundProposal.votes) {
+    //     console.log("vote: ", vote.address);
     //     if (vote.address === userAddress) {
     //       foundProposal.voteState = VoteStates.VOTED;
     //       return;
