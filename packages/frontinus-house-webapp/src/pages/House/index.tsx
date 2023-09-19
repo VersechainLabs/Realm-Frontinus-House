@@ -360,16 +360,16 @@ const House = () => {
                 <Row>
                   {loadingBIPs ? (
                       <LoadingIndicator />
-                  ) : !loadingBIPs && failedLoadingBIPs ? (
-                      <ErrorMessageCard message={t('noBIPAvailable')} />
                   ) :(
                       <Row>
                           <Col xl={8}>
                             {
-                              bips.length > 0 && (
+                              bips.length > 0 ? (
                                 bips.map((round, index) => (
                                             <Col key={index}><BIPContent bip={round}/></Col>
                               ))
+                              ):(
+                                  <ErrorMessageCard message={t('noBIPAvailable')} />
                               )
                             }
                           </Col>
@@ -378,8 +378,7 @@ const House = () => {
                               <BIPRightCard/>
                           </Col>
                       </Row>
-                  )
-
+                      )
                   }
                 </Row>
               </Container>}
