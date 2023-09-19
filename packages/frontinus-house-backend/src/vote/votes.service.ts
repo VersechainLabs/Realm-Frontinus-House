@@ -198,7 +198,6 @@ export class VotesService {
       // The back-end does not need that state. The back-end can vote repeatedly on the same proposal to increase its weight.
       for (const vote of proposal.votes) {
         if (vote.address === address) {
-          proposal.voteState = VoteStates.VOTED;
           return VoteStates.VOTED;
         }
       }
