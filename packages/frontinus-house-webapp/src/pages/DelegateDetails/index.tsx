@@ -69,44 +69,49 @@ const DelegateDetails = () => {
 
   // if no data is found in store (ie round page is entry point), fetch data
   useEffect(() => {
-    if (community) return;
+    if (!community) {
+      const fetchCommunity = async () => {
+        try {
+          setLoadingComm(true);
+          const community = await client.current.getCommunityWithId(1);
+          dispatch(setActiveCommunity(community));
 
-    const fetchCommunity = async () => {
-      try {
-        setLoadingComm(true);
-        const community = await client.current.getCommunityWithId(1);
-        dispatch(setActiveCommunity(community));
+          setLoadingComm(false);
+        } catch (e) {
+          setLoadingComm(false);
+          setLoadingCommFailed(true);
+        }
+      };
+      fetchCommunity();
+    }
 
-        setLoadingComm(false);
-      } catch (e) {
-        setLoadingComm(false);
-        setLoadingCommFailed(true);
-      }
-    };
+    if (!round && !loadingRound) {
+      const fetchRound = async () => {
+        try {
+          setLoadingRound(true);
 
-    fetchCommunity();
+          const round = await client.current.getDelegateDetails(
+              parseInt( id ),
+          );
+          dispatch(setActiveRound(round));
+          setLoadingRound(false);
+        } catch (e) {
+          setLoadingRound(false);
+          setRoundFailedFetch(true);
+        }
+      };
+
+      fetchRound();
+    }
+
+
   }, [communityName, dispatch, id, round, community]);
 
   // if no data is found in store (ie round page is entry point), fetch data
-  useEffect(() => {
-
-    const fetchRound = async () => {
-      try {
-        setLoadingRound(true);
-
-        const round = await client.current.getDelegateDetails(
-            parseInt( id ),
-        );
-        dispatch(setActiveRound(round));
-        setLoadingRound(false);
-      } catch (e) {
-        setLoadingRound(false);
-        setRoundFailedFetch(true);
-      }
-    };
-
-    fetchRound();
-  }, [dispatch, id]);
+  // useEffect(() => {
+  //
+  //
+  // }, [dispatch, id]);
 
   // fetch proposals
   useEffect(() => {
