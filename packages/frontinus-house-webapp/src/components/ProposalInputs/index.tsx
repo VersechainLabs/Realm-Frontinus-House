@@ -144,12 +144,13 @@ const ProposalInputs: React.FC<{
       await client.current.getDefaultCreation().then((res: any) => {
         if (res.proposalContent) {
           setGetDefault(res.proposalContent);
+          setContent(res.proposalContent);
           // setGetDefaultStatus(false);
         }
       });
     } else {
       setGetDefault(proposalData.description);
-
+      setContent(proposalData.description);
       // dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0 }));
     }
   };
@@ -187,6 +188,27 @@ const ProposalInputs: React.FC<{
   };
   const submit = async () => {
     try {
+
+      if (!account) {
+        return;
+      }
+
+      if (formData[0].trim().length === 0 || formData[1].trim().length === 0 || quill!.root.innerHTML.trim().length === 0) {
+        const errorMessage = 'All fields must be filled before preview!';
+        console.log('Error message to be dispatched:', errorMessage);
+        dispatch(setAlert({ type: 'error', message: errorMessage }));
+        return;
+      }
+
+      //check error
+      if (validateInput(formData[0].minCount, formData[0].fieldValue.length)) {
+        return false;
+      }
+
+      if (validateInput(formData[1].minCount, formData[1].fieldValue.length)) {
+        return false;
+      }
+
       let imgUrl = matchImg(imgArray, content);
       setLoading(true);
 
