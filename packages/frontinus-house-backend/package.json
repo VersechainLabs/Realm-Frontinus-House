@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "nest build && yarn sentry:sourcemaps",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -25,7 +25,8 @@
     "migration:generate": "yarn build && yarn migration:run && yarn run typeorm migration:generate -n",
     "migration:run": "yarn build && yarn run typeorm migration:run",
     "migration:revert": "yarn build && yarn run typeorm migration:revert",
-    "migration:drop": "yarn build && yarn run typeorm migration:drop"
+    "migration:drop": "yarn build && yarn run typeorm migration:drop",
+    "sentry:sourcemaps": "sentry-cli sourcemaps inject --org metaforo --project nestjs-frontinus ../frontinus-house-webapp/build && sentry-cli sourcemaps upload --org metaforo --project nestjs-frontinus ../frontinus-house-webapp/build"
   },
   "dependencies": {
     "@nestjs/apollo": "^10.1.0",
@@ -41,6 +42,8 @@
     "@nestjs/throttler": "^3.1.0",
     "@nestjs/typeorm": "^8.0.2",
     "@pinata/sdk": "^2.1.0",
+    "@sentry/node": "^7.69.0",
+    "@sentry/profiling-node": "^1.2.1",
     "apollo-server-express": "^3.10.2",
     "body-parser": "^1.20.0",
     "bull": "^4.10.4",
