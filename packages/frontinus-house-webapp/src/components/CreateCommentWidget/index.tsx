@@ -8,6 +8,8 @@ import { useAccount, useWalletClient } from 'wagmi';
 import {setActiveCommunity} from "../../state/slices/propHouse";
 import {setAlert} from "../../state/slices/alert";
 import {useDispatch} from "react-redux";
+import {LoadingButton} from "@mui/lab";
+import ConnectButton from "../ConnectButton";
 type CreateCommentWidgetProps = {
   proposalId?: number;
   applicationId?: number;
@@ -91,6 +93,39 @@ export default function CreateCommentWidget(props: CreateCommentWidgetProps) {
       onButtonClick={submit}
       placeholderText='What are your thoughts?'
     />
+    {account ? (
+        loading ? (
+                <LoadingButton
+                    loading={true}
+                    id="out-button"
+                    style={{
+                      marginRight:'0px'
+                    }}
+                >
+                </LoadingButton>
+
+                // <div
+                //     id="custom-button"
+                //     className={'btnDisabled'}
+                //
+                // >
+                //   <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                // </div>
+            ) :
+
+            (<div
+                id="out-button"
+                onClick={submit}
+            >
+              <span>Submit</span>
+            </div>)
+
+    ) : (
+        <div  id="custom-button-connect">
+          <ConnectButton
+          />
+        </div>
+    )}
     {/*{account ? (*/}
     {/*  <Button text={'submit'} bgColor={ButtonColor.Purple} onClick={submit} />*/}
     {/*) : (*/}
