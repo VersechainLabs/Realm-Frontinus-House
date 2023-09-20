@@ -262,42 +262,42 @@ export default function QuillEditor(props: QuillEditorProps) {
 
               <button className="ql-image"></button>
 
-              {account ? (
-                  props.loading ? (
-                          <LoadingButton
-                              loading={true}
-                              id="custom-button"
-                              style={{
-                                marginRight:'0px'
-                              }}
-                          >
-                          </LoadingButton>
+              {/*{account ? (*/}
+              {/*    props.loading ? (*/}
+              {/*            <LoadingButton*/}
+              {/*                loading={true}*/}
+              {/*                id="custom-button"*/}
+              {/*                style={{*/}
+              {/*                  marginRight:'0px'*/}
+              {/*                }}*/}
+              {/*            >*/}
+              {/*            </LoadingButton>*/}
 
-                      // <div
-                      //     id="custom-button"
-                      //     className={'btnDisabled'}
-                      //
-                      // >
-                      //   <span><img src="/loading.gif" alt="" width={'40'}/></span>
-                      // </div>
-                  ) :  props.btnText && (
+              {/*        // <div*/}
+              {/*        //     id="custom-button"*/}
+              {/*        //     className={'btnDisabled'}*/}
+              {/*        //*/}
+              {/*        // >*/}
+              {/*        //   <span><img src="/loading.gif" alt="" width={'40'}/></span>*/}
+              {/*        // </div>*/}
+              {/*    ) :  props.btnText && (*/}
 
-                      <div
-                          id="custom-button"
-                          onClick={clickBtn}
-                      >
-                        <span>{ props.btnText }</span>
-                      </div>
+              {/*        <div*/}
+              {/*            id="custom-button"*/}
+              {/*            onClick={clickBtn}*/}
+              {/*        >*/}
+              {/*          <span>{ props.btnText }</span>*/}
+              {/*        </div>*/}
 
-                  )
-              ) : (
-                  props.btnText &&(
-                      <div  id="custom-button-connect">
-                        <ConnectButton
-                        />
-                      </div>
-                  )
-              )}
+              {/*    )*/}
+              {/*) : (*/}
+              {/*    props.btnText &&(*/}
+              {/*        <div  id="custom-button-connect">*/}
+              {/*          <ConnectButton*/}
+              {/*          />*/}
+              {/*        </div>*/}
+              {/*    )*/}
+              {/*)}*/}
             </div>
           </>
         </div>
