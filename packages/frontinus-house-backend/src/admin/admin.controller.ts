@@ -5,7 +5,7 @@ import { CreateAdminDto, UserType } from './admin.types';
 import { ApiOkResponse } from '@nestjs/swagger';
 import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
 import config from '../config/configuration';
-import * as Sentry from "@sentry/node";
+// import * as Sentry from "@sentry/node";
 
 @Controller('admins')
 export class AdminsController {
@@ -18,27 +18,27 @@ export class AdminsController {
     type: [Admin],
   })
   getAll(): Promise<Admin[]> {
-    const transaction = Sentry.startTransaction({
-      op: "test",
-      name: "My First Test Transaction",
-    });
+    // const transaction = Sentry.startTransaction({
+    //   op: "test",
+    //   name: "My First Test Transaction",
+    // });
     
-    setTimeout(() => {
-      try {
-        this.foo();
-      } catch (e) {
-        Sentry.captureException(e);
-      } finally {
-        transaction.finish();
-      }
-    }, 99);
+    // setTimeout(() => {
+    //   try {
+    //     this.foo();
+    //   } catch (e) {
+    //     Sentry.captureException(e);
+    //   } finally {
+    //     transaction.finish();
+    //   }
+    // }, 99);
 
     return this.adminService.findAll();
   }
-  foo(){
-    console.log('run foo')
-    throw new HttpException('BAD_GATEWAY', HttpStatus.BAD_GATEWAY); 
-  }
+  // foo(){
+  //   console.log('run foo')
+  //   throw new HttpException('BAD_GATEWAY', HttpStatus.BAD_GATEWAY); 
+  // }
 
   @Post('/create')
   @ApiOkResponse({
