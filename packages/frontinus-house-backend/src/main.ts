@@ -5,8 +5,8 @@ import * as bodyParser from 'body-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ParseBooleanPipe } from './entities/parse-boolean.pipe';
 import { GlobalExceptionFilter } from './filters/global-exception.filter';
-import * as Sentry from "@sentry/node";
-import { ProfilingIntegration } from "@sentry/profiling-node";
+// import * as Sentry from "@sentry/node";
+// import { ProfilingIntegration } from "@sentry/profiling-node";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
