@@ -29,6 +29,8 @@ import { matchImg } from '../../utils/matchImg';
 import CongratsDialog from '../CongratsDialog';
 import ProposalPreview from '../../pages/ProposalPreview';
 import { setProposalData } from '../../state/slices/proposal';
+import {LoadingButton} from "@mui/lab";
+import ConnectButton from "../ConnectButton";
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
@@ -295,12 +297,46 @@ const ProposalInputs: React.FC<{
               />
             </div>
           </div>
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
+          <div className={classes.buttonMain}>
+
+            {account ? (
+                loading ? (
+                    <LoadingButton
+                        loading={true}
+                        id="out-button"
+                        style={{
+                          marginRight:'0px'
+                        }}
+                    >
+                    </LoadingButton>
+
+                    // <div
+                    //     id="custom-button"
+                    //     className={'btnDisabled'}
+                    //
+                    // >
+                    //   <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                    // </div>
+                ) :
+
+                    (<div
+                        id="out-button"
+                        onClick={submit}
+                    >
+                      <span>Submit</span>
+                    </div>)
+
+            ) : (
+                    <div  id="custom-button-connect">
+                      <ConnectButton
+                      />
+                    </div>
+            )}
             <button
-              className={classes.btnPreview}
-              onClick={() => {
-                generatePreviewContent();
-              }}
+                className={classes.btnPreview}
+                onClick={() => {
+                  generatePreviewContent();
+                }}
             >
               Preview
             </button>

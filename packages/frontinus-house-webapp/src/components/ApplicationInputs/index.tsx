@@ -25,6 +25,8 @@ import ProposalSuccessModal from '../ProposalSuccessModal';
 import { buildRoundPath } from '../../utils/buildRoundPath';
 import DelegationCongrats from '../DelegationCongrats';
 import { setAlert } from '../../state/slices/alert';
+import {LoadingButton} from "@mui/lab";
+import ConnectButton from "../ConnectButton";
 
 
 const ApplicationInputs: React.FC<{
@@ -228,6 +230,39 @@ const ApplicationInputs: React.FC<{
               onButtonClick={submit}
               placeholderText=""
             />
+            {account ? (
+                loading ? (
+                        <LoadingButton
+                            loading={true}
+                            id="out-button"
+                            style={{
+                              marginRight:'0px'
+                            }}
+                        >
+                        </LoadingButton>
+
+                        // <div
+                        //     id="custom-button"
+                        //     className={'btnDisabled'}
+                        //
+                        // >
+                        //   <span><img src="/loading.gif" alt="" width={'40'}/></span>
+                        // </div>
+                    ) :
+
+                    (<div
+                        id="out-button"
+                        onClick={submit}
+                    >
+                      <span>Submit</span>
+                    </div>)
+
+            ) : (
+                <div  id="custom-button-connect">
+                  <ConnectButton
+                  />
+                </div>
+            )}
           </div>
           <DelegationCongrats
             trigger={showDelegationCongrats}
