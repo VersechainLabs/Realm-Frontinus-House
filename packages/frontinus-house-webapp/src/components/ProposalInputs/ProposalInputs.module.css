@@ -60,6 +60,11 @@
   color: #f5eee6;
 }
 
+.buttonMain {
+  display: flex;
+  margin-top: 20px;
+}
+
 .propEditor {
   display: block;
 }
