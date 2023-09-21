@@ -193,6 +193,16 @@ export class VotesService {
       return VoteStates.NOT_VOTING;
     }
 
+    if (proposal.votes) {
+      // Check if the current user has voted in this proposal, and if so, the frontend needs to display the "Delete Vote" button.
+      // The back-end does not need that state. The back-end can vote repeatedly on the same proposal to increase its weight.
+      for (const vote of proposal.votes) {
+        if (vote.address === address) {
+          return VoteStates.VOTED;
+        }
+      }
+    }
+
     let remainVotingPower = 0;
     if (checkVotingPower) {
       try {

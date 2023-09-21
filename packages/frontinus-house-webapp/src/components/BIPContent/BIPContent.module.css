@@ -128,6 +128,7 @@
     font-size: 16px;
     font-weight: 500;
     word-break: break-word;
+    height: 72px;
 }
 .truncatedTldr p {
     margin-bottom: 0;
