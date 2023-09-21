@@ -78,10 +78,12 @@
 .timeXianWidth1 {
   height: 4px;
   width: 112px;
+  background: #272728;
 }
 .timeXianWidth2 {
   height: 4px;
   width: 240px;
+  background: #272728;
 }
 .timeXianColor1 {
   background: #D0A059;

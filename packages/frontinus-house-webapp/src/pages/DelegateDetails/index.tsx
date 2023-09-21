@@ -34,6 +34,7 @@ import { infRoundBalance } from '../../utils/infRoundBalance';
 import DelegateUtilityBar from "../../components/DelegateUtilityBar";
 import clsx from "clsx";
 import dayjs from "dayjs";
+import formatTimeAll from "../../utils/formatTimeAll";
 
 const DelegateDetails = () => {
   const location = useLocation();
@@ -194,82 +195,102 @@ const DelegateDetails = () => {
 
             <div className={classes.topTimeBg}>
               <Container>
-                <div className={classes.topTimeMain}>
+                {round && (<div className={classes.topTimeMain}>
                   <div className={classes.timeMain}>
-                    <div className={clsx(classes.timeXianWidth1,classes.timeXianColor1)}>
+                    <div className={clsx(classes.timeXianWidth1,_now.isAfter(dayjs(round.startTime)) && classes.timeXianColor1)}>
 
                     </div>
-                    <div className={classes.timeQiu}>
+                    {_now.isAfter(dayjs(round.startTime)) && (<div className={classes.timeQiu}>
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.91276 5.32339L7.22314 9.17197L5.85053 10.7073L1.54015 6.85868L2.91276 5.32339ZM4.75435 8.82392L10.6864 2.24676L12.2168 3.62517L6.28468 10.2023L4.75435 8.82392Z" fill="#0B090E"/>
                       </svg>
-                    </div>
-                    <div className={clsx(classes.timeXianWidth2,classes.timeXianColor1)}>
+                    </div>)}
+                    {_now.isBefore(dayjs(round.startTime)) && ( <div className={classes.timeQiu2}>
+                      <div className={classes.timeQiu3}>
+
+                      </div>
+                    </div>)}
+
+                    <div className={clsx(classes.timeXianWidth2,_now.isAfter(dayjs(round.proposalEndTime)) && classes.timeXianColor1)}>
 
                     </div>
-                    <div className={classes.timeQiu}>
+                    {_now.isAfter(dayjs(round.proposalEndTime)) && (<div className={classes.timeQiu}>
                       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M2.91276 5.32339L7.22314 9.17197L5.85053 10.7073L1.54015 6.85868L2.91276 5.32339ZM4.75435 8.82392L10.6864 2.24676L12.2168 3.62517L6.28468 10.2023L4.75435 8.82392Z" fill="#0B090E"/>
                       </svg>
-                    </div>
-                    <div className={clsx(classes.timeXianWidth2,classes.timeXianColor2)}>
-
-                    </div>
-                    <div className={classes.timeQiu2}>
+                    </div>)}
+                    {_now.isBefore(dayjs(round.proposalEndTime)) && ( <div className={classes.timeQiu2}>
                       <div className={classes.timeQiu3}>
 
                       </div>
-                    </div>
-                    <div className={clsx(classes.timeXianWidth2,classes.timeXianColor2)}>
+                    </div>)}
+                    <div className={clsx(classes.timeXianWidth2,_now.isAfter(dayjs(round.votingEndTime)) && classes.timeXianColor1)}>
 
                     </div>
-                    <div className={classes.timeQiu2}>
+                    {_now.isAfter(dayjs(round.votingEndTime)) && (<div className={classes.timeQiu}>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.91276 5.32339L7.22314 9.17197L5.85053 10.7073L1.54015 6.85868L2.91276 5.32339ZM4.75435 8.82392L10.6864 2.24676L12.2168 3.62517L6.28468 10.2023L4.75435 8.82392Z" fill="#0B090E"/>
+                      </svg>
+                    </div>)}
+                    {_now.isBefore(dayjs(round.votingEndTime)) && ( <div className={classes.timeQiu2}>
                       <div className={classes.timeQiu3}>
 
                       </div>
+                    </div>)}
+                    <div className={clsx(classes.timeXianWidth2,_now.isAfter(dayjs(round.endTime)) && classes.timeXianColor1)}>
+
                     </div>
-                    <div className={clsx(classes.timeXianWidth1,classes.timeXianColor2)}>
+                    {_now.isAfter(dayjs(round.endTime)) && (<div className={classes.timeQiu}>
+                      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M2.91276 5.32339L7.22314 9.17197L5.85053 10.7073L1.54015 6.85868L2.91276 5.32339ZM4.75435 8.82392L10.6864 2.24676L12.2168 3.62517L6.28468 10.2023L4.75435 8.82392Z" fill="#0B090E"/>
+                      </svg>
+                    </div>)}
+                    {_now.isBefore(dayjs(round.endTime)) && ( <div className={classes.timeQiu2}>
+                      <div className={classes.timeQiu3}>
+
+                      </div>
+                    </div>)}
+                    <div className={clsx(classes.timeXianWidth1,_now.isAfter(dayjs(round.endTime)) && classes.timeXianColor1)}>
 
                     </div>
                   </div>
                   <div className={classes.textMain}>
                     <div className={classes.textMargin1}>
-                      <div className={clsx(classes.text1,classes.textColor2)}>
+                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.startTime)) && classes.textColor2)}>
                         Accepting Applicant
                       </div>
                       <div className={classes.text2}>
-                        Sep 21, 2023, 19:00
+                        {formatTimeAll(round.startTime)}
                       </div>
                     </div>
                     <div className={classes.textMargin2} >
-                      <div className={clsx(classes.text1,classes.textColor2)}>
+                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.proposalEndTime)) && classes.textColor2)}>
                         Start Delegating
-
                       </div>
                       <div className={classes.text2}>
-                        Sep 22, 2023, 19:00
+                        {formatTimeAll(round.proposalEndTime)}
                       </div>
                     </div>
                     <div className={classes.textMargin3}>
-                      <div className={clsx(classes.text1,classes.textColor1)}>
+                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.votingEndTime)) && classes.textColor1)}>
                         Delegation Granted
 
                       </div>
                       <div className={classes.text2}>
-                        Sep 27, 2023, 19:00
+                        {formatTimeAll(round.votingEndTime)}
                       </div>
                     </div>
                     <div className={classes.textMargin4}>
-                      <div className={clsx(classes.text1,classes.textColor1)}>
+                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.endTime)) && classes.textColor1)}>
                         Delegation Ended
 
                       </div>
                       <div className={classes.text2}>
-                        Sep 30, 2023, 19:00
+                        {formatTimeAll(round.endTime)}
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>)}
               </Container>
             </div>
 
