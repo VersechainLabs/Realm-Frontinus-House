@@ -193,7 +193,7 @@ const ProposalInputs: React.FC<{
         return;
       }
 
-      if (formData[0].trim().length === 0 || formData[1].trim().length === 0 || quill!.root.innerHTML.trim().length === 0) {
+      if (formData[0].fieldValue.trim().length === 0 || formData[1].fieldValue.trim().length === 0 || quill!.root.innerHTML.trim().length === 0) {
         const errorMessage = 'All fields must be filled before preview!';
         console.log('Error message to be dispatched:', errorMessage);
         dispatch(setAlert({ type: 'error', message: errorMessage }));
