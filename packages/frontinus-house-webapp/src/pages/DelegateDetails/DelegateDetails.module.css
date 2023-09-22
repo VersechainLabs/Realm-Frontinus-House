@@ -32,3 +32,98 @@
 .loader {
   width: 100%;
 }
+.topTimeMain {
+  height: 88px;
+  background: #111111;
+
+}
+.topTimeBg {
+  background: #1A1A1B !important;
+}
+
+.timeMain {
+  margin: 0 20px;
+  display: flex;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.timeQiu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+  background: #D0A059;
+  margin: 0 4px;
+}
+.timeQiu2 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+  background: #A3A3A4;
+  margin: 0 4px;
+}
+.timeQiu3 {
+  height: 8px;
+  width: 8px;
+  border-radius: 4px;
+  background: #111111;
+}
+
+.timeXianWidth1 {
+  height: 4px;
+  width: 112px;
+  background: #272728;
+}
+.timeXianWidth2 {
+  height: 4px;
+  width: 240px;
+  background: #272728;
+}
+.timeXianColor1 {
+  background: #D0A059;
+}
+.timeXianColor2 {
+  background: #272728;
+}
+
+
+.textMain {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+}
+.text1 {
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+}
+.text2 {
+  font-size: 12px;
+  font-weight: 400;
+  text-align: center;
+  color: #A3A3A4;
+}
+.textColor1 {
+  color: #A3A3A4;
+}
+.textColor2 {
+  color: #D0A059;
+}
+.textMargin1 {
+  margin-left: 75px;
+}
+.textMargin2 {
+  margin-left: 142px;
+}
+.textMargin3 {
+  margin-left: 145px;
+}
+.textMargin4 {
+  margin-left: 142px;
+}
