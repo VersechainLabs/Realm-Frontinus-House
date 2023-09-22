@@ -272,7 +272,7 @@ const DelegateDetails = () => {
                       </div>
                     </div>
                     <div className={classes.textMargin3}>
-                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.votingEndTime)) && classes.textColor1)}>
+                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.votingEndTime)) && classes.textColor2)}>
                         Delegation Granted
 
                       </div>
@@ -281,7 +281,7 @@ const DelegateDetails = () => {
                       </div>
                     </div>
                     <div className={classes.textMargin4}>
-                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.endTime)) && classes.textColor1)}>
+                      <div className={clsx(classes.text1,_now.isAfter(dayjs(round.endTime)) && classes.textColor2)}>
                         Delegation Ended
 
                       </div>
