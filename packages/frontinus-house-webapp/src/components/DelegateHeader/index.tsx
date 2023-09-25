@@ -73,13 +73,13 @@ const DelegateHeader: React.FC<{
         {/*</div>*/}
 
         <Col lg={12} className={classes.communityInfoCol}>
-          <div className={classes.date}>
-            {isInfAuction(auction)
-              ? `${dayjs().isBefore(auction.startTime) ? `Starts` : `Started`} ${formatTime(
-                  auction.startTime,
-                )}`
-              : `${formatTime(auction.startTime)} - ${formatTime(auction.endTime)}`}
-          </div>
+          {/*<div className={classes.date}>*/}
+          {/*  {isInfAuction(auction)*/}
+          {/*    ? `${dayjs().isBefore(auction.startTime) ? `Starts` : `Started`} ${formatTime(*/}
+          {/*        auction.startTime,*/}
+          {/*      )}`*/}
+          {/*    : `${formatTime(auction.startTime)} - ${formatTime(auction.endTime)}`}*/}
+          {/*</div>*/}
           <Col
             className={clsx(
               classes.titleRow,

@@ -2,6 +2,7 @@ export enum ExternalURL {
   discord,
   twitter,
   github,
+  usermannual,
 }
 
 export const externalURL = (externalURL: ExternalURL) => {
@@ -12,5 +13,7 @@ export const externalURL = (externalURL: ExternalURL) => {
       return 'https://twitter.com/LootRealms';
     case ExternalURL.github:
       return 'https://github.com/BibliothecaDAO';
+      case ExternalURL.usermannual:
+      return 'https://docs.metaforo.io/frontinushouse-user-manual';
   }
 };
