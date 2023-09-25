@@ -58,6 +58,23 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
       return roundList;
     }
 
+
+    @Get('/forCommunity/:id')
+    async findAllForCommunity(
+      @Param('id', ParseIntPipe) id: number,
+    ): Promise<BipRound[]> {
+      const bipRounds = await this.bipRoundService.findAllForCommunityByVisible(
+        id,
+      );
+      if (!bipRounds)
+        throw new HttpException('Bip Auction not found', HttpStatus.NOT_FOUND);
+      // auctions.map((a) => (a.numProposals = Number(a.numProposals) || 0));
+      return bipRounds;
+    }
+
+
+
+
     @Post('/create')
     @ApiOkResponse({
       type: BipRound,

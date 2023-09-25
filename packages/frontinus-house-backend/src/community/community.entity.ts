@@ -16,6 +16,8 @@ import {
   BeforeUpdate,
   RelationId,
 } from 'typeorm';
+import { BipRound } from 'src/bip-round/bip-round.entity';
+import { Admin } from 'src/admin/admin.entity';
 
 @Entity()
 @ObjectType()
@@ -54,6 +56,21 @@ export class Community {
   @JoinColumn()
   @Field(() => [Auction])
   auctions: Auction[];
+
+  @OneToMany(() => BipRound, (bipRound) => bipRound.community, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => [BipRound])
+  bipRounds: BipRound[];
+
+  @OneToMany(() => Admin, (admin) => admin.community, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => [Admin])
+  admins: Admin[];
+
 
   @Column()
   @Field(() => Date)
