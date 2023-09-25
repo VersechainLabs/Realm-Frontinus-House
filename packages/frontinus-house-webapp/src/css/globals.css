@@ -425,10 +425,10 @@ p {
 
 #custom-button-connect{
   cursor: pointer;
-  position: absolute;
+  /*position: absolute;*/
   right: 20px;
   top: 5px;
-
+  width: 80px;
   font-weight: 700;
 }
 
