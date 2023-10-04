@@ -227,6 +227,7 @@ export class DelegateController {
 
     // Start remove delegate.
     await this.delegateService.remove(foundDelegate.id);
+
     return true;
   }
 
