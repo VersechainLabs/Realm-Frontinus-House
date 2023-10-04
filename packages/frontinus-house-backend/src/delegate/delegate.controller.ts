@@ -228,9 +228,6 @@ export class DelegateController {
     // Start remove delegate.
     await this.delegateService.remove(foundDelegate.id);
 
-    // Update DB.application.delegatorCount:
-    await this.applicationService.updateDelegatorCount(foundApplication);
-
     return true;
   }
 
