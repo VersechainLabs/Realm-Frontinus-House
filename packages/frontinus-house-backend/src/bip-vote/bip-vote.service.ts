@@ -139,7 +139,8 @@ export class BipVoteService {
   ): Promise<VotingPower> {
     let votingPower = await this.blockchainService.getVotingPowerWithSnapshot(
       address,
-      process.env.COMMUNITY_ADDRESS,
+      // process.env.COMMUNITY_ADDRESS,
+      auction.community.contractAddress,
       auction.balanceBlockTag,
     );
 
@@ -165,7 +166,8 @@ export class BipVoteService {
           const currentVotingPower =
             await _blockchainService.getVotingPowerWithSnapshot(
               currentDelegate.fromAddress,
-              process.env.COMMUNITY_ADDRESS,
+              // process.env.COMMUNITY_ADDRESS,
+              auction.community.contractAddress,
               auction.balanceBlockTag,
             );
 

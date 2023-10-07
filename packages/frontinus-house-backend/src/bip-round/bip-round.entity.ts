@@ -103,6 +103,23 @@ export class BipRound {
   @Field(() => String)
   previewImage: string;
 
+
+  // This if for list API to show "communityId" field
+  @ApiProperty()
+  @Column()
+  @Field(() => Number)
+  communityId: number;
+
+  // This is for migration:generate & service.ts to access DB.admin.communityId field
+  @ApiProperty({ type: Number })
+  @ManyToOne(() => Community, (community) => community.bipRounds, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => Community)
+  community: Community;
+
+
   @ApiProperty()
   @CreateDateColumn()
   @Field(() => Date)

@@ -22,6 +22,21 @@ export class AdminService {
     });
   }
 
+  findAllForCommunity(
+    communityId: number,
+  ): Promise<Admin[]> {
+    const where: any = {
+      community: { id: communityId },
+    };
+
+    return this.adminRepository.find({
+      loadRelationIds: {
+        relations: ['community'],
+      },
+      where,
+    });
+  }
+
   searchByAddress(address: string): Promise<Admin[]> {
     return this.adminRepository.find({
       where: {
