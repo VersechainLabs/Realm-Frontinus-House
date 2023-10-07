@@ -126,9 +126,9 @@ export const delegateDeadlineCopy = (auction: any) => {
       : status === DelegateVoteStatus.DelegateAccepting
           ? 'Last date to accept applicant'
               : status === DelegateVoteStatus.DelegateDelegating
-                  ? 'Dealdline to select a delegate'
+                  ? 'Deadline to select a delegate'
                 : status === DelegateVoteStatus.DelegateGranted
-                    ? 'Delegation ended'
+                    ? 'Delegation ends'
                     : status === DelegateVoteStatus.DelegateEnd
                         ? 'Delegation ended'
                         : '';
