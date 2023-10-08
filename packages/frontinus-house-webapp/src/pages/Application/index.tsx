@@ -182,7 +182,8 @@ const Application = () => {
                          }
 
                        } catch (e) {
-                         dispatch(setAlert({ type: 'error', message: e }));
+                         // dispatch(setAlert({ type: 'error', message: e }));
+                         console.log(e);
                        } finally {
 
                        }
