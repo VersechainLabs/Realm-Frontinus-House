@@ -50,6 +50,9 @@ export class Delegate {
   @Field(() => Int)
   actualWeight: number;
 
+  // For internal use, to print Excel for 6v:
+  weightOnChain: number;
+
   @ApiProperty()
   @Column({ default: null })
   @Field(() => Int)

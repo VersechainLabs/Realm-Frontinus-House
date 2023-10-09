@@ -325,9 +325,12 @@ export class DelegateController {
   async listAllByApplicationID(
     @Query('delegationId') delegationId: number,
     @Query('applicationId') applicationId: number,
+    @Query('communityId') communityId: number,
   ): Promise<object> {
     let foundDelegation = null;
     let foundApplication = null;
+
+    if (!communityId) communityId = 1;
 
     if (applicationId) {
       foundApplication = await this.applicationService.findOne(applicationId);
@@ -345,9 +348,20 @@ export class DelegateController {
     if (!foundDelegate)
       throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
 
+
+    const community = await this.communitiesRepository.findOne(communityId);
+    const blockNum = await this.blockchainService.getCurrentBlockNum();
+
     let sumWeight = 0;
-    foundDelegate.forEach(element => {
+    foundDelegate.forEach(async element => {
       sumWeight += element.actualWeight;
+
+      // Check on-chain voting power:
+      element.weightOnChain = await this.blockchainService.getVotingPowerOnChain(
+        element.fromAddress,
+        community.contractAddress,
+        blockNum,
+      );
     });
 
     const results = {
