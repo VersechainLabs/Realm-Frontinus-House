@@ -165,8 +165,14 @@ export class DelegateController {
     if (!foundDelegate)
       throw new HttpException('Delegate not found', HttpStatus.NOT_FOUND);
 
+    let sumWeight = 0;
+    foundDelegate.forEach(element => {
+      sumWeight += element.actualWeight;
+    });
+
     const results = {
       total: foundDelegate.length,
+      sumWeight: sumWeight,
       delegates: foundDelegate,
     };
 
