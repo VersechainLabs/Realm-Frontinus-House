@@ -9,6 +9,7 @@ import { ApplicationService } from '../delegation-application/application.servic
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
 import { Community } from '../community/community.entity';
+import { DelegationService } from 'src/delegation/delegation.service';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { Community } from '../community/community.entity';
     ]),
   ],
   controllers: [DelegateController],
-  providers: [DelegateService, ApplicationService, BlockchainService],
+  providers: [DelegationService, DelegateService, ApplicationService, BlockchainService],
   exports: [TypeOrmModule],
 })
 export class DelegateModule {}
