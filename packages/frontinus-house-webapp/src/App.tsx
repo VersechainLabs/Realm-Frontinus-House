@@ -6,6 +6,7 @@ import NavBar from './components/NavBar';
 import Create from './pages/Create';
 import ApplicationCreate from './pages/ApplicationCreate';
 import House from './pages/House';
+import Home from './pages/Home';
 import Footer from './components/Footer';
 import './App.css';
 import FAQ from './pages/FAQ';
@@ -145,12 +146,12 @@ function App() {
           <RainbowKitProvider chains={chains} theme={rainbowKitTheme} avatar={CustomAvatar}>
             <Suspense fallback={<LoadingIndicator />}>
               <div className={clsx(bgColorForPage(location.pathname), 'wrapper')}>
-                {/*{!noNavPath && <NavBar />}*/}
-                {<NavBar />}
+                {!noNavPath && <NavBar />}
+                {/*{<NavBar />}*/}
 
                 <Routes>
                   <Route path="/rounds" element={<StatusRoundCards />} />
-                  <Route path="/" element={<House />} />
+                  <Route path="/" element={<Home />} />
                   <Route
                     path="/create"
                     element={
@@ -169,9 +170,9 @@ function App() {
                   <Route path="/bip/:id" element={<BIP />} />
                   <Route path="/application/:id" element={<Application />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
-                  {/*<Route path="/:house" element={<House />} />*/}
+                  <Route path="/:house" element={<House />} />
                   {/*<Route path="/:title" element={<Round />} />*/}
-                  <Route path="/:id/:title" element={<Round />} />
+                  <Route path="/:house/:id/:title" element={<Round />} />
                   <Route path="/comment/:proposalId" element={<CommentsPage />} />
                   <Route path="/preview" element={<ProposalPreview />} />
                   <Route path="*" element={<NotFound />} />

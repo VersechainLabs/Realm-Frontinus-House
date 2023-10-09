@@ -7,7 +7,8 @@ import { Community } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppSelector } from '../../hooks';
 import NavBar from '../../components/NavBar';
-import { useSigner } from 'wagmi';
+// import { useSigner } from 'wagmi';
+import { useWalletClient } from 'wagmi';
 
 export interface StatsProps {
   accEthFunded: number;
@@ -29,14 +30,14 @@ const Home = () => {
     setInput(e.target.value);
   };
 
-  const { data: signer } = useSigner();
-
+  // const { data: signer } = useSigner();
+  const { data: walletClient } = useWalletClient();
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
 
   useEffect(() => {
-    client.current = new ApiWrapper(host, signer);
-  }, [signer, host]);
+    client.current = new ApiWrapper(host, walletClient);
+  }, [walletClient, host]);
 
   // fetch communities
   useEffect(() => {
