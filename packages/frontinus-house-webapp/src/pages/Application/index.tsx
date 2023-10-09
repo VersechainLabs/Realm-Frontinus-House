@@ -42,6 +42,7 @@ const Application = () => {
   const [loading,setLoading] = useState(true);
   const [status, setStatus] = useState(VoteStates.OK); // 200 can vote  311 can cancel
   const [voteCount, setVoteCount] = useState(0);
+  const [delegateCount, setDelegateCount] = useState(0);
   const [voteList, setvoteList] = useState([]);
 
   const handleBackClick = () => {
@@ -124,6 +125,7 @@ const Application = () => {
     console.log('list',raw);
 
     setVoteCount(raw.total);
+    setDelegateCount(raw.sumWeight);
 
     setvoteList(raw.delegates);
   };
@@ -278,7 +280,7 @@ const Application = () => {
                 </div>
               </div>
               <div className={classes.voteHeaderRight}>
-                  298 Realms
+                {delegateCount} Realms
               </div>
 
             </div>
@@ -292,7 +294,7 @@ const Application = () => {
                         {/*<div>X3 vote</div>*/}
                       </div>
                       <div>
-                        298 Realms
+                        {item.actualWeight} Realms
                       </div>
                     </div>
 
