@@ -25,8 +25,19 @@
 .voteHeader {
   display: flex;
   align-items: center;
+  justify-content:space-between;
   padding: 10px 20px;
   border-bottom: 1px solid #2C2C2D;
+}
+.voteHeaderLeft {
+  display: flex;
+  align-items: center;
+}
+
+.voteHeaderRight {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
 }
 
 .voteHeaderText {

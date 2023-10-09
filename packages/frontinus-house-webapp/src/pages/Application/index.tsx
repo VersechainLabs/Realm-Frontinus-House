@@ -269,12 +269,18 @@ const Application = () => {
         {
           voteCount > 0 && <div className={classes.voteMain}>
             <div className={classes.voteHeader}>
-              <div className={classes.voteHeaderText}>
-                Delegates
+              <div className={classes.voteHeaderLeft}>
+                <div className={classes.voteHeaderText}>
+                  Delegates
+                </div>
+                <div className={classes.voteHeaderNum}>
+                  {voteCount}
+                </div>
               </div>
-              <div className={classes.voteHeaderNum}>
-                {voteCount}
+              <div className={classes.voteHeaderRight}>
+                  298 Realms
               </div>
+
             </div>
             <div className={classes.voteList}>
               {voteList.map(item => (
@@ -284,6 +290,9 @@ const Application = () => {
                         <AddressAvatar address={item.fromAddress} size={20} />
                         <div className={classes.voteUserAddress}>{item.fromAddress} </div>
                         {/*<div>X3 vote</div>*/}
+                      </div>
+                      <div>
+                        298 Realms
                       </div>
                     </div>
 
