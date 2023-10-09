@@ -65,8 +65,24 @@ export class DelegateController {
     delegate.applicationId = dto.applicationId;
     delegate.fromAddress = dto.address;
     delegate.toAddress = application.address;
-    const storedDelegate = await this.delegateService.store(delegate);
 
+    // 20231009 - New added
+    const communityId = application.delegation.communityId;
+    const community = await this.communitiesRepository.findOne(communityId);
+    const blockNum = await this.blockchainService.getCurrentBlockNum();
+    // Check voting power:
+    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
+      dto.address,
+      community.contractAddress,
+      blockNum,
+    );
+    delegate.blockHeight = blockNum;
+    delegate.actualWeight = vp;
+    // End of 20231009 - New added
+
+    // Save Delegate:
+    const storedDelegate = await this.delegateService.store(delegate);
+    
     await this.applicationService.updateDelegatorCount(application);
     return storedDelegate;
   }
@@ -272,7 +288,10 @@ export class DelegateController {
     }
 
     // TODO: add communityId in delegation, remove get community by id=1
-    const community = await this.communitiesRepository.findOne(1);
+    // const community = await this.communitiesRepository.findOne(1);
+    // 20231009 - delegation table add communityID:
+    const communityId = application.delegation.communityId;
+    const community = await this.communitiesRepository.findOne(communityId);
 
     // Check voting power
     const vp = await this.blockchainService.getVotingPowerWithSnapshot(

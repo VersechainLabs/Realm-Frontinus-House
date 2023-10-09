@@ -42,6 +42,19 @@ export class Delegate {
   @Field(() => String)
   toAddress: string;
 
+  @ApiProperty({
+    description:
+      'The user actually owns the weight, ignoring the delegate relationship.',
+  })
+  @Column({ default: 0 })
+  @Field(() => Int)
+  actualWeight: number;
+
+  @ApiProperty()
+  @Column({ default: null })
+  @Field(() => Int)
+  blockHeight: number;
+
   @ApiProperty()
   @CreateDateColumn()
   @Field(() => Date)
