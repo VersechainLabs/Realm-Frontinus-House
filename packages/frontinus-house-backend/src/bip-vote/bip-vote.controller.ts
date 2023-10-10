@@ -36,6 +36,7 @@ import {
 import { CreateBipVoteDto, DelegatedBipVoteDto,DeleteVoteDto} from './bip-vote.types';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
+import { CommunitiesService } from 'src/community/community.service';
 
 
   @Controller('bip-votes')
@@ -45,6 +46,7 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
       private readonly bipRoundService: BipRoundService,
       private readonly bipOptionService: BipOptionService,
       private readonly blockchainService: BlockchainService,
+      private readonly communitiesService: CommunitiesService,
     ) {}
   
     /**
@@ -97,11 +99,12 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
 
       const voteList: DelegatedBipVoteDto[] = [];
 
+      const community = await this.communitiesService.findOne(foundRound.communityId)
 
       const vp = await this.blockchainService.getVotingPowerWithSnapshot(
         createVoteDto.address,
         // process.env.COMMUNITY_ADDRESS,
-        foundRound.community.contractAddress,
+        community.contractAddress,
         foundRound.balanceBlockTag,
       );
 // const vp = 1;
@@ -119,7 +122,7 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
         const vp = await this.blockchainService.getVotingPowerWithSnapshot(
           delegate.fromAddress,
           // process.env.COMMUNITY_ADDRESS,
-          foundRound.community.contractAddress,
+          community.contractAddress,
           foundRound.balanceBlockTag,
         );
         if (vp === 0) {
