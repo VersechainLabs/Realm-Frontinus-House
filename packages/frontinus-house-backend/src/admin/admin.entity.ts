@@ -28,7 +28,7 @@ export class Admin {
 
   // This if for list API to show "communityId" field
   @ApiProperty()
-  @Column()
+  @Column({default: 1})
   @Field(() => Number)
   communityId: number;
 
