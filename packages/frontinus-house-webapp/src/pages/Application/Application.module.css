@@ -40,6 +40,11 @@
   font-weight: bold;
 }
 
+.voteTip {
+  margin-left: 6px;
+  cursor: pointer;
+}
+
 .voteHeaderText {
   color: #F5EEE6;
   font-weight: bold;
