@@ -50,10 +50,13 @@ export class BlockchainController {
   @Get('test')
   async test() {
     console.log('enter test');
+
+    const commmunityAddress = "0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d";
+
     // return this.blockchainService.getCurrentBlockNum();
     return this.blockchainService.getVotingPowerOnChain(
       '0x1a5E02A0a85118C3382fa3c161cb78110F97299a',
-      process.env.COMMUNITY_ADDRESS,
+      commmunityAddress,
       17781403,
     );
   }

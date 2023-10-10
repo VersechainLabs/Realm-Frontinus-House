@@ -100,7 +100,8 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
 
       const vp = await this.blockchainService.getVotingPowerWithSnapshot(
         createVoteDto.address,
-        process.env.COMMUNITY_ADDRESS,
+        // process.env.COMMUNITY_ADDRESS,
+        foundRound.community.contractAddress,
         foundRound.balanceBlockTag,
       );
 // const vp = 1;
@@ -117,7 +118,8 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
       for (const delegate of delegateList) {
         const vp = await this.blockchainService.getVotingPowerWithSnapshot(
           delegate.fromAddress,
-          process.env.COMMUNITY_ADDRESS,
+          // process.env.COMMUNITY_ADDRESS,
+          foundRound.community.contractAddress,
           foundRound.balanceBlockTag,
         );
         if (vp === 0) {
