@@ -38,6 +38,7 @@
   display: flex;
   align-items: center;
   font-weight: bold;
+  font-size: 14px;
 }
 
 .voteTip {
@@ -81,6 +82,7 @@
 .voteContent {
   display: flex;
   padding: 10px 20px;
+  font-size: 14px;
   border-bottom: 1px solid #2C2C2D;
   justify-content: space-between
 }
@@ -121,6 +123,7 @@
 
 .voteListChild {
   display: flex;
+  font-size: 14px;
 }
 .voteUserAvatar {
   height: 20px;

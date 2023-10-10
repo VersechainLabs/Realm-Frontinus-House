@@ -143,7 +143,7 @@ const Application = () => {
       color: theme.palette.common.white,
       maxWidth: 440,
       padding:'10px',
-      fontSize: theme.typography.pxToRem(12),
+      fontSize: theme.typography.pxToRem(14),
     },
   }));
 
