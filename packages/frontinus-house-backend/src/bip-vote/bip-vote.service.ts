@@ -21,6 +21,7 @@ import { Delegation } from '../delegation/delegation.entity';
 import { Delegate } from '../delegate/delegate.entity';
 import { BipOption } from 'src/bip-option/bip-option.entity';
 import { BipRound } from 'src/bip-round/bip-round.entity';
+import { Community } from 'src/community/community.entity';
 
 @Injectable()
 export class BipVoteService {
@@ -32,6 +33,8 @@ export class BipVoteService {
     private readonly blockchainService: BlockchainService,
     @InjectRepository(Delegate)
     private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Community)
+    private communityRepository: Repository<Community>,
   ) {}
 
   async findAll(opts?: FindManyOptions<BipVote>): Promise<BipVote[]> {
@@ -137,10 +140,12 @@ export class BipVoteService {
     auction: BipRound,
     delegate: boolean,
   ): Promise<VotingPower> {
+    const community = await this.communityRepository.findOne(auction.communityId)
+
     let votingPower = await this.blockchainService.getVotingPowerWithSnapshot(
       address,
       // process.env.COMMUNITY_ADDRESS,
-      auction.community.contractAddress,
+      community.contractAddress,
       auction.balanceBlockTag,
     );
 
@@ -167,7 +172,7 @@ export class BipVoteService {
             await _blockchainService.getVotingPowerWithSnapshot(
               currentDelegate.fromAddress,
               // process.env.COMMUNITY_ADDRESS,
-              auction.community.contractAddress,
+              community.contractAddress,
               auction.balanceBlockTag,
             );
 
@@ -237,6 +242,7 @@ export class BipVoteService {
     address: string,
     checkVotingPower = true,
   ): Promise<VoteStatesClass> {
+
     const currentTime = new Date();
     if (
       currentTime < auction.startTime ||
