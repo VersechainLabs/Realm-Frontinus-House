@@ -4,7 +4,7 @@ import { AuctionStatus, auctionStatus } from '../../utils/auctionStatus';
 import { useDispatch } from 'react-redux';
 import { clearProposal } from '../../state/slices/editor';
 import Button, { ButtonColor } from '../Button';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import RoundModuleCard from '../RoundModuleCard';
 import { isInfAuction } from '../../utils/auctionType';
@@ -18,13 +18,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { ProposalCreateStatusMap } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
 import { setProposalData } from '../../state/slices/proposal';
+import {getSlug, nameToSlug} from "../../utils/communitySlugs";
 
 const AcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
   community: Community;
 }> = props => {
   const { auction, community } = props;
-
+  const location = useLocation();
   const proposals = useAppSelector(state => state.propHouse.activeProposals);
   const { data: walletClient } = useWalletClient();
   const [proposalSubmitted, setProposalSubmitted] = useState(false);
@@ -100,7 +101,7 @@ const AcceptingPropsModule: React.FC<{
               onClick={() => {
                 dispatch(clearProposal());
                 dispatch(setProposalData({ title: '', tldr: '', description: '', id: 0, proposalId: 0}));
-                navigate('/create', { state: { auction, community, proposals } });
+                navigate('/' + getSlug(location.pathname) + '/create', { state: { auction, community, proposals } });
               }}
             />
           )

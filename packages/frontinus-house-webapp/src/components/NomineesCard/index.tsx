@@ -13,7 +13,7 @@ import { cmdPlusClicked } from '../../utils/cmdPlusClicked';
 import { openInNewTab } from '../../utils/openInNewTab';
 import NomineesVotesDisplay from '../NomineesVotesDisplay';
 import { useAppSelector } from '../../hooks';
-import { nameToSlug } from '../../utils/communitySlugs';
+import {getSlug, nameToSlug} from '../../utils/communitySlugs';
 import { useDispatch } from 'react-redux';
 import {
   InfRoundFilterType,
@@ -28,7 +28,7 @@ import getFirstImageFromProp from '../../utils/getFirstImageFromProp';
 import { useEffect, useState } from 'react';
 import { isTimedAuction } from '../../utils/auctionType';
 import { isMobile } from 'web3modal';
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 
 const NomineesCard: React.FC<{
   proposal: StoredProposalWithVotes;
@@ -44,7 +44,7 @@ const NomineesCard: React.FC<{
   const infRoundFilter = useAppSelector(state => state.delegate.infRoundFilterType);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const location = useLocation();
   const roundIsActive = () =>
     auctionStatus === AuctionStatus.AuctionAcceptingProps ||
     auctionStatus === AuctionStatus.AuctionVoting;
@@ -79,10 +79,10 @@ const NomineesCard: React.FC<{
           if (!proposal) return;
 
           if (cmdPlusClicked(e)) {
-            navigate(`/application/${(proposal.id)}`)
+            navigate('/' + getSlug(location.pathname) + `/application/${(proposal.id)}`)
             return;
           }
-          navigate(`/application/${(proposal.id)}`)
+          navigate('/' + getSlug(location.pathname) + `/application/${(proposal.id)}`)
           // dispatch(setModalActive(true));
           // dispatch(setActiveProposal(proposal));
         }}

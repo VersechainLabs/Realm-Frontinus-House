@@ -10,8 +10,9 @@ import {clearProposal} from "../../state/slices/editor";
 import ConnectButton from "../ConnectButton";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useAccount} from "wagmi";
+import {getSlug} from "../../utils/communitySlugs";
 
 
 
@@ -21,7 +22,7 @@ const BIPRightCard: React.FC<{
     subtitle?: string | ReactElement;
     content: ReactElement;
 }> = props => {
-
+    const location = useLocation();
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { address: account } = useAccount();
@@ -46,7 +47,7 @@ const BIPRightCard: React.FC<{
                         text={'Create your proposal'}
                         bgColor={ButtonColor.Green}
                         onClick={() => {
-                            navigate('/create-bip');
+                            navigate('/' + getSlug(location.pathname) + '/create-bip');
                         }}
                     />
                 ) : (

@@ -15,6 +15,7 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {useAppSelector} from "../../hooks";
 import {useDispatch} from "react-redux";
 import { setUserType } from "../../state/slices/user";
+import {nameToSlug} from "../../utils/communitySlugs";
 
 const NavBar = () => {
   const { t } = useTranslation();
@@ -29,7 +30,7 @@ const NavBar = () => {
   const dispatch = useDispatch();
 
   const userType = useAppSelector(state => state.user.type);
-
+  const community = useAppSelector(state => state.propHouse.activeCommunity);
   useEffect(() => {
     backendClient.current = new ApiWrapper(backendHost, walletClient);
   }, [walletClient, backendHost]);
@@ -94,22 +95,22 @@ const NavBar = () => {
                 <div className={classes.buttonGroup}>
                   {/*<LocaleSwitcher setIsNavExpanded={setIsNavExpanded} />*/}
                   {
-                    userType === 'Admin' &&  <Nav.Link as="div" className={classes.connectBtnContainer}>
+                    userType === 'Admin' && community && <Nav.Link as="div" className={classes.connectBtnContainer}>
                       <Button
                           text="Create a Delegation Round"
                           bgColor={ButtonColor.Purple}
-                          onClick={() => navigate('/create-delegate-form')}
+                          onClick={() => navigate('/'+ nameToSlug(community.name) + '/create-delegate-form')}
                           classNames={classes.createRoundBtn}
                       />
                     </Nav.Link>
                   }
 
-                  {account && (
+                  {account && community && (
                       <Nav.Link as="div" className={classes.connectBtnContainer}>
                         <Button
                             text="Create a Proposal Round"
                             bgColor={ButtonColor.Purple}
-                            onClick={() => navigate('/create-round-form')}
+                            onClick={() => navigate('/'+ nameToSlug(community.name) + '/create-round-form')}
                             classNames={classes.createRoundBtn}
                         />
                       </Nav.Link>

@@ -13,9 +13,9 @@ import { cmdPlusClicked } from '../../utils/cmdPlusClicked';
 import { openInNewTab } from '../../utils/openInNewTab';
 import VotesDisplay from '../VotesDisplay';
 import { useAppSelector } from '../../hooks';
-import { nameToSlug } from '../../utils/communitySlugs';
+import {getSlug, nameToSlug} from '../../utils/communitySlugs';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {
     InfRoundFilterType,
     setActiveProposal,
@@ -39,7 +39,7 @@ const BIPCard: React.FC<{
     const { bip } = props;
 
 
-
+    const location = useLocation();
     const community = useAppSelector(state => state.propHouse.activeCommunity);
     const [imgUrlFromProp, setImgUrlFromProp] = useState<string | undefined>(undefined);
     const [displayTldr, setDisplayTldr] = useState<boolean | undefined>();
@@ -71,7 +71,7 @@ const BIPCard: React.FC<{
             <div
                 onClick={e => {
                     if (!community) return;
-                    navigate(`/bip/${bip.id}`)
+                    navigate('/' + getSlug(location.pathname) + `/bip/${bip.id}`)
                 }}
             >
                 <Card

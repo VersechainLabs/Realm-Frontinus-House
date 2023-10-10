@@ -21,6 +21,7 @@ import { setAlert } from '../../state/slices/alert';
 import { LoadingButton } from '@mui/lab';
 import Quill from 'quill';
 import clsx from 'clsx';
+import {getSlug, nameToSlug} from "../../utils/communitySlugs";
 
 const ProposalPreview: React.FC<{}> = () => {
   const location = useLocation();
@@ -43,7 +44,7 @@ const ProposalPreview: React.FC<{}> = () => {
   const client = useRef(new ApiWrapper(host, walletClient));
   // const [formDataState, setFormDataState] = useState(formData);
   //   const { titlePreview, tldrPreview, descriptionPreview } = location.state;
-
+    const community = useAppSelector(state => state.propHouse.activeCommunity);
   const handleGoBack = () => {
     window.history.back();
   };
@@ -216,7 +217,7 @@ const ProposalPreview: React.FC<{}> = () => {
         trigger={showCongratsDialog}
         onClose={() => {
           setShowCongratsDialog(false);
-          navigate(`/proposal/${propId}`, { replace: false });
+          navigate('/' + getSlug(location.pathname) + `/proposal/${propId}`, { replace: false });
         }}
       />
     </div>

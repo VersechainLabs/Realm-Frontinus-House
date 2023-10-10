@@ -13,9 +13,9 @@ import { cmdPlusClicked } from '../../utils/cmdPlusClicked';
 import { openInNewTab } from '../../utils/openInNewTab';
 import VotesDisplay from '../VotesDisplay';
 import { useAppSelector } from '../../hooks';
-import { nameToSlug } from '../../utils/communitySlugs';
+import {getSlug, nameToSlug} from '../../utils/communitySlugs';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import {
   InfRoundFilterType,
   setActiveProposal,
@@ -43,7 +43,7 @@ const ProposalCard: React.FC<{
   const round = useAppSelector(state => state.propHouse.activeRound);
   const infRoundFilter = useAppSelector(state => state.propHouse.infRoundFilterType);
   const dispatch = useDispatch();
-
+  const location = useLocation();
   const roundIsActive = () =>
     auctionStatus === AuctionStatus.AuctionAcceptingProps ||
     auctionStatus === AuctionStatus.AuctionVoting;
@@ -82,7 +82,7 @@ const ProposalCard: React.FC<{
           //   openInNewTab(`${nameToSlug(round.title)}/${proposal.id}`);
           //   return;
           // }
-          navigate(`/proposal/${proposal.id}`)
+          navigate('/' + getSlug(location.pathname) + `/proposal/${proposal.id}`)
           // dispatch(setModalActive(true));
           // dispatch(setActiveProposal(proposal));
         }}

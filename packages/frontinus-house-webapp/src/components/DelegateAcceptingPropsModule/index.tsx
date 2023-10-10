@@ -16,6 +16,7 @@ import {useEffect, useRef, useState} from "react";
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import delegate from "../../state/slices/delegate";
 import { ApplicationCreateStatusMap } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
+import {getSlug, nameToSlug} from "../../utils/communitySlugs";
 
 const DelegateAcceptingPropsModule: React.FC<{
   auction: StoredAuctionBase;
@@ -90,7 +91,7 @@ const DelegateAcceptingPropsModule: React.FC<{
                         bgColor={ButtonColor.Green}
                         onClick={() => {
                             dispatch(clearProposal());
-                            navigate('/application/create', { state: { auction, community, proposals } });
+                            navigate('/' + getSlug(location.pathname) + '/application/create', { state: { auction, community, proposals } });
                         }}
                     />
                 )

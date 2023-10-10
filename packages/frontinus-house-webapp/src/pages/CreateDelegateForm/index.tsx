@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useWalletClient } from 'wagmi';
-import { nameToSlug } from '../../utils/communitySlugs';
+import {getSlug, nameToSlug} from '../../utils/communitySlugs';
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -19,7 +19,7 @@ import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { LoadingButton } from '@mui/lab';
 import { utc } from 'dayjs';
 
-const CreateDelegateForm: React.FC<{}> = () => {
+const CreateDelegateForm: React.FC<{}> = (props) => {
   const host = useAppSelector(state => state.configuration.backendHost);
   const client = useRef(new ApiWrapper(host));
   const { data: walletClient } = useWalletClient();
@@ -29,7 +29,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
-
+  const location = useLocation();
   const MAX_TITLE_LENGTH = 100;
   const MAX_DESCRIPTION_LENGTH = 100000;
   const [titleLength, setTitleLength] = useState(0);
@@ -218,7 +218,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       .then((round: any) => {
         setIsSuccessAlertVisible(true); // 显示成功提示
         dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-        navigate('/delegateDetails/' + round.id);
+        navigate('/' + getSlug(location.pathname) + '/delegateDetails/' + round.id);
       })
       .catch(e  => {
         setIsButtonDisabled(false);

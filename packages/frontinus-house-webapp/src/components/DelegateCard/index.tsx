@@ -12,9 +12,9 @@ import {
   delegateDeadlineCopy,
   delegateDeadlineTime,
 } from '../../utils/auctionStatus';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import StatusPill from '../StatusPill';
-import { nameToSlug } from '../../utils/communitySlugs';
+import {getSlug, nameToSlug} from '../../utils/communitySlugs';
 import diffTime from '../../utils/diffTime';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '../Tooltip';
@@ -37,7 +37,7 @@ const DelegateCard: React.FC<{
   const { t } = useTranslation();
   let navigate = useNavigate();
   const dispatch = useAppDispatch();
-
+  const location = useLocation();
   interface changeTagProps {
     children: React.ReactNode;
   }
@@ -58,7 +58,7 @@ const DelegateCard: React.FC<{
             return;
           }
           // navigate(`${nameToSlug(round.title)}`);
-          navigate(`/delegateDetails/${round.id}`);
+          navigate('/' + getSlug(location.pathname) + `/delegateDetails/${round.id}`);
         }}
       >
         <Card

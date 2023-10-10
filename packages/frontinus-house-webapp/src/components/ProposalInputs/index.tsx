@@ -31,6 +31,7 @@ import ProposalPreview from '../../pages/ProposalPreview';
 import { setProposalData } from '../../state/slices/proposal';
 import {LoadingButton} from "@mui/lab";
 import ConnectButton from "../ConnectButton";
+import {getSlug} from "../../utils/communitySlugs";
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
@@ -39,6 +40,7 @@ const ProposalInputs: React.FC<{
   setProposalSubmitted: (submitted: boolean) => void;
 }> = props => {
   const { formData, fundReqData, onDataChange, setProposalSubmitted } = props;
+  const location = useLocation();
 
   const [blurred, setBlurred] = useState(false);
   const [fundReq, setFundReq] = useState<number | undefined>();
@@ -88,7 +90,6 @@ const ProposalInputs: React.FC<{
   );
 
   const navigate = useNavigate();
-  const location = useLocation();
   const activeAuction = location.state.auction;
   const activeCommunity = location.state.community;
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
@@ -161,7 +162,6 @@ const ProposalInputs: React.FC<{
     const tldr = formData[1].fieldValue;
     const description = quill!.root.innerHTML;
     const id = activeAuction.id;
-
     if (title.trim().length === 0 || tldr.trim().length === 0 || description.trim().length === 0) {
       const errorMessage = 'All fields must be filled before preview!';
       console.log('Error message to be dispatched:', errorMessage);
@@ -184,7 +184,7 @@ const ProposalInputs: React.FC<{
 
     setLoading(true);
     dispatch(setProposalData({ title:title, tldr:tldr, description:description, id:id }));
-    navigate('/preview');
+    navigate('/' + getSlug(location.pathname) + '/preview');
   };
   const submit = async () => {
     try {
@@ -368,7 +368,7 @@ const ProposalInputs: React.FC<{
             trigger={showCongratsDialog}
             onClose={() => {
               setShowCongratsDialog(false);
-              navigate(`/proposal/${propId}`, { replace: false });
+              navigate('/' + getSlug(location.pathname) + `/proposal/${propId}`, { replace: false });
             }}
           />
         </Col>

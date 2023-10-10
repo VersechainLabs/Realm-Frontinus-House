@@ -375,7 +375,7 @@ const House = () => {
                           </Col>
 
                           <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
-                              <BIPRightCard/>
+                              <BIPRightCard />
                           </Col>
                       </Row>
                       )

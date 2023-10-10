@@ -150,31 +150,31 @@ function App() {
                 {/*{<NavBar />}*/}
 
                 <Routes>
-                  <Route path="/rounds" element={<StatusRoundCards />} />
+                  <Route path="/:house/rounds" element={<StatusRoundCards />} />
                   <Route path="/" element={<Home />} />
                   <Route
-                    path="/create"
+                    path="/:house/create"
                     element={
                       <ProtectedRoute noActiveCommunity={noActiveCommunity}>
                         <Create />
                       </ProtectedRoute>
                     }
                   />
-                  <Route path="application/create" element={<ApplicationCreate />} />
-                  <Route path="/create-round" element={<CreateRound />} />
-                  <Route path="/create-round-form" element={<CreateRoundForm />} />
-                  <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
-                  <Route path="/create-bip" element={<CreateBIP />} />
+                  <Route path="/:house/application/create" element={<ApplicationCreate />} />
+                  <Route path="/:house/create-round" element={<CreateRound />} />
+                  <Route path="/:house/create-round-form" element={<CreateRoundForm />} />
+                  <Route path="/:house/create-delegate-form" element={<CreateDelegateForm />} />
+                  <Route path="/:house/create-bip" element={<CreateBIP />} />
                   {/*<Route path="/faq" element={<FAQ />} />*/}
-                  <Route path="/proposal/:id" element={<Proposal />} />
-                  <Route path="/bip/:id" element={<BIP />} />
-                  <Route path="/application/:id" element={<Application />} />
-                  <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
+                  <Route path="/:house/proposal/:id" element={<Proposal />} />
+                  <Route path="/:house/bip/:id" element={<BIP />} />
+                  <Route path="/:house/application/:id" element={<Application />} />
+                  <Route path="/:house/delegateDetails/:id" element={<DelegateDetails />} />
                   <Route path="/:house" element={<House />} />
                   {/*<Route path="/:title" element={<Round />} />*/}
                   <Route path="/:house/:id/:title" element={<Round />} />
-                  <Route path="/comment/:proposalId" element={<CommentsPage />} />
-                  <Route path="/preview" element={<ProposalPreview />} />
+                  <Route path="/:house/comment/:proposalId" element={<CommentsPage />} />
+                  <Route path="/:house/preview" element={<ProposalPreview />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
 

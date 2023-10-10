@@ -2,12 +2,13 @@ import classes from './ProposalWindowButtons.module.css';
 import Button, { ButtonColor } from '../Button';
 import { StoredProposalWithVotes } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { isSameAddress } from '../../utils/isSameAddress';
 import { clearProposal } from '../../state/slices/editor';
 import { isValidPropData } from '../../utils/isValidPropData';
 import { isInfAuction } from '../../utils/auctionType';
 import { useAccount } from 'wagmi';
+import {getSlug} from "../../utils/communitySlugs";
 
 /**
  * New, Edit and Delete buttons
@@ -34,7 +35,7 @@ const ProposalWindowButtons: React.FC<{
   const round = useAppSelector(state => state.propHouse.activeRound);
   const proposalEditorData = useAppSelector(state => state.editor.proposal);
   const dispatch = useAppDispatch();
-
+  const location = useLocation();
   return (
     <>
       {/* MY PROP */}
@@ -68,7 +69,7 @@ const ProposalWindowButtons: React.FC<{
                   bgColor={ButtonColor.PurpleLight}
                   onClick={() => {
                     dispatch(clearProposal());
-                    navigate('/create', { state: { auction: round, community } });
+                    navigate('/' + getSlug(location.pathname) + '/create', { state: { auction: round, community } });
                   }}
                 />
 
@@ -98,7 +99,7 @@ const ProposalWindowButtons: React.FC<{
             bgColor={ButtonColor.PurpleLight}
             onClick={() => {
               dispatch(clearProposal());
-              navigate('/create', { state: { auction: round, community } });
+              navigate('/' + getSlug(location.pathname) + '/create', { state: { auction: round, community } });
             }}
           />
         ))}

@@ -12,7 +12,7 @@ import '../QuillEditor/quill.snow.css';
 import '../QuillEditor/QuillEditor.module.css';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {setProposalData} from "../../state/slices/proposal";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {setActiveCommunity, setActiveProposals, setActiveRound} from "../../state/slices/propHouse";
 import {useEffect, useRef, useState} from "react";
 import {ApiWrapper} from "@nouns/frontinus-house-wrapper";
@@ -24,6 +24,7 @@ import {
   deadlineCopy,
   deadlineTime,
 } from '../../utils/auctionStatus';
+import {getSlug} from "../../utils/communitySlugs";
 
 
 
@@ -35,6 +36,7 @@ export interface RenderedProposalProps {
 }
 
 const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
+  const location = useLocation();
   const { proposal, backButton, round } = props;
   const { t } = useTranslation();
   const fields = proposalFields(proposal);
@@ -76,7 +78,7 @@ const RenderedProposalFields: React.FC<RenderedProposalProps> = props => {
     dispatch(setProposalData({ title: proposal.title, tldr: proposal.tldr, description: proposal.what, id: proposal.auctionId, proposalId:proposal.id }));
     dispatch(updateProposal({ title: proposal.title, tldr: proposal.tldr, what: proposal.what, reqAmount: null}));
 
-    navigate('/create',{ state: { auction:proposalData.activeRound, community:proposalData.activeCommunity, proposals:proposalData.activeProposals }});
+    navigate('/' + getSlug(location.pathname) + '/create',{ state: { auction:proposalData.activeRound, community:proposalData.activeCommunity, proposals:proposalData.activeProposals }});
 
   }
 
