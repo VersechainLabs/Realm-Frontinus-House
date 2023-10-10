@@ -222,7 +222,12 @@ export class ApplicationController {
     }
 
     // TODO: add communityId in delegation, remove get community by id=1
-    const community = await this.communitiesRepository.findOne(1);
+    // const community = await this.communitiesRepository.findOne(1);
+    // 20231009 - delegation table add communityID:
+    const communityId = delegation.communityId;
+    const community = await this.communitiesRepository.findOne(communityId);
+
+
     // Check voting power
     const vp = await this.blockchainService.getVotingPowerWithSnapshot(
       address,

@@ -18,6 +18,7 @@ import {
 } from 'typeorm';
 import { BipRound } from 'src/bip-round/bip-round.entity';
 import { Admin } from 'src/admin/admin.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
 
 @Entity()
 @ObjectType()
@@ -70,6 +71,13 @@ export class Community {
   @JoinColumn()
   @Field(() => [Admin])
   admins: Admin[];
+
+  @OneToMany(() => Delegation, (delegation) => delegation.community, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => [Delegation])
+  delegations: Delegation[];
 
 
   @Column()
