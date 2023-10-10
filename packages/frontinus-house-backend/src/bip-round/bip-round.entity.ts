@@ -106,7 +106,7 @@ export class BipRound {
 
   // This if for list API to show "communityId" field
   @ApiProperty()
-  @Column({default: 1})
+  @Column({nullable: true, default: 1})
   @Field(() => Number)
   communityId: number;
 
