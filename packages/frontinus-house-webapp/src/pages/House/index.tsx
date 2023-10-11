@@ -36,8 +36,8 @@ import BIPRightCard from "../../components/BIPRightCard";
 
 const House = () => {
   const location = useLocation();
-  // const slug = location.pathname.substring(1, location.pathname.length);
-  const slug = getSlug(location.pathname);
+  const slug = location.pathname.substring(1, location.pathname.length);
+  // const slug = getSlug(location.pathname);
   // const slug = 'frontinus';
 
   // const search = window.location.search;
