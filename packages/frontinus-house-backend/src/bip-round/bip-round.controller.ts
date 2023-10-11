@@ -191,11 +191,12 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
       }
     }
 
-    const checkVoteState = await this.bipVoteService.checkEligibleToVoteNew(
+    const checkVoteState = await this.bipVoteService.checkEligibleToBipVote(
       foundRound,
       userAddress,
       true,
     );
+
     if (checkVoteState) {
       foundRound.voteState = checkVoteState;
       return;
