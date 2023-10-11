@@ -18,7 +18,7 @@ import {
 import { Container } from 'react-bootstrap';
 import classes from './DelegateDetails.module.css';
 import DelegateContent from '../../components/DelegateContent';
-import { nameToSlug, slugToName } from '../../utils/communitySlugs';
+import {getSlug, nameToSlug, slugToName} from '../../utils/communitySlugs';
 import { AuctionStatus, auctionStatus } from '../../utils/auctionStatus';
 import { cardServiceUrl, CardType } from '../../utils/cardServiceUrl';
 import OpenGraphElements from '../../components/OpenGraphElements';
@@ -38,9 +38,9 @@ import formatTimeAll from "../../utils/formatTimeAll";
 
 const DelegateDetails = () => {
   const location = useLocation();
-  // const communityName = location.pathname.substring(1).split('/')[0];
+  const communityName = getSlug(location.pathname);
 
-  const communityName = 'frontinus';
+  // const communityName = 'frontinus';
   const id = location.pathname.substring(1).split('/')[1];
 
   const dispatch = useAppDispatch();
@@ -77,7 +77,7 @@ const DelegateDetails = () => {
       const fetchCommunity = async () => {
         try {
           setLoadingComm(true);
-          const community = await client.current.getCommunityWithId(1);
+          const community = await client.current.getCommunityWithName(communityName);
           dispatch(setActiveCommunity(community));
 
           setLoadingComm(false);

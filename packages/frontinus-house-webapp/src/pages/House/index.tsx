@@ -5,7 +5,7 @@ import HouseHeader from '../../components/HouseHeader';
 import React, { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {setActiveCommunity, setHouseTab} from '../../state/slices/propHouse';
-import { slugToName } from '../../utils/communitySlugs';
+import {getSlug, slugToName} from '../../utils/communitySlugs';
 import { Col, Container, Row } from 'react-bootstrap';
 import RoundCard from '../../components/RoundCard';
 import DelegateCard from '../../components/DelegateCard';
@@ -37,7 +37,8 @@ import BIPRightCard from "../../components/BIPRightCard";
 const House = () => {
   const location = useLocation();
   // const slug = location.pathname.substring(1, location.pathname.length);
-  const slug = 'frontinus';
+  const slug = getSlug(location.pathname);
+  // const slug = 'frontinus';
 
   // const search = window.location.search;
   // const params = new URLSearchParams(search);
@@ -85,7 +86,7 @@ const House = () => {
     const fetchCommunity = async () => {
       try {
         setLoadingCommunity(true);
-        const community = await client.current.getCommunityWithId(1);
+        const community = await client.current.getCommunityWithName(slug);
         dispatch(setActiveCommunity(community));
         setLoadingCommunity(false);
       } catch (e) {
