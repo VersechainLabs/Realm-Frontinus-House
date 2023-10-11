@@ -49,16 +49,15 @@ export class BlockchainController {
 
   @Get('test')
   async test(@Query('address') userAddress: string ) {
+
     console.log('enter test');
     // userAddress = '0xD72bb0961368F1A5c566E0ac3AFCA62afFa20F14';
 
     const commmunityAddress = "0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d";
-    // const blockHeight = await this.getBlocknumber();
-    const blockHeight = 18302987;
-
+    const blockHeight = await this.getBlocknumber();
 
     // return this.blockchainService.getCurrentBlockNum();
-    const vp = this.blockchainService.getVotingPowerOnChain(
+    const vp = await this.blockchainService.getVotingPowerOnChain(
       userAddress,
       commmunityAddress,
       blockHeight,
@@ -66,6 +65,7 @@ export class BlockchainController {
 
     return {
       'blockHeight': blockHeight,
+      'address': userAddress,
       'weight': vp,
     };
   }
