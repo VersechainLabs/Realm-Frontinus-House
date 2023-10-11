@@ -51,7 +51,7 @@ const DelegateAcceptingPropsModule: React.FC<{
 
   const fetchDelegateStatus = async () => {
       try {
-          const raw = await backendClient.current.getDelegationApplied( parseInt( id ));
+          const raw = await backendClient.current.getDelegationApplied( parseInt( id ),account);
           if(raw === undefined){
               setDelegateStatus(ApplicationCreateStatusMap.OK);
           } else {
