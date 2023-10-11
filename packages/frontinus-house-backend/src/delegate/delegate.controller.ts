@@ -28,6 +28,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { DelegationService } from 'src/delegation/delegation.service';
 import { Application } from 'src/delegation-application/application.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
+import { sleep } from 'test/utils';
 
 @Controller('delegates')
 export class DelegateController {
@@ -375,4 +376,38 @@ export class DelegateController {
     return results;
   }
 
+
+
+  @Get('/auto/fill')
+  async autoFillScript() {
+
+    console.log('enter autoFill');
+
+    const commmunityAddress = "0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d";
+    const blockHeight = await this.blockchainService.getCurrentBlockNum();
+
+    const delegateList = await this.delegateService.findAll();
+
+
+    let count = 0;
+    (await delegateList).forEach(async delegate => {
+      let vp = await this.blockchainService.getVotingPowerOnChain(
+        delegate.fromAddress,
+        commmunityAddress,
+        blockHeight,
+      );
+
+      console.log(vp);
+      console.log(delegate);
+
+      delegate.blockHeight = blockHeight;
+      delegate.actualWeight = vp;
+
+      count++;
+      await sleep(500);
+      await this.delegateService.store(delegate);
+    });
+
+    return count;
+  }
 }

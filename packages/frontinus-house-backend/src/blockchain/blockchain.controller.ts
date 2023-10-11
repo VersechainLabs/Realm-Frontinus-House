@@ -49,6 +49,7 @@ export class BlockchainController {
 
   @Get('test')
   async test(@Query('address') userAddress: string ) {
+
     console.log('enter test');
     // userAddress = '0xD72bb0961368F1A5c566E0ac3AFCA62afFa20F14';
 
