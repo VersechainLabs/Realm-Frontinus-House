@@ -236,7 +236,7 @@ export class BipVoteService {
     return true;
   }
 
-  async checkEligibleToVoteNew(
+  async checkEligibleToBipVote(
     // proposal: BipOption,
     auction: BipRound,
     address: string,
@@ -256,13 +256,16 @@ export class BipVoteService {
     if (sameAuctionVote) {
       return VoteStates.VOTED_ANOTHER;
     }
-
     if (checkVotingPower) {
       try {
         const vp = await this.getVotingPower(address, auction, true);
+        
         if (vp.weight === 0) {
           return VoteStates.NO_POWER;
-        }        
+        }
+        else {
+          return new VoteStatesClass( 200,  "Can vote.", true, vp.weight);  // VoteStates.OK with votingPower
+        }
       } catch (error) {
         // 6v add new case:
         return VoteStates.ALREADY_DELEGATED;
