@@ -17,6 +17,7 @@ import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipRound } from 'src/bip-round/bip-round.entity';
 import { BipOption } from 'src/bip-option/bip-option.entity';
+import { CommunitiesService } from 'src/community/community.service';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { BipOption } from 'src/bip-option/bip-option.entity';
     BipRoundService,
     BipOptionService,
     BlockchainService,
+    CommunitiesService,
   ],
   exports: [TypeOrmModule],
 })
