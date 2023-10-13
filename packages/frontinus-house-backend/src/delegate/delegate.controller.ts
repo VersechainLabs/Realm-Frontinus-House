@@ -41,7 +41,13 @@ export class DelegateController {
     private readonly blockchainService: BlockchainService,
     @InjectRepository(Community)
     private communitiesRepository: Repository<Community>,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Application)
+    private applicationRepository: Repository<Application>,
   ) {}
+
+  delegateVotingPower = 0;  
 
   @Post('/create')
   @ApiOkResponse({
@@ -72,23 +78,19 @@ export class DelegateController {
     delegate.toAddress = application.address;
 
     // 20231009 - New added
-    const communityId = application.delegation.communityId;
-    const community = await this.communitiesRepository.findOne(communityId);
     const blockNum = await this.blockchainService.getCurrentBlockNum();
-    // Check voting power:
-    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
-      dto.address,
-      community.contractAddress,
-      blockNum,
-    );
+
     delegate.blockHeight = blockNum;
-    delegate.actualWeight = vp;
+    delegate.actualWeight = this.delegateVotingPower;
     // End of 20231009 - New added
 
     // Save Delegate:
     const storedDelegate = await this.delegateService.store(delegate);
     
     await this.applicationService.updateDelegatorCount(application);
+
+    await this.updateSumWeightCount(application);
+
     return storedDelegate;
   }
 
@@ -313,6 +315,8 @@ export class DelegateController {
       return VoteStates.NO_DELEGATE_POWER;
     }
 
+    this.delegateVotingPower = vp;  // For create delegate
+
     return VoteStates.OK;
   }
 
@@ -376,6 +380,39 @@ export class DelegateController {
     return results;
   }
 
+  /**
+   * Update "sumWeight" from all the delegates of this application.
+   * @param application 
+   * @returns 
+   */
+  async updateSumWeightCount(application: Application): Promise<Application> {
+    const list = await this.delegateRepository.find({
+      where: {
+        applicationId: application.id,
+      },
+    });
+
+    const communityId = application.delegation.communityId;
+    const community = await this.communitiesRepository.findOne(communityId);
+    const blockNum = await this.blockchainService.getCurrentBlockNum();
+
+    let sumWeight = 0;
+
+    list.forEach(async element => {
+      sumWeight += element.actualWeight;
+
+      // Check on-chain voting power:
+      element.weightOnChain = await this.blockchainService.getVotingPowerWithSnapshot(
+        element.fromAddress,
+        community.contractAddress,
+        blockNum,
+      );
+    });
+
+    application.sumWeight = sumWeight;
+
+    return await this.applicationRepository.save(application);    
+  }
 
 
   @Get('/auto/fill')
