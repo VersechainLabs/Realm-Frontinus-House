@@ -41,6 +41,8 @@ export class ApplicationController {
     private communitiesRepository: Repository<Community>,
   ) {}
 
+  applicationCreatorVotingPower = 0;  
+
   @Get('/list')
   @ApiOkResponse({
     type: [Application],
@@ -114,11 +116,17 @@ export class ApplicationController {
       throw new HttpException(canCreateStatus.message, HttpStatus.BAD_REQUEST);
     }
 
+    // 20231013 - New added
+    const blockNum = await this.blockchainService.getCurrentBlockNum();
+
     // Create:
     const newApplication = await this.applicationService.create({
       ...dto,
       delegation,
+      blockHeight:blockNum, // 20231013 - New added
+      actualWeight:this.applicationCreatorVotingPower, // 20231013 - New added
     });
+    
     return await this.applicationService.store(newApplication);
   }
 
@@ -227,12 +235,14 @@ export class ApplicationController {
     const communityId = delegation.communityId;
     const community = await this.communitiesRepository.findOne(communityId);
 
-
     // Check voting power
     const vp = await this.blockchainService.getVotingPowerWithSnapshot(
       address,
       community.contractAddress,
     );
+
+    this.applicationCreatorVotingPower = vp; // For store vp when creating application
+
     if (vp <= 0) {
       return ApplicationCreateStatusMap.NO_VOTING_POWER;
     }
