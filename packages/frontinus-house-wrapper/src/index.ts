@@ -107,24 +107,21 @@ export class ApiWrapper {
     }
   }
 
-  async getDelegationApplied(id: number ): Promise<any> {
-    if (!this.signer) return;
+  async getDelegationApplied(id: number,account: string ): Promise<any> {
+    // if (!this.signer) return;
 
     try {
-      const owner = (await this.signer.getAddresses())[0];
-      const raw = (await axios.get(`${this.host}/applications/canCreate?delegationId=${id}&address=${owner}`)).data;
+      // const owner = (await this.signer.getAddresses())[0];
+      const raw = (await axios.get(`${this.host}/applications/canCreate?delegationId=${id}&address=${account}`)).data;
       return raw;
     } catch (e: any) {
       throw e.response.data.message;
     }
   }
 
-  async getProposalApplied(id: number ): Promise<any> {
-    if (!this.signer) return;
-
+  async getProposalApplied(id: number,account:string ): Promise<any> {
     try {
-      const owner = (await this.signer.getAddresses())[0];
-      const raw = (await axios.get(`${this.host}/proposals/canCreate?auctionId=${id}&address=${owner}`)).data;
+      const raw = (await axios.get(`${this.host}/proposals/canCreate?auctionId=${id}&address=${account}`)).data;
       return raw;
     } catch (e: any) {
       throw e.response.data.message;
