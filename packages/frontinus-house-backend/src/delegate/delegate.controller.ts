@@ -260,6 +260,8 @@ export class DelegateController {
     // Update DB.application.delegatorCount:
     await this.applicationService.updateDelegatorCount(foundApplication);
 
+    await this.updateSumWeightCount(foundApplication);
+
     return true;
   }
 
