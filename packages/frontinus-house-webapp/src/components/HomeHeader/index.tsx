@@ -34,7 +34,7 @@ const HomeHeader = ({ input, handleSeachInputChange, stats }: HomeHeaderProps) =
           navigate('/faq');
         }}
       >
-        {t('learnMore')} →
+          Create a Proposal Round
       </button>
       <HomeStats stats={stats} />
       <Container className={classes.searchBarContainer}>

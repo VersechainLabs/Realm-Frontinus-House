@@ -7,33 +7,15 @@ const HomeTitle = () => {
 
   return (
     <div className={classes.title}>
-      {i18next.resolvedLanguage === 'jp' ? (
-        <div className={classes.jpTitle}>
-          <h1 className={classes.fundedText}>
-            <span>{t('yourFavCommunities')}</span>
-          </h1>
 
-          <h1 className={classes.fundedText}>
-            <div className={classes.build}>
-              <span>{t('build')}</span>
-              <img src="/line.svg" alt="line" />
-            </div>
-            {t('with')} {t('getFunded')}
-          </h1>
-        </div>
-      ) : (
         <>
           <h1 className={classes.fundedText}>
-            <span>{t('getFunded')}</span>
-            <div className={classes.build}>
-              <span>{t('build')}</span>
-              <img src="/line.svg" alt="line" />
-            </div>
-            <span>{t('with')}</span>
+            Create your community
           </h1>
-          <h1>{t('yourFavCommunities')}</h1>
+            <div className={classes.homeDesc}>
+                Descriptive text about who we are and what we can doa, Descriptive text about who we are and what we can do.  Descriptive text about who we are and what we can do
+            </div>
         </>
-      )}
     </div>
   );
 };
