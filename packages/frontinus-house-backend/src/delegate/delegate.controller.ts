@@ -404,11 +404,11 @@ export class DelegateController {
       sumWeight += element.actualWeight;
 
       // Check on-chain voting power:
-      element.weightOnChain = await this.blockchainService.getVotingPowerWithSnapshot(
-        element.fromAddress,
-        community.contractAddress,
-        blockNum,
-      );
+      // element.weightOnChain = await this.blockchainService.getVotingPowerWithSnapshot(
+      //   element.fromAddress,
+      //   community.contractAddress,
+      //   blockNum,
+      // );
     });
 
     application.sumWeight = sumWeight;
