@@ -155,7 +155,9 @@ export class DelegateController {
         return APITransformer(APIResponses.DELEGATE.NO_POWER, application);
     }
 
-    application.voteState = VoteStates.OK;
+    // application.voteState = VoteStates.OK;
+    application.voteState = new VoteStatesClass( 200,  "Can vote.", true, this.delegateVotingPower);
+
     return APITransformer(APIResponses.OK, application);
   }
 
@@ -425,28 +427,53 @@ export class DelegateController {
     const commmunityAddress = "0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d";
     const blockHeight = await this.blockchainService.getCurrentBlockNum();
 
-    const delegateList = await this.delegateService.findAll();
-
+    const applicationList = await this.applicationService.findAll();
 
     let count = 0;
-    (await delegateList).forEach(async delegate => {
+    (await applicationList).forEach(async application => {
       let vp = await this.blockchainService.getVotingPowerOnChain(
-        delegate.fromAddress,
+        application.address,
         commmunityAddress,
         blockHeight,
       );
 
       console.log(vp);
-      console.log(delegate);
+      console.log(application);
 
-      delegate.blockHeight = blockHeight;
-      delegate.actualWeight = vp;
+      application.blockHeight = blockHeight;
+      application.actualWeight = vp;
 
       count++;
       await sleep(500);
-      await this.delegateService.store(delegate);
+      await this.applicationService.store(application);
     });
 
     return count;
+
+
+
+
+    // const delegateList = await this.delegateService.findAll();
+
+    // let count = 0;
+    // (await delegateList).forEach(async delegate => {
+    //   let vp = await this.blockchainService.getVotingPowerOnChain(
+    //     delegate.fromAddress,
+    //     commmunityAddress,
+    //     blockHeight,
+    //   );
+
+    //   console.log(vp);
+    //   console.log(delegate);
+
+    //   delegate.blockHeight = blockHeight;
+    //   delegate.actualWeight = vp;
+
+    //   count++;
+    //   await sleep(500);
+    //   await this.delegateService.store(delegate);
+    // });
+
+    // return count;
   }
 }
