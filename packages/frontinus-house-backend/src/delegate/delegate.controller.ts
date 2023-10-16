@@ -446,6 +446,7 @@ export class DelegateController {
       count++;
       await sleep(500);
       await this.applicationService.store(application);
+      await this.updateSumWeightCount(application);
     });
 
     return count;
