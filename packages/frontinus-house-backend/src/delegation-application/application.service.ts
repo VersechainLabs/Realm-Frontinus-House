@@ -130,16 +130,12 @@ export class ApplicationService {
   }
 
   async updateDelegatorCount(application: Application): Promise<Application> {
-    // console.log("enter updateDelegatorCount() - applicationId: ", application.id);
     const list = await this.delegateRepository.find({
       where: {
         applicationId: application.id,
         // deletedDate: Not(IsNull()) // No need
       },
     });
-
-    // console.log(list);
-    // console.log("delegatorCount:", list.length);
 
     application.delegatorCount = list.length;
 
