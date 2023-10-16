@@ -398,9 +398,9 @@ export class DelegateController {
 
     // const communityId = application.delegation.communityId;
 
-    const delegation = await this.delegationService.findOne(application.delegationId);
-    const community = await this.communitiesRepository.findOne(delegation.communityId);
-    const blockNum = await this.blockchainService.getCurrentBlockNum();
+    // const delegation = await this.delegationService.findOne(application.delegationId);
+    // const community = await this.communitiesRepository.findOne(delegation.communityId);
+    // const blockNum = await this.blockchainService.getCurrentBlockNum();
 
     let sumWeight = 0;
 
