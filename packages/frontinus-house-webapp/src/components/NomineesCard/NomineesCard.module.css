@@ -212,6 +212,14 @@
   display: block;
   overflow: hidden;
 }
+.weights {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
+  color: #F5EEE6;
+  font-size: 14px;
+}
 .stale {
   opacity: 0.6;
 }

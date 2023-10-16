@@ -41,7 +41,13 @@ export class DelegateController {
     private readonly blockchainService: BlockchainService,
     @InjectRepository(Community)
     private communitiesRepository: Repository<Community>,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Application)
+    private applicationRepository: Repository<Application>,
   ) {}
+
+  delegateVotingPower = 0;  
 
   @Post('/create')
   @ApiOkResponse({
@@ -72,23 +78,19 @@ export class DelegateController {
     delegate.toAddress = application.address;
 
     // 20231009 - New added
-    const communityId = application.delegation.communityId;
-    const community = await this.communitiesRepository.findOne(communityId);
     const blockNum = await this.blockchainService.getCurrentBlockNum();
-    // Check voting power:
-    const vp = await this.blockchainService.getVotingPowerWithSnapshot(
-      dto.address,
-      community.contractAddress,
-      blockNum,
-    );
+
     delegate.blockHeight = blockNum;
-    delegate.actualWeight = vp;
+    delegate.actualWeight = this.delegateVotingPower;
     // End of 20231009 - New added
 
     // Save Delegate:
     const storedDelegate = await this.delegateService.store(delegate);
     
     await this.applicationService.updateDelegatorCount(application);
+
+    await this.updateSumWeightCount(application);
+
     return storedDelegate;
   }
 
@@ -153,7 +155,9 @@ export class DelegateController {
         return APITransformer(APIResponses.DELEGATE.NO_POWER, application);
     }
 
-    application.voteState = VoteStates.OK;
+    // application.voteState = VoteStates.OK;
+    application.voteState = new VoteStatesClass( 200,  "Can vote.", true, this.delegateVotingPower);
+
     return APITransformer(APIResponses.OK, application);
   }
 
@@ -258,6 +262,8 @@ export class DelegateController {
     // Update DB.application.delegatorCount:
     await this.applicationService.updateDelegatorCount(foundApplication);
 
+    await this.updateSumWeightCount(foundApplication);
+
     return true;
   }
 
@@ -312,6 +318,8 @@ export class DelegateController {
     if (vp <= 0) {
       return VoteStates.NO_DELEGATE_POWER;
     }
+
+    this.delegateVotingPower = vp;  // For create delegate
 
     return VoteStates.OK;
   }
@@ -376,6 +384,41 @@ export class DelegateController {
     return results;
   }
 
+  /**
+   * Update "sumWeight" from all the delegates of this application.
+   * @param application 
+   * @returns 
+   */
+  async updateSumWeightCount(application: Application): Promise<Application> {
+    const list = await this.delegateRepository.find({
+      where: {
+        applicationId: application.id,
+      },
+    });
+
+    // const communityId = application.delegation.communityId;
+
+    // const delegation = await this.delegationService.findOne(application.delegationId);
+    // const community = await this.communitiesRepository.findOne(delegation.communityId);
+    // const blockNum = await this.blockchainService.getCurrentBlockNum();
+
+    let sumWeight = 0;
+
+    list.forEach(async element => {
+      sumWeight += element.actualWeight;
+
+      // Check on-chain voting power:
+      // element.weightOnChain = await this.blockchainService.getVotingPowerWithSnapshot(
+      //   element.fromAddress,
+      //   community.contractAddress,
+      //   blockNum,
+      // );
+    });
+
+    application.sumWeight = sumWeight;
+
+    return await this.applicationRepository.save(application);    
+  }
 
 
   @Get('/auto/fill')
@@ -386,28 +429,54 @@ export class DelegateController {
     const commmunityAddress = "0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d";
     const blockHeight = await this.blockchainService.getCurrentBlockNum();
 
-    const delegateList = await this.delegateService.findAll();
-
+    const applicationList = await this.applicationService.findAll();
 
     let count = 0;
-    (await delegateList).forEach(async delegate => {
+    (await applicationList).forEach(async application => {
       let vp = await this.blockchainService.getVotingPowerOnChain(
-        delegate.fromAddress,
+        application.address,
         commmunityAddress,
         blockHeight,
       );
 
       console.log(vp);
-      console.log(delegate);
+      console.log(application);
 
-      delegate.blockHeight = blockHeight;
-      delegate.actualWeight = vp;
+      application.blockHeight = blockHeight;
+      application.actualWeight = vp;
 
       count++;
       await sleep(500);
-      await this.delegateService.store(delegate);
+      await this.applicationService.store(application);
+      await this.updateSumWeightCount(application);
     });
 
     return count;
+
+
+
+
+    // const delegateList = await this.delegateService.findAll();
+
+    // let count = 0;
+    // (await delegateList).forEach(async delegate => {
+    //   let vp = await this.blockchainService.getVotingPowerOnChain(
+    //     delegate.fromAddress,
+    //     commmunityAddress,
+    //     blockHeight,
+    //   );
+
+    //   console.log(vp);
+    //   console.log(delegate);
+
+    //   delegate.blockHeight = blockHeight;
+    //   delegate.actualWeight = vp;
+
+    //   count++;
+    //   await sleep(500);
+    //   await this.delegateService.store(delegate);
+    // });
+
+    // return count;
   }
 }
