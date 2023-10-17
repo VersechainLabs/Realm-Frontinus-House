@@ -85,7 +85,7 @@ const NavBar = () => {
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className={clsx('ms-auto', classes.navBarCollapse)}>
                 <Nav.Link as="div" className={classes.menuLink} onClick={() => setIsNavExpanded(false)}>
-                  <Link to="/faq" className={classes.link}>
+                  <Link to="/fh-charter" className={classes.link}>
                     {t('fhCharter')}
                   {/*<a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>*/}
                   </Link>
