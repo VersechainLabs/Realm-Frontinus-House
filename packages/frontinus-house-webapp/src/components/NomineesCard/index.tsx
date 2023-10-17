@@ -25,10 +25,11 @@ import { MdInfoOutline } from 'react-icons/md';
 import { BiAward } from 'react-icons/bi';
 import Divider from '../Divider';
 import getFirstImageFromProp from '../../utils/getFirstImageFromProp';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { isTimedAuction } from '../../utils/auctionType';
 import { isMobile } from 'web3modal';
 import {useNavigate} from "react-router-dom";
+import TruncateThousands from "../TruncateThousands";
 
 const NomineesCard: React.FC<{
   proposal: StoredProposalWithVotes;
@@ -130,9 +131,13 @@ const NomineesCard: React.FC<{
             <div className={classes.addressAndTimestamp}>
               <EthAddress address={proposal.address} className={classes.truncate} addAvatar />
 
-              <span className={clsx(classes.bullet, roundIsActive() && classes.hideDate)}>
-                {' • '}
+
+              <span className={classes.weights}>
+                (
+                <TruncateThousands amount={proposal.actualWeight} />
+                &nbsp;Realms)
               </span>
+·
               {proposal.lastUpdatedDate !== null ? (
                 <Tooltip
                   content={
