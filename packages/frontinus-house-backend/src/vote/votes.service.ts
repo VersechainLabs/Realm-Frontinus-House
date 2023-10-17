@@ -200,7 +200,7 @@ export class VotesService {
         if (vote.address === address) {
           // return VoteStates.VOTED;
           // Check if this is a delegated-vote, or user-direct-vote:
-          return vote.delegateAddress ? VoteStates.DELEGATE_ANOTHER : VoteStates.VOTED;
+          return vote.delegateAddress ? VoteStates.ALREADY_DELEGATED : VoteStates.VOTED;
         }
       }
     }
