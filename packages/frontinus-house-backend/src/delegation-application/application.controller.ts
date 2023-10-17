@@ -27,6 +27,7 @@ import {
 } from '@nouns/frontinus-house-wrapper';
 import { Delegation } from '../delegation/delegation.entity';
 import { canSubmitApplications, updateValidFields } from 'src/utils';
+import { VotingPower } from 'src/bip-vote/bip-vote.types';
 
 @Controller('applications')
 export class ApplicationController {
@@ -41,7 +42,7 @@ export class ApplicationController {
     private communitiesRepository: Repository<Community>,
   ) {}
 
-  applicationCreatorVotingPower = 0;  
+  // applicationCreatorVotingPower = 0;  
 
   @Get('/list')
   @ApiOkResponse({
@@ -108,7 +109,7 @@ export class ApplicationController {
       );
     }
 
-    const canCreateStatus = await this.checkCanCreateApplication(
+    const [canCreateStatus, applicationCreatorVotingPower] = await this.checkCanCreateApplication(
       delegation,
       dto.address,
     );
@@ -124,7 +125,7 @@ export class ApplicationController {
       ...dto,
       delegation,
       blockHeight:blockNum, // 20231013 - New added
-      actualWeight:this.applicationCreatorVotingPower, // 20231013 - New added
+      actualWeight:applicationCreatorVotingPower, // 20231013 - New added
     });
     
     return await this.applicationService.store(newApplication);
@@ -183,7 +184,11 @@ export class ApplicationController {
       );
     }
 
-    return this.checkCanCreateApplication(delegation, address);
+    // return this.checkCanCreateApplication(delegation, address);
+
+    const [canCreateStatus, applicationCreatorVotingPower] = await this.checkCanCreateApplication(delegation, address);
+
+    return canCreateStatus;
   }
 
   @Get('/:id/detail')
@@ -199,17 +204,22 @@ export class ApplicationController {
     return foundApplication;
   }
 
+  /**
+   * @param delegation 
+   * @param address 
+   * @returns ApplicationCreateStatus & votingPower
+   */
   async checkCanCreateApplication(
     delegation: Delegation,
     address: string,
-  ): Promise<ApplicationCreateStatus> {
+  ): Promise<[ApplicationCreateStatus, number]> {
     const delegationId = delegation.id;
     const currentDate = new Date();
     if (
       currentDate < delegation.startTime ||
       currentDate > delegation.proposalEndTime
     ) {
-      return ApplicationCreateStatusMap.WRONG_PERIOD;
+      return [ApplicationCreateStatusMap.WRONG_PERIOD, 0];
     }
 
     // Same Application must NOT exists:
@@ -218,7 +228,7 @@ export class ApplicationController {
     });
 
     if (existingApplication) {
-      return ApplicationCreateStatusMap.CREATED;
+      return [ApplicationCreateStatusMap.CREATED, 0];
     }
 
     // Can not create application if he already delegate to another user.
@@ -226,7 +236,7 @@ export class ApplicationController {
       where: { delegationId: delegationId, fromAddress: address },
     });
     if (existingDelegate) {
-      return ApplicationCreateStatusMap.DELEGATE_TO_OTHER;
+      return [ApplicationCreateStatusMap.DELEGATE_TO_OTHER, 0];
     }
 
     // TODO: add communityId in delegation, remove get community by id=1
@@ -241,12 +251,12 @@ export class ApplicationController {
       community.contractAddress,
     );
 
-    this.applicationCreatorVotingPower = vp; // For store vp when creating application
+    // this.applicationCreatorVotingPower = vp; // For store vp when creating application
 
     if (vp <= 0) {
-      return ApplicationCreateStatusMap.NO_VOTING_POWER;
+      return [ApplicationCreateStatusMap.NO_VOTING_POWER, 0];
     }
 
-    return ApplicationCreateStatusMap.OK;
+    return [ApplicationCreateStatusMap.OK, vp];
   }
 }
