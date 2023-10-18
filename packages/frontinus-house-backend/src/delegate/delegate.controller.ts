@@ -47,7 +47,7 @@ export class DelegateController {
     private applicationRepository: Repository<Application>,
   ) {}
 
-  delegateVotingPower = 0;  
+  // delegateVotingPower = 0;  
 
   @Post('/create')
   @ApiOkResponse({
@@ -63,7 +63,7 @@ export class DelegateController {
       dto.address,
     );
 
-    if (checkResult !== VoteStates.OK) {
+    if (checkResult.code !== VoteStates.OK.code) {
       throw new HttpException(checkResult.reason, HttpStatus.BAD_REQUEST);
     }
 
@@ -81,7 +81,8 @@ export class DelegateController {
     const blockNum = await this.blockchainService.getCurrentBlockNum();
 
     delegate.blockHeight = blockNum;
-    delegate.actualWeight = this.delegateVotingPower;
+    delegate.actualWeight = checkResult.votingPower;
+    // delegate.actualWeight = this.delegateVotingPower;
     // End of 20231009 - New added
 
     // Save Delegate:
@@ -156,7 +157,8 @@ export class DelegateController {
     }
 
     // application.voteState = VoteStates.OK;
-    application.voteState = new VoteStatesClass( 200,  "Can vote.", true, this.delegateVotingPower);
+    // application.voteState = new VoteStatesClass( 200,  "Can vote.", true, this.delegateVotingPower);
+    application.voteState = checkResult; // checkResult is VoteStates.OK with vp
 
     return APITransformer(APIResponses.OK, application);
   }
@@ -307,8 +309,9 @@ export class DelegateController {
     // TODO: add communityId in delegation, remove get community by id=1
     // const community = await this.communitiesRepository.findOne(1);
     // 20231009 - delegation table add communityID:
-    const communityId = application.delegation.communityId;
-    const community = await this.communitiesRepository.findOne(communityId);
+    const delegation = await this.delegationService.findOne(application.delegationId);
+    const community = await this.communitiesRepository.findOne(delegation.communityId);
+    // const communityId = application.delegation.communityId;
 
     // Check voting power
     const vp = await this.blockchainService.getVotingPowerWithSnapshot(
@@ -319,9 +322,10 @@ export class DelegateController {
       return VoteStates.NO_DELEGATE_POWER;
     }
 
-    this.delegateVotingPower = vp;  // For create delegate
+    // this.delegateVotingPower = vp;  // For create delegate
 
-    return VoteStates.OK;
+    // return VoteStates.OK;
+    return new VoteStatesClass( 200,  "Can vote.", true, vp);
   }
 
   // 6v: 提供一个新接口，可以拉取 delegate 列表（含 delegation 和 application 的相关信息），同时返回 当前的 voting power 和缓存的 voting power（及块高等信息）。
@@ -423,6 +427,7 @@ export class DelegateController {
 
   @Get('/auto/fill')
   async autoFillScript() {
+    return;
 
     console.log('enter autoFill');
 
