@@ -123,13 +123,20 @@
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+
     color: var(--brand-gray);
     font-size: 16px;
     font-weight: 500;
     word-break: break-word;
     height: 72px;
 }
+
+@media (min-width: 767px) {
+    .truncatedTldr {
+        -webkit-box-orient: vertical;
+    }
+}
+
 .truncatedTldr p {
     margin-bottom: 0;
 }
