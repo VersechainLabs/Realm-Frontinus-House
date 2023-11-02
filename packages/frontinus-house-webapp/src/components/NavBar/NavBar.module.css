@@ -90,9 +90,9 @@
   flex-grow: 0;
 }
 @media (max-width: 991px) {
-  .menuLink {
-    background-color: white;
-  }
+  /*.menuLink {*/
+  /*  background-color: white;*/
+  /*}*/
   .buttonGroup {
     gap: 10px;
     display: flex;
