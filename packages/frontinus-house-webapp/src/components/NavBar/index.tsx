@@ -70,7 +70,7 @@ const NavBar = () => {
             <Link to="/" className={classes.logoGroup}>
               <img className={classes.bulbImg} src="/bulb.png" alt="bulb" />
               <Navbar.Brand>
-                {!isMobile() && (
+                {(
                     <>
                       <div className={clsx('frontinusTitle', classes.navbarBrand)}>{t('frontinusHouse')}</div>
                     </>
