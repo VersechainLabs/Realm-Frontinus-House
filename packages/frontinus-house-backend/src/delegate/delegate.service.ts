@@ -82,6 +82,31 @@ export class DelegateService {
     });
   }
 
+  // For 6v's internal use, to generate Excel:
+  searchDelegateList(delegationId?: number, applicationId?: number): Promise<Delegate[]> {
+    if (delegationId && applicationId) {
+      return this.delegateRepository.find({
+        where: { delegationId, applicationId },
+      });
+    }
+
+    if (delegationId) {
+      return this.delegateRepository.find({
+        where: { delegationId },
+      });
+    }
+
+    if (applicationId) {
+      return this.delegateRepository.find({
+        where: { applicationId },
+      });
+    }
+
+    // if no id is passed, then return all:
+    return this.delegateRepository.find({
+    });
+  }
+
   async store(proposal: Delegate): Promise<Delegate> {
     return await this.delegateRepository.save(proposal, { reload: true });
   }

@@ -21,6 +21,7 @@ import { Delegation } from '../delegation/delegation.entity';
 import { Delegate } from '../delegate/delegate.entity';
 import { BipOption } from 'src/bip-option/bip-option.entity';
 import { BipRound } from 'src/bip-round/bip-round.entity';
+import { Community } from 'src/community/community.entity';
 
 @Injectable()
 export class BipVoteService {
@@ -32,6 +33,8 @@ export class BipVoteService {
     private readonly blockchainService: BlockchainService,
     @InjectRepository(Delegate)
     private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Community)
+    private communityRepository: Repository<Community>,
   ) {}
 
   async findAll(opts?: FindManyOptions<BipVote>): Promise<BipVote[]> {
@@ -137,9 +140,12 @@ export class BipVoteService {
     auction: BipRound,
     delegate: boolean,
   ): Promise<VotingPower> {
+    const community = await this.communityRepository.findOne(auction.communityId)
+
     let votingPower = await this.blockchainService.getVotingPowerWithSnapshot(
       address,
-      process.env.COMMUNITY_ADDRESS,
+      // process.env.COMMUNITY_ADDRESS,
+      community.contractAddress,
       auction.balanceBlockTag,
     );
 
@@ -165,7 +171,8 @@ export class BipVoteService {
           const currentVotingPower =
             await _blockchainService.getVotingPowerWithSnapshot(
               currentDelegate.fromAddress,
-              process.env.COMMUNITY_ADDRESS,
+              // process.env.COMMUNITY_ADDRESS,
+              community.contractAddress,
               auction.balanceBlockTag,
             );
 
@@ -229,12 +236,13 @@ export class BipVoteService {
     return true;
   }
 
-  async checkEligibleToVoteNew(
+  async checkEligibleToBipVote(
     // proposal: BipOption,
     auction: BipRound,
     address: string,
     checkVotingPower = true,
   ): Promise<VoteStatesClass> {
+
     const currentTime = new Date();
     if (
       currentTime < auction.startTime ||
@@ -248,13 +256,16 @@ export class BipVoteService {
     if (sameAuctionVote) {
       return VoteStates.VOTED_ANOTHER;
     }
-
     if (checkVotingPower) {
       try {
         const vp = await this.getVotingPower(address, auction, true);
+        
         if (vp.weight === 0) {
           return VoteStates.NO_POWER;
-        }        
+        }
+        else {
+          return new VoteStatesClass( 200,  "Can vote.", true, vp.weight);  // VoteStates.OK with votingPower
+        }
       } catch (error) {
         // 6v add new case:
         return VoteStates.ALREADY_DELEGATED;

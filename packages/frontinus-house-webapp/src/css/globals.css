@@ -476,6 +476,13 @@ p {
   padding-right: 0px;
 }
 
+@media (max-width: 575px) {
+  .container{
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
 .ql-snow .ql-stroke{
   stroke:white !important;
 }

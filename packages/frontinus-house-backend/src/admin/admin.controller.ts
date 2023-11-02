@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query } from '@nestjs/common';
 import { Admin } from './admin.entity';
 import { AdminService } from './admin.service';
 import { CreateAdminDto, UserType } from './admin.types';
@@ -39,6 +39,21 @@ export class AdminsController {
   //   console.log('run foo')
   //   throw new HttpException('BAD_GATEWAY', HttpStatus.BAD_GATEWAY); 
   // }
+
+  @Get('/forCommunity/:id')
+  async findAllForCommunity(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Admin[]> {
+    const admins = await this.adminService.findAllForCommunity(
+      id,
+    );
+    
+    if (!admins) throw new HttpException('Admins not found', HttpStatus.NOT_FOUND);
+
+    return admins;
+  }
+
+
 
   @Post('/create')
   @ApiOkResponse({
