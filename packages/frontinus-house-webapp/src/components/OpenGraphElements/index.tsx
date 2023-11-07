@@ -5,7 +5,12 @@ const OpenGraphElements: React.FC<{
   description: string;
   imageUrl: string;
 }> = props => {
-  const { title, description, imageUrl } = props;
+  // const { title, description, imageUrl } = props;
+
+  const title = 'Frontinus House';
+  const description = 'Frontinus House - the proposal platform for Bibliotheca DAO, terraforming Realms.World';
+  const imageUrl = 'https://ipfs.io/ipfs/QmbHh35XbjUThNTv3MCzU8rnzekZPvwuTC4BhgTXYkWrEK';
+
   return (
     <Helmet>
       {/* <!-- Open Graph / Facebook --> */}
