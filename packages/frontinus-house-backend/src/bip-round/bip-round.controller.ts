@@ -29,6 +29,12 @@ import { CreateBipRoundDto, GetBipRoundDto } from './bip-round.types';
 import { BipOption } from 'src/bip-option/bip-option.entity';
 import { VotingPeriod } from 'src/auction/auction.types';
 import { BipVoteService } from 'src/bip-vote/bip-vote.service';
+import { BlockchainService } from 'src/blockchain/blockchain.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Delegate } from 'src/delegate/delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
+import { Repository } from 'typeorm';
+import { Community } from 'src/community/community.entity';
   
   @Controller('bip-round')
   export class BipRoundController {
@@ -39,6 +45,13 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
       private readonly bipOptionService: BipOptionService,
       private readonly bipVoteService: BipVoteService,
       private readonly adminService: AdminService,
+      private readonly blockchainService: BlockchainService,
+      @InjectRepository(Community)
+      private communitiesRepository: Repository<Community>,
+      @InjectRepository(Delegate)
+      private delegateRepository: Repository<Delegate>,
+      @InjectRepository(Delegation)
+      private delegationRepository: Repository<Delegation>,      
     ) {}
   
     @Get('/list')
@@ -105,6 +118,21 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
         await this.bipOptionService.store(proposal);
       });
 
+      // Same as auction.service.createAuctionByCommunity(),
+      // cache all when create, to avoid clog of "getVotingPower()" when vote:
+      const community = await this.communitiesRepository.findOne(newRound.communityId);
+
+      const currentBlockNum = await this.blockchainService.getCurrentBlockNum();
+
+      // noinspection ES6MissingAwait: Just a cache, no need await
+      this.blockchainService.cacheAll(
+        this.delegateRepository,
+        this.delegationRepository,
+        community.contractAddress,
+        currentBlockNum,
+      );
+      // End of cache all
+        
       return newRound;
     }    
 
