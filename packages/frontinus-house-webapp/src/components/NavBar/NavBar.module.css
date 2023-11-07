@@ -102,7 +102,7 @@
     width: 100%;
   }
   .buttonGroup div {
-    width: 100%;
+    /*width: 100%;*/
   }
   .buttonGroup div button {
     background-color: white;
