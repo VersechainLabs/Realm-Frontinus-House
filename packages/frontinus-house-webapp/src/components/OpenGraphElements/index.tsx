@@ -5,10 +5,11 @@ const OpenGraphElements: React.FC<{
   description: string;
   imageUrl: string;
 }> = props => {
-  // const { title, description, imageUrl } = props;
+  const { title, description, imageUrl1 } = props;
 
-  const title = 'Frontinus House';
-  const description = 'Frontinus House - the proposal platform for Bibliotheca DAO, terraforming Realms.World';
+  // const title = 'Frontinus House';
+  // const description = 'Frontinus House - the proposal platform for Bibliotheca DAO, terraforming Realms.World';
+    //image should be this
   const imageUrl = 'https://ipfs.io/ipfs/QmbHh35XbjUThNTv3MCzU8rnzekZPvwuTC4BhgTXYkWrEK';
 
   return (
