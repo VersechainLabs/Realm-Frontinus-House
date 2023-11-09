@@ -140,7 +140,7 @@ const StatusFilters: React.FC<{
                 <Dropdown.Item key={index} onClick={() => handleClick(s.status)}>
                   <span>{t(`${s.title}`)}</span>
 
-                  <span className={classes.count}>{numberOfRoundsPerStatus[index]}</span>
+                  <span className={classes.count}>{numberOfRoundsPerStatus[s.status]}</span>
 
                 </Dropdown.Item>
               </Fragment>

@@ -362,6 +362,10 @@ const House = () => {
                       <LoadingIndicator />
                   ) :(
                       <Row>
+                        {isMobile() && <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
+                          <BIPRightCard/>
+                        </Col>}
+
                           <Col xl={8}>
                             {
                               bips.length > 0 ? (
@@ -373,10 +377,10 @@ const House = () => {
                               )
                             }
                           </Col>
+                        {!isMobile() && <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
+                          <BIPRightCard/>
+                        </Col>}
 
-                          <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
-                              <BIPRightCard/>
-                          </Col>
                       </Row>
                       )
                   }

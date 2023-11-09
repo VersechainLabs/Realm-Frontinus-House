@@ -235,9 +235,9 @@
         -webkit-line-clamp: 2;
     }
     .propImgContainer {
-        width: 100%;
-        height: auto;
-        max-height: 400px;
+        /*width: 100%;*/
+        /*height: auto;*/
+        /*max-height: 400px;*/
     }
     .titleContainer {
         align-items: flex-start;
