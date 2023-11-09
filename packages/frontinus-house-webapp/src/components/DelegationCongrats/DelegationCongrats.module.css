@@ -30,6 +30,12 @@
     background-color: #1a1a1b;
 }
 
+@media (max-width: 991px) {
+    .dialogText {
+        width: auto;
+    }
+}
+
 
 .dialogTitle {
     width: 100px;

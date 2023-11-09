@@ -24,6 +24,12 @@
   margin-top: 20px;
 }
 
+@media (max-width: 767px) {
+  .voteMain {
+    width: auto;
+  }
+}
+
 .voteHeader {
   display: flex;
   align-items: center;

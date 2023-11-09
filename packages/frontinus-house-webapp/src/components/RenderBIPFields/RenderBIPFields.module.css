@@ -127,6 +127,13 @@ hr {
 }
 
 
+
+
+.voteBlock{
+    display: flex;
+    justify-content: space-between;
+}
+
 @media (max-width: 577px) {
     .backBtnContainer {
         padding-bottom: 25px;
@@ -138,9 +145,7 @@ hr {
         flex-direction: column;
         gap: 5px;
     }
-}
-
-.voteBlock{
-    display: flex;
-    justify-content: space-between;
+    .voteBlock{
+        display: block;
+    }
 }
