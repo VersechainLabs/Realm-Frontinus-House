@@ -111,6 +111,11 @@
     border-radius: 8px !important;
     text-align: center;
 }
+@media (max-width: 577px) {
+    .castVote{
+        width: auto;
+    }
+}
 
 
 
