@@ -378,13 +378,15 @@ const House = () => {
                           delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
                           delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
                   ).map((round, index) => (
-                    <Col xl={6} key={index}><DelegateCard round={round} /></Col>
+                    <Col xl={6} key={index}><DelegateCard isActive={true} round={round} /></Col>
                     ))}
                   {bips.filter(
                       r =>
                           r.votingPeriod === 'Voting',
                   ).map((round, index) => (
-                      <Col xl={6} key={index}><BIPContent bip={round}/></Col>
+                    <Row key={index}>
+                    <BIPContent bip={round}/>
+                    </Row>
                   ))}
                 </Row>
               </Container>}
@@ -399,7 +401,7 @@ const House = () => {
                   ) : delegatesOnDisplay.length > 0 ? (
                       delegatesOnDisplay.map((round, index) => (
                           <Row key={index}>
-                            <DelegateCard round={round} />
+                            <DelegateCard isActive={false} round={round} />
                           </Row>
                       ))
                   ) : input === '' ? (
