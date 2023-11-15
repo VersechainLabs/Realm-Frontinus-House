@@ -160,19 +160,18 @@ export class BipRoundController {
     });
 
     // Add voteState:
-    if (userAddress && userAddress.length > 0) {
-      await this.addVoteState(roundRecord, userAddress);
+    // Even if the user address is empty, it needs to be called here; otherwise, a part of the structure will be missing, and the frontend will throw an error.
+    await this.addVoteState(roundRecord, userAddress);
 
-      // Add current user voted option:
-      const voteHistory = await this.bipVoteService.findOneByRound(
-        roundRecord.id,
-        userAddress,
-      );
-      if (voteHistory) {
-        roundRecord.currentUserVotedOptionId = voteHistory.bipOptionId;
-      } else {
-        roundRecord.currentUserVotedOptionId = 0; // not voted in this round yet
-      }
+    // Add current user voted option:
+    const voteHistory = await this.bipVoteService.findOneByRound(
+      roundRecord.id,
+      userAddress,
+    );
+    if (voteHistory) {
+      roundRecord.currentUserVotedOptionId = voteHistory.bipOptionId;
+    } else {
+      roundRecord.currentUserVotedOptionId = 0; // not voted in this round yet
     }
 
     return roundRecord;
