@@ -39,6 +39,9 @@ export class BlockchainService {
     blockTag?: number,
   ): Promise<number> {
     try {
+      if (!userAddress || userAddress.length === 0) {
+        return 0;
+      }
       if (!blockTag) {
         blockTag = 0;
       }
