@@ -67,6 +67,12 @@
   .sideCards {
     padding: 0;
   }
+  .breakOut {
+    width: 100%;
+    position: unset;
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    padding-right: calc(var(--bs-gutter-x) * .5);
+  }
 }
 
 
