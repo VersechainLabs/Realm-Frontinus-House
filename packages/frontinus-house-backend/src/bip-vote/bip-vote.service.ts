@@ -194,6 +194,8 @@ export class BipVoteService {
   }
 
   /**
+   * This is for creating Vote. Similar to checkEligibleToBipVote()
+   * 
    * Check if the vote is valid. The checks include:
    * - The proposal is within the valid voting period
    * - The address has not voted in this round
@@ -218,7 +220,7 @@ export class BipVoteService {
     }
 
     // Check if user has voted for this round, Protect against casting same vote twice
-    const sameAuctionVote = await this.findBy(bipOption.id, address);
+    const sameAuctionVote = await this.findOneByRound(bipRound.id, address);
     if (sameAuctionVote) {
       throw new HttpException(
         `Vote for prop ${bipOption.id} failed because user has already been voted in this round`,
@@ -236,6 +238,14 @@ export class BipVoteService {
     return true;
   }
 
+  /**
+   * This is for listing(votesState). Similar to checkEligibleToBipVote()
+   * 
+   * @param auction 
+   * @param address 
+   * @param checkVotingPower 
+   * @returns 
+   */
   async checkEligibleToBipVote(
     // proposal: BipOption,
     auction: BipRound,
