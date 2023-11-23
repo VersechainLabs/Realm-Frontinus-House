@@ -252,7 +252,7 @@ export class BipVoteService {
     }
 
     // Check if user has voted for this round, Protect against casting same vote twice
-    const sameAuctionVote = await this.findBy(auction.id, address);
+    const sameAuctionVote = await this.findOneByRound(auction.id, address);
     if (sameAuctionVote) {
       return VoteStates.VOTED_ANOTHER;
     }
