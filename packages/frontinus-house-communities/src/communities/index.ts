@@ -39,5 +39,14 @@ export const communities = new CaseInsensitiveMap(
         multiplier: 1,
       },
     ]),
+
+    // Chao-minted test NFT on test chain
+    '0xBd0d064094780CbCb5B33dA22B2BbA9A39fBD90E': snapshotMultiple([
+      {
+        address: '0xBd0d064094780CbCb5B33dA22B2BbA9A39fBD90E',
+        strategyType: StrategyType.Erc721,
+        multiplier: 1,
+      },
+    ]),
   }),
 );
