@@ -224,7 +224,7 @@ export class BipVoteService {
     const sameAuctionVote = await this.findOneByRound(bipRound.id, address);
     if (sameAuctionVote) {
       throw new HttpException(
-        `Vote for prop ${bipOption.id} failed because user has already been voted in this round`,
+        `You have already voted in this proposal.`,
         HttpStatus.FORBIDDEN,
       );
     }
