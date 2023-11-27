@@ -220,7 +220,7 @@ export class BipVoteService {
     }
 
     // Check if user has voted for this round, Protect against casting same vote twice,
-    // This could happen when user opens 2 pages before vote, and click them one-by-one
+    // This could happen when user opens 2 pages before vote, and click them one-by-one!
     const sameAuctionVote = await this.findOneByRound(bipRound.id, address);
     if (sameAuctionVote) {
       throw new HttpException(
