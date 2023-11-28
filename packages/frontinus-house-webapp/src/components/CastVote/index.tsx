@@ -50,7 +50,6 @@ const CastVote: React.FC<{
         let nowtime = new Date();
 
         let endtime = new Date(dayjs(endTime).tz().format('YYYY-MM-DD HH:mm'));
-        console.log(dayjs(endTime).utc().format('MMM D, YYYY h:mm A'));
 
         let lefttime = parseInt((endtime.getTime() - nowtime.getTime()) / 1000);
 
