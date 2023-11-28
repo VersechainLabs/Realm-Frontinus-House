@@ -583,6 +583,9 @@ p {
 .castVoteEnds .num{
   color: #F5EEE6;
 }
+.castVoteEnds .num1{
+  font-size: 16px;
+}
 
 .castVoteEnded{
   color:#D2A04C;
