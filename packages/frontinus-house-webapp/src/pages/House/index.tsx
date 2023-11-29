@@ -109,11 +109,7 @@ const House = () => {
       try {
         setLoadingRounds(true);
         const rounds = await client.current.getAuctionsForCommunity(community.id);
-
         setRounds(rounds);
-
-
-
         setLoadingRounds(false);
       } catch (e) {
         setLoadingRounds(false);
