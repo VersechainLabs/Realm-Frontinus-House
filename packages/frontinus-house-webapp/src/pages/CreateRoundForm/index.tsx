@@ -386,53 +386,64 @@ const CreateRound: React.FC<{}> = () => {
                   </LocalizationProvider>
                 </div>
               </div>
-              <div className={classes.paddingTop}>
-                <div className={classes.xian + ' ' + classes.xian1}></div>
-                <div className={classes.flexDiv}>
-                  <div
-                    className={classes.qiu}
-                    style={{
-                      background: isStartTimeFilled
-                        ? 'var(--qiu-color-filled)'
-                        : 'var(--qiu-color-default)',
-                    }}
-                  ></div>
-                  <div className={`${classes.qiuDesc} ${isStartTimeFilled ? classes.filled : ''}`}>
+              <div className={classes.paddingTop + ' ' + classes.flexDiv}>
+                <div>
+                  <div className={classes.xian + ' ' + classes.xian1}></div>
+
+                  <div className={classes.flexDiv}>
+                    <div
+                        className={classes.qiu}
+                        style={{
+                          background: isStartTimeFilled
+                              ? 'var(--qiu-color-filled)'
+                              : 'var(--qiu-color-default)',
+                        }}
+                    ></div>
+
+
+                  </div>
+
+                  <div className={classes.xian + ' ' + classes.xian2}></div>
+                  <div className={classes.flexDiv}>
+                    <div
+                        className={classes.qiu}
+                        style={{
+                          background: isProposalTimeFilled
+                              ? 'var(--qiu-color-filled)'
+                              : 'var(--qiu-color-default)',
+                        }}
+                    ></div>
+
+                  </div>
+                  <div className={classes.xian + ' ' + classes.xian3}></div>
+                  <div className={classes.flexDiv}>
+                    <div
+                        className={classes.qiu}
+                        style={{
+                          background: isEndTimeFilled
+                              ? 'var(--qiu-color-filled)'
+                              : 'var(--qiu-color-default)',
+                        }}
+                    ></div>
+
+                  </div>
+                  <div className={classes.xian + ' ' + classes.xian4}></div>
+                </div>
+                <div>
+                  <div className={`${classes.qiuDesc} ${classes.paddingTop1} ${isStartTimeFilled ? classes.filled : ''}`}>
                     Start time for proposal submissions
                   </div>
-                </div>
-
-                <div className={classes.xian + ' ' + classes.xian2}></div>
-                <div className={classes.flexDiv}>
                   <div
-                    className={classes.qiu}
-                    style={{
-                      background: isProposalTimeFilled
-                        ? 'var(--qiu-color-filled)'
-                        : 'var(--qiu-color-default)',
-                    }}
-                  ></div>
-                  <div
-                    className={`${classes.qiuDesc} ${isProposalTimeFilled ? classes.filled : ''}`}
+                      className={`${classes.qiuDesc} ${classes.paddingTop2} ${isProposalTimeFilled ? classes.filled : ''}`}
                   >
                     Voting Start Time
                   </div>
-                </div>
-                <div className={classes.xian + ' ' + classes.xian3}></div>
-                <div className={classes.flexDiv}>
-                  <div
-                    className={classes.qiu}
-                    style={{
-                      background: isEndTimeFilled
-                        ? 'var(--qiu-color-filled)'
-                        : 'var(--qiu-color-default)',
-                    }}
-                  ></div>
-                  <div className={`${classes.qiuDesc} ${isEndTimeFilled ? classes.filled : ''}`}>
+                  <div className={`${classes.qiuDesc} ${classes.paddingTop3} ${isEndTimeFilled ? classes.filled : ''}`}>
                     Voting End Time
                   </div>
                 </div>
-                <div className={classes.xian + ' ' + classes.xian4}></div>
+
+
               </div>
             </div>
             <div className={classes.labelMargin}>

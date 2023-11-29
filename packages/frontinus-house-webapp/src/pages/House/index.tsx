@@ -61,7 +61,7 @@ const House = () => {
 
   const [rounds, setRounds] = useState<StoredAuctionBase[]>([]);
   const [roundsOnDisplay, setRoundsOnDisplay] = useState<StoredAuctionBase[]>([]);
-  const [currentRoundStatus, setCurrentRoundStatus] = useState<number>(RoundStatus.AllRounds);
+  const [currentRoundStatus, setCurrentRoundStatus] = useState<number>(RoundStatus.Active);
   const [input, setInput] = useState<string>('');
   const [loadingCommunity, setLoadingCommunity] = useState(false);
   const [failedLoadingCommunity, setFailedLoadingCommunity] = useState(false);
@@ -143,7 +143,6 @@ const House = () => {
       ).length + delegatesOnDisplay.filter(
           r =>
               delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
-              delegateStatus(r) === DelegateVoteStatus.DelegateGranted ||
               delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
       ).length + bips.filter(
           r =>
@@ -169,6 +168,13 @@ const House = () => {
         r =>
             auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
             auctionStatus(r) === AuctionStatus.AuctionVoting,
+    ).length + delegatesOnDisplay.filter(
+        r =>
+            delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
+            delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
+    ).length + bips.filter(
+        r =>
+            r.votingPeriod === 'Voting',
     ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
 
   }, [rounds, delegates,bips]);
@@ -355,7 +361,6 @@ const House = () => {
                   ).length > 0 || delegatesOnDisplay.filter(
                       r =>
                           delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
-                          delegateStatus(r) === DelegateVoteStatus.DelegateGranted ||
                           delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
                   ).length > 0 || bips.filter(
                       r =>
@@ -378,7 +383,6 @@ const House = () => {
                   {delegatesOnDisplay.filter(
                       r =>
                           delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
-                          delegateStatus(r) === DelegateVoteStatus.DelegateGranted ||
                           delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
                   ).map((round, index) => (
                     <Col xl={6} key={index}><DelegateCard isActive={true} round={round} /></Col>
