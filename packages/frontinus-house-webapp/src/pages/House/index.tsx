@@ -168,6 +168,13 @@ const House = () => {
         r =>
             auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
             auctionStatus(r) === AuctionStatus.AuctionVoting,
+    ).length + delegatesOnDisplay.filter(
+        r =>
+            delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
+            delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
+    ).length + bips.filter(
+        r =>
+            r.votingPeriod === 'Voting',
     ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
 
   }, [rounds, delegates,bips]);
