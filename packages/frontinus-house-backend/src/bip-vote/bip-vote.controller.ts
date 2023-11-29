@@ -225,7 +225,7 @@ export class BipVoteController {
       );
     }
 
-    // Start remove vote.
+    // Start remove vote:
     const ids = [foundVote.id];
     const delegateVoteList = await this.bipVotesService.findAll({
       where: {
