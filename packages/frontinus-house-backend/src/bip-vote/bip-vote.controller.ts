@@ -233,6 +233,7 @@ export class BipVoteController {
         delegateAddress: foundVote.address,
       },
     });
+    
     if (delegateVoteList.length > 0) {
       ids.push(...delegateVoteList.map((v) => v.id));
     }
