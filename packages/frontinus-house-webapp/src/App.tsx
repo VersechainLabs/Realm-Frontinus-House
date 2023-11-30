@@ -46,10 +46,10 @@ import { useAppDispatch, useAppSelector } from './hooks';
 import { clearClick } from './state/slices/alert';
 import ProposalPreview from './pages/ProposalPreview';
 import BIP from "./pages/BIP";
-import {polygon, optimism, arbitrum, base, zora,baseGoerli} from "viem/chains";
+import {polygon, optimism, arbitrum, base, zora,goerli} from "viem/chains";
 
 const { chains, publicClient } = configureChains(
-    process.env.REACT_APP_TYPE === 'dev'?[mainnet, polygon, optimism, arbitrum, base, zora, baseGoerli]:[mainnet],
+    process.env.REACT_APP_TYPE === 'dev'?[mainnet, polygon, optimism, arbitrum, base, zora, goerli]:[mainnet],
   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
 );
 console.log(process.env.REACT_APP_TYPE)
