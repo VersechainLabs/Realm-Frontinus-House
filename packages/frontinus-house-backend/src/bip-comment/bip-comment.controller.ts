@@ -37,7 +37,7 @@ export class BipCommentsController {
     ) {
 
       // const { data: ens } = useEnsName({ address: '0x9d7bA953587B87c474a10beb65809Ea489F026bD' as `0x${string}` });
-      // // const { data: avatar } = useEnsAvatar({ address: '0x9d7bA953587B87c474a10beb65809Ea489F026bD' as `0x${string}` });
+      // const { data: avatar } = useEnsAvatar({ address: '0x9d7bA953587B87c474a10beb65809Ea489F026bD' as `0x${string}` });
       // return ens;
 
 
@@ -176,6 +176,8 @@ export class BipCommentsController {
     createCommentDto: CreateBipCommentDto,
   ): Promise<BipComment> {
 
+    console.log("enter bip-commnet/create");
+
     const bipRound = await this.bipRoundService.findOne(createCommentDto.bipRoundId);
 
     const contentMaxLetter = 150;
@@ -208,13 +210,16 @@ export class BipCommentsController {
         }
       ]
     }
+
+    console.log("params:", params);
+
     this.httpService.post(process.env.DISCORD_WEBHOOK, params)
      .subscribe(
       response => console.log(response),
       error => console.log(error)
     );
 
-    
+
     return await this.commentsService.createComment(createCommentDto);
   }
 
