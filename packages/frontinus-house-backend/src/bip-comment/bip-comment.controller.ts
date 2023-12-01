@@ -19,7 +19,8 @@ import { BipCommentsService } from './bip-comment.service';
 import { BipComment } from './bip-comment.entity';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
-import { useEnsName, useEnsAvatar } from 'wagmi';
+import { ethers } from 'ethers';
+
 
 @Controller('bip-comments')
 export class BipCommentsController {
@@ -35,6 +36,13 @@ export class BipCommentsController {
     @Get('/test/test')
     async test (
     ) {
+      const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+
+      const ethereumAddress = '0x9d7bA953587B87c474a10beb65809Ea489F026bD';
+      let ensName = await provider.lookupAddress(ethereumAddress);
+      let ensAvatar = await provider.getAvatar(ethereumAddress);
+
+      return ensName + ' ' + ensAvatar;
 
       // const { data: ens } = useEnsName({ address: '0x9d7bA953587B87c474a10beb65809Ea489F026bD' as `0x${string}` });
       // const { data: avatar } = useEnsAvatar({ address: '0x9d7bA953587B87c474a10beb65809Ea489F026bD' as `0x${string}` });
@@ -183,22 +191,27 @@ export class BipCommentsController {
     const contentMaxLetter = 150;
     let shortContent = this.removeTags(bipRound.content);
     const contentLeng = shortContent.length;
-
     if (shortContent.length > contentMaxLetter) {
       shortContent = shortContent.substring(0, contentMaxLetter) + "...";
     }
 
+    // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
+    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+    let ensName = await provider.lookupAddress(createCommentDto.address);
+    ensName = ensName == null ? createCommentDto.address : ensName;
+    let ensAvatar = await provider.getAvatar(createCommentDto.address);
+    ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
+
     const params = {
-      username: createCommentDto.address,
-      avatar_url: "https://frontinus.house/bulb.png",
-      content:  `${createCommentDto.address} replied in ${bipRound.title} \n
-      https://frontinus.house/bip/${bipRound.id}`,
+      username: ensName,
+      avatar_url: ensAvatar,
+      content:  `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`,
       embeds: [
         {
           "title": `${bipRound.title}`,
           "color": 15258703,
           "thumbnail": {
-            "url": "https://frontinus.house/bulb.png",
+            // "url": "https://frontinus.house/bulb.png",
           },
           "fields": [
             {
@@ -218,7 +231,6 @@ export class BipCommentsController {
       response => console.log(response),
       error => console.log(error)
     );
-
 
     return await this.commentsService.createComment(createCommentDto);
   }
