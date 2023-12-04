@@ -28,6 +28,7 @@ import { Delegation } from 'src/delegation/delegation.entity';
 import { Repository } from 'typeorm';
 import { Community } from 'src/community/community.entity';
 import { ethers } from 'ethers';
+import { HttpService } from '@nestjs/axios';
 
 @Controller('bip-round')
 export class BipRoundController {
@@ -39,6 +40,7 @@ export class BipRoundController {
     private readonly bipVoteService: BipVoteService,
     private readonly adminService: AdminService,
     private readonly blockchainService: BlockchainService,
+    private readonly httpService: HttpService,
     @InjectRepository(Community)
     private communitiesRepository: Repository<Community>,
     @InjectRepository(Delegate)
