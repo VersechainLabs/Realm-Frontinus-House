@@ -20,6 +20,8 @@ import { BipComment } from './bip-comment.entity';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { ethers } from 'ethers';
+import { AxiosModule } from 'src/http-service/axios.module';
+import { AxiosService } from 'src/http-service/axios.service';
 
 
 @Controller('bip-comments')
@@ -29,6 +31,7 @@ export class BipCommentsController {
   constructor(
     private readonly commentsService: BipCommentsService,
     private readonly bipRoundService: BipRoundService,
+    private readonly axioService: AxiosService,
     private readonly httpService: HttpService) {}
 
     @Get('/test/test')
@@ -184,60 +187,7 @@ export class BipCommentsController {
 
     const bipRound = await this.bipRoundService.findOne(createCommentDto.bipRoundId);
 
-
-    try {
-      const contentMaxLetter = 150;
-      let shortContent = this.removeTags(bipRound.content);
-      if (shortContent.length > contentMaxLetter) {
-        shortContent = shortContent.substring(0, contentMaxLetter) + "...";
-      }
-  
-      const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
-      console.log("address: ", createCommentDto.address);
-      // ens name:
-      let ensName = await provider.lookupAddress(createCommentDto.address);
-      console.log("ensName: ", ensName);
-      if (ensName == null) {
-        // turn "0x32790deE22beD1916303e2c3F4253fC2cFc0c417" into "0x327...c417" for better look:
-        ensName = createCommentDto.address.substring(0, 5) + "..." + createCommentDto.address.substring(createCommentDto.address.length - 4);
-      }
-      // ens avatar:
-      let ensAvatar = await provider.getAvatar(createCommentDto.address);
-      ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
-  
-      const params = {
-        username: 'Frontinus House Admin',
-        avatar_url: ensAvatar,
-        content:  `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`,
-        embeds: [
-          {
-            "title": `${bipRound.title}`,
-            "color": 15258703,
-            "thumbnail": {
-              // "url": "https://frontinus.house/bulb.png",
-            },
-            "fields": [
-              {
-                "name": ``,
-                "value": shortContent,
-                "inline": true
-              }
-            ]
-          }
-        ]
-      }
-  
-      console.log("params:", params);
-  
-      this.httpService.post(process.env.DISCORD_WEBHOOK, params)
-       .subscribe(
-        response => console.log(response),
-        error => console.log(error)
-      );
-    } catch (e) {
-      console.log("Send to Discord through webhook failed.");
-    }
-
+    this.axioService.postToDiscord(createCommentDto.address, bipRound);
 
     return await this.commentsService.createComment(createCommentDto);
   }
