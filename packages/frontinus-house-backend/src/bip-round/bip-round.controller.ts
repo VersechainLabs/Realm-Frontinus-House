@@ -132,7 +132,7 @@ export class BipRoundController {
     const params = {
       username: ensName,
       avatar_url: ensAvatar,
-      content:  `${ensName} posted in ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
+      content:  `${ensName} posted a new BIP: ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
       embeds: [
         {
           "title": `${newRound.title}`,

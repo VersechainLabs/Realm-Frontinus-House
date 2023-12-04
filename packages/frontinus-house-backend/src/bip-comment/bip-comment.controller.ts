@@ -34,11 +34,6 @@ export class BipCommentsController {
     @Get('/test/test')
     async test (
     ) {
-      const TestAddress = '0x9d7bA953587B87c474a10beb65809Ea489F026bD';
-      return TestAddress.substring(0, 5) + "..." + TestAddress.substring(TestAddress.length - 4);
-
-
-
       const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
 
       const ethereumAddress = '0x9d7bA953587B87c474a10beb65809Ea489F026bD';
