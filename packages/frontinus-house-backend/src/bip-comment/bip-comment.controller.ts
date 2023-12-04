@@ -82,7 +82,7 @@ export class BipCommentsController {
           }
         ]
       }
-      this.httpService.post(process.env.DISCORD_WEBHOOK, params)
+      this.httpService.post(process.env.DISCORD_WEBHOOK_COMMENT, params)
        .subscribe(
         response => console.log(response),
         error => console.log(error)
@@ -118,7 +118,7 @@ export class BipCommentsController {
       //     }
       //   ]
       // }
-      // this.httpService.post(process.env.DISCORD_WEBHOOK, params)
+      // this.httpService.post(process.env.DISCORD_WEBHOOK_COMMENT, params)
       //  .subscribe(
       //   response => console.log(response),
       //   error => console.log(error)
