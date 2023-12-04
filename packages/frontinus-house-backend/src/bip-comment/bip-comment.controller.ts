@@ -26,8 +26,6 @@ import { ethers } from 'ethers';
 export class BipCommentsController {
   [x: string]: any;
 
-  private readonly DATA_URL = 'http://localhost:3001/admins/list';
-
   constructor(
     private readonly commentsService: BipCommentsService,
     private readonly bipRoundService: BipRoundService,
@@ -36,7 +34,7 @@ export class BipCommentsController {
     @Get('/test/test')
     async test (
     ) {
-      const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+      const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL_MAIN);
 
       const ethereumAddress = '0x9d7bA953587B87c474a10beb65809Ea489F026bD';
       let ensName = await provider.lookupAddress(ethereumAddress);
@@ -196,7 +194,7 @@ export class BipCommentsController {
     }
 
     // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
-    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL_MAIN);
     console.log("address: ", createCommentDto.address);
     let ensName = await provider.lookupAddress(createCommentDto.address);
     console.log("ensName: ", ensName);
