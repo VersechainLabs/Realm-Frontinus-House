@@ -120,7 +120,7 @@ export class BipRoundController {
       let ensName = await provider.lookupAddress(dto.address);
       console.log("ensName: ", ensName);
       if (ensName == null) {
-        // turn "0x9d7bA953587B87c474a10beb65809Ea489F026bD" into "0x9d7...26bD" for better look:
+        // turn "0x9d7bA953581111111189F026bD" into "0x9d7...26bD" for better look:
         ensName = dto.address.substring(0, 5) + "..." + dto.address.substring(dto.address.length - 4);
       }
       // ens avatar:
