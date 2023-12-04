@@ -27,6 +27,7 @@ import { Delegate } from 'src/delegate/delegate.entity';
 import { Delegation } from 'src/delegation/delegation.entity';
 import { Repository } from 'typeorm';
 import { Community } from 'src/community/community.entity';
+import { ethers } from 'ethers';
 
 @Controller('bip-round')
 export class BipRoundController {
@@ -99,6 +100,61 @@ export class BipRoundController {
 
       await this.bipOptionService.store(proposal);
     });
+
+
+
+
+    console.log("enter bip-round/create");
+
+    const contentMaxLetter = 150;
+    let shortContent = this.removeTags(newRound.content);
+    const contentLeng = shortContent.length;
+    if (shortContent.length > contentMaxLetter) {
+      shortContent = shortContent.substring(0, contentMaxLetter) + "...";
+    }
+
+    // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
+    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL_MAIN);
+    console.log("address: ", dto.address);
+    let ensName = await provider.lookupAddress(dto.address);
+    console.log("ensName: ", ensName);
+    ensName = ensName == null ? dto.address : ensName;
+    let ensAvatar = await provider.getAvatar(dto.address);
+    ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
+
+    const params = {
+      username: ensName,
+      avatar_url: ensAvatar,
+      content:  `${ensName} replied in ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
+      embeds: [
+        {
+          "title": `${newRound.title}`,
+          "color": 15258703,
+          "thumbnail": {
+            // "url": "https://frontinus.house/bulb.png",
+          },
+          "fields": [
+            {
+              "name": ``,
+              "value": shortContent,
+              "inline": true
+            }
+          ]
+        }
+      ]
+    }
+
+    console.log("params:", params);
+
+    this.httpService.post(process.env.DISCORD_WEBHOOK, params)
+     .subscribe(
+      response => console.log(response),
+      error => console.log(error)
+    );
+
+
+
+
 
     // Same as auction.service.createAuctionByCommunity(),
     // cache all when create, to avoid clog of "getVotingPower()" when vote:
