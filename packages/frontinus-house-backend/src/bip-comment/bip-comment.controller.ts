@@ -185,56 +185,60 @@ export class BipCommentsController {
 
     const bipRound = await this.bipRoundService.findOne(createCommentDto.bipRoundId);
 
-    const contentMaxLetter = 150;
-    let shortContent = this.removeTags(bipRound.content);
-    const contentLeng = shortContent.length;
-    if (shortContent.length > contentMaxLetter) {
-      shortContent = shortContent.substring(0, contentMaxLetter) + "...";
+
+    try {
+      const contentMaxLetter = 150;
+      let shortContent = this.removeTags(bipRound.content);
+      if (shortContent.length > contentMaxLetter) {
+        shortContent = shortContent.substring(0, contentMaxLetter) + "...";
+      }
+  
+      const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+      console.log("address: ", createCommentDto.address);
+      // ens name:
+      let ensName = await provider.lookupAddress(createCommentDto.address);
+      console.log("ensName: ", ensName);
+      if (ensName == null) {
+        // turn "0x32790deE22beD1916303e2c3F4253fC2cFc0c417" into "0x327...c417" for better look:
+        ensName = createCommentDto.address.substring(0, 5) + "..." + createCommentDto.address.substring(createCommentDto.address.length - 4);
+      }
+      // ens avatar:
+      let ensAvatar = await provider.getAvatar(createCommentDto.address);
+      ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
+  
+      const params = {
+        username: ensName,
+        avatar_url: ensAvatar,
+        content:  `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`,
+        embeds: [
+          {
+            "title": `${bipRound.title}`,
+            "color": 15258703,
+            "thumbnail": {
+              // "url": "https://frontinus.house/bulb.png",
+            },
+            "fields": [
+              {
+                "name": ``,
+                "value": shortContent,
+                "inline": true
+              }
+            ]
+          }
+        ]
+      }
+  
+      console.log("params:", params);
+  
+      this.httpService.post(process.env.DISCORD_WEBHOOK, params)
+       .subscribe(
+        response => console.log(response),
+        error => console.log(error)
+      );
+    } catch (e) {
+      console.log("Send to Discord through webhook failed.");
     }
 
-    // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
-    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
-    console.log("address: ", createCommentDto.address);
-    // ens name:
-    let ensName = await provider.lookupAddress(createCommentDto.address);
-    console.log("ensName: ", ensName);
-    if (ensName == null) {
-      // turn "0x32790deE22beD1916303e2c3F4253fC2cFc0c417" into "0x327...c417" for better look:
-      ensName = createCommentDto.address.substring(0, 5) + "..." + createCommentDto.address.substring(createCommentDto.address.length - 4);
-    }
-    // ens avatar:
-    let ensAvatar = await provider.getAvatar(createCommentDto.address);
-    ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
-
-    const params = {
-      username: ensName,
-      avatar_url: ensAvatar,
-      content:  `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`,
-      embeds: [
-        {
-          "title": `${bipRound.title}`,
-          "color": 15258703,
-          "thumbnail": {
-            // "url": "https://frontinus.house/bulb.png",
-          },
-          "fields": [
-            {
-              "name": ``,
-              "value": shortContent,
-              "inline": true
-            }
-          ]
-        }
-      ]
-    }
-
-    console.log("params:", params);
-
-    this.httpService.post(process.env.DISCORD_WEBHOOK, params)
-     .subscribe(
-      response => console.log(response),
-      error => console.log(error)
-    );
 
     return await this.commentsService.createComment(createCommentDto);
   }

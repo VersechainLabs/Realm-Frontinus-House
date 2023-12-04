@@ -104,61 +104,61 @@ export class BipRoundController {
     });
 
 
+    try {
+      console.log("enter bip-round/create");
 
-
-    console.log("enter bip-round/create");
-
-    const contentMaxLetter = 150;
-    let shortContent = this.removeTags(newRound.content);
-    const contentLeng = shortContent.length;
-    if (shortContent.length > contentMaxLetter) {
-      shortContent = shortContent.substring(0, contentMaxLetter) + "...";
+      const contentMaxLetter = 150;
+      let shortContent = this.removeTags(newRound.content);
+      if (shortContent.length > contentMaxLetter) {
+        shortContent = shortContent.substring(0, contentMaxLetter) + "...";
+      }
+  
+      // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
+      const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+      console.log("address: ", dto.address);
+      // ens name:
+      let ensName = await provider.lookupAddress(dto.address);
+      console.log("ensName: ", ensName);
+      if (ensName == null) {
+        // turn "0x9d7bA953587B87c474a10beb65809Ea489F026bD" into "0x9d7...26bD" for better look:
+        ensName = dto.address.substring(0, 5) + "..." + dto.address.substring(dto.address.length - 4);
+      }
+      // ens avatar:
+      let ensAvatar = await provider.getAvatar(dto.address);
+      ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
+  
+      const params = {
+        username: ensName,
+        avatar_url: ensAvatar,
+        content:  `${ensName} posted a new BIP: ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
+        embeds: [
+          {
+            "title": `${newRound.title}`,
+            "color": 15258703,
+            "thumbnail": {
+              // "url": "https://frontinus.house/bulb.png",
+            },
+            "fields": [
+              {
+                "name": ``,
+                "value": shortContent,
+                "inline": true
+              }
+            ]
+          }
+        ]
+      }
+  
+      console.log("params:", params);
+  
+      this.httpService.post(process.env.DISCORD_WEBHOOK, params)
+       .subscribe(
+        response => console.log(response),
+        error => console.log(error)
+      );
+    } catch (e) {
+      console.log("Send to Discord through webhook failed.");
     }
-
-    // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
-    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
-    console.log("address: ", dto.address);
-    // ens name:
-    let ensName = await provider.lookupAddress(dto.address);
-    console.log("ensName: ", ensName);
-    if (ensName == null) {
-      // turn "0x9d7bA953587B87c474a10beb65809Ea489F026bD" into "0x9d7...26bD" for better look:
-      ensName = dto.address.substring(0, 5) + "..." + dto.address.substring(dto.address.length - 4);
-    }
-    // ens avatar:
-    let ensAvatar = await provider.getAvatar(dto.address);
-    ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
-
-    const params = {
-      username: ensName,
-      avatar_url: ensAvatar,
-      content:  `${ensName} posted a new BIP: ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
-      embeds: [
-        {
-          "title": `${newRound.title}`,
-          "color": 15258703,
-          "thumbnail": {
-            // "url": "https://frontinus.house/bulb.png",
-          },
-          "fields": [
-            {
-              "name": ``,
-              "value": shortContent,
-              "inline": true
-            }
-          ]
-        }
-      ]
-    }
-
-    console.log("params:", params);
-
-    this.httpService.post(process.env.DISCORD_WEBHOOK, params)
-     .subscribe(
-      response => console.log(response),
-      error => console.log(error)
-    );
-
 
 
 
