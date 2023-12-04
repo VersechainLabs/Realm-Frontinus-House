@@ -182,9 +182,6 @@ export class BipCommentsController {
     @Body(SignedPayloadValidationPipe)
     createCommentDto: CreateBipCommentDto,
   ): Promise<BipComment> {
-
-    console.log("enter bip-commnet/create");
-
     const bipRound = await this.bipRoundService.findOne(createCommentDto.bipRoundId);
 
     this.axioService.postToDiscord(createCommentDto.address, bipRound);
