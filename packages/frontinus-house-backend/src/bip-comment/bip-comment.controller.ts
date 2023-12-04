@@ -33,10 +33,9 @@ export class BipCommentsController {
 
     @Get('/test/test')
     async test (
+      @Query('address') ethereumAddress?: string,
     ) {
       const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
-
-      const ethereumAddress = '0x26bD';
 
       let ensName = await provider.lookupAddress(ethereumAddress);
 
