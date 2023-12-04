@@ -6,6 +6,10 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { Address } from 'src/types/address';
 import { BipRound } from 'src/bip-round/bip-round.entity';
 
+export enum PostToDiscordTypes {
+  CREATE_BIP = 'CREATE_BIP',
+  COMMENT = 'COMMENT',
+}
 
 @Injectable()
 export class AxiosService {
@@ -25,9 +29,10 @@ export class AxiosService {
     return str.replace( /(<([^>]+)>)/ig, '');
   }
 
-  async postToDiscord(
+  async postBipToDiscord(
     address: Address,
-    bipRound: BipRound
+    bipRound: BipRound,
+    type: PostToDiscordTypes,
     ){
 
     try {
@@ -48,10 +53,22 @@ export class AxiosService {
       let ensAvatar = await provider.getAvatar(address);
       ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
   
+      // content:
+      let formatContent = `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
+      switch (type) {
+        case PostToDiscordTypes.COMMENT:
+          
+          break;
+        case PostToDiscordTypes.CREATE_BIP:
+          formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
+        default:
+          break;
+      }
+
       const params = {
         username: 'Frontinus House Admin',
         avatar_url: ensAvatar,
-        content:  `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`,
+        content:  formatContent,
         embeds: [
           {
             "title": `${bipRound.title}`,

@@ -21,7 +21,7 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { ethers } from 'ethers';
 import { AxiosModule } from 'src/http-service/axios.module';
-import { AxiosService } from 'src/http-service/axios.service';
+import { AxiosService, PostToDiscordTypes } from 'src/http-service/axios.service';
 
 
 @Controller('bip-comments')
@@ -162,17 +162,6 @@ export class BipCommentsController {
 
     }
 
-  removeTags(str) {
-      if ((str===null) || (str===''))
-          return false;
-      else
-          str = str.toString();
-           
-      // Regular expression to identify HTML tags in
-      // the input string. Replacing the identified
-      // HTML tag with a null string.
-      return str.replace( /(<([^>]+)>)/ig, '');
-  }
 
   @Post('/create')
   @ApiOkResponse({
@@ -184,7 +173,7 @@ export class BipCommentsController {
   ): Promise<BipComment> {
     const bipRound = await this.bipRoundService.findOne(createCommentDto.bipRoundId);
 
-    this.axiosService.postToDiscord(createCommentDto.address, bipRound);
+    this.axiosService.postBipToDiscord(createCommentDto.address, bipRound, PostToDiscordTypes.COMMENT);
 
     return await this.commentsService.createComment(createCommentDto);
   }

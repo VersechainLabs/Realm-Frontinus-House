@@ -28,7 +28,7 @@ import { Delegation } from 'src/delegation/delegation.entity';
 import { Repository } from 'typeorm';
 import { Community } from 'src/community/community.entity';
 import { HttpService } from '@nestjs/axios';
-import { AxiosService } from 'src/http-service/axios.service';
+import { AxiosService, PostToDiscordTypes } from 'src/http-service/axios.service';
 
 @Controller('bip-round')
 export class BipRoundController {
@@ -104,7 +104,7 @@ export class BipRoundController {
       await this.bipOptionService.store(proposal);
     });
 
-    this.axiosService.postToDiscord(dto.address, newRound);
+    this.axiosService.postBipToDiscord(dto.address, newRound, PostToDiscordTypes.CREATE_BIP);
 
     // Same as auction.service.createAuctionByCommunity(),
     // cache all when create, to avoid clog of "getVotingPower()" when vote:
@@ -125,22 +125,6 @@ export class BipRoundController {
 
     return newRound;
   }
-  /**
-   * Same as bip-comment.controller.ts, merge later.
-   * @param str 
-   * @returns 
-   */
-  removeTags(str) {
-    if ((str===null) || (str===''))
-        return false;
-    else
-        str = str.toString();
-         
-    // Regular expression to identify HTML tags in
-    // the input string. Replacing the identified
-    // HTML tag with a null string.
-    return str.replace( /(<([^>]+)>)/ig, '');
-}
 
   @Get('/detail/:id')
   @ApiOkResponse({
