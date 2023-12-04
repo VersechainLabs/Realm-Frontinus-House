@@ -49,8 +49,8 @@ const CastVote: React.FC<{
 
         let nowtime = new Date();
 
-
         let endtime = new Date(dayjs(endTime).tz().format('YYYY-MM-DD HH:mm'));
+
         let lefttime = parseInt((endtime.getTime() - nowtime.getTime()) / 1000);
 
 
@@ -67,12 +67,14 @@ const CastVote: React.FC<{
         h = addZero(h);
         m = addZero(m);
 
-        let dStr = d <= 1 ? 'day':'days';
+        let dStr = d <= 1 ? 'Day':'Days';
         let hStr = h <= 1 ? 'hour':'hours';
-        let mStr = m <= 1 ? 'minute':'minutes';
+        let mStr = m <= 1 ? 'min':'mins';
+        let nowDate = dayjs(endTime).utc().format('MMM D, YYYY h:mm A') + ' +UTC';
 
 
-        document.querySelector(".count").innerHTML = `<span class="castVoteEnds">Voting ends in <span class="num">${d}</span> ${dStr} <span class="num">${h}</span> ${hStr}  <span class="num">${m}</span> ${mStr}</span>`;
+        document.querySelector(".count").innerHTML = `<span class="castVoteEnds">Voting ends on <span class="num">${nowDate}</span> which is in 
+<div class="num num1">${d} ${dStr} ${h} ${hStr}  ${m} ${mStr}</div>`;
 
         if (lefttime <= 0) {
             setIsEnd(true);

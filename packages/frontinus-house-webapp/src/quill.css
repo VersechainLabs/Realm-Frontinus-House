@@ -128,7 +128,7 @@
   color: var(--brand-black) !important;
 }
 .ql-editor img {
-  max-width: 960px !important;
+  /*max-width: 960px !important;*/
   max-height: 360px !important;
 }
 .ql-editor :is(p, li) {

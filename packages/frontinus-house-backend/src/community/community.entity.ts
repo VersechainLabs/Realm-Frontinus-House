@@ -16,6 +16,9 @@ import {
   BeforeUpdate,
   RelationId,
 } from 'typeorm';
+import { BipRound } from 'src/bip-round/bip-round.entity';
+import { Admin } from 'src/admin/admin.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
 
 @Entity()
 @ObjectType()
@@ -54,6 +57,28 @@ export class Community {
   @JoinColumn()
   @Field(() => [Auction])
   auctions: Auction[];
+
+  @OneToMany(() => BipRound, (bipRound) => bipRound.community, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => [BipRound])
+  bipRounds: BipRound[];
+
+  @OneToMany(() => Admin, (admin) => admin.community, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => [Admin])
+  admins: Admin[];
+
+  @OneToMany(() => Delegation, (delegation) => delegation.community, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => [Delegation])
+  delegations: Delegation[];
+
 
   @Column()
   @Field(() => Date)

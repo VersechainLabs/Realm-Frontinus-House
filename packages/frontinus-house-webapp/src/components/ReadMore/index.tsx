@@ -13,7 +13,7 @@ const ReadMore: React.FC<{
 
   useLayoutEffect(() => {
     // @ts-ignore
-    if (ref.current && ref.current.clientHeight < ref.current.scrollHeight) {
+    if (ref.current && ref.current.clientHeight <= ref.current.scrollHeight) {
       setShowLink(true)
     }
   }, [ref])

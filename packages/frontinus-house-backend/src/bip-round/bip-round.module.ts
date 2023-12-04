@@ -18,6 +18,9 @@ import { Admin } from '../admin/admin.entity';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipOptionModule } from 'src/bip-option/bip-option.module';
 import { BipVoteService } from 'src/bip-vote/bip-vote.service';
+import { HttpModule } from '@nestjs/axios';
+import { AxiosModule } from 'src/http-service/axios.module';
+import { AxiosService } from 'src/http-service/axios.service';
 
 @Module({
   imports: [
@@ -31,6 +34,8 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
       Delegation,
     ]),
     BipOptionModule,
+    HttpModule,
+    AxiosModule,
   ],
   controllers: [BipRoundController],
   providers: [
@@ -41,6 +46,7 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
     BlockchainService,
     DelegateService,
     DelegationService,
+    AxiosService,
   ],
   exports: [TypeOrmModule],
 })

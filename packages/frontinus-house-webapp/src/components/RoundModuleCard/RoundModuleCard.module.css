@@ -9,6 +9,12 @@
   padding: 16px;
 }
 
+@media (max-width: 577px) {
+  .sidebarContainerCard {
+    width: auto;
+  }
+}
+
 .sidebarContainerCard button {
   width: 296px;
   height: 32px;
