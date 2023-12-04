@@ -114,7 +114,7 @@ export class BipRoundController {
     }
 
     // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
-    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL_MAIN);
+    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
     console.log("address: ", dto.address);
     let ensName = await provider.lookupAddress(dto.address);
     console.log("ensName: ", ensName);
