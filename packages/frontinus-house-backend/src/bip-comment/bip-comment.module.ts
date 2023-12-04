@@ -18,6 +18,7 @@ import { BipRoundService } from 'src/bip-round/bip-round.service';
 import { BlockchainService } from 'src/blockchain/blockchain.service';
 import { SnapshotModule } from 'src/voting-power-snapshot/snapshot.module';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { BipOptionService } from 'src/bip-option/bip-option.service';
       Application,
     ]),
     SnapshotModule,
+    HttpModule,
   ],
   controllers: [BipCommentsController],
   providers: [
