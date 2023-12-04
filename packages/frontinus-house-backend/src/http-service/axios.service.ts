@@ -53,14 +53,16 @@ export class AxiosService {
       let ensAvatar = await provider.getAvatar(address);
       ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
   
-      // content:
+      // default use "comment" case:
       let formatContent = `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
+      let discordUrl = process.env.DISCORD_WEBHOOK_COMMENT;
       switch (type) {
         case PostToDiscordTypes.COMMENT:
           
           break;
         case PostToDiscordTypes.CREATE_BIP:
           formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
+          discordUrl = process.env.DISCORD_WEBHOOK_NEW_BIP;
         default:
           break;
       }
@@ -87,7 +89,7 @@ export class AxiosService {
         ]
       }
   
-      this.httpService.post(process.env.DISCORD_WEBHOOK, params)
+      this.httpService.post(discordUrl, params)
        .subscribe(
         // response => console.log(response),
         error => console.log(error)
