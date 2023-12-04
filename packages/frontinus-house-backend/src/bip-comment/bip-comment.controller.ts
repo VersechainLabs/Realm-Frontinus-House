@@ -207,7 +207,7 @@ export class BipCommentsController {
       ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
   
       const params = {
-        username: ensName,
+        username: 'Frontinus House Admin',
         avatar_url: ensAvatar,
         content:  `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`,
         embeds: [
