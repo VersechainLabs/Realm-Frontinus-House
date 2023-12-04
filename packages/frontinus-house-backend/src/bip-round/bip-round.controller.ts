@@ -104,7 +104,7 @@ export class BipRoundController {
       await this.bipOptionService.store(proposal);
     });
 
-    this.axioService.postToDiscord(dto.address, newRound);
+    this.axiosService.postToDiscord(dto.address, newRound);
 
     // Same as auction.service.createAuctionByCommunity(),
     // cache all when create, to avoid clog of "getVotingPower()" when vote:

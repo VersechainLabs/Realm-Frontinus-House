@@ -31,7 +31,7 @@ export class BipCommentsController {
   constructor(
     private readonly commentsService: BipCommentsService,
     private readonly bipRoundService: BipRoundService,
-    private readonly axioService: AxiosService,
+    private readonly axiosService: AxiosService,
     private readonly httpService: HttpService) {}
 
     @Get('/test/test')
@@ -184,7 +184,7 @@ export class BipCommentsController {
   ): Promise<BipComment> {
     const bipRound = await this.bipRoundService.findOne(createCommentDto.bipRoundId);
 
-    this.axioService.postToDiscord(createCommentDto.address, bipRound);
+    this.axiosService.postToDiscord(createCommentDto.address, bipRound);
 
     return await this.commentsService.createComment(createCommentDto);
   }
