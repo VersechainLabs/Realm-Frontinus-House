@@ -128,7 +128,7 @@ export class BipRoundController {
       ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
   
       const params = {
-        username: ensName,
+        username: 'Frontinus House Admin',
         avatar_url: ensAvatar,
         content:  `${ensName} posted a new BIP: ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
         embeds: [
