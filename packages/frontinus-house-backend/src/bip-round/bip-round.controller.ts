@@ -118,16 +118,20 @@ export class BipRoundController {
     // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
     const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
     console.log("address: ", dto.address);
+    // ens name:
     let ensName = await provider.lookupAddress(dto.address);
     console.log("ensName: ", ensName);
-    ensName = ensName == null ? dto.address : ensName;
+    if (ensName == null) {
+      ensName = dto.address.substring(0, 5) + "..." + dto.address.substring(0, -4);
+    }
+    // ens avatar:
     let ensAvatar = await provider.getAvatar(dto.address);
     ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
 
     const params = {
       username: ensName,
       avatar_url: ensAvatar,
-      content:  `${ensName} replied in ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
+      content:  `${ensName} posted in ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
       embeds: [
         {
           "title": `${newRound.title}`,

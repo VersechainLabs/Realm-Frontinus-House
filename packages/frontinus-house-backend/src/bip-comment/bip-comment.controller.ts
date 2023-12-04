@@ -199,9 +199,13 @@ export class BipCommentsController {
     // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
     const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
     console.log("address: ", createCommentDto.address);
+    // ens name:
     let ensName = await provider.lookupAddress(createCommentDto.address);
     console.log("ensName: ", ensName);
-    ensName = ensName == null ? createCommentDto.address : ensName;
+    if (ensName == null) {
+      ensName = createCommentDto.address.substring(0, 5) + "..." + createCommentDto.address.substring(0, -4);
+    }
+    // ens avatar:
     let ensAvatar = await provider.getAvatar(createCommentDto.address);
     ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
 
