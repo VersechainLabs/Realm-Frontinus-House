@@ -2,7 +2,11 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  font-size: 14px;
   color: var(--brand-gray) !important;
+}
+.voteIcon {
+  font-size: 16px;
 }
 .scoreAndIcon:hover {
   cursor: pointer;

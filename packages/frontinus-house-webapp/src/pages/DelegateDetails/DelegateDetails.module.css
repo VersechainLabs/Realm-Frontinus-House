@@ -115,15 +115,18 @@
 .textColor2 {
   color: #D0A059;
 }
-.textMargin1 {
-  margin-left: 75px;
-}
-.textMargin2 {
-  margin-left: 142px;
-}
-.textMargin3 {
-  margin-left: 145px;
-}
-.textMargin4 {
-  margin-left: 142px;
+
+@media (min-width: 992px) {
+  .textMargin1 {
+    margin-left: 75px;
+  }
+  .textMargin2 {
+    margin-left: 142px;
+  }
+  .textMargin3 {
+    margin-left: 145px;
+  }
+  .textMargin4 {
+    margin-left: 142px;
+  }
 }

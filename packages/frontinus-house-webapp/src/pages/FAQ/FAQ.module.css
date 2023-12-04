@@ -2,12 +2,69 @@
   margin-top: 15px;
 }
 
-.title {
-  margin: 4rem 0;
+.minTitle {
+  font-family: EB Garamond;
+  font-size: 22px;
   font-weight: 700;
-  font-size: 28px;
-  line-height: 34px;
-  text-align: center;
+  line-height: 29px;
+  letter-spacing: 0px;
+  text-align: left;
+  margin: 12px 0;
+}
+
+.desc {
+  border-left: 4px solid #2C2C2D;
+  color: #A3A3A4;
+  font-family: Inconsolata;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: left;
+  padding-left: 12px;
+  margin-bottom: 12px;
+}
+
+.list {
+  font-family: Inconsolata;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: left;
+  color: #F5EEE6;
+}
+.listMain {
+  display: flex;
+}
+
+.dian {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.text {
+  font-family: Inconsolata;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0px;
+  text-align: left;
+  color: #F5EEE6;
+  padding-bottom: 20px;
+}
+
+.title {
+  font-family: EB Garamond;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 40px;
+  letter-spacing: 0px;
+  text-align: left;
+padding: 24px 0px 14px 0px;
+gap: 16px;
+margin-bottom: 22px;
+border-bottom: 1px solid #2C2C2D
 }
 
 .accordionItem {

@@ -46,12 +46,13 @@ import { useAppDispatch, useAppSelector } from './hooks';
 import { clearClick } from './state/slices/alert';
 import ProposalPreview from './pages/ProposalPreview';
 import BIP from "./pages/BIP";
+import {polygon, optimism, arbitrum, base, zora,goerli} from "viem/chains";
 
 const { chains, publicClient } = configureChains(
-  [mainnet],
+    process.env.REACT_APP_TYPE === 'dev'?[mainnet, polygon, optimism, arbitrum, base, zora, goerli]:[mainnet],
   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
 );
-
+console.log(process.env.REACT_APP_TYPE)
 const { connectors } = getDefaultWallets({
   appName: 'Frontinus',
   projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID!,
@@ -164,7 +165,7 @@ function App() {
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/create-bip" element={<CreateBIP />} />
-                  {/*<Route path="/faq" element={<FAQ />} />*/}
+                  <Route path="/fh-charter" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
                   <Route path="/bip/:id" element={<BIP />} />
                   <Route path="/application/:id" element={<Application />} />

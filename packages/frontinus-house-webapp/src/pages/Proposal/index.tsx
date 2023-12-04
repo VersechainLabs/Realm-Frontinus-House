@@ -202,7 +202,7 @@ const Proposal = () => {
 
   return (
     <>
-      <Container>
+      <Container style={{ paddingLeft: '0', paddingRight: '0'}} >
         {proposal && (
           <OpenGraphElements
             title={proposal.title}

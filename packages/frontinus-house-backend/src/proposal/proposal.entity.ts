@@ -81,7 +81,8 @@ export class Proposal {
         return Number(acc) + Number(vote.weight);
       }, 0);
     } else {
-      this.voteCount = 0;
+      // 20231106 - To fix proposals.voteCount become 0 issue when comment
+      // this.voteCount = 0;
     }
   }
 

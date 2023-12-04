@@ -10,7 +10,13 @@ import { Col, Container, Row } from 'react-bootstrap';
 import RoundCard from '../../components/RoundCard';
 import DelegateCard from '../../components/DelegateCard';
 import HouseUtilityBar from '../../components/HouseUtilityBar';
-import { AuctionStatus, auctionStatus,auctionPendingStatus } from '../../utils/auctionStatus';
+import {
+  AuctionStatus,
+  auctionStatus,
+  auctionPendingStatus,
+  delegateStatus,
+  DelegateVoteStatus
+} from '../../utils/auctionStatus';
 import { StoredAuctionBase } from '@nouns/frontinus-house-wrapper/dist/builders';
 import LoadingIndicator from '../../components/LoadingIndicator';
 import ErrorMessageCard from '../../components/ErrorMessageCard';
@@ -55,7 +61,7 @@ const House = () => {
 
   const [rounds, setRounds] = useState<StoredAuctionBase[]>([]);
   const [roundsOnDisplay, setRoundsOnDisplay] = useState<StoredAuctionBase[]>([]);
-  const [currentRoundStatus, setCurrentRoundStatus] = useState<number>(RoundStatus.AllRounds);
+  const [currentRoundStatus, setCurrentRoundStatus] = useState<number>(RoundStatus.Active);
   const [input, setInput] = useState<string>('');
   const [loadingCommunity, setLoadingCommunity] = useState(false);
   const [failedLoadingCommunity, setFailedLoadingCommunity] = useState(false);
@@ -103,11 +109,7 @@ const House = () => {
       try {
         setLoadingRounds(true);
         const rounds = await client.current.getAuctionsForCommunity(community.id);
-
         setRounds(rounds);
-
-
-
         setLoadingRounds(false);
       } catch (e) {
         setLoadingRounds(false);
@@ -134,6 +136,13 @@ const House = () => {
           r =>
               auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
               auctionStatus(r) === AuctionStatus.AuctionVoting,
+      ).length + delegatesOnDisplay.filter(
+          r =>
+              delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
+              delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
+      ).length + bips.filter(
+          r =>
+              r.votingPeriod === 'Voting',
       ).length,
       rounds.filter(
           r =>
@@ -155,6 +164,13 @@ const House = () => {
         r =>
             auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
             auctionStatus(r) === AuctionStatus.AuctionVoting,
+    ).length + delegatesOnDisplay.filter(
+        r =>
+            delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
+            delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
+    ).length + bips.filter(
+        r =>
+            r.votingPeriod === 'Voting',
     ).length === 0 && setCurrentRoundStatus(RoundStatus.AllRounds);
 
   }, [rounds, delegates,bips]);
@@ -308,7 +324,7 @@ const House = () => {
 
 
             <div className={classes.houseContainer}>
-              {(currentRoundStatus != RoundStatus.delegateSelection && currentRoundStatus != RoundStatus.BIP) &&  <Container>
+              {(currentRoundStatus != RoundStatus.delegateSelection && currentRoundStatus != RoundStatus.BIP && currentRoundStatus != RoundStatus.Active) &&  <Container>
 
                 <Row>
                   {loadingRounds ? (
@@ -331,6 +347,53 @@ const House = () => {
                 </Row>
               </Container>}
 
+              {(currentRoundStatus === RoundStatus.Active) &&  <Container>
+
+                <Row>
+                  {rounds.filter(
+                      r =>
+                          auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
+                          auctionStatus(r) === AuctionStatus.AuctionVoting,
+                  ).length > 0 || delegatesOnDisplay.filter(
+                      r =>
+                          delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
+                          delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
+                  ).length > 0 || bips.filter(
+                      r =>
+                          r.votingPeriod === 'Voting',
+                  ).length > 0 ? (
+                      sortRoundByStatus(rounds.filter(
+                          r =>
+                              auctionStatus(r) === AuctionStatus.AuctionAcceptingProps ||
+                              auctionStatus(r) === AuctionStatus.AuctionVoting,
+                      )).map((round, index) => (
+                          <Col key={index} xl={6}>
+                            <RoundCard round={round} />
+                          </Col>
+                      ))
+                  ) : (
+                      <Col>
+                        <ErrorMessageCard message={t('noRoundsAvailable')} />
+                      </Col>
+                  )}
+                  {delegatesOnDisplay.filter(
+                      r =>
+                          delegateStatus(r) === DelegateVoteStatus.DelegateAccepting ||
+                          delegateStatus(r) === DelegateVoteStatus.DelegateDelegating,
+                  ).map((round, index) => (
+                    <Col xl={6} key={index}><DelegateCard isActive={true} round={round} /></Col>
+                    ))}
+                  {bips.filter(
+                      r =>
+                          r.votingPeriod === 'Voting',
+                  ).map((round, index) => (
+                    <Row key={index}>
+                    <BIPContent bip={round}/>
+                    </Row>
+                  ))}
+                </Row>
+              </Container>}
+
               {(currentRoundStatus == RoundStatus.delegateSelection) &&  <Container>
 
                 <Row>
@@ -341,7 +404,7 @@ const House = () => {
                   ) : delegatesOnDisplay.length > 0 ? (
                       delegatesOnDisplay.map((round, index) => (
                           <Row key={index}>
-                            <DelegateCard round={round} />
+                            <DelegateCard isActive={false} round={round} />
                           </Row>
                       ))
                   ) : input === '' ? (
@@ -362,6 +425,10 @@ const House = () => {
                       <LoadingIndicator />
                   ) :(
                       <Row>
+                        {isMobile() && <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
+                          <BIPRightCard/>
+                        </Col>}
+
                           <Col xl={8}>
                             {
                               bips.length > 0 ? (
@@ -373,10 +440,10 @@ const House = () => {
                               )
                             }
                           </Col>
+                        {!isMobile() && <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
+                          <BIPRightCard/>
+                        </Col>}
 
-                          <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
-                              <BIPRightCard/>
-                          </Col>
                       </Row>
                       )
                   }

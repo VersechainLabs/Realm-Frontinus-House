@@ -1,153 +1,271 @@
 import {
-    Body,
-    Controller,
-    Get,
-    HttpException,
-    HttpStatus,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-    Query,
-  } from '@nestjs/common';
-  import { BipRound } from './bip-round.entity';
-  import { ProposalsService } from '../proposal/proposals.service';
-  import { Proposal } from '../proposal/proposal.entity';
-  import { ApiOperation } from '@nestjs/swagger/dist/decorators/api-operation.decorator';
-  import { ApiParam } from '@nestjs/swagger/dist/decorators/api-param.decorator';
-  import {
-    ApiNotFoundResponse,
-    ApiOkResponse,
-  } from '@nestjs/swagger/dist/decorators/api-response.decorator';
-  import { AdminService } from '../admin/admin.service';
-  import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
-  import { verifySignPayload } from '../utils/verifySignedPayload';
-  import { AuctionVisibleStatus, VoteStates } from '@nouns/frontinus-house-wrapper';
+  Body,
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
+import { BipRound } from './bip-round.entity';
+import { ApiOkResponse } from '@nestjs/swagger/dist/decorators/api-response.decorator';
+import { AdminService } from '../admin/admin.service';
+import { SignedPayloadValidationPipe } from '../entities/signed.pipe';
+import { verifySignPayload } from '../utils/verifySignedPayload';
+import { VoteStates } from '@nouns/frontinus-house-wrapper';
 import { BipOptionService } from 'src/bip-option/bip-option.service';
 import { BipRoundService } from './bip-round.service';
 import { CreateBipRoundDto, GetBipRoundDto } from './bip-round.types';
 import { BipOption } from 'src/bip-option/bip-option.entity';
 import { VotingPeriod } from 'src/auction/auction.types';
 import { BipVoteService } from 'src/bip-vote/bip-vote.service';
-  
-  @Controller('bip-round')
-  export class BipRoundController {
-    [x: string]: any;
-  
-    constructor(
-      private readonly bipRoundService: BipRoundService,
-      private readonly bipOptionService: BipOptionService,
-      private readonly bipVoteService: BipVoteService,
-      private readonly adminService: AdminService,
-    ) {}
-  
-    @Get('/list')
-    @ApiOkResponse({
-      type: [BipRound],
-    })
-    async getAll(@Query() dto: GetBipRoundDto): Promise<BipRound[]> {
-      const roundList = await this.bipRoundService.findAll(dto);
+import { BlockchainService } from 'src/blockchain/blockchain.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Delegate } from 'src/delegate/delegate.entity';
+import { Delegation } from 'src/delegation/delegation.entity';
+import { Repository } from 'typeorm';
+import { Community } from 'src/community/community.entity';
+import { ethers } from 'ethers';
+import { HttpService } from '@nestjs/axios';
 
-      // Add voting period:
-      roundList.forEach(bipRound => {
-        if (new Date() < bipRound.startTime) bipRound.votingPeriod = VotingPeriod.NOT_START;
-        else if (new Date() > bipRound.endTime) bipRound.votingPeriod = VotingPeriod.END;
-        else bipRound.votingPeriod = VotingPeriod.VOTING;
-      });
+@Controller('bip-round')
+export class BipRoundController {
+  [x: string]: any;
 
-      return roundList;
+  constructor(
+    private readonly bipRoundService: BipRoundService,
+    private readonly bipOptionService: BipOptionService,
+    private readonly bipVoteService: BipVoteService,
+    private readonly adminService: AdminService,
+    private readonly blockchainService: BlockchainService,
+    private readonly httpService: HttpService,
+    @InjectRepository(Community)
+    private communitiesRepository: Repository<Community>,
+    @InjectRepository(Delegate)
+    private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Delegation)
+    private delegationRepository: Repository<Delegation>,
+  ) {}
+
+  @Get('/list')
+  @ApiOkResponse({
+    type: [BipRound],
+  })
+  async getAll(@Query() dto: GetBipRoundDto): Promise<BipRound[]> {
+    const roundList = await this.bipRoundService.findAll(dto);
+
+    // Add voting period:
+    roundList.forEach((bipRound) => {
+      if (new Date() < bipRound.startTime)
+        bipRound.votingPeriod = VotingPeriod.NOT_START;
+      else if (new Date() > bipRound.endTime)
+        bipRound.votingPeriod = VotingPeriod.END;
+      else bipRound.votingPeriod = VotingPeriod.VOTING;
+    });
+
+    return roundList;
+  }
+
+  @Get('/forCommunity/:id')
+  async findAllForCommunity(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<BipRound[]> {
+    const bipRounds = await this.bipRoundService.findAllForCommunityByVisible(
+      id,
+    );
+    if (!bipRounds)
+      throw new HttpException('Bip Auction not found', HttpStatus.NOT_FOUND);
+    // auctions.map((a) => (a.numProposals = Number(a.numProposals) || 0));
+    return bipRounds;
+  }
+
+  @Post('/create')
+  @ApiOkResponse({
+    type: BipRound,
+  })
+  async createForCommunity(
+    @Body(SignedPayloadValidationPipe) dto: CreateBipRoundDto,
+  ): Promise<BipRound> {
+    verifySignPayload(dto, ['startTime', 'endTime', 'title', 'description']);
+
+    const newRound = await this.bipRoundService.createBipRound(dto);
+
+    dto.options.forEach(async (optionDesc) => {
+      const proposal = new BipOption();
+      proposal.address = dto.address;
+      proposal.description = optionDesc;
+      proposal.optionType = dto.optionType;
+      proposal.bipRound = newRound;
+      proposal.createdDate = new Date();
+
+      await this.bipOptionService.store(proposal);
+    });
+
+
+
+
+    console.log("enter bip-round/create");
+
+    const contentMaxLetter = 150;
+    let shortContent = this.removeTags(newRound.content);
+    const contentLeng = shortContent.length;
+    if (shortContent.length > contentMaxLetter) {
+      shortContent = shortContent.substring(0, contentMaxLetter) + "...";
     }
 
-    @Post('/create')
-    @ApiOkResponse({
-      type: BipRound,
-    })
-    async createForCommunity(
-      @Body(SignedPayloadValidationPipe) dto: CreateBipRoundDto,
-    ): Promise<BipRound> {
+    // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
+    const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+    console.log("address: ", dto.address);
+    // ens name:
+    let ensName = await provider.lookupAddress(dto.address);
+    console.log("ensName: ", ensName);
+    if (ensName == null) {
+      // turn "0x9d7bA953587B87c474a10beb65809Ea489F026bD" into "0x9d7...26bD" for better look:
+      ensName = dto.address.substring(0, 5) + "..." + dto.address.substring(dto.address.length - 4);
+    }
+    // ens avatar:
+    let ensAvatar = await provider.getAvatar(dto.address);
+    ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
 
-      verifySignPayload(dto, [
-        'startTime',
-        'endTime',
-        'title',
-        'description',
-      ]);
+    const params = {
+      username: ensName,
+      avatar_url: ensAvatar,
+      content:  `${ensName} posted a new BIP: ${newRound.title} \n https://frontinus.house/bip/${newRound.id}`,
+      embeds: [
+        {
+          "title": `${newRound.title}`,
+          "color": 15258703,
+          "thumbnail": {
+            // "url": "https://frontinus.house/bulb.png",
+          },
+          "fields": [
+            {
+              "name": ``,
+              "value": shortContent,
+              "inline": true
+            }
+          ]
+        }
+      ]
+    }
 
-      const newRound = await this.bipRoundService.createBipRound(
-        dto,
+    console.log("params:", params);
+
+    this.httpService.post(process.env.DISCORD_WEBHOOK, params)
+     .subscribe(
+      response => console.log(response),
+      error => console.log(error)
+    );
+
+
+
+
+
+    // Same as auction.service.createAuctionByCommunity(),
+    // cache all when create, to avoid clog of "getVotingPower()" when vote:
+    const community = await this.communitiesRepository.findOne(
+      newRound.communityId,
+    );
+
+    const currentBlockNum = await this.blockchainService.getCurrentBlockNum();
+
+    // noinspection ES6MissingAwait: Just a cache, no need await
+    this.blockchainService.cacheAll(
+      this.delegateRepository,
+      this.delegationRepository,
+      community.contractAddress,
+      currentBlockNum,
+    );
+    // End of cache all
+
+    return newRound;
+  }
+  /**
+   * Same as bip-comment.controller.ts, merge later.
+   * @param str 
+   * @returns 
+   */
+  removeTags(str) {
+    if ((str===null) || (str===''))
+        return false;
+    else
+        str = str.toString();
+         
+    // Regular expression to identify HTML tags in
+    // the input string. Replacing the identified
+    // HTML tag with a null string.
+    return str.replace( /(<([^>]+)>)/ig, '');
+}
+
+  @Get('/detail/:id')
+  @ApiOkResponse({
+    type: [BipRound],
+  })
+  async getDetail(
+    @Param('id', ParseIntPipe) id: number,
+    @Query('address') userAddress?: string,
+  ): Promise<BipRound> {
+    const roundRecord = await this.bipRoundService.findOne(id);
+
+    // Add vote percentage for "Vote Results":
+    let totalVoteCount = 0;
+    roundRecord.bipOptions.forEach((option) => {
+      totalVoteCount += option.voteCount;
+    });
+
+    roundRecord.bipOptions.forEach((option) => {
+      option.percentage = this.roundUpNumberToString(
+        option.voteCount,
+        totalVoteCount,
       );
+    });
 
-      dto.options.forEach(async (optionDesc) => {
-        const proposal = new BipOption();
-        proposal.address = dto.address;
-        proposal.description = optionDesc;
-        proposal.optionType = dto.optionType;
-        proposal.bipRound = newRound;
-        proposal.createdDate = new Date();
-    
-        await this.bipOptionService.store(proposal);
-      });
+    roundRecord.quorum = 1500; // Fix number 1500, ask Yao
+    roundRecord.quorumPercentage = this.roundUpNumberToString(
+      totalVoteCount,
+      1500,
+    );
 
-      return newRound;
-    }    
+    // Sort options by create-date:
+    roundRecord.bipOptions.sort(function (a, b) {
+      var keyA = new Date(a.createdDate),
+        keyB = new Date(b.createdDate);
+      // Compare the 2 dates
+      if (keyA < keyB) return -1;
+      if (keyA > keyB) return 1;
+      return 0;
+    });
 
-    @Get('/detail/:id')
-    @ApiOkResponse({
-      type: [BipRound],
-    })
-    async getDetail(
-      @Param('id', ParseIntPipe) id: number, 
-      @Query('address') userAddress: string
-      ): Promise<BipRound> {
-      const roundRecord = await this.bipRoundService.findOne(id);
+    // Add voteState:
+    // Even if the user address is empty, it needs to be called here; otherwise, a part of the structure will be missing, and the frontend will throw an error.
+    await this.addVoteState(roundRecord, userAddress);
 
-      // Add vote percentage for "Vote Results":
-      let totalVoteCount = 0;
-      roundRecord.bipOptions.forEach(option => {
-        totalVoteCount += option.voteCount;
-      });
-
-      roundRecord.bipOptions.forEach(option => {
-        option.percentage = this.roundUpNumberToString(option.voteCount, totalVoteCount);
-      });
-
-      roundRecord.quorum = 1500; // Fix number 1500, ask Yao
-      roundRecord.quorumPercentage = this.roundUpNumberToString(totalVoteCount, 1500);
-      
-      // Sort options by create-date:
-      roundRecord.bipOptions.sort(function(a, b) {
-        var keyA = new Date(a.createdDate),
-          keyB = new Date(b.createdDate);
-        // Compare the 2 dates
-        if (keyA < keyB) return -1;
-        if (keyA > keyB) return 1;
-        return 0;
-      });
-
-      // Add voteState:
-      await this.addVoteState(roundRecord, userAddress);
-
-      // Add current user voted option:
-      const voteHistory = await this.bipVoteService.findOneByRound(roundRecord.id, userAddress);
-      if (voteHistory) 
-        roundRecord.currentUserVotedOptionId = voteHistory.bipOptionId;
-      else 
+    // Add current user voted option:
+    const voteHistory = await this.bipVoteService.findOneByRound(
+      roundRecord.id,
+      userAddress,
+    );
+    if (voteHistory) {
+      roundRecord.currentUserVotedOptionId = voteHistory.bipOptionId;
+    } else {
       roundRecord.currentUserVotedOptionId = 0; // not voted in this round yet
-
-      return roundRecord;
     }
 
+    return roundRecord;
+  }
 
+  // e.g: 42.008 => 42.01
+  roundUpNumber(val: number): number {
+    return Math.round(val * 1e2) / 1e2;
+  }
 
-    // e.g: 42.008 => 42.01
-    roundUpNumber(val: number):number {
-      return Math.round( val * 1e2 ) / 1e2;
-    }
-    roundUpNumberToString(count: number, total: number):string {
-      if (total == 0) return "0.00"; // otherwise it will return "NaN"
+  roundUpNumberToString(count: number, total: number): string {
+    if (total == 0) return '0.00'; // otherwise it will return "NaN"
 
-      return (count / total * 100).toFixed(2);
-    }
+    return ((count / total) * 100).toFixed(2);
+  }
 
   /**
    * Add canVote|disallowedVoteReason|stateCode to proposal entity.
@@ -165,8 +283,7 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
           if (vote.delegateId) {
             foundRound.voteState = VoteStates.ALREADY_DELEGATED;
             return;
-          }
-          else {
+          } else {
             foundRound.voteState = VoteStates.VOTED;
             return;
           }
@@ -174,11 +291,12 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
       }
     }
 
-    const checkVoteState = await this.bipVoteService.checkEligibleToVoteNew(
+    const checkVoteState = await this.bipVoteService.checkEligibleToBipVote(
       foundRound,
       userAddress,
       true,
     );
+
     if (checkVoteState) {
       foundRound.voteState = checkVoteState;
       return;
@@ -186,6 +304,4 @@ import { BipVoteService } from 'src/bip-vote/bip-vote.service';
 
     foundRound.voteState = VoteStates.OK;
   }
-
 }
-  

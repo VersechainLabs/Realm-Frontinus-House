@@ -52,6 +52,22 @@ export class BipRoundService {
     });
   }
 
+  findAllForCommunityByVisible(
+    communityId: number,
+  ): Promise<BipRound[]> {
+    const where: any = {
+      community: { id: communityId },
+    };
+
+    return this.bipRoundRepository.find({
+      loadRelationIds: {
+        relations: ['bipOptions.bipRound', 'community'],
+      },
+      where,
+    });
+  }
+
+
   async createBipRound(dto: CreateBipRoundDto): Promise<BipRound> {
     if (
       dto.startTime >= dto.endTime

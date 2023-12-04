@@ -55,7 +55,6 @@ const RenderedBIPFields: React.FC<RenderedBIPProps> = props => {
 
 
     const onClickVote = async (optionId:number)=>{
-        // console.log('5555');
         // console.log(id);
             try {
 

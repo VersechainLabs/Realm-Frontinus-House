@@ -70,7 +70,7 @@ const NavBar = () => {
             <Link to="/" className={classes.logoGroup}>
               <img className={classes.bulbImg} src="/bulb.png" alt="bulb" />
               <Navbar.Brand>
-                {!isMobile() && (
+                {(
                     <>
                       <div className={clsx('frontinusTitle', classes.navbarBrand)}>{t('frontinusHouse')}</div>
                     </>
@@ -85,10 +85,11 @@ const NavBar = () => {
             <Navbar.Collapse id="basic-navbar-nav">
               <Nav className={clsx('ms-auto', classes.navBarCollapse)}>
                 <Nav.Link as="div" className={classes.menuLink} onClick={() => setIsNavExpanded(false)}>
-                  {/*<Link to="/faq" className={classes.link}>*/}
-                  <a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>
-                  {/*</Link>*/}
-                  <span className={classes.divider}></span>
+                  <Link to="/fh-charter" className={classes.link}>
+                    {t('fhCharter')}
+                  {/*<a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>*/}
+                  </Link>
+                  {/*<span className={classes.divider}></span>*/}
                 </Nav.Link>
 
                 <div className={classes.buttonGroup}>
