@@ -197,7 +197,9 @@ export class BipCommentsController {
 
     // 用户没有用户名就显示address，没有头像就显示frontinus house的logo:
     const provider = new ethers.providers.JsonRpcProvider(process.env.WEB3_RPC_URL);
+    console.log("address: ", createCommentDto.address);
     let ensName = await provider.lookupAddress(createCommentDto.address);
+    console.log("ensName: ", ensName);
     ensName = ensName == null ? createCommentDto.address : ensName;
     let ensAvatar = await provider.getAvatar(createCommentDto.address);
     ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
