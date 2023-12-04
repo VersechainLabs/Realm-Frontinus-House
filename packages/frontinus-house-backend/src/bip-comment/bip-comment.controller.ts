@@ -38,7 +38,10 @@ export class BipCommentsController {
 
       const ethereumAddress = '0x9d7bA953587B87c474a10beb65809Ea489F026bD';
       let ensName = await provider.lookupAddress(ethereumAddress);
+
+      console.log("ethereumAddress:", ethereumAddress);
       let ensAvatar = await provider.getAvatar(ethereumAddress);
+      console.log("ensAvatar:", ensAvatar);
 
       return ensName + ' ' + ensAvatar;
 
