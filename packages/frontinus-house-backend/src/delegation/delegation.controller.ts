@@ -69,6 +69,7 @@ export class DelegationController {
     const conflictDelegateList =
       await this.delegationService.getConflictDelegateByTimeRange(dto);
     if (conflictDelegateList.length > 0) {
+      // 龙哥需要delegation info来展示. 比如endTime换成当前用户时区来展示:
       throw new HttpException(
         JSON.stringify(conflictDelegateList[0]),
         HttpStatus.EXPECTATION_FAILED,
