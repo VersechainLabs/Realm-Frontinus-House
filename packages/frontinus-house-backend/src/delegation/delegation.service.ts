@@ -78,6 +78,16 @@ export class DelegationService {
           visible: true,
           endTime: Between(dto.votingEndTime, dto.endTime),
         },
+        {
+          visible: true,
+          votingEndTime: MoreThan(dto.votingEndTime),
+          endTime: LessThanOrEqual(dto.endTime),
+        },
+        {
+          visible: true,
+          votingEndTime: LessThanOrEqual(dto.votingEndTime),
+          endTime: MoreThan(dto.endTime),
+        },
       ],
     });
   }
