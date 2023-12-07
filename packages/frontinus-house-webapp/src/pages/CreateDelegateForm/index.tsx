@@ -18,6 +18,7 @@ import TextField from '@mui/material/TextField';
 import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { LoadingButton } from '@mui/lab';
 import { utc } from 'dayjs';
+import formatTimeAll from "../../utils/formatTimeAll";
 
 const CreateDelegateForm: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -203,7 +204,6 @@ const CreateDelegateForm: React.FC<{}> = () => {
     }
 
     console.log(state);
-
     const delegate = new TimedDelegate(
       state.title,
       state.startTime,
@@ -223,16 +223,23 @@ const CreateDelegateForm: React.FC<{}> = () => {
       .catch(e  => {
         setIsButtonDisabled(false);
         setFlag(false);
+        var msg = '';
 
-        if ( typeof(e) == 'string' ){
-          dispatch(
-              setAlert({
-                type: 'error',
-                message: e,
-              }),
-          );
-          setIsAlertVisible(true); // 显示alert弹出框
+        if (e.status == 417) {
+          const data = JSON.parse(e.message);
+          msg = 'The time to end the selection period is in conflict with the current active delegation. Please select a time that is later than '+formatTimeAll(data.endTime)+'.';
         }
+
+        if (e.status == 400 && typeof(e.message) == 'string' ){
+          msg = e.message;
+        }
+        dispatch(
+            setAlert({
+              type: 'error',
+              message: msg,
+            }),
+        );
+        setIsAlertVisible(true); // 显示alert弹出框
 
       });
   };
