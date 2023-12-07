@@ -79,7 +79,7 @@ export class ApiWrapper {
 
       return (await axios.post(`${this.host}/delegations/create`, signedPayload)).data;
     } catch (e: any) {
-      throw e.response.data.message;
+      throw e.response.data;
     }
   }
 

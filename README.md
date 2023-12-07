@@ -1,4 +1,3 @@
-# Realm-Frontinus-House
 
 # overview:
 The Realms Autonomous World (RAW) aspires to truly live up to its name: Autonomous. This autonomy, however, is contingent on the presence of infrastructure - typically referred to as public goods. This understanding gives rise to the concept of Frontinus House, a means through which capital can be deployed and projects funded within the RAW and the broader BibliothecaDAO ecosystem.
@@ -60,5 +59,4 @@ Realms NFT is on ETH mainnet for the time being. If using Realms NFT as the asse
 
 5. Comment feature                                                                       
     With predetermined permissions, users can discuss or publish feedback under proposal. All comments will be stored on Arweave. The comment section will support markdown with full editor and can be viewed in different page views. 
-
 
