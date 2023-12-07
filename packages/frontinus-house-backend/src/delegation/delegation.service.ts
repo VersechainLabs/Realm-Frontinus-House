@@ -65,6 +65,21 @@ export class DelegationService {
     }
   }
 
+  /**
+   * Delegation round's effect time (votingEndTime to endTime) can't overlap.
+   * 4 cases:
+   * DB:               --------------------
+   * 
+   * dto:
+   * case 1:       ------------
+   * case 2:       -------------------------------
+   * case 3:               ----------
+   * case 4:               -----------------------
+   * 
+   * 
+   * @param dto 
+   * @returns 
+   */
   getConflictDelegateByTimeRange(
     dto: CreateDelegationDto,
   ): Promise<Delegation[]> {
@@ -77,6 +92,16 @@ export class DelegationService {
         {
           visible: true,
           endTime: Between(dto.votingEndTime, dto.endTime),
+        },
+        {
+          visible: true,
+          votingEndTime: MoreThan(dto.votingEndTime),
+          endTime: LessThanOrEqual(dto.endTime),
+        },
+        {
+          visible: true,
+          votingEndTime: LessThanOrEqual(dto.votingEndTime),
+          endTime: MoreThan(dto.endTime),
         },
       ],
     });
