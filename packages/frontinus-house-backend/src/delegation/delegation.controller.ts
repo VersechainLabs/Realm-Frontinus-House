@@ -70,11 +70,11 @@ export class DelegationController {
       await this.delegationService.getConflictDelegateByTimeRange(dto);
     if (conflictDelegateList.length > 0) {
       throw new HttpException(
-        `The time to end the selection period is in conflict with the current active delegation. Please select a time that is later than ${conflictDelegateList[0].endTime}.`,
-        HttpStatus.BAD_REQUEST,
+        JSON.stringify(conflictDelegateList[0]),
+        HttpStatus.EXPECTATION_FAILED,
       );
       // throw new HttpException(
-      //   `The effective time of the delegation conflicts with the delegation: ${conflictDelegateList[0].title}`,
+      //   `The time to end the selection period is in conflict with the current active delegation. Please select a time that is later than ${conflictDelegateList[0].endTime}.`,
       //   HttpStatus.BAD_REQUEST,
       // );
     }
