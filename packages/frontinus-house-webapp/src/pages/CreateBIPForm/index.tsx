@@ -35,6 +35,7 @@ import { setAlert } from '../../state/slices/alert';
 import { matchImg } from '../../utils/matchImg';
 import LoadingIndicator from "../../components/LoadingIndicator";
 import {LoadingButton} from "@mui/lab";
+import {nameToSlug} from "../../utils/communitySlugs";
 
 const CreateBIPForm: React.FC<{
     fields?: ProposalFields;
@@ -295,7 +296,7 @@ const CreateBIPForm: React.FC<{
                 )
                 .then((data:any) => {
                     setPublishLoading(false);
-                    navigate("/bip/"+data.id);
+                    navigate("/bip/"+data.id+'-'+`${nameToSlug(data.title)}`);
                 })
 
         } catch (e) {
