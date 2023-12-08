@@ -29,6 +29,10 @@ export class AxiosService {
     return str.replace( /(<([^>]+)>)/ig, '');
   }
 
+  titleToSlug(title: string) {
+    return title.replaceAll(' ', '-').replaceAll('\/', '-').toLowerCase();
+  }
+
   async postBipToDiscord(
     address: Address,
     bipRound: BipRound,
@@ -54,14 +58,17 @@ export class AxiosService {
       ensAvatar = ensAvatar == null ? "https://frontinus.house/bulb.png" : ensAvatar;
   
       // default use "comment" case:
-      let formatContent = `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
+      const sluggedTitle = this.titleToSlug(bipRound.title);
+      let formatContent = `${ensName} replied in ${bipRound.title} \n https://${process.env.FRONTEND_DOMAIN}/bip/${bipRound.id}-${sluggedTitle}`;
+      // let formatContent = `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
       let discordUrl = process.env.DISCORD_WEBHOOK_COMMENT;
       switch (type) {
         case PostToDiscordTypes.COMMENT:
           
           break;
         case PostToDiscordTypes.CREATE_BIP:
-          formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
+          formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://${process.env.FRONTEND_DOMAIN}/bip/${bipRound.id}-${sluggedTitle}`;
+          // formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
           discordUrl = process.env.DISCORD_WEBHOOK_NEW_BIP;
         default:
           break;
