@@ -69,10 +69,15 @@ export class DelegationController {
     const conflictDelegateList =
       await this.delegationService.getConflictDelegateByTimeRange(dto);
     if (conflictDelegateList.length > 0) {
+      // 龙哥需要delegation info来展示. 比如endTime换成当前用户时区来展示:
       throw new HttpException(
-        `The effective time of the delegation conflicts with the delegation: ${conflictDelegateList[0].title}`,
-        HttpStatus.BAD_REQUEST,
+        JSON.stringify(conflictDelegateList[0]),
+        HttpStatus.EXPECTATION_FAILED,
       );
+      // throw new HttpException(
+      //   `The time to end the selection period is in conflict with the current active delegation. Please select a time that is later than ${conflictDelegateList[0].endTime}.`,
+      //   HttpStatus.BAD_REQUEST,
+      // );
     }
 
     const delegation = new Delegation();

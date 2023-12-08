@@ -167,7 +167,8 @@ function App() {
                   <Route path="/create-bip" element={<CreateBIP />} />
                   <Route path="/fh-charter" element={<FAQ />} />
                   <Route path="/proposal/:id" element={<Proposal />} />
-                  <Route path="/bip/:id" element={<BIP />} />
+                  <Route path="/bip/:idParam" element={<BIP />} />
+                  <Route path="/bip/:idParam-:title" element={<BIP />} />
                   <Route path="/application/:id" element={<Application />} />
                   <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
                   {/*<Route path="/:house" element={<House />} />*/}
