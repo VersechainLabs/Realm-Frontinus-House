@@ -30,7 +30,7 @@ export class AxiosService {
   }
 
   titleToSlug(title: string) {
-    return title.replaceAll('', '-').replaceAll('\/', '-').toLowerCase();
+    return title.replaceAll(' ', '-').replaceAll('\/', '-').toLowerCase();
   }
 
   async postBipToDiscord(
