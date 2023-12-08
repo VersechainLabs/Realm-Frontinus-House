@@ -59,7 +59,7 @@ export class AxiosService {
   
       // default use "comment" case:
       const sluggedTitle = this.titleToSlug(bipRound.title);
-      let formatContent = `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}-${sluggedTitle}`;
+      let formatContent = `${ensName} replied in ${bipRound.title} \n https://${process.env.FRONTEND_DOMAIN}/bip/${bipRound.id}-${sluggedTitle}`;
       // let formatContent = `${ensName} replied in ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
       let discordUrl = process.env.DISCORD_WEBHOOK_COMMENT;
       switch (type) {
@@ -67,7 +67,7 @@ export class AxiosService {
           
           break;
         case PostToDiscordTypes.CREATE_BIP:
-          formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}-${sluggedTitle}`;
+          formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://${process.env.FRONTEND_DOMAIN}/bip/${bipRound.id}-${sluggedTitle}`;
           // formatContent = `${ensName} posted a new BIP: ${bipRound.title} \n https://frontinus.house/bip/${bipRound.id}`;
           discordUrl = process.env.DISCORD_WEBHOOK_NEW_BIP;
         default:
