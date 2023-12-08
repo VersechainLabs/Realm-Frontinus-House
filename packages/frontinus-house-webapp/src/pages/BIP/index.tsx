@@ -26,8 +26,8 @@ import {RoundStatus} from "../../components/StatusFilters";
 
 const BIP = () => {
     const params = useParams();
-    const { id } = params;
-
+    const { idParam, title } = params;
+    const id = idParam.split('-')[0];
     const { data: walletClient } = useWalletClient();
     const {address: account} = useAccount();
     const navigate = useNavigate();
