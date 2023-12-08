@@ -35,6 +35,8 @@ import { setAlert } from '../../state/slices/alert';
 import { matchImg } from '../../utils/matchImg';
 import LoadingIndicator from "../../components/LoadingIndicator";
 import {LoadingButton} from "@mui/lab";
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const CreateBIPForm: React.FC<{
     fields?: ProposalFields;
@@ -303,6 +305,19 @@ const CreateBIPForm: React.FC<{
         }
     }
 
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+
+
+
     return (
         <>
                         <Container>
@@ -465,41 +480,94 @@ const CreateBIPForm: React.FC<{
                                                                 <div>
                                                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                                         <DemoContainer components={['DateTimePicker']}>
-                                                                            <DateTimePicker
-                                                                                onChange={newValue => {
-                                                                                    setStartTime(newValue)
-                                                                                    // saveFormStart(newValue); // Save the value to the state as before
-                                                                                    // setProposingStartTime(newValue); // Save the value to the proposingStartTime state
-                                                                                }}
-                                                                                defaultValue={dayjs()}
+                                                                            {/*<DateTimePicker*/}
+                                                                            {/*    onChange={newValue => {*/}
+                                                                            {/*        setStartTime(newValue)*/}
+                                                                            {/*        // saveFormStart(newValue); // Save the value to the state as before*/}
+                                                                            {/*        // setProposingStartTime(newValue); // Save the value to the proposingStartTime state*/}
+                                                                            {/*    }}*/}
+                                                                            {/*    defaultValue={dayjs()}*/}
+                                                                            {/*    className={classes.input}*/}
+                                                                            {/*    minDate={dayjs()} //set minDate to the current date and time*/}
+                                                                            {/*    ampm={false}*/}
+                                                                            {/*/>*/}
+                                                                            <input
+                                                                                id="basic-button"
+                                                                                aria-controls={open ? 'basic-menu' : undefined}
+                                                                                aria-haspopup="true"
+                                                                                aria-expanded={open ? 'true' : undefined}
+                                                                                onClick={handleClick}
                                                                                 className={classes.input}
-                                                                                minDate={dayjs()} //set minDate to the current date and time
-                                                                                ampm={false}
+                                                                                type="text"
+                                                                                style={{
+                                                                                    height: '40px',
+                                                                                }}
                                                                             />
+                                                                            {/*<Button*/}
+                                                                            {/*    id="basic-button"*/}
+                                                                            {/*    aria-controls={open ? 'basic-menu' : undefined}*/}
+                                                                            {/*    aria-haspopup="true"*/}
+                                                                            {/*    aria-expanded={open ? 'true' : undefined}*/}
+                                                                            {/*    onClick={handleClick}*/}
+                                                                            {/*>*/}
+                                                                            {/*    Dashboard*/}
+                                                                            {/*</Button>*/}
+                                                                            <Menu
+                                                                                id="basic-menu"
+                                                                                anchorEl={anchorEl}
+                                                                                open={open}
+                                                                                onClose={handleClose}
+                                                                                MenuListProps={{
+                                                                                    'aria-labelledby': 'basic-button',
+                                                                                }}
+                                                                            >
+                                                                                <MenuItem
+                                                                                    className={classes.meumMain}
+                                                                                >
+                                                                                    1 day later
+                                                                                </MenuItem>
+                                                                                <MenuItem
+                                                                                    className={classes.meumMain}
+                                                                                >
+                                                                                    7 days later
+                                                                                </MenuItem>
+                                                                                <MenuItem
+                                                                                    className={classes.meumMain}
+                                                                                >
+                                                                                    14 days later
+                                                                                </MenuItem>
+                                                                                <MenuItem
+                                                                                    className={classes.meumMain}
+                                                                                >
+                                                                                    After a month
+                                                                                </MenuItem>
+                                                                                
+                                                                            </Menu>
                                                                         </DemoContainer>
+
                                                                     </LocalizationProvider>
                                                                 </div>
                                                             </div>
-                                                            <div className={classes.rightTime}>
-                                                                <div>End time</div>
-                                                                <div>
-                                                                    <div>
-                                                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                                            <DemoContainer components={['DateTimePicker']}>
-                                                                                <DateTimePicker
-                                                                                    onChange={newValue => {
-                                                                                        // saveFormStart(newValue); // Save the value to the state as before
-                                                                                        setEndTime(newValue); // Save the value to the proposingStartTime state
-                                                                                    }}
-                                                                                    className={classes.input}
-                                                                                    minDate={dayjs()} //set minDate to the current date and time
-                                                                                    ampm={false}
-                                                                                />
-                                                                            </DemoContainer>
-                                                                        </LocalizationProvider>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            {/*<div className={classes.rightTime}>*/}
+                                                            {/*    <div>End time</div>*/}
+                                                            {/*    <div>*/}
+                                                            {/*        <div>*/}
+                                                            {/*            <LocalizationProvider dateAdapter={AdapterDayjs}>*/}
+                                                            {/*                <DemoContainer components={['DateTimePicker']}>*/}
+                                                            {/*                    <DateTimePicker*/}
+                                                            {/*                        onChange={newValue => {*/}
+                                                            {/*                            // saveFormStart(newValue); // Save the value to the state as before*/}
+                                                            {/*                            setEndTime(newValue); // Save the value to the proposingStartTime state*/}
+                                                            {/*                        }}*/}
+                                                            {/*                        className={classes.input}*/}
+                                                            {/*                        minDate={dayjs()} //set minDate to the current date and time*/}
+                                                            {/*                        ampm={false}*/}
+                                                            {/*                    />*/}
+                                                            {/*                </DemoContainer>*/}
+                                                            {/*            </LocalizationProvider>*/}
+                                                            {/*        </div>*/}
+                                                            {/*    </div>*/}
+                                                            {/*</div>*/}
                                                         </div>
 
                                                         <div className={classes.footer}>

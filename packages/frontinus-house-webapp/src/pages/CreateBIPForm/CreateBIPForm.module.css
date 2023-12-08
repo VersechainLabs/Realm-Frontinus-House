@@ -198,6 +198,10 @@
 .leftTime{
     margin-right: 20px;
 }
+
+.meumMain {
+    background: #1A1A1B;
+}
 .back{
     cursor: pointer;
     color:  #A6A9AB;
