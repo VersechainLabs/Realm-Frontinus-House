@@ -8,10 +8,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { File } from './file.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { S3Service } from './s3.service';
 
 @Module({
   imports: [ConfigModule.forRoot(), TypeOrmModule.forFeature([File])],
-  providers: [FileService, IpfsService],
+  providers: [FileService, IpfsService, S3Service],
   controllers: [FileController],
 })
 export class FileModule {}

@@ -21,10 +21,15 @@ import { FileUploadDto } from './file.types';
 import * as mime from 'mime-types';
 import { fromBuffer } from 'file-type';
 import { Throttle } from '@nestjs/throttler';
+import { S3Service } from './s3.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Controller('file')
 export class FileController {
-  constructor(private readonly fileService: FileService) {}
+  constructor(
+    private readonly fileService: FileService,
+    private readonly s3Service: S3Service,
+    ) {}
 
   @Get()
   async getFiles() {
@@ -80,20 +85,42 @@ export class FileController {
   @Throttle(5, 300)
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(
-    @Body() body: FileUploadDto,
+    @Body() dto: FileUploadDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     let address = undefined;
-    if (body.signature) address = verifyMessage(file.buffer, body.signature);
-    const ipfsResult = await this.fileService.pinBuffer(file.buffer, body.name);
-    await this.fileService.writeFileToDisk(file.buffer, ipfsResult.IpfsHash);
+    if (dto.signature) address = verifyMessage(file.buffer, dto.signature);
+
+    const newFileName = uuidv4()+'.jpg';
+    const s3Result = await this.s3Service.uploadFile(file, newFileName);
     const fileEntity = new File();
-    fileEntity.name = body.name;
+    fileEntity.name = dto.name;
     fileEntity.address = address;
-    fileEntity.ipfsHash = ipfsResult.IpfsHash;
-    fileEntity.ipfsTimestamp = ipfsResult.Timestamp;
-    fileEntity.pinSize = ipfsResult.PinSize;
+    fileEntity.ipfsHash = newFileName;
+    fileEntity.ipfsTimestamp = new Date().toString();
+    fileEntity.pinSize = 0; // can be used to seperate ifps/s3 in DB
     fileEntity.mimeType = file.mimetype;
     return this.fileService.store(fileEntity);
   }
+  // @Post()
+  // @Throttle(5, 300)
+  // @UseInterceptors(FileInterceptor('file'))
+  // async uploadFile(
+  //   @Body() body: FileUploadDto,
+  //   @UploadedFile() file: Express.Multer.File,
+  // ) {
+  //   let address = undefined;
+  //   if (body.signature) address = verifyMessage(file.buffer, body.signature);
+  //   const ipfsResult = await this.fileService.pinBuffer(file.buffer, body.name);
+  //   await this.fileService.writeFileToDisk(file.buffer, ipfsResult.IpfsHash);
+  //   const fileEntity = new File();
+  //   fileEntity.name = body.name;
+  //   fileEntity.address = address;
+  //   fileEntity.ipfsHash = ipfsResult.IpfsHash;
+  //   fileEntity.ipfsTimestamp = ipfsResult.Timestamp;
+  //   fileEntity.pinSize = ipfsResult.PinSize;
+  //   fileEntity.mimeType = file.mimetype;
+  //   return this.fileService.store(fileEntity);
+  // }
+
 }
