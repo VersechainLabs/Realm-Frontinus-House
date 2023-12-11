@@ -21,6 +21,7 @@ import { setAlert } from '../../state/slices/alert';
 import { LoadingButton } from '@mui/lab';
 import Quill from 'quill';
 import clsx from 'clsx';
+import {nameToSlug} from "../../utils/communitySlugs";
 
 const ProposalPreview: React.FC<{}> = () => {
   const location = useLocation();
@@ -33,6 +34,7 @@ const ProposalPreview: React.FC<{}> = () => {
   const [openCongratsDialog, setOpenCongratsDialog] = useState(false);
   const [showCongratsDialog, setShowCongratsDialog] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
+  const [propTitle, setPropTitle] = useState<string>('');
   const dispatch = useAppDispatch();
   const { data: walletClient } = useWalletClient();
   const [quill, setQuill] = useState<Quill | undefined>(undefined);
@@ -75,6 +77,8 @@ const ProposalPreview: React.FC<{}> = () => {
                 ),
             );
             setPropId(proposal.id);
+            setPropTitle(proposal.title);
+
             dispatch(appendProposal({ proposal }));
         } else {
             let newProp: Proposal | InfiniteAuctionProposal;
@@ -89,6 +93,7 @@ const ProposalPreview: React.FC<{}> = () => {
             const proposal = await client.current.createProposal(newProp);
 
             setPropId(proposal.id);
+            setPropTitle(proposal.title);
             dispatch(appendProposal({ proposal }));
         }
 
@@ -216,7 +221,7 @@ const ProposalPreview: React.FC<{}> = () => {
         trigger={showCongratsDialog}
         onClose={() => {
           setShowCongratsDialog(false);
-          navigate(`/proposal/${propId}`, { replace: false });
+          navigate(`/proposal/${propId}-${nameToSlug(propTitle)}`, { replace: false });
         }}
       />
     </div>

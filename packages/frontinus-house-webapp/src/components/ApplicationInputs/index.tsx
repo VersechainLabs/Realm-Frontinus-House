@@ -27,6 +27,7 @@ import DelegationCongrats from '../DelegationCongrats';
 import { setAlert } from '../../state/slices/alert';
 import {LoadingButton} from "@mui/lab";
 import ConnectButton from "../ConnectButton";
+import {nameToSlug} from "../../utils/communitySlugs";
 
 
 const ApplicationInputs: React.FC<{
@@ -268,7 +269,7 @@ const ApplicationInputs: React.FC<{
             trigger={showDelegationCongrats}
             onClose={() => {
               setShowDelegationCongrats(false);
-              navigate(`/delegateDetails/${activeAuction.id}`);
+              navigate(`/delegateDetails/${activeAuction.id}-${nameToSlug(activeAuction.title)}`);
             }}
           />
         </Col>
