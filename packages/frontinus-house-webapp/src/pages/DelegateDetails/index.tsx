@@ -35,14 +35,17 @@ import DelegateUtilityBar from "../../components/DelegateUtilityBar";
 import clsx from "clsx";
 import dayjs from "dayjs";
 import formatTimeAll from "../../utils/formatTimeAll";
+import {useParams} from "react-router";
 
 const DelegateDetails = () => {
   const location = useLocation();
   // const communityName = location.pathname.substring(1).split('/')[0];
 
   const communityName = 'frontinus';
-  const id = location.pathname.substring(1).split('/')[1];
-
+  // const id = location.pathname.substring(1).split('/')[1];
+  const params = useParams();
+  const { idParam, title } = params;
+  const id = idParam.split('-')[0];
   const dispatch = useAppDispatch();
   const { data: walletClient } = useWalletClient();
   const community = useAppSelector(state => state.delegate.activeCommunity);

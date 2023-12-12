@@ -26,7 +26,9 @@ import { styled } from '@mui/material/styles';
 
 const Application = () => {
   const params = useParams();
-  const { id } = params;
+  // const { id } = params;
+  const { idParam, title } = params;
+  const id = idParam.split('-')[0];
 
   const { data: walletClient } = useWalletClient();
   const navigate = useNavigate();
@@ -44,6 +46,8 @@ const Application = () => {
   const [voteCount, setVoteCount] = useState(0);
   const [delegateCount, setDelegateCount] = useState(0);
   const [voteList, setvoteList] = useState([]);
+
+
 
   const handleBackClick = () => {
     if (!proposal || !proposal.delegationId ) return;

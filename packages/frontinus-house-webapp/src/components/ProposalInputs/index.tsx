@@ -31,6 +31,7 @@ import ProposalPreview from '../../pages/ProposalPreview';
 import { setProposalData } from '../../state/slices/proposal';
 import {LoadingButton} from "@mui/lab";
 import ConnectButton from "../ConnectButton";
+import {nameToSlug} from "../../utils/communitySlugs";
 
 const ProposalInputs: React.FC<{
   formData: FormDataType[];
@@ -93,6 +94,7 @@ const ProposalInputs: React.FC<{
   const activeCommunity = location.state.community;
   const [showProposalSuccessModal, setShowProposalSuccessModal] = useState(false);
   const [propId, setPropId] = useState<null | number>(null);
+  const [propTitle, setPropTitle] = useState<string>('');
   const [content, setContent] = useState('');
   const [imgArray, setImgArray] = useState(['']);
   const [loading, setLoading] = useState(false);
@@ -225,6 +227,7 @@ const ProposalInputs: React.FC<{
             ),
         );
         setPropId(proposal.id);
+        setPropTitle(proposal.title);
         dispatch(appendProposal({ proposal }));
       } else {
         let newProp: Proposal | InfiniteAuctionProposal;
@@ -240,6 +243,7 @@ const ProposalInputs: React.FC<{
         );
         const proposal = await client.current.createProposal(newProp);
         setPropId(proposal.id);
+        setPropTitle(proposal.title);
         dispatch(appendProposal({ proposal }));
       }
 
@@ -368,7 +372,7 @@ const ProposalInputs: React.FC<{
             trigger={showCongratsDialog}
             onClose={() => {
               setShowCongratsDialog(false);
-              navigate(`/proposal/${propId}`, { replace: false });
+              navigate(`/proposal/${propId}-${nameToSlug(propTitle)}`, { replace: false });
             }}
           />
         </Col>

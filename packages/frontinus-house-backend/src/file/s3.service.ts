@@ -46,7 +46,7 @@ export class S3Service
     //   ContentDisposition: 'inline',
     //   CreateBucketConfiguration: { LocationConstraint: 'ap-south-1' }
     // }
-    console.log(params);
+    // console.log(params);
 
     try
     {
@@ -61,7 +61,7 @@ export class S3Service
       //   Key: 'cc2.png',
       //   Bucket: 'cdn.metaforo.io'
       // }
-      console.log(s3Response);
+      // console.log(s3Response);
 
       return s3Response;
     }

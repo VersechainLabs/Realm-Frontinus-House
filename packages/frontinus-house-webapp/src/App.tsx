@@ -166,11 +166,14 @@ function App() {
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/create-bip" element={<CreateBIP />} />
                   <Route path="/fh-charter" element={<FAQ />} />
-                  <Route path="/proposal/:id" element={<Proposal />} />
+                  <Route path="/proposal/:idParam" element={<Proposal />} />
+                  <Route path="/proposal/:idParam-:title" element={<Proposal />} />
                   <Route path="/bip/:idParam" element={<BIP />} />
                   <Route path="/bip/:idParam-:title" element={<BIP />} />
-                  <Route path="/application/:id" element={<Application />} />
-                  <Route path="/delegateDetails/:id" element={<DelegateDetails />} />
+                  <Route path="/application/:idParam" element={<Application />} />
+                  <Route path="/application/:idParam-:title" element={<Application />} />
+                  <Route path="/delegateDetails/:idParam" element={<DelegateDetails />} />
+                  <Route path="/delegateDetails/:idParam-:title" element={<DelegateDetails />} />
                   {/*<Route path="/:house" element={<House />} />*/}
                   {/*<Route path="/:title" element={<Round />} />*/}
                   <Route path="/:id/:title" element={<Round />} />
