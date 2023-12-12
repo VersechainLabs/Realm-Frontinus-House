@@ -80,10 +80,10 @@ const NomineesCard: React.FC<{
           if (!proposal) return;
 
           if (cmdPlusClicked(e)) {
-            navigate(`/application/${(proposal.id)}`)
+            navigate(`/application/${(proposal.id)}-${nameToSlug(proposal.title)}`)
             return;
           }
-          navigate(`/application/${(proposal.id)}`)
+          navigate(`/application/${(proposal.id)}-${nameToSlug(proposal.title)}`)
           // dispatch(setModalActive(true));
           // dispatch(setActiveProposal(proposal));
         }}

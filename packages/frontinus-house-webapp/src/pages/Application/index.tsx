@@ -26,7 +26,9 @@ import { styled } from '@mui/material/styles';
 
 const Application = () => {
   const params = useParams();
-  const { id } = params;
+  // const { id } = params;
+  const { idParam, title } = params;
+  const id = idParam.split('-')[0];
 
   const { data: walletClient } = useWalletClient();
   const navigate = useNavigate();

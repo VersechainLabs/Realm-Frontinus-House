@@ -218,7 +218,7 @@ const CreateDelegateForm: React.FC<{}> = () => {
       .then((round: any) => {
         setIsSuccessAlertVisible(true); // 显示成功提示
         dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-        navigate('/delegateDetails/' + round.id);
+        navigate('/delegateDetails/' + round.id + "-" + nameToSlug(round.title));
       })
       .catch(e  => {
         setIsButtonDisabled(false);
