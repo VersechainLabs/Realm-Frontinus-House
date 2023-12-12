@@ -62,9 +62,9 @@ export class BipCommentsController {
       }
 
       const params = {
-        username: '0xa55aE31783B8398f4585dA6cde3EE42F7f88a7F6',
+        username: '0xBd0d064094780CbCb5B33dA22B2BbA9A39fBD90E',
         avatar_url: "https://frontinus.house/bulb.png",
-        content:  `0xa55aE31783B8398f4585dA6cde3EE42F7f88a7F6 replied in ${bipRound.title} \n
+        content:  `0xBd0d064094780CbCb5B33dA22B2BbA9A39fBD90E replied in ${bipRound.title} \n
         https://frontinus.house/bip/${bipRound.id}`,
         embeds: [
           {
