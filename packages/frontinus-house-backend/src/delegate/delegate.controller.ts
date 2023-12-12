@@ -426,60 +426,35 @@ export class DelegateController {
 
 
   @Get('/auto/fill')
-  async autoFillScript() {
+  async autoFillScript(
+    @Query('address') commmunityAddress?: string,
+    ) {
     return;
 
-    console.log('enter autoFill');
+    // console.log('enter autoFill');
 
-    const commmunityAddress = "0x7AFe30cB3E53dba6801aa0EA647A0EcEA7cBe18d";
-    const blockHeight = await this.blockchainService.getCurrentBlockNum();
+    // const blockHeight = await this.blockchainService.getCurrentBlockNum();
 
-    const applicationList = await this.applicationService.findAll();
-
-    let count = 0;
-    (await applicationList).forEach(async application => {
-      let vp = await this.blockchainService.getVotingPowerOnChain(
-        application.address,
-        commmunityAddress,
-        blockHeight,
-      );
-
-      console.log(vp);
-      console.log(application);
-
-      application.blockHeight = blockHeight;
-      application.actualWeight = vp;
-
-      count++;
-      await sleep(500);
-      await this.applicationService.store(application);
-      await this.updateSumWeightCount(application);
-    });
-
-    return count;
-
-
-
-
-    // const delegateList = await this.delegateService.findAll();
+    // const applicationList = await this.applicationService.findAll();
 
     // let count = 0;
-    // (await delegateList).forEach(async delegate => {
+    // (await applicationList).forEach(async application => {
     //   let vp = await this.blockchainService.getVotingPowerOnChain(
-    //     delegate.fromAddress,
+    //     application.address,
     //     commmunityAddress,
     //     blockHeight,
     //   );
 
     //   console.log(vp);
-    //   console.log(delegate);
+    //   console.log(application);
 
-    //   delegate.blockHeight = blockHeight;
-    //   delegate.actualWeight = vp;
+    //   application.blockHeight = blockHeight;
+    //   application.actualWeight = vp;
 
     //   count++;
     //   await sleep(500);
-    //   await this.delegateService.store(delegate);
+    //   await this.applicationService.store(application);
+    //   await this.updateSumWeightCount(application);
     // });
 
     // return count;
