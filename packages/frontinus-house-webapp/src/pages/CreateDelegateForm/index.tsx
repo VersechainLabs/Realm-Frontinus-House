@@ -228,18 +228,26 @@ const CreateDelegateForm: React.FC<{}> = () => {
         if (e.status == 417) {
           const data = JSON.parse(e.message);
           msg = 'The time to end the selection period is in conflict with the current active delegation. Please select a time that is later than '+formatTimeAll(data.endTime)+'.';
+          dispatch(
+              setAlert({
+                type: 'error',
+                message: msg,
+              }),
+          );
+          setIsAlertVisible(true); // 显示alert弹出框
         }
 
         if (e.status == 400 && typeof(e.message) == 'string' ){
           msg = e.message;
+          dispatch(
+              setAlert({
+                type: 'error',
+                message: msg,
+              }),
+          );
+          setIsAlertVisible(true); // 显示alert弹出框
         }
-        dispatch(
-            setAlert({
-              type: 'error',
-              message: msg,
-            }),
-        );
-        setIsAlertVisible(true); // 显示alert弹出框
+
 
       });
   };
