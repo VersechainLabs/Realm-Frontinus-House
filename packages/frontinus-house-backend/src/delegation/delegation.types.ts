@@ -7,6 +7,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
+  IsPositive,
   IsString,
   MaxLength,
   Min,
@@ -43,9 +44,11 @@ export class CreateDelegationDto extends SignedEntity {
   @IsString()
   description: string;
 
-  //   @IsNumber()
-  //   @IsPositive()
-  //   communityId: number;
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  communityId?: number;  
 }
 
 export class DeleteDelegationDto extends SignedEntity {

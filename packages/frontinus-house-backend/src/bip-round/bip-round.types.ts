@@ -48,6 +48,12 @@ export class CreateBipRoundDto extends SignedEntity {
   @IsString()
   @IsOptional()
   previewImage?: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  communityId?: number;  
 }
 
 export class UpdateBipRoundDto extends SignedEntity {
