@@ -40,7 +40,9 @@ export const communities = new CaseInsensitiveMap(
       },
     ]),
 
-    // Chao-minted test NFT on test chain : https://goerli.etherscan.io/address/0x830234828de71f7aa8a5050a8bbe58db9c2992f5
+    // Chao-minted test NFT on goerli test chain.
+    // For outside user test.
+    // https://goerli.etherscan.io/address/0x830234828de71f7aa8a5050a8bbe58db9c2992f5
     '0x830234828de71f7aa8a5050a8bbe58db9c2992f5': snapshotMultiple([
       {
         address: '0x830234828de71f7aa8a5050a8bbe58db9c2992f5',
@@ -48,5 +50,16 @@ export const communities = new CaseInsensitiveMap(
         multiplier: 1,
       },
     ]),
+    // Chao-minted test NFT on goerli test chain.
+    // For multi community test.
+    // https://goerli.etherscan.io/address/0x3765C85B670576a80e1b55DFc38584458A1d7C86
+    '0x3765C85B670576a80e1b55DFc38584458A1d7C86': snapshotMultiple([
+      {
+        address: '0x3765C85B670576a80e1b55DFc38584458A1d7C86',
+        strategyType: StrategyType.Erc721,
+        multiplier: 1,
+      },
+    ]),
+
   }),
 );
