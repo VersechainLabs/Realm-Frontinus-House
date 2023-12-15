@@ -202,6 +202,18 @@
 .meumMain {
     background: #1A1A1B;
 }
+.custTime {
+    color: #71717A;
+    width: 70px;
+}
+.timeMain {
+    display: flex;
+    align-items: center;
+}
+.timeButton {
+    margin-left: 70px;
+    margin-top: 12px;
+}
 .back{
     cursor: pointer;
     color:  #A6A9AB;

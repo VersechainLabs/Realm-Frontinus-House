@@ -62,6 +62,8 @@ const CreateBIPForm: React.FC<{
     const { address: account } = useAccount();
     const { data: walletClient } = useWalletClient();
     const [content, setContent] = useState('');
+    const [endDate, setEndDate] = useState(dayjs());
+    const [dateValue, setDateValue] = useState('');
     const [publishLoading,setPublishLoading] = useState(false);
 
 
@@ -106,6 +108,7 @@ const CreateBIPForm: React.FC<{
             setDescLength(plainText.trim().length);
         }
     };
+
 
 
     // const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
@@ -194,11 +197,75 @@ const CreateBIPForm: React.FC<{
             return;
         }
         const utcValue = utc(value.format());
+        console.log(value,utcValue,utcValue.toDate());
         setState(prevState => ({
             ...prevState,
             voteEndTime: utcValue.toDate(),
         }));
     };
+
+    const setDayEndTime1 = () => {
+        // if (!day) {
+        //     return;
+        // }
+        const newDate = dayjs().add(1, 'day');
+        console.log(newDate,newDate.toDate());
+        // const utcValue = utc(newDate.format());
+        setState(prevState => ({
+            ...prevState,
+            voteEndTime: newDate.toDate(),
+        }));
+        setEndDate(newDate);
+        setDateValue(state.voteStartTime);
+        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
+    };
+    const setDayEndTime7 = () => {
+        // if (!day) {
+        //     return;
+        // }
+        const newDate = dayjs().add(7, 'day');
+        console.log(newDate,newDate.toDate());
+        // const utcValue = utc(newDate.format());
+        setState(prevState => ({
+            ...prevState,
+            voteEndTime: newDate.toDate(),
+        }));
+        setEndDate(newDate);
+        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
+    };
+    const setDayEndTime14 = () => {
+        // if (!day) {
+        //     return;
+        // }
+        const newDate = dayjs().add(14, 'day');
+        console.log(newDate,newDate.toDate());
+        // const utcValue = utc(newDate.format());
+        setState(prevState => ({
+            ...prevState,
+            voteEndTime: newDate.toDate(),
+        }));
+        setEndDate(newDate);
+        setDateValue(state.voteStartTime);
+        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
+
+    };
+    const setDayEndTime30 = () => {
+        // if (!day) {
+        //     return;
+        // }
+        const newDate = dayjs().add(30, 'day');
+        console.log(newDate,newDate.toDate());
+        // const utcValue = utc(newDate.format());
+        setState(prevState => ({
+            ...prevState,
+            voteEndTime: newDate.toDate(),
+        }));
+        setEndDate(newDate);
+        setDateValue(state.voteStartTime);
+        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
+    };
+
+
 
 
     const checkStep1 = ()=>{
@@ -266,7 +333,7 @@ const CreateBIPForm: React.FC<{
 
     const onClickPublish = async ()=>{
         try {
-
+            console.log(state.voteEndTime);
             if ( publishLoading ){
                 return false;
             }
@@ -314,10 +381,6 @@ const CreateBIPForm: React.FC<{
     const handleClose = () => {
         setAnchorEl(null);
     };
-
-
-
-
     return (
         <>
                         <Container>
@@ -488,6 +551,7 @@ const CreateBIPForm: React.FC<{
                                                                                 aria-expanded={open ? 'true' : undefined}
                                                                                 onClick={handleClick}
                                                                                 className={classes.input}
+                                                                                value={dateValue}
                                                                                 type="text"
                                                                                 style={{
                                                                                     height: '40px',
@@ -513,21 +577,25 @@ const CreateBIPForm: React.FC<{
                                                                             >
                                                                                 <MenuItem
                                                                                     className={classes.meumMain}
+                                                                                    onClick={setDayEndTime1}
                                                                                 >
-                                                                                    1 day later
+                                                                                        1 day later
                                                                                 </MenuItem>
                                                                                 <MenuItem
                                                                                     className={classes.meumMain}
+                                                                                    onClick={setDayEndTime7}
                                                                                 >
                                                                                     7 days later
                                                                                 </MenuItem>
                                                                                 <MenuItem
                                                                                     className={classes.meumMain}
+                                                                                    onClick={setDayEndTime14}
                                                                                 >
                                                                                     14 days later
                                                                                 </MenuItem>
                                                                                 <MenuItem
                                                                                     className={classes.meumMain}
+                                                                                    onClick={setDayEndTime30}
                                                                                 >
                                                                                     After a month
                                                                                 </MenuItem>
@@ -535,38 +603,57 @@ const CreateBIPForm: React.FC<{
                                                                                     className={classes.meumMain}
                                                                                 >
                                                                                     <div>
-                                                                                        Custom time
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <DateTimePicker
-                                                                                            onChange={newValue => {
-                                                                                                setStartTime(newValue)
-                                                                                                // saveFormStart(newValue); // Save the value to the state as before
-                                                                                                // setProposingStartTime(newValue); // Save the value to the proposingStartTime state
-                                                                                            }}
-                                                                                            defaultValue={dayjs()}
-                                                                                            className={classes.input}
-                                                                                            minDate={dayjs()} //set minDate to the current date and time
-                                                                                            ampm={false}
-                                                                                        />
-                                                                                        <div className={classes.rightTime}>
-                                                                                            <div>End time</div>
-                                                                                            <div>
+                                                                                        <div className={classes.custTime}>
+                                                                                            Custom time
+                                                                                        </div>
+                                                                                        <div>
+                                                                                            <div className={classes.timeMain}>
+                                                                                               <div className={classes.custTime}> Start</div>
+                                                                                                <DateTimePicker
+                                                                                                    onChange={newValue => {
+                                                                                                        setStartTime(newValue)
+                                                                                                        // saveFormStart(newValue); // Save the value to the state as before
+                                                                                                        // setProposingStartTime(newValue); // Save the value to the proposingStartTime state
+                                                                                                    }}
+                                                                                                    defaultValue={dayjs()}
+                                                                                                    className={classes.input}
+                                                                                                    minDate={dayjs()} //set minDate to the current date and time
+                                                                                                    ampm={false}
+                                                                                                />
+                                                                                            </div>
+
+                                                                                            <div className={classes.timeMain}>
+                                                                                                <div className={classes.custTime}>End</div>
                                                                                                 <div>
-                                                                                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                                                                        <DemoContainer components={['DateTimePicker']}>
-                                                                                                            <DateTimePicker
-                                                                                                                onChange={newValue => {
-                                                                                                                    // saveFormStart(newValue); // Save the value to the state as before
-                                                                                                                    setEndTime(newValue); // Save the value to the proposingStartTime state
-                                                                                                                }}
-                                                                                                                className={classes.input}
-                                                                                                                minDate={dayjs()} //set minDate to the current date and time
-                                                                                                                ampm={false}
-                                                                                                            />
-                                                                                                        </DemoContainer>
-                                                                                                    </LocalizationProvider>
+                                                                                                    <div>
+                                                                                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                                                                            <DemoContainer components={['DateTimePicker']}>
+                                                                                                                <DateTimePicker
+                                                                                                                    onChange={newValue => {
+                                                                                                                        // saveFormStart(newValue); // Save the value to the state as before
+                                                                                                                        setEndTime(newValue); // Save the value to the proposingStartTime state
+                                                                                                                    }}
+                                                                                                                    className={classes.input}
+                                                                                                                    minDate={dayjs()} //set minDate to the current date and time
+                                                                                                                    ampm={false}
+                                                                                                                    value={endDate}
+
+                                                                                                                />
+                                                                                                            </DemoContainer>
+                                                                                                        </LocalizationProvider>
+                                                                                                    </div>
                                                                                                 </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className={classes.timeButton}>
+                                                                                            <div className={classes.publishBtn}>
+
+                                                                                                <LoadingButton
+                                                                                                    onClick={handleClose}
+                                                                                                    className={classes.continueBtn}
+                                                                                                >
+                                                                                                    {'Confirm'}
+                                                                                                </LoadingButton>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
