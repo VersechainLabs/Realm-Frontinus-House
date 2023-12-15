@@ -98,9 +98,9 @@ export default function QuillEditor(props: QuillEditorProps) {
           alert(data.error);
           return;
         }
-        props.imgArrayChange('https://ipfs.io/ipfs/'+data.ipfsHash);
+        props.imgArrayChange('https://cdn.frontinus.house/'+data.ipfsHash);
         quillObj.root.classList.remove("ql-blank");
-        quillObj.editor.insertEmbed(range.index, 'image', 'https://ipfs.io/ipfs/'+data.ipfsHash,'user');
+        quillObj.editor.insertEmbed(range.index, 'image', 'https://cdn.frontinus.house/'+data.ipfsHash,'user');
         quillObj.setSelection(range.index + 1);
         setShowLoading(false);
         quillObj.enable();

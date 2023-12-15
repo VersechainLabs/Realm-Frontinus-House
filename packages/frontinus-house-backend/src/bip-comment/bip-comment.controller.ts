@@ -50,6 +50,7 @@ export class BipCommentsController {
 
 
 
+      // test webhook:
       const bipRound = await this.bipRoundService.findOne(17);
 
       const contentMaxLetter = 150;
@@ -61,9 +62,9 @@ export class BipCommentsController {
       }
 
       const params = {
-        username: '0xa55aE31783B8398f4585dA6cde3EE42F7f88a7F6',
+        username: '0xBd0d064094780CbCb5B33dA22B2BbA9A39fBD90E',
         avatar_url: "https://frontinus.house/bulb.png",
-        content:  `0xa55aE31783B8398f4585dA6cde3EE42F7f88a7F6 replied in ${bipRound.title} \n
+        content:  `0xBd0d064094780CbCb5B33dA22B2BbA9A39fBD90E replied in ${bipRound.title} \n
         https://frontinus.house/bip/${bipRound.id}`,
         embeds: [
           {
@@ -87,79 +88,6 @@ export class BipCommentsController {
         response => console.log(response),
         error => console.log(error)
       );
-
-
-
-      // this.httpService.get('http://localhost:3001/admins/list')
-      // .subscribe(
-      //   response => console.log(response.data),
-      //   error => console.log(error)
-      // );
-    
-      
-      // const params = {
-      //   username: "Chao",
-      //   avatar_url: "https://frontinus.house/bulb.png",
-      //   content: "Chao message: https://frontinus.house/bip/9",
-      //   embeds: [
-      //     {
-      //       "title": "Chao title",
-      //       "color": 15258703,
-      //       "thumbnail": {
-      //         "url": "https://frontinus.house/bulb.png",
-      //       },
-      //       "fields": [
-      //         {
-      //           "name": "Chao bip fields here",
-      //           "value": "Chao Whatever you wish to send",
-      //           "inline": true
-      //         }
-      //       ]
-      //     }
-      //   ]
-      // }
-      // this.httpService.post(process.env.DISCORD_WEBHOOK_COMMENT, params)
-      //  .subscribe(
-      //   response => console.log(response),
-      //   error => console.log(error)
-      // );
-
-
-
-      // this.httpService.post('https://discord.com/api/webhooks/1179769731264295013/dqNOlVAVOjnxd6S1f2jVNbwHfRAAqIrLe_FCW0L-W9wMl37wL-Hbri2gNjK8CpQA8IWW', params)
-      //  .subscribe(
-      //   response => console.log(response),
-      //   error => console.log(error)
-      // );
-
-
-      // await fetch('https://discord.com/api/webhooks/1179769731264295013/dqNOlVAVOjnxd6S1f2jVNbwHfRAAqIrLe_FCW0L-W9wMl37wL-Hbri2gNjK8CpQA8IWW', {
-      //   method: "POST",
-      //   headers: {
-      //     'Content-type': 'application/json'
-      //   },
-      //   body: JSON.stringify(params)
-      // }).then(res => {
-      //   console.log(1111,res);
-      // })
-
-
-      // try {
-      //   const response = await this.httpService.get('http://localhost:3001/admins/list');
-      //   console.log(response);
-      // } catch (error) {
-      //   console.error(error);
-      // }
-
-
-      // try {
-      //   const response = await this.httpService.get('http://localhost:3001/admins/list').pipe(map((res) => res.data));
-      //   console.log(response);
-      // } catch (error) {
-      //   console.error(error);
-      // }
-
-
     }
 
 

@@ -71,7 +71,7 @@ const BIPCard: React.FC<{
             <div
                 onClick={e => {
                     if (!community) return;
-                    navigate(`/bip/${bip.id}`)
+                    navigate(`/bip/${bip.id}-${nameToSlug(bip.title)}`)
                 }}
             >
                 <Card

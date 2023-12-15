@@ -37,6 +37,7 @@ import LoadingIndicator from "../../components/LoadingIndicator";
 import {LoadingButton} from "@mui/lab";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import {nameToSlug} from "../../utils/communitySlugs";
 
 const CreateBIPForm: React.FC<{
     fields?: ProposalFields;
@@ -364,7 +365,7 @@ const CreateBIPForm: React.FC<{
                 )
                 .then((data:any) => {
                     setPublishLoading(false);
-                    navigate("/bip/"+data.id);
+                    navigate("/bip/"+data.id+'-'+`${nameToSlug(data.title)}`);
                 })
 
         } catch (e) {
