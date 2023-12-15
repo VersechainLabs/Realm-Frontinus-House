@@ -203,6 +203,7 @@ const CreateBIPForm: React.FC<{
             ...prevState,
             voteEndTime: utcValue.toDate(),
         }));
+        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + utcValue.format('YYYY-MM-DD HH:mm'));
     };
 
     const setDayEndTime1 = () => {
@@ -217,7 +218,6 @@ const CreateBIPForm: React.FC<{
             voteEndTime: newDate.toDate(),
         }));
         setEndDate(newDate);
-        setDateValue(state.voteStartTime);
         setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
     };
     const setDayEndTime7 = () => {
