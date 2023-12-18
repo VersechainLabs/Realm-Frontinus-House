@@ -234,6 +234,7 @@ h5 {
 .MuiMenu-paper .MuiFormControl-root .MuiInputBase-adornedEnd .MuiInputBase-inputAdornedEnd {
   height: 40px;
   color: #F5EEE6;
+  padding:0;
 }
 
 .MuiMenu-list {

@@ -63,7 +63,7 @@ const CreateBIPForm: React.FC<{
     const { address: account } = useAccount();
     const { data: walletClient } = useWalletClient();
     const [content, setContent] = useState('');
-    const [endDate, setEndDate] = useState(dayjs());
+    const [endDate, setEndDate] = useState(dayjs().add(7, 'day'));
     const [dateValue, setDateValue] = useState('');
     const [publishLoading,setPublishLoading] = useState(false);
 
@@ -635,7 +635,7 @@ const CreateBIPForm: React.FC<{
                                                                                                                         setEndTime(newValue); // Save the value to the proposingStartTime state
                                                                                                                     }}
                                                                                                                     className={classes.input}
-                                                                                                                    minDate={dayjs()} //set minDate to the current date and time
+                                                                                                                    minDate={dayjs().add(7, 'day')} //set minDate to the current date and time
                                                                                                                     ampm={false}
                                                                                                                     value={endDate}
 
