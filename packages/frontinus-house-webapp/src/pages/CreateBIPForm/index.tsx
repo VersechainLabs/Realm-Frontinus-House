@@ -540,7 +540,7 @@ const CreateBIPForm: React.FC<{
                                                         {/** time */}
                                                         <div className={clsx(classes.timeBlock,classes.labelMargin)}>
                                                             <div className={classes.leftTime}>
-                                                                <div>Start time</div>
+                                                                <div>Set Voting Time</div>
                                                                 <div>
                                                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                                         <DemoContainer components={['DateTimePicker']}>
@@ -553,6 +553,7 @@ const CreateBIPForm: React.FC<{
                                                                                 onClick={handleClick}
                                                                                 className={classes.input}
                                                                                 value={dateValue}
+                                                                                placeholder={'Set Voting Time'}
                                                                                 type="text"
                                                                                 style={{
                                                                                     height: '40px',
@@ -576,12 +577,7 @@ const CreateBIPForm: React.FC<{
                                                                                     'aria-labelledby': 'basic-button',
                                                                                 }}
                                                                             >
-                                                                                <MenuItem
-                                                                                    className={classes.meumMain}
-                                                                                    onClick={setDayEndTime1}
-                                                                                >
-                                                                                        1 day later
-                                                                                </MenuItem>
+
                                                                                 <MenuItem
                                                                                     className={classes.meumMain}
                                                                                     onClick={setDayEndTime7}
