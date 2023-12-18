@@ -5,13 +5,14 @@
   float: right;
   border: 1px solid #2C2C2D;
   border-radius: 8px;
+  font-size: 14px;
   /* margin-left: auto; 
   margin-right: 0; */
 }
 
 .searchIcon {
   position: absolute;
-  padding-left: 12px;
+  padding-left: 6px;
   padding-bottom: 3px;
   color: #FFFFFF;
   opacity: 0.5;
