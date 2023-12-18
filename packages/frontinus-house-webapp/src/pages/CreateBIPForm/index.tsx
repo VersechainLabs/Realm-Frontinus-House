@@ -190,7 +190,7 @@ const CreateBIPForm: React.FC<{
             ...prevState,
             voteStartTime: utcValue.toDate(),
         }));
-        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + endDate.format('YYYY-MM-DD HH:mm'));
+        setDateValue(value.format('YYYY-MM-DD HH:mm') + ' ~ ' + endDate.format('YYYY-MM-DD HH:mm'));
     };
 
     const setEndTime = (value: Dayjs | null) => {
@@ -234,7 +234,7 @@ const CreateBIPForm: React.FC<{
         }));
         setState(prevState => ({
             ...prevState,
-            voteStartTime: dayjs().toDate(),
+            voteStartTime: dayjs(),
         }));
         setEndDate(newDate);
         setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
@@ -252,10 +252,9 @@ const CreateBIPForm: React.FC<{
         }));
         setState(prevState => ({
             ...prevState,
-            voteStartTime: dayjs().toDate(),
+            voteStartTime: dayjs(),
         }));
         setEndDate(newDate);
-        setDateValue(state.voteStartTime);
         setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
 
     };
@@ -272,10 +271,9 @@ const CreateBIPForm: React.FC<{
         }));
         setState(prevState => ({
             ...prevState,
-            voteStartTime: dayjs().toDate(),
+            voteStartTime: dayjs(),
         }));
         setEndDate(newDate);
-        setDateValue(state.voteStartTime);
         setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
     };
 
