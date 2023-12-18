@@ -89,9 +89,25 @@
 }
 
 
+@font-face {
+  font-family: 'PT Root UI';
+  src: url('./assets/fonts/PT-Root-UI_Light.woff2') format('woff2'),
+    url('./assets/fonts/PT-Root-UI_Light.woff') format('woff');
+  font-weight: 300;
+  font-style: normal;
+}
 
 
-
+/**
+ * Chao - For Home V2
+ */
+@font-face {
+  font-family: 'Poppins';
+  src: url('./assets/fonts/Poppins-Regular.ttf') format('truetype'),
+  url('./assets/fonts/Poppins-Regular.ttf') format('truetype');
+  font-weight: medium;
+  font-style: normal;
+}
 
 
 

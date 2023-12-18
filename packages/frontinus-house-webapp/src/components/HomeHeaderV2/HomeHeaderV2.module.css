@@ -1,0 +1,76 @@
+.wrapper {
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 0;
+  margin-right: 0;
+  background-color: #1A1A1B;
+}
+
+.learnMoreBtn {
+  margin-top: 1rem;
+  width: fit-content;
+  border-radius: 8px;
+  background-color: transparent;
+  border: 1px solid #D0A059;
+  color: #D0A059;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: 'Poppins';
+  width: 234px;
+  height: 40px;  
+  padding: 0px, 16px, 0px, 16px;
+  margin-bottom: 8px;
+}
+.learnMoreBtn:hover {
+  background: rgba(148, 23, 226, 0.08);
+}
+.searchBarSection {
+  background-color: #111111;
+  padding-top: 25px;
+}
+.searchBarContainer {
+  height: 36px;
+  background-color: #111111;
+}
+.subtitle {
+  font-family: Poppins;
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 30px;
+  letter-spacing: 0px;
+  text-align: left;
+  display: inline;
+}
+@media (min-width: 991px) {
+  .searchBarContainer {
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 1199px) {
+  .searchBarContainer {
+    max-width: 960px !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .homeCardsContainer {
+    padding: 0px !important;
+  }
+}
+
+@media (max-width: 990px) {
+  .searchBarContainer {
+    max-width: 960px !important;
+    padding: 0 40px !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .searchBarContainer {
+    padding: 0 20px !important;
+  }
+}
+  

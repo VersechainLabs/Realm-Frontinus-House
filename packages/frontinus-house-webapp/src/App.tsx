@@ -37,6 +37,7 @@ import CreateRound from './pages/CreateRound';
 import CreateBIP from './pages/CreateBIPForm';
 import CreateRoundForm from './pages/CreateRoundForm';
 import CreateDelegateForm from './pages/CreateDelegateForm';
+import HomeV2 from './pages/HomeV2';
 import CommentsPage from './pages/CommentsPage';
 import classes from './components/AddressAvatar/AddressAvatar.module.css';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
@@ -45,14 +46,16 @@ import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import { useAppDispatch, useAppSelector } from './hooks';
 import { clearClick } from './state/slices/alert';
 import ProposalPreview from './pages/ProposalPreview';
-import BIP from "./pages/BIP";
-import {polygon, optimism, arbitrum, base, zora,goerli} from "viem/chains";
+import BIP from './pages/BIP';
+import { polygon, optimism, arbitrum, base, zora, goerli } from 'viem/chains';
 
 const { chains, publicClient } = configureChains(
-    process.env.REACT_APP_TYPE === 'dev'?[mainnet, polygon, optimism, arbitrum, base, zora, goerli]:[mainnet],
+  process.env.REACT_APP_TYPE === 'dev'
+    ? [mainnet, polygon, optimism, arbitrum, base, zora, goerli]
+    : [mainnet],
   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
 );
-console.log(process.env.REACT_APP_TYPE)
+console.log(process.env.REACT_APP_TYPE);
 const { connectors } = getDefaultWallets({
   appName: 'Frontinus',
   projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID!,
@@ -164,6 +167,7 @@ function App() {
                   <Route path="/create-round" element={<CreateRound />} />
                   <Route path="/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/create-delegate-form" element={<CreateDelegateForm />} />
+                  <Route path="/home-v2" element={<HomeV2 />} />
                   <Route path="/create-bip" element={<CreateBIP />} />
                   <Route path="/fh-charter" element={<FAQ />} />
                   <Route path="/proposal/:idParam" element={<Proposal />} />
