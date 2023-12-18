@@ -64,6 +64,7 @@ const CreateBIPForm: React.FC<{
     const { data: walletClient } = useWalletClient();
     const [content, setContent] = useState('');
     const [endDate, setEndDate] = useState(dayjs().add(7, 'day'));
+    const [startDate, setStartDate] = useState(dayjs());
     const [dateValue, setDateValue] = useState('');
     const [publishLoading,setPublishLoading] = useState(false);
 
@@ -188,7 +189,7 @@ const CreateBIPForm: React.FC<{
         const utcValue = utc(value.format());
         setState(prevState => ({
             ...prevState,
-            voteStartTime: utcValue.toDate(),
+            voteStartTime: utcValue,
         }));
         setDateValue(value.format('YYYY-MM-DD HH:mm') + ' ~ ' + endDate.format('YYYY-MM-DD HH:mm'));
     };
@@ -237,7 +238,8 @@ const CreateBIPForm: React.FC<{
             voteStartTime: dayjs(),
         }));
         setEndDate(newDate);
-        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
+        setStartDate(dayjs());
+        setDateValue(dayjs().format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
     };
     const setDayEndTime14 = () => {
         // if (!day) {
@@ -255,7 +257,8 @@ const CreateBIPForm: React.FC<{
             voteStartTime: dayjs(),
         }));
         setEndDate(newDate);
-        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
+        setStartDate(dayjs());
+        setDateValue(dayjs().format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
 
     };
     const setDayEndTime30 = () => {
@@ -274,7 +277,8 @@ const CreateBIPForm: React.FC<{
             voteStartTime: dayjs(),
         }));
         setEndDate(newDate);
-        setDateValue(state.voteStartTime.format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
+        setStartDate(dayjs());
+        setDateValue(dayjs().format('YYYY-MM-DD HH:mm') + ' ~ ' + newDate.format('YYYY-MM-DD HH:mm'));
     };
 
 
@@ -627,6 +631,7 @@ const CreateBIPForm: React.FC<{
                                                                                                     className={classes.input}
                                                                                                     minDate={dayjs()} //set minDate to the current date and time
                                                                                                     ampm={false}
+                                                                                                    value={startDate}
                                                                                                 />
                                                                                             </div>
 
