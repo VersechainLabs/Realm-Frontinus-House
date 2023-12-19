@@ -6,6 +6,12 @@
   margin-left: 0;
   margin-right: 0;
   background-color: #1A1A1B;
+  background-image: url('../../assets/home_v2_header_bg.svg');
+  /* background-position:  center; */
+  background-position: 400px -50px;
+  background-size: 900px 700px;
+  background-repeat: no-repeat;
+
 }
 
 .learnMoreBtn {
