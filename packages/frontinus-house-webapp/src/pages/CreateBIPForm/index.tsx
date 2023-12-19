@@ -579,7 +579,6 @@ const CreateBIPForm: React.FC<{
                                                                             {/*    }}*/}
                                                                             {/*/>*/}
                                                                             <Input
-                                                                                id="basic-button"
                                                                                 startAdornment={
                                                                                     <InputAdornment position="start">
                                                                                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -594,9 +593,6 @@ const CreateBIPForm: React.FC<{
                                                                                         </svg>
                                                                                     </InputAdornment>
                                                                                 }
-                                                                                aria-controls={open ? 'basic-menu' : undefined}
-                                                                                aria-haspopup="true"
-                                                                                aria-expanded={open ? 'true' : undefined}
                                                                                 onClick={handleClick}
                                                                                 className={classes.input}
                                                                                 value={dateValue}
