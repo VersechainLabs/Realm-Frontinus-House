@@ -121,7 +121,7 @@ const StatusFilters: React.FC<{
                   }</span>
                 </div>
               </div>
-              {index === 0 && <div className={classes.divider}></div>}
+              {<div className={classes.divider}></div>}
             </Fragment>
           );
         })}
