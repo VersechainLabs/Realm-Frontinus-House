@@ -691,17 +691,17 @@ const CreateBIPForm: React.FC<{
                                                                                                 </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                        <div className={classes.timeButton}>
-                                                                                            <div className={classes.publishBtn}>
+                                                                                        {/*<div className={classes.timeButton}>*/}
+                                                                                        {/*    <div className={classes.publishBtn}>*/}
 
-                                                                                                <LoadingButton
-                                                                                                    onClick={handleClose}
-                                                                                                    className={classes.continueBtn}
-                                                                                                >
-                                                                                                    {'Confirm'}
-                                                                                                </LoadingButton>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        {/*        <LoadingButton*/}
+                                                                                        {/*            onClick={handleClose}*/}
+                                                                                        {/*            className={classes.continueBtn}*/}
+                                                                                        {/*        >*/}
+                                                                                        {/*            {'Confirm'}*/}
+                                                                                        {/*        </LoadingButton>*/}
+                                                                                        {/*    </div>*/}
+                                                                                        {/*</div>*/}
                                                                                     </div>
 
                                                                                 </MenuItem>
