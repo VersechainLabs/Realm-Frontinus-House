@@ -108,6 +108,7 @@
 
 .labelMargin input {
     color: #F5EEE6;
+    outline: none;
 }
 
 .labelMargin svg {
@@ -153,9 +154,16 @@
     box-sizing: border-box;
     scroll-behavior: smooth;
 }
+.input svg {
+    fill: #676B6D;
+}
 
-
-
+.input:before {
+    border-bottom: none!important;
+}
+.input:after {
+    border-bottom: none!important;
+}
 .voteType{
     height: 40px;
 }
@@ -197,6 +205,22 @@
 
 .leftTime{
     margin-right: 20px;
+}
+
+.meumMain {
+    background: #1A1A1B;
+}
+.custTime {
+    color: #71717A;
+    width: 70px;
+}
+.timeMain {
+    display: flex;
+    align-items: center;
+}
+.timeButton {
+    margin-left: 70px;
+    margin-top: 12px;
 }
 .back{
     cursor: pointer;
