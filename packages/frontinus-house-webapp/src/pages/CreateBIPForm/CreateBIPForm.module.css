@@ -154,9 +154,16 @@
     box-sizing: border-box;
     scroll-behavior: smooth;
 }
+.input svg {
+    fill: #676B6D;
+}
 
-
-
+.input:before {
+    border-bottom: none!important;
+}
+.input:after {
+    border-bottom: none!important;
+}
 .voteType{
     height: 40px;
 }
