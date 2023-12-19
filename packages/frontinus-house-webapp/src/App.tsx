@@ -118,7 +118,7 @@ function App() {
     accentColor: 'var(--brand-common-yellow)',
     accentColorForeground: '#212529',
   });
-  rainbowKitTheme.fonts.body = 'Inconsolata';
+  rainbowKitTheme.fonts.body = 'Poppins';
 
   const CustomAvatar: AvatarComponent = ({ address, ensImage, size }) => {
     return (
