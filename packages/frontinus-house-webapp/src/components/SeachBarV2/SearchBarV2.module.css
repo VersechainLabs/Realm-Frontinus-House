@@ -12,7 +12,7 @@
 
 .searchIcon {
   position: absolute;
-  padding-left: 6px;
+  padding-left: 12px;
   padding-bottom: 3px;
   color: #FFFFFF;
   opacity: 0.5;
@@ -30,6 +30,8 @@
   border: var(--border-light);
   box-shadow: var(--shadow-high);
   background-color: #111111;
+  margin-left: -2px;
+  background-color: transparent;  
 }
 .searchBar input:active,
 .searchBar input:focus:focus-visible {

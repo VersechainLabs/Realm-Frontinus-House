@@ -25,6 +25,8 @@
 }
 .learnMoreBtn:hover {
   background: rgba(148, 23, 226, 0.08);
+  color: #111111;
+  background-color: #D0A059;
 }
 .searchBarSection {
   background-color: #111111;
