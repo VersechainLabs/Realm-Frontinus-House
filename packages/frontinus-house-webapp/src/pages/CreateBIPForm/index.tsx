@@ -38,6 +38,8 @@ import {LoadingButton} from "@mui/lab";
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import {nameToSlug} from "../../utils/communitySlugs";
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
 
 const CreateBIPForm: React.FC<{
     fields?: ProposalFields;
@@ -562,8 +564,36 @@ const CreateBIPForm: React.FC<{
                                                                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                                         <DemoContainer components={['DateTimePicker']}>
 
-                                                                            <input
+                                                                            {/*<input*/}
+                                                                            {/*    id="basic-button"*/}
+                                                                            {/*    aria-controls={open ? 'basic-menu' : undefined}*/}
+                                                                            {/*    aria-haspopup="true"*/}
+                                                                            {/*    aria-expanded={open ? 'true' : undefined}*/}
+                                                                            {/*    onClick={handleClick}*/}
+                                                                            {/*    className={classes.input}*/}
+                                                                            {/*    value={dateValue}*/}
+                                                                            {/*    placeholder={'Set Voting Time'}*/}
+                                                                            {/*    type="text"*/}
+                                                                            {/*    style={{*/}
+                                                                            {/*        height: '40px',*/}
+                                                                            {/*    }}*/}
+                                                                            {/*/>*/}
+                                                                            <Input
                                                                                 id="basic-button"
+                                                                                startAdornment={
+                                                                                    <InputAdornment position="start">
+                                                                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path d="M18.2222 4.8H17.3333V3H15.5556V4.8H8.44444V3H6.66667V4.8H5.77778C4.79556 4.8 4.00889 5.6055 4.00889 6.6L4 19.2C4 20.1945 4.79556 21 5.77778 21H18.2222C19.2044 21 20 20.1945 20 19.2V6.6C20 5.6055 19.2044 4.8 18.2222 4.8ZM18.2222 19.2H5.77778V9.3H18.2222V19.2ZM7.55556 11.1H12V15.6H7.55556V11.1Z" fill="#D0A059"/>
+                                                                                        </svg>
+                                                                                    </InputAdornment>
+                                                                                }
+                                                                                endAdornment={
+                                                                                    <InputAdornment position="end">
+                                                                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                                            <path d="M11.2572 5.30099C11.4555 5.10033 11.6947 5 11.9745 5C12.2543 5 12.4934 5.10033 12.6918 5.30099C12.8973 5.50165 13 5.74173 13 6.02122C13 6.30072 12.8973 6.54079 12.6918 6.74146L8.71732 10.7404C8.63231 10.8407 8.52604 10.9106 8.39851 10.95C8.27099 10.9894 8.13638 11.0055 7.99469 10.9983C7.85299 10.9912 7.71307 10.9607 7.57492 10.907C7.43677 10.8532 7.3181 10.7762 7.21892 10.6759L3.30818 6.74146C3.10273 6.54079 3 6.30072 3 6.02122C3 5.74173 3.10273 5.50165 3.30818 5.30099C3.40737 5.20066 3.51895 5.12541 3.64293 5.07525C3.76691 5.02508 3.89444 5 4.0255 5C4.15657 5 4.28587 5.02508 4.41339 5.07525C4.54091 5.12541 4.65427 5.20066 4.75345 5.30099L8.00531 8.54741L11.2572 5.30099Z" fill="#676B6D"/>
+                                                                                        </svg>
+                                                                                    </InputAdornment>
+                                                                                }
                                                                                 aria-controls={open ? 'basic-menu' : undefined}
                                                                                 aria-haspopup="true"
                                                                                 aria-expanded={open ? 'true' : undefined}
@@ -574,6 +604,7 @@ const CreateBIPForm: React.FC<{
                                                                                 type="text"
                                                                                 style={{
                                                                                     height: '40px',
+                                                                                    width: '528px',
                                                                                 }}
                                                                             />
                                                                             {/*<Button*/}
