@@ -72,6 +72,27 @@ export class Application {
   @Column({ type: 'integer', default: 0 })
   commentCount: number;
 
+  @ApiProperty({
+    description:
+      'The user actually owns the weight, ignoring the delegate relationship.',
+  })
+  @Column({ default: 0 })
+  @Field(() => Int)
+  actualWeight: number;
+
+  @ApiProperty()
+  @Column({ default: null })
+  @Field(() => Int)
+  blockHeight: number;
+
+  @ApiProperty({
+    description:
+      'All the delegate actualWeight of this application',
+  })
+  @Column({ default: 0 })
+  @Field(() => Int)
+  sumWeight: number;
+
   @ApiProperty()
   @Column()
   @Field(() => Date)

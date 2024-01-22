@@ -21,6 +21,7 @@ import { Delegation } from '../delegation/delegation.entity';
 import { Delegate } from '../delegate/delegate.entity';
 import { BipOption } from 'src/bip-option/bip-option.entity';
 import { BipRound } from 'src/bip-round/bip-round.entity';
+import { Community } from 'src/community/community.entity';
 
 @Injectable()
 export class BipVoteService {
@@ -32,6 +33,8 @@ export class BipVoteService {
     private readonly blockchainService: BlockchainService,
     @InjectRepository(Delegate)
     private delegateRepository: Repository<Delegate>,
+    @InjectRepository(Community)
+    private communityRepository: Repository<Community>,
   ) {}
 
   async findAll(opts?: FindManyOptions<BipVote>): Promise<BipVote[]> {
@@ -137,9 +140,12 @@ export class BipVoteService {
     auction: BipRound,
     delegate: boolean,
   ): Promise<VotingPower> {
+    const community = await this.communityRepository.findOne(auction.communityId)
+
     let votingPower = await this.blockchainService.getVotingPowerWithSnapshot(
       address,
-      process.env.COMMUNITY_ADDRESS,
+      // process.env.COMMUNITY_ADDRESS,
+      community.contractAddress,
       auction.balanceBlockTag,
     );
 
@@ -165,7 +171,8 @@ export class BipVoteService {
           const currentVotingPower =
             await _blockchainService.getVotingPowerWithSnapshot(
               currentDelegate.fromAddress,
-              process.env.COMMUNITY_ADDRESS,
+              // process.env.COMMUNITY_ADDRESS,
+              community.contractAddress,
               auction.balanceBlockTag,
             );
 
@@ -187,6 +194,8 @@ export class BipVoteService {
   }
 
   /**
+   * This is for creating Vote. Similar to checkEligibleToBipVote()
+   * 
    * Check if the vote is valid. The checks include:
    * - The proposal is within the valid voting period
    * - The address has not voted in this round
@@ -210,11 +219,12 @@ export class BipVoteService {
       );
     }
 
-    // Check if user has voted for this round, Protect against casting same vote twice
-    const sameAuctionVote = await this.findBy(bipOption.id, address);
+    // Check if user has voted for this round, Protect against casting same vote twice,
+    // This could happen when user opens 2 pages before vote, and click them one-by-one!
+    const sameAuctionVote = await this.findOneByRound(bipRound.id, address);
     if (sameAuctionVote) {
       throw new HttpException(
-        `Vote for prop ${bipOption.id} failed because user has already been voted in this round`,
+        `You have already voted in this proposal.`,
         HttpStatus.FORBIDDEN,
       );
     }
@@ -229,12 +239,21 @@ export class BipVoteService {
     return true;
   }
 
-  async checkEligibleToVoteNew(
+  /**
+   * This is for listing(votesState). Similar to checkEligibleToBipVote()
+   * 
+   * @param auction 
+   * @param address 
+   * @param checkVotingPower 
+   * @returns 
+   */
+  async checkEligibleToBipVote(
     // proposal: BipOption,
     auction: BipRound,
     address: string,
     checkVotingPower = true,
   ): Promise<VoteStatesClass> {
+
     const currentTime = new Date();
     if (
       currentTime < auction.startTime ||
@@ -244,17 +263,20 @@ export class BipVoteService {
     }
 
     // Check if user has voted for this round, Protect against casting same vote twice
-    const sameAuctionVote = await this.findBy(auction.id, address);
+    const sameAuctionVote = await this.findOneByRound(auction.id, address);
     if (sameAuctionVote) {
       return VoteStates.VOTED_ANOTHER;
     }
-
     if (checkVotingPower) {
       try {
         const vp = await this.getVotingPower(address, auction, true);
+        
         if (vp.weight === 0) {
           return VoteStates.NO_POWER;
-        }        
+        }
+        else {
+          return new VoteStatesClass( 200,  "Can vote.", true, vp.weight);  // VoteStates.OK with votingPower
+        }
       } catch (error) {
         // 6v add new case:
         return VoteStates.ALREADY_DELEGATED;

@@ -269,7 +269,7 @@ const ApplicationInputs: React.FC<{
             trigger={showDelegationCongrats}
             onClose={() => {
               setShowDelegationCongrats(false);
-              navigate('/' + getSlug(location.pathname) + `/delegateDetails/${activeAuction.id}`);
+              navigate('/' + getSlug(location.pathname) + `/delegateDetails/${activeAuction.id}-${nameToSlug(activeAuction.title)}`);
             }}
           />
         </Col>

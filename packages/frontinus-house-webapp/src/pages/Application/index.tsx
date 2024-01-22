@@ -21,12 +21,14 @@ import {useAccount, useWalletClient} from 'wagmi';
 import AddressAvatar from "../../components/AddressAvatar";
 import {DeleteApplication} from "@nouns/frontinus-house-wrapper/dist/builders";
 import { VoteStates } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
-
-
+import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
+import { styled } from '@mui/material/styles';
 
 const Application = () => {
   const params = useParams();
-  const { id } = params;
+  // const { id } = params;
+  const { idParam, title } = params;
+  const id = idParam.split('-')[0];
 
   const { data: walletClient } = useWalletClient();
   const navigate = useNavigate();
@@ -42,7 +44,10 @@ const Application = () => {
   const [loading,setLoading] = useState(true);
   const [status, setStatus] = useState(VoteStates.OK); // 200 can vote  311 can cancel
   const [voteCount, setVoteCount] = useState(0);
+  const [delegateCount, setDelegateCount] = useState(0);
   const [voteList, setvoteList] = useState([]);
+
+
 
   const handleBackClick = () => {
     if (!proposal || !proposal.delegationId ) return;
@@ -124,6 +129,7 @@ const Application = () => {
     console.log('list',raw);
 
     setVoteCount(raw.total);
+    setDelegateCount(raw.sumWeight);
 
     setvoteList(raw.delegates);
   };
@@ -132,6 +138,21 @@ const Application = () => {
     if (!proposal) return;
     fetchVotes();
   }, [id, dispatch, proposal]);
+
+  const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
+      <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#272728',
+      color: theme.palette.common.white,
+      maxWidth: 440,
+      padding:'10px',
+      fontSize: theme.typography.pxToRem(14),
+    },
+  }));
+
+
+
 
   return (
     <>
@@ -182,7 +203,8 @@ const Application = () => {
                          }
 
                        } catch (e) {
-                         dispatch(setAlert({ type: 'error', message: e }));
+                         // dispatch(setAlert({ type: 'error', message: e }));
+                         console.log(e);
                        } finally {
 
                        }
@@ -268,12 +290,36 @@ const Application = () => {
         {
           voteCount > 0 && <div className={classes.voteMain}>
             <div className={classes.voteHeader}>
-              <div className={classes.voteHeaderText}>
-                Delegates
+              <div className={classes.voteHeaderLeft}>
+                <div className={classes.voteHeaderText}>
+                  Delegates
+                </div>
+                <div className={classes.voteHeaderNum}>
+                  {voteCount}
+                </div>
               </div>
-              <div className={classes.voteHeaderNum}>
-                {voteCount}
+              <div className={classes.voteHeaderRight}>
+                {delegateCount} Realms
+                <HtmlTooltip
+                    title={
+                      <React.Fragment>
+                        <div>
+                          1. The Realms count here is based on the block height recorded at the time of delegation. When a proposal round begins, we'll reconfirm the Realms held by each delegate at that moment, using the current block height. Delegates will then cast their votes based on their current Realms count.
+                        </div>
+                        <div>
+                          2. Proposals created outside of a delegation round can still receive votes, but delegates will only have their own individual voting power to cast their votes.
+                        </div>
+
+                      </React.Fragment>
+                    }
+                >
+                  <svg className={classes.voteTip} width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 0C10.866 0 14 3.134 14 7C14 10.866 10.866 14 7 14C3.134 14 0 10.866 0 7C0 3.134 3.134 0 7 0ZM7 1.33333C5.49711 1.33333 4.05577 1.93036 2.99306 2.99306C1.93036 4.05577 1.33333 5.49711 1.33333 7C1.33333 8.50289 1.93036 9.94423 2.99306 11.0069C4.05577 12.0696 5.49711 12.6667 7 12.6667C8.50289 12.6667 9.94423 12.0696 11.0069 11.0069C12.0696 9.94423 12.6667 8.50289 12.6667 7C12.6667 5.49711 12.0696 4.05577 11.0069 2.99306C9.94423 1.93036 8.50289 1.33333 7 1.33333ZM7 9C7.21217 9 7.41566 9.08429 7.56569 9.23431C7.71571 9.38434 7.8 9.58783 7.8 9.8C7.8 10.0122 7.71571 10.2157 7.56569 10.3657C7.41566 10.5157 7.21217 10.6 7 10.6C6.78783 10.6 6.58434 10.5157 6.43431 10.3657C6.28429 10.2157 6.2 10.0122 6.2 9.8C6.2 9.58783 6.28429 9.38434 6.43431 9.23431C6.58434 9.08429 6.78783 9 7 9ZM7 3C7.17681 3 7.34638 3.07024 7.4714 3.19526C7.59643 3.32029 7.66667 3.48986 7.66667 3.66667V7.66667C7.66667 7.84348 7.59643 8.01305 7.4714 8.13807C7.34638 8.2631 7.17681 8.33333 7 8.33333C6.82319 8.33333 6.65362 8.2631 6.5286 8.13807C6.40357 8.01305 6.33333 7.84348 6.33333 7.66667V3.66667C6.33333 3.48986 6.40357 3.32029 6.5286 3.19526C6.65362 3.07024 6.82319 3 7 3Z" fill="white" fill-opacity="0.4"/>
+                  </svg>
+                </HtmlTooltip>
+
               </div>
+
             </div>
             <div className={classes.voteList}>
               {voteList.map(item => (
@@ -283,6 +329,9 @@ const Application = () => {
                         <AddressAvatar address={item.fromAddress} size={20} />
                         <div className={classes.voteUserAddress}>{item.fromAddress} </div>
                         {/*<div>X3 vote</div>*/}
+                      </div>
+                      <div>
+                        {item.actualWeight} Realms
                       </div>
                     </div>
 

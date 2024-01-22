@@ -82,7 +82,7 @@ const ProposalCard: React.FC<{
           //   openInNewTab(`${nameToSlug(round.title)}/${proposal.id}`);
           //   return;
           // }
-          navigate('/' + getSlug(location.pathname) + `/proposal/${proposal.id}`)
+          navigate('/' + getSlug(location.pathname) + `/proposal/${proposal.id}-${nameToSlug(proposal.title)}`)
           // dispatch(setModalActive(true));
           // dispatch(setActiveProposal(proposal));
         }}

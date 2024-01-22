@@ -103,7 +103,11 @@
 
 
 
-
+@media (max-width: 577px) {
+    .voteResults{
+        width: auto;
+    }
+}
 
 
 

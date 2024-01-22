@@ -18,6 +18,7 @@ import TextField from '@mui/material/TextField';
 import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { LoadingButton } from '@mui/lab';
 import { utc } from 'dayjs';
+import formatTimeAll from "../../utils/formatTimeAll";
 
 const CreateDelegateForm: React.FC<{}> = (props) => {
   const host = useAppSelector(state => state.configuration.backendHost);
@@ -203,7 +204,6 @@ const CreateDelegateForm: React.FC<{}> = (props) => {
     }
 
     console.log(state);
-
     const delegate = new TimedDelegate(
       state.title,
       state.startTime,
@@ -218,21 +218,36 @@ const CreateDelegateForm: React.FC<{}> = (props) => {
       .then((round: any) => {
         setIsSuccessAlertVisible(true); // 显示成功提示
         dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-        navigate('/' + getSlug(location.pathname) + '/delegateDetails/' + round.id);
+        navigate('/' + getSlug(location.pathname) + '/delegateDetails/' + round.id + "-" + nameToSlug(round.title));
       })
       .catch(e  => {
         setIsButtonDisabled(false);
         setFlag(false);
+        var msg = '';
 
-        if ( typeof(e) == 'string' ){
+        if (e.status == 417) {
+          const data = JSON.parse(e.message);
+          msg = 'The time to end the selection period is in conflict with the current active delegation. Please select a time that is later than '+formatTimeAll(data.endTime)+'.';
           dispatch(
               setAlert({
                 type: 'error',
-                message: e,
+                message: msg,
               }),
           );
           setIsAlertVisible(true); // 显示alert弹出框
         }
+
+        if (e.status == 400 && typeof(e.message) == 'string' ){
+          msg = e.message;
+          dispatch(
+              setAlert({
+                type: 'error',
+                message: msg,
+              }),
+          );
+          setIsAlertVisible(true); // 显示alert弹出框
+        }
+
 
       });
   };
@@ -360,67 +375,76 @@ const CreateDelegateForm: React.FC<{}> = (props) => {
                   </LocalizationProvider>
                 </div>
               </div>
-              <div className={classes.paddingTop}>
-                <div className={classes.xian + ' ' + classes.xian1}></div>
-                <div className={classes.flexDiv}>
-                  <div
-                    className={classes.qiu}
-                    style={{
-                      background: isStartTimeFilled
-                        ? 'var(--qiu-color-filled)'
-                        : 'var(--qiu-color-default)',
-                    }}
-                  ></div>
-                  <div className={`${classes.qiuDesc} ${isStartTimeFilled ? classes.filled : ''}`}>
+              <div className={classes.paddingTop + ' ' + classes.flexDiv}>
+                <div>
+                  <div className={classes.xian + ' ' + classes.xian1}></div>
+                  <div className={classes.flexDiv}>
+                    <div
+                        className={classes.qiu}
+                        style={{
+                          background: isStartTimeFilled
+                              ? 'var(--qiu-color-filled)'
+                              : 'var(--qiu-color-default)',
+                        }}
+                    ></div>
+
+                  </div>
+
+                  <div className={classes.xian + ' ' + classes.xian2}></div>
+                  <div className={classes.flexDiv}>
+                    <div
+                        className={classes.qiu}
+                        style={{
+                          background: isProposalTimeFilled
+                              ? 'var(--qiu-color-filled)'
+                              : 'var(--qiu-color-default)',
+                        }}
+                    ></div>
+
+                  </div>
+                  <div className={classes.xian + ' ' + classes.xian3}></div>
+                  <div className={classes.flexDiv}>
+                    <div
+                        className={classes.qiu}
+                        style={{
+                          background: isVotingTimeFilled
+                              ? 'var(--qiu-color-filled)'
+                              : 'var(--qiu-color-default)',
+                        }}
+                    ></div>
+
+                  </div>
+                  <div className={classes.xian + ' ' + classes.xian4}></div>
+                  <div className={classes.flexDiv}>
+                    <div
+                        className={classes.qiu}
+                        style={{
+                          background: isEndTimeFilled
+                              ? 'var(--qiu-color-filled)'
+                              : 'var(--qiu-color-default)',
+                        }}
+                    ></div>
+
+                  </div>
+                  <div className={classes.xian + ' ' + classes.xian5}></div>
+                </div>
+                <div>
+                  <div className={`${classes.qiuDesc} ${classes.paddingTop1} ${isStartTimeFilled ? classes.filled : ''}`}>
                     Time to start accepting applicants
                   </div>
-                </div>
-
-                <div className={classes.xian + ' ' + classes.xian2}></div>
-                <div className={classes.flexDiv}>
                   <div
-                    className={classes.qiu}
-                    style={{
-                      background: isProposalTimeFilled
-                        ? 'var(--qiu-color-filled)'
-                        : 'var(--qiu-color-default)',
-                    }}
-                  ></div>
-                  <div
-                    className={`${classes.qiuDesc} ${isProposalTimeFilled ? classes.filled : ''}`}
+                      className={`${classes.qiuDesc} ${classes.paddingTop2} ${isProposalTimeFilled ? classes.filled : ''}`}
                   >
                     Time to select delegates
                   </div>
-                </div>
-                <div className={classes.xian + ' ' + classes.xian3}></div>
-                <div className={classes.flexDiv}>
-                  <div
-                    className={classes.qiu}
-                    style={{
-                      background: isVotingTimeFilled
-                        ? 'var(--qiu-color-filled)'
-                        : 'var(--qiu-color-default)',
-                    }}
-                  ></div>
-                  <div className={`${classes.qiuDesc} ${isVotingTimeFilled ? classes.filled : ''}`}>
+                  <div className={`${classes.qiuDesc} ${classes.paddingTop3} ${isVotingTimeFilled ? classes.filled : ''}`}>
                     Time to end selection period
                   </div>
-                </div>
-                <div className={classes.xian + ' ' + classes.xian4}></div>
-                <div className={classes.flexDiv}>
-                  <div
-                    className={classes.qiu}
-                    style={{
-                      background: isEndTimeFilled
-                        ? 'var(--qiu-color-filled)'
-                        : 'var(--qiu-color-default)',
-                    }}
-                  ></div>
-                  <div className={`${classes.qiuDesc} ${isEndTimeFilled ? classes.filled : ''}`}>
+                  <div className={`${classes.qiuDesc} ${classes.paddingTop4} ${isEndTimeFilled ? classes.filled : ''}`}>
                     Delegation End Time
                   </div>
                 </div>
-                <div className={classes.xian + ' ' + classes.xian5}></div>
+
               </div>
             </div>
             <div className={classes.button}>

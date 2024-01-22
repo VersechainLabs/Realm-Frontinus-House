@@ -4,6 +4,7 @@ import BalanceOfABI from '../abi/BalanceOfABI.json';
 import ContractCallABI from '../abi/ContractCallABI.json';
 import { parseBlockTag } from '../utils/parseBlockTag';
 import { PublicClient } from 'viem';
+import { log } from '../utils/log';
 
 export enum StrategyType {
   Erc721,
@@ -28,13 +29,7 @@ export const snapshotMultiple = (strategies: SnapshotStrategy[]): Strategy => {
         let power;
         switch (strategy.strategyType) {
           case StrategyType.Erc721:
-            power = await getErc721Balance(
-              userAddress,
-              strategy.address,
-              blockTag,
-              provider,
-              0,
-            );
+            power = await getErc721Balance(userAddress, strategy.address, blockTag, provider, 0);
             break;
           case StrategyType.ContractCall:
             power = await getContractCallBalance(
@@ -64,6 +59,11 @@ const getErc721Balance = async (
 ): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
+    log(
+      'getErc721Balance',
+      `user=${userAddress}, strategy=${strategyAddress}, block=${blockTag}, retry=${retryCount}`,
+    );
+
     let config = {
       address: strategyAddress as `0x{string}`,
       abi: BalanceOfABI,
@@ -74,8 +74,9 @@ const getErc721Balance = async (
     const data = await provider.readContract(config);
     return new BigNumber(data as number);
   } catch (e) {
-    console.warn(
-      `[getErc721Balance] Error fetching vp for: ${userAddress} @ ${blockTag}. retry=${retryCount}. with err:\n${e}`,
+    log(
+      'getErc721Balance',
+      `Error: user=${userAddress}, strategy=${strategyAddress}, block=${blockTag}, retry=${retryCount}\n${e}\n`,
     );
 
     if (retryCount < 3) {
@@ -121,6 +122,10 @@ const getContractCallBalance = async (
 ): Promise<BigNumber> => {
   const blockNumber = parseBlockTag(blockTag);
   try {
+    log(
+      'getContractCallBalance',
+      `user=${userAddress}, strategy=${strategyAddress}, block=${blockTag}, retry=${retryCount}`,
+    );
     let config = {
       address: strategyAddress as `0x{string}`,
       abi: ContractCallABI,
@@ -131,8 +136,9 @@ const getContractCallBalance = async (
     const data = await provider.readContract(config);
     return new BigNumber(data as number);
   } catch (e) {
-    console.warn(
-      `[getContractCallBalance] Error fetching vp for: ${userAddress} @ ${blockTag}. retry=${retryCount}. with err:\n${e}`,
+    log(
+      'getContractCallBalance',
+      `Error: user=${userAddress}, strategy=${strategyAddress}, block=${blockTag}, retry=${retryCount}\n${e}\n`,
     );
 
     if (retryCount < 3) {
@@ -162,7 +168,13 @@ const getContractCallBalance = async (
 
       // don't know how to fix, just retry it.
       await new Promise(resolve => setTimeout(resolve, 2000));
-      return getContractCallBalance(userAddress, strategyAddress, blockTag, provider, retryCount + 1);
+      return getContractCallBalance(
+        userAddress,
+        strategyAddress,
+        blockTag,
+        provider,
+        retryCount + 1,
+      );
     }
 
     throw Error(`Error fetching name for contract ${strategyAddress}`);

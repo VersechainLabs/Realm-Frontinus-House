@@ -47,12 +47,13 @@ import { useAppDispatch, useAppSelector } from './hooks';
 import { clearClick } from './state/slices/alert';
 import ProposalPreview from './pages/ProposalPreview';
 import BIP from "./pages/BIP";
+import {polygon, optimism, arbitrum, base, zora,goerli} from "viem/chains";
 
 const { chains, publicClient } = configureChains(
-  [mainnet],
+    process.env.REACT_APP_TYPE === 'dev'?[mainnet, polygon, optimism, arbitrum, base, zora, goerli]:[mainnet],
   [infuraProvider({ apiKey: process.env.REACT_APP_INFURA_PROJECT_ID! }), publicProvider()],
 );
-
+console.log(process.env.REACT_APP_TYPE)
 const { connectors } = getDefaultWallets({
   appName: 'Frontinus',
   projectId: process.env.REACT_APP_WALLETCONNECT_PROJECT_ID!,
@@ -165,11 +166,15 @@ function App() {
                   <Route path="/:house/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/:house/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/:house/create-bip" element={<CreateBIP />} />
-                  {/*<Route path="/faq" element={<FAQ />} />*/}
-                  <Route path="/:house/proposal/:id" element={<Proposal />} />
-                  <Route path="/:house/bip/:id" element={<BIP />} />
-                  <Route path="/:house/application/:id" element={<Application />} />
-                  <Route path="/:house/delegateDetails/:id" element={<DelegateDetails />} />
+                  <Route path="/fh-charter" element={<FAQ />} />
+                  <Route path="/:house/proposal/:idParam" element={<Proposal />} />
+                  <Route path="/:house/proposal/:idParam-:title" element={<Proposal />} />
+                  <Route path="/:house/bip/:idParam" element={<BIP />} />
+                  <Route path="/:house/bip/:idParam-:title" element={<BIP />} />
+                  <Route path="/:house/application/:idParam" element={<Application />} />
+                  <Route path="/:house/application/:idParam-:title" element={<Application />} />
+                  <Route path="/:house/delegateDetails/:idParam" element={<DelegateDetails />} />
+                  <Route path="/:house/delegateDetails/:idParam-:title" element={<DelegateDetails />} />
                   <Route path="/:house" element={<House />} />
                   {/*<Route path="/:title" element={<Round />} />*/}
                   <Route path="/:house/:id/:title" element={<Round />} />

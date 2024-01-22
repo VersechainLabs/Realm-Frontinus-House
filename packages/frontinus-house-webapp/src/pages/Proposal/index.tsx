@@ -71,7 +71,8 @@ const PrettoSlider = styled(Slider)({
 
 const Proposal = () => {
   const params = useParams();
-  const { id } = params;
+  const { idParam, title } = params;
+  const id = idParam.split('-')[0];
 
   const { data: walletClient } = useWalletClient();
   const {address: account} = useAccount();
@@ -202,7 +203,7 @@ const Proposal = () => {
 
   return (
     <>
-      <Container>
+      <Container style={{ paddingLeft: '0', paddingRight: '0'}} >
         {proposal && (
           <OpenGraphElements
             title={proposal.title}

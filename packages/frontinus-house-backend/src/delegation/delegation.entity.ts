@@ -8,11 +8,13 @@ import {
   Entity,
   JoinColumn,
   OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from "typeorm";
 import { Address } from "../types/address";
 import { Exclude, instanceToPlain } from "class-transformer";
+import { Community } from "src/community/community.entity";
 
 @Entity()
 @ObjectType()
@@ -45,6 +47,21 @@ export class Delegation {
   @Field(() => String)
   description: string;
 
+  // This if for list API to show "communityId" field
+  @ApiProperty()
+  @Column({default: 1})
+  @Field(() => Number)
+  communityId: number;
+
+  // This is for migration:generate & service.ts to access DB.admin.communityId field
+  @ApiProperty({ type: Number })
+  @ManyToOne(() => Community, (community) => community.delegations, {
+    createForeignKeyConstraints: false,
+  })
+  @JoinColumn()
+  @Field(() => Community)
+  community: Community;
+  
   // @ApiProperty({ type: () => Application, isArray: true })
   @ApiProperty({ type: () => Number, isArray: true })
   @OneToMany(() => Application, (application) => application.delegation, {

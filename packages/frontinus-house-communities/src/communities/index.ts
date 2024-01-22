@@ -39,5 +39,14 @@ export const communities = new CaseInsensitiveMap(
         multiplier: 1,
       },
     ]),
+
+    // Chao-minted test NFT on test chain : https://goerli.etherscan.io/address/0x830234828de71f7aa8a5050a8bbe58db9c2992f5
+    '0x830234828de71f7aa8a5050a8bbe58db9c2992f5': snapshotMultiple([
+      {
+        address: '0x830234828de71f7aa8a5050a8bbe58db9c2992f5',
+        strategyType: StrategyType.Erc721,
+        multiplier: 1,
+      },
+    ]),
   }),
 );

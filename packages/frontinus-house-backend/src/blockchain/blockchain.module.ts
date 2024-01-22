@@ -5,6 +5,7 @@ import { BlockchainService } from './blockchain.service';
 import { TypeOrmModule } from '@nestjs/typeorm/dist/typeorm.module';
 import { Snapshot } from '../voting-power-snapshot/snapshot.entity';
 import { BlockchainController } from './blockchain.controller';
+import { DelegateService } from 'src/delegate/delegate.service';
 
 @Module({
   imports: [

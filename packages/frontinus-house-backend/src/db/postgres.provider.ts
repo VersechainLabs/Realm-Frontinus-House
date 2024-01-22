@@ -21,6 +21,7 @@ import { BipRoundModule } from 'src/bip-round/bip-round.module';
 import { BipOptionModule } from 'src/bip-option/bip-option.module';
 import { BipVoteModule } from 'src/bip-vote/bip-vote.module';
 import { BipCommentsModule } from 'src/bip-comment/bip-comment.module';
+import { AxiosModule } from 'src/http-service/axios.module';
 // import { AudioModule } from '../queue/audio.module';
 
 /**
@@ -50,6 +51,7 @@ import { BipCommentsModule } from 'src/bip-comment/bip-comment.module';
     BipOptionModule,
     BipVoteModule,
     BipCommentsModule,
+    AxiosModule,
     TypeOrmModule.forRoot(config),
   ],
 })

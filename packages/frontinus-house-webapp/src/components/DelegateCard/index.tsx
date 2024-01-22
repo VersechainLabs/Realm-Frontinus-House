@@ -32,8 +32,9 @@ import StatusDelegate from '../StatusDelegate';
 
 const DelegateCard: React.FC<{
   round: any;
+  isActive: boolean;
 }> = props => {
-  const { round } = props;
+  const { round,isActive } = props;
   const { t } = useTranslation();
   let navigate = useNavigate();
   const dispatch = useAppDispatch();
@@ -58,7 +59,7 @@ const DelegateCard: React.FC<{
             return;
           }
           // navigate(`${nameToSlug(round.title)}`);
-          navigate('/' + getSlug(location.pathname) + `/delegateDetails/${round.id}`);
+          navigate('/' + getSlug(location.pathname) + `/delegateDetails/${round.id}-${nameToSlug(round.title)}`);
         }}
       >
         <Card
@@ -96,8 +97,14 @@ const DelegateCard: React.FC<{
             <div className={clsx(classes.section, classes.funding)}>
               <p className={classes.title}>Delegation Period</p>
               <p className={classes.info}>
-                <span className="">{dayjs(round.startTime).tz().format('MMM D, YYYY')}</span>~
-                <span>{dayjs(round.endTime).tz().format('MMM D, YYYY')}</span>
+                {isActive ? (<span>
+                  <span className="">{dayjs(round.startTime).tz().format('MMM D')} </span> ~
+                  <span> {dayjs(round.endTime).tz().format('MMM D')}</span>
+                </span>) : (<span>
+                  <span className="">{dayjs(round.startTime).tz().format('MMM D, YYYY')}</span>~
+                  <span>{dayjs(round.endTime).tz().format('MMM D, YYYY')}</span>
+                </span>)}
+
               </p>
             </div>
 
