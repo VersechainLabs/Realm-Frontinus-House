@@ -552,9 +552,10 @@ p {
   width: 50px;
 }
 
-.iekbcc0 button{
+/* Chao: should change this in App.tsx, rainbowKitTheme.fonts.body */
+/* .iekbcc0 button{
   font-family: 'Inconsolata' !important;
-}
+} */
 
 .bgTop{
   background: #1A1A1B !important;

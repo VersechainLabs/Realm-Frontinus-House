@@ -83,23 +83,30 @@ export class DelegationService {
   getConflictDelegateByTimeRange(
     dto: CreateDelegationDto,
   ): Promise<Delegation[]> {
+  
+    const communityId = dto.communityId ? dto.communityId : 1;
+
     return this.delegationRepository.find({
       where: [
         {
           visible: true,
+          communityId: communityId,
           votingEndTime: Between(dto.votingEndTime, dto.endTime),
         },
         {
           visible: true,
+          communityId: communityId,
           endTime: Between(dto.votingEndTime, dto.endTime),
         },
         {
           visible: true,
+          communityId: communityId,
           votingEndTime: MoreThan(dto.votingEndTime),
           endTime: LessThanOrEqual(dto.endTime),
         },
         {
           visible: true,
+          communityId: communityId,
           votingEndTime: LessThanOrEqual(dto.votingEndTime),
           endTime: MoreThan(dto.endTime),
         },

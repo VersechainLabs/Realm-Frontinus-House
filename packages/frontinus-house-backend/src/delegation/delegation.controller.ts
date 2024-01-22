@@ -68,6 +68,7 @@ export class DelegationController {
     // Check whether the effective time of the current incoming delegation conflicts with the existing delegation.
     const conflictDelegateList =
       await this.delegationService.getConflictDelegateByTimeRange(dto);
+      
     if (conflictDelegateList.length > 0) {
       // 龙哥需要delegation info来展示. 比如endTime换成当前用户时区来展示:
       throw new HttpException(
@@ -87,6 +88,7 @@ export class DelegationController {
     delegation.proposalEndTime = ParseDate(dto.proposalEndTime);
     delegation.votingEndTime = ParseDate(dto.votingEndTime);
     delegation.endTime = ParseDate(dto.endTime);
+    delegation.communityId = dto.communityId;
     return this.delegationService.store(delegation);
   }
 

@@ -328,6 +328,31 @@ export class DelegateController {
     return new VoteStatesClass( 200,  "Can vote.", true, vp);
   }
 
+
+
+  @Get('/test/test')
+  async test (
+    @Query('userAddress') userAddress: string,
+    @Query('communityId') communityId: number,
+  ) {
+    const community = await this.communitiesRepository.findOne(communityId);
+    const blockNum = await this.blockchainService.getCurrentBlockNum();
+
+    // Check on-chain voting power:
+    const vp = await this.blockchainService.getVotingPowerOnChain(
+      userAddress,
+      community.contractAddress,
+      blockNum,
+    );
+
+    return {
+      vp: vp,
+      contractAddress: community.contractAddress,
+      blockNum: blockNum
+    }
+  }
+
+
   // 6v: 提供一个新接口，可以拉取 delegate 列表（含 delegation 和 application 的相关信息），同时返回 当前的 voting power 和缓存的 voting power（及块高等信息）。
   // 可以根据 delegation id / application id 过滤，不传则返回全部。
   // 用于生成 excel 表格给内部使用。
