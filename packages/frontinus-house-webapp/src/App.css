@@ -234,3 +234,29 @@ h5 {
   font-weight: 700;
   font-family: 'Poppins';
 }
+
+.MuiMenu-paper {
+  background: #1A1A1B;
+
+}
+
+.MuiMenu-paper .MuiFormControl-root {
+  height: 40px;
+  width: 300px;
+}
+.MuiMenu-paper .MuiFormControl-root .MuiInputBase-adornedEnd {
+  height: 40px;
+  color: #F5EEE6;
+}
+.MuiMenu-paper .MuiFormControl-root .MuiInputBase-adornedEnd .MuiInputBase-inputAdornedEnd {
+  height: 40px;
+  color: #F5EEE6;
+  padding:0;
+  padding-left: 14px;
+}
+
+
+.MuiMenu-list {
+  background: #1A1A1B;
+  color: #F5EEE6;
+}
