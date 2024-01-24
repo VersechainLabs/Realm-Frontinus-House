@@ -225,6 +225,40 @@ export class ApiWrapper {
     }
   }
 
+  async getBipForCommunityId(id: number): Promise<StoredAuctionBase[]> {
+    try {
+      const [rawTimedAuctions] = await Promise.allSettled([
+        axios.get(`${this.host}/bip-round/forCommunity/${id}?order=Desc`),
+      ]);
+
+      const timed =
+          rawTimedAuctions.status === 'fulfilled'
+              ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
+              : [];
+
+      return timed;
+    } catch (e: any) {
+      throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
+    }
+  }
+
+  async getDelegateForCommunityId(id: number): Promise<StoredAuctionBase[]> {
+    try {
+      const [rawTimedAuctions] = await Promise.allSettled([
+        axios.get(`${this.host}/delegations/forCommunity/${id}?order=Desc`),
+      ]);
+
+      const timed =
+          rawTimedAuctions.status === 'fulfilled'
+              ? rawTimedAuctions.value.data.map(StoredTimedAuction.FromResponse)
+              : [];
+
+      return timed;
+    } catch (e: any) {
+      throw e.response?.data?.message ?? 'Error occurred while fetching auctions for community';
+    }
+  }
+
 
 
   async getActiveAuctions(skip = 5, limit = 5): Promise<StoredTimedAuction[]> {

@@ -155,7 +155,8 @@ function App() {
 
                 <Routes>
                   <Route path="/:house/rounds" element={<StatusRoundCards />} />
-                  <Route path="/" element={<Home />} />
+                  <Route path="/" element={<HomeV2 />} />
+                  {/*<Route path="/" element={<Home />} />*/}
                   <Route
                     path="/:house/create"
                     element={
@@ -169,7 +170,7 @@ function App() {
                   <Route path="/:house/create-round-form" element={<CreateRoundForm />} />
                   <Route path="/:house/create-delegate-form" element={<CreateDelegateForm />} />
                   <Route path="/:house/create-bip" element={<CreateBIP />} />
-                  <Route path="/home-v2" element={<HomeV2 />} />
+                  {/*<Route path="/home-v2" element={<HomeV2 />} />*/}
                   <Route path="/fh-charter" element={<FAQ />} />
                   <Route path="/:house/proposal/:idParam" element={<Proposal />} />
                   <Route path="/:house/proposal/:idParam-:title" element={<Proposal />} />

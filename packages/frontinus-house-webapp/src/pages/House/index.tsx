@@ -183,7 +183,7 @@ const House = () => {
     const fetchDelegate = async () => {
       try {
         setLoadingDelegates(true);
-        const delegates = await client.current.getDelegateForCommunity();
+        const delegates = await client.current.getDelegateForCommunityId(community.id);
 
         setDelegates(delegates);
         setDelegatesOnDisplay(delegates);
@@ -228,7 +228,7 @@ const House = () => {
     const fetchBIP = async () => {
       try {
         setLoadingBIPs(true);
-        const bips = await client.current.getBipForCommunity();
+        const bips = await client.current.getBipForCommunityId(community.id);
         setBips(bips);
         setLoadingBIPs(false);
       } catch (e) {
@@ -445,9 +445,9 @@ const House = () => {
                           <BIPRightCard/>
                         </Col>}
 
-                          <Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>
-                              <BIPRightCard />
-                          </Col>
+                          {/*<Col xl={4} className={clsx(classes.sideCards, classes.breakOut)}>*/}
+                          {/*    <BIPRightCard />*/}
+                          {/*</Col>*/}
                       </Row>
                       )
                   }

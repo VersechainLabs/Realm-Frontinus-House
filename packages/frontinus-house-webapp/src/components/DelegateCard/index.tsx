@@ -59,6 +59,7 @@ const DelegateCard: React.FC<{
             return;
           }
           // navigate(`${nameToSlug(round.title)}`);
+
           navigate('/' + getSlug(location.pathname) + `/delegateDetails/${round.id}-${nameToSlug(round.title)}`);
         }}
       >
