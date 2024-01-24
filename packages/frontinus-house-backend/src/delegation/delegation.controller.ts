@@ -39,6 +39,19 @@ export class DelegationController {
     return this.delegationService.findAll();
   }
 
+  @Get('/forCommunity/:id')
+  async findAllForCommunity(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Delegation[]> {
+    const delegations = await this.delegationService.findAllForCommunityByVisible(
+      id,
+    );
+    if (!delegations)
+      throw new HttpException('No delegation found', HttpStatus.NOT_FOUND);
+    // auctions.map((a) => (a.numProposals = Number(a.numProposals) || 0));
+    return delegations;
+  }
+
   @Post('/create')
   @ApiOkResponse({
     type: Delegation,

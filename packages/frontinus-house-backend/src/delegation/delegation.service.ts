@@ -35,6 +35,21 @@ export class DelegationService {
     });
   }
 
+  findAllForCommunityByVisible(
+    communityId: number,
+  ): Promise<Delegation[]> {
+    const where: any = {
+      community: { id: communityId },
+    };
+
+    return this.delegationRepository.find({
+      loadRelationIds: {
+        relations: ['applications'],
+      },
+      where,
+    });
+  }
+
   async store(proposal: Delegation): Promise<Delegation> {
     return await this.delegationRepository.save(proposal, { reload: true });
   }
