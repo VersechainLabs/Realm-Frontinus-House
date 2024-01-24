@@ -64,7 +64,7 @@ const HomeV2 = () => {
   return (
     <>
       <div className="homeGradientBg2">
-        {/* <NavBar /> */}
+         <NavBar />
         <HomeHeaderV2
           input={input}
           handleSeachInputChange={handleSeachInputChange}
