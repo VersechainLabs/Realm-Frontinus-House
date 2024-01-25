@@ -1,6 +1,6 @@
 import classes from './BIP.module.css';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
 import NotFound from '../../components/NotFound';
 import React, { useEffect, useRef, useState } from 'react';
@@ -23,6 +23,7 @@ import VoteListPopup from '../../components/VoteListPopup';
 import EthAddress from '../../components/EthAddress';
 import RenderedBIPFields from "../../components/RenderBIPFields";
 import {RoundStatus} from "../../components/StatusFilters";
+import {getSlug} from "../../utils/communitySlugs";
 
 const BIP = () => {
     const params = useParams();
@@ -43,7 +44,7 @@ const BIP = () => {
     };
 
     const dispatch = useDispatch();
-
+    const location = useLocation();
     const bip = useAppSelector(state => state.propHouse.activeBIP);
     const backendHost = useAppSelector(state => state.configuration.backendHost);
     const backendClient = useRef(new ApiWrapper(backendHost, walletClient));
@@ -55,7 +56,7 @@ const BIP = () => {
 
     const handleBackClick = () => {
         dispatch(setHouseTab(RoundStatus.BIP));
-        navigate(`/`);
+        navigate('/' + getSlug(location.pathname));
     };
 
     useEffect(() => {

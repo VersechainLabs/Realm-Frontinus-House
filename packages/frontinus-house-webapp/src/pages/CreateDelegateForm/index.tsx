@@ -19,9 +19,11 @@ import { TimedDelegate } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { LoadingButton } from '@mui/lab';
 import { utc } from 'dayjs';
 import formatTimeAll from "../../utils/formatTimeAll";
+import {setActiveCommunity} from "../../state/slices/propHouse";
 
 const CreateDelegateForm: React.FC<{}> = (props) => {
   const host = useAppSelector(state => state.configuration.backendHost);
+  const community = useAppSelector(state => state.propHouse.activeCommunity);
   const client = useRef(new ApiWrapper(host));
   const { data: walletClient } = useWalletClient();
   useEffect(() => {
@@ -31,6 +33,7 @@ const CreateDelegateForm: React.FC<{}> = (props) => {
 
   const dispatch = useDispatch();
   const location = useLocation();
+  const slug = getSlug(location.pathname);
   const MAX_TITLE_LENGTH = 100;
   const MAX_DESCRIPTION_LENGTH = 100000;
   const [titleLength, setTitleLength] = useState(0);
@@ -58,6 +61,24 @@ const CreateDelegateForm: React.FC<{}> = (props) => {
   const [isAlertVisible, setIsAlertVisible] = useState(false);
   const [isSuccessAlertVisible, setIsSuccessAlertVisible] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [loadingCommunity, setLoadingCommunity] = useState(false);
+  const [failedLoadingCommunity, setFailedLoadingCommunity] = useState(false);
+
+  // fetch community
+  useEffect(() => {
+    const fetchCommunity = async () => {
+      try {
+        setLoadingCommunity(true);
+        const community = await client.current.getCommunityWithName(slug);
+        dispatch(setActiveCommunity(community));
+        setLoadingCommunity(false);
+      } catch (e) {
+        setLoadingCommunity(false);
+        setFailedLoadingCommunity(true);
+      }
+    };
+    fetchCommunity();
+  }, [slug, dispatch]);
 
   const [state, setState] = useState({
     description: '',
@@ -211,6 +232,8 @@ const CreateDelegateForm: React.FC<{}> = (props) => {
       state.proposalEndTime,
       state.votingEndTime,
       state.description,
+      community.id,
+      community.id,
     );
     setIsButtonDisabled(true);
     client.current

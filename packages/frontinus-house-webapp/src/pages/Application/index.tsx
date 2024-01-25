@@ -1,6 +1,6 @@
 import classes from './Application.module.css';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
 import NotFound from '../../components/NotFound';
 import React, { useEffect, useRef, useState } from 'react';
@@ -23,9 +23,11 @@ import {DeleteApplication} from "@nouns/frontinus-house-wrapper/dist/builders";
 import { VoteStates } from '@nouns/frontinus-house-wrapper/dist/enums/error-codes';
 import Tooltip, { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
 import { styled } from '@mui/material/styles';
+import {getSlug} from "../../utils/communitySlugs";
 
 const Application = () => {
   const params = useParams();
+  const location = useLocation();
   // const { id } = params;
   const { idParam, title } = params;
   const id = idParam.split('-')[0];
@@ -52,7 +54,7 @@ const Application = () => {
   const handleBackClick = () => {
     if (!proposal || !proposal.delegationId ) return;
     // navigate(`/delegateDetails/` + proposal.delegationId );
-    window.location.replace(`/delegateDetails/` + proposal.delegationId )
+    window.location.replace('/' + getSlug(location.pathname) + `/delegateDetails/` + proposal.delegationId )
   };
 
   useEffect(() => {

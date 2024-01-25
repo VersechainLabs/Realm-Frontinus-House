@@ -1,6 +1,6 @@
 import classes from './Proposal.module.css';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import { useAppSelector } from '../../hooks';
 import NotFound from '../../components/NotFound';
 import React, { useEffect, useRef, useState } from 'react';
@@ -27,6 +27,7 @@ import { LoadingButton } from '@mui/lab';
 import Slider, { SliderThumb, SliderValueLabelProps } from '@mui/material/Slider';
 import { styled } from '@mui/material/styles';
 import {RoundStatus} from "../../components/StatusFilters";
+import {getSlug} from "../../utils/communitySlugs";
 
 const PrettoSlider = styled(Slider)({
   color: '#2D2D32',
@@ -88,6 +89,7 @@ const Proposal = () => {
   };
 
   const dispatch = useDispatch();
+  const location = useLocation();
   const proposal = useAppSelector(state => state.propHouse.activeProposal);
   const community = useAppSelector(state => state.propHouse.activeCommunity);
   const round = useAppSelector(state => state.propHouse.activeRound);
@@ -132,7 +134,7 @@ const Proposal = () => {
   const handleBackClick = () => {
     if (!community || !round) return;
     // navigate(`/${round.id}` + buildRoundPath(community, round), { replace: false });
-    window.location.replace(`/${round.id}` + buildRoundPath(community, round) )
+    window.location.replace('/' + getSlug(location.pathname) + `/${round.id}` + buildRoundPath(community, round) )
   };
 
   useEffect(() => {

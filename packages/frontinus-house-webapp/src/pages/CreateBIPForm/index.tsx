@@ -11,7 +11,7 @@ import Preview from '../Preview';
 import { clearProposal, patchProposal } from '../../state/slices/editor';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {InfiniteAuctionProposal, Proposal, TimedAuction,TimedBIP} from '@nouns/frontinus-house-wrapper/dist/builders';
-import { appendProposal } from '../../state/slices/propHouse';
+import {appendProposal, setActiveCommunity} from '../../state/slices/propHouse';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import isAuctionActive from '../../utils/isAuctionActive';
 import { ProposalFields } from '../../utils/proposalFields';
@@ -47,6 +47,11 @@ const CreateBIPForm: React.FC<{
     onDataChange: (data: Partial<ProposalFields>) => void;
 }> = () => {
 
+    const location = useLocation();
+    const slug = getSlug(location.pathname);
+
+    const community = useAppSelector(state => state.propHouse.activeCommunity);
+
     // const utc = require('dayjs/plugin/utc');
     // dayjs.extend(utc)
 
@@ -70,7 +75,8 @@ const CreateBIPForm: React.FC<{
     const [startDate, setStartDate] = useState(dayjs());
     const [dateValue, setDateValue] = useState('');
     const [publishLoading,setPublishLoading] = useState(false);
-
+    const [loadingCommunity, setLoadingCommunity] = useState(false);
+    const [failedLoadingCommunity, setFailedLoadingCommunity] = useState(false);
 
     const [imgArray, setImgArray] = useState(['']);
 
@@ -81,7 +87,7 @@ const CreateBIPForm: React.FC<{
 
     const { t } = useTranslation();
     // auction to submit prop to is passed via react-router from propse btn
-    const location = useLocation();
+
     const [showPreview, setShowPreview] = useState(false);
     const [showStep1, setShowStep1] = useState(true);
     const [showStep2, setShowStep2] = useState(false);
@@ -99,6 +105,23 @@ const CreateBIPForm: React.FC<{
         client.current = new ApiWrapper(host, walletClient);
     }, [walletClient, host,quill]);
 
+    useEffect(() => {
+        console.log(1);
+        const fetchCommunity = async () => {
+            try {
+                console.log(2,slug);
+                setLoadingCommunity(true);
+                const community = await client.current.getCommunityWithName(slug);
+                dispatch(setActiveCommunity(community));
+                setLoadingCommunity(false);
+            } catch (e) {
+                console.log(3,e);
+                setLoadingCommunity(false);
+                setFailedLoadingCommunity(true);
+            }
+        };
+        fetchCommunity();
+    }, [slug, dispatch]);
 
     const handleChange = (deltaContent: DeltaStatic, htmlContent: string, plainText: string) => {
         if (plainText.trim().length === 0) {
@@ -380,7 +403,8 @@ const CreateBIPForm: React.FC<{
                         state.voteStartTime,
                         state.voteEndTime,
                         content,
-                        imgUrl
+                        imgUrl,
+                        community.id
                     ),
                 )
                 .then((data:any) => {

@@ -6,7 +6,7 @@ import { useEffect, useState, useRef } from 'react';
 import { Community } from '@nouns/frontinus-house-wrapper/dist/builders';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppSelector } from '../../hooks';
-import NavBar from '../../components/NavBar';
+import HomeNavBar from '../../components/HomeNavBar';
 // import { useSigner } from 'wagmi';
 import { useWalletClient } from 'wagmi';
 
@@ -64,7 +64,7 @@ const HomeV2 = () => {
   return (
     <>
       <div className="homeGradientBg2">
-         <NavBar />
+         <HomeNavBar />
         <HomeHeaderV2
           input={input}
           handleSeachInputChange={handleSeachInputChange}

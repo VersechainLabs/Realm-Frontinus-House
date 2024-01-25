@@ -67,6 +67,7 @@ export class TimedBIP extends Signable {
       public readonly endTime: Date,
       public readonly content: string,
       public readonly previewImage:string,
+      public readonly communityId: number,
   ) {
     super();
   }
@@ -80,6 +81,7 @@ export class TimedBIP extends Signable {
       endTime: this.endTime.toISOString(),
       content: this.content,
       previewImage:this.previewImage,
+      communityId: this.communityId,
     };
   }
 }
@@ -132,6 +134,8 @@ export class TimedDelegate extends Signable {
     public readonly proposalEndTime: Date,
     public readonly votingEndTime: Date,
     public readonly description: string,
+    public readonly community: number,
+    public readonly communityId: number,
   ) {
     super();
   }
@@ -144,6 +148,8 @@ export class TimedDelegate extends Signable {
       proposalEndTime: this.proposalEndTime.toISOString(),
       votingEndTime: this.votingEndTime.toISOString(),
       description: this.description,
+      community: this.community,
+      communityId: this.communityId,
     };
   }
 }

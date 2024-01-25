@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { useWalletClient } from 'wagmi';
-import { nameToSlug } from '../../utils/communitySlugs';
+import {getSlug, nameToSlug} from '../../utils/communitySlugs';
 import { TimedAuction } from '@nouns/frontinus-house-wrapper/dist/builders';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -25,6 +25,9 @@ import {setActiveCommunity, setActiveRound} from "../../state/slices/propHouse";
 
 const CreateRound: React.FC<{}> = () => {
   const host = useAppSelector(state => state.configuration.backendHost);
+  const community = useAppSelector(state => state.propHouse.activeCommunity);
+  const location = useLocation();
+  const slug = getSlug(location.pathname);
   const client = useRef(new ApiWrapper(host));
   const { data: walletClient } = useWalletClient();
   useEffect(() => {
@@ -49,6 +52,26 @@ const CreateRound: React.FC<{}> = () => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [isSignatureComplete, setIsSignatureComplete] = useState(false);
+  const [loadingCommunity, setLoadingCommunity] = useState(false);
+  const [failedLoadingCommunity, setFailedLoadingCommunity] = useState(false);
+
+  useEffect(() => {
+    console.log(1);
+    const fetchCommunity = async () => {
+      try {
+        console.log(2,slug);
+        setLoadingCommunity(true);
+        const community = await client.current.getCommunityWithName(slug);
+        dispatch(setActiveCommunity(community));
+        setLoadingCommunity(false);
+      } catch (e) {
+        console.log(3,e);
+        setLoadingCommunity(false);
+        setFailedLoadingCommunity(true);
+      }
+    };
+    fetchCommunity();
+  }, [slug, dispatch]);
 
   const [state, setState] = useState({
     description: '',
@@ -244,6 +267,7 @@ const CreateRound: React.FC<{}> = () => {
 
     setIsButtonDisabled(true);
     try {
+      console.log(community);
       const round = await client.current
         .createAuction(
           new TimedAuction(
@@ -255,8 +279,8 @@ const CreateRound: React.FC<{}> = () => {
             state.fundingAmount,
             state.currencyType,
             state.numWinners,
-            state.community,
-            state.communityId,
+              community.id,
+              community.id,
             state.balanceBlockTag,
             state.description,
           ),
@@ -266,7 +290,7 @@ const CreateRound: React.FC<{}> = () => {
             setIsSuccessAlertVisible(true); // 显示成功提示
 
             dispatch(setAlert({ type: 'success', message: 'Submit Successfully' }));
-            navigate('/');
+            navigate('/' + getSlug(location.pathname));
           } else {
             setIsButtonDisabled(false);
             setFlag(true);
@@ -287,7 +311,7 @@ const CreateRound: React.FC<{}> = () => {
 
   const close = () => {
     setFlag(false);
-    navigate('/');
+    navigate('/' + getSlug(location.pathname));
   };
 
   return (
