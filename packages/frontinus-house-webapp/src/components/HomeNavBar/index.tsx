@@ -90,10 +90,10 @@ const NavBar = () => {
                   {/*  {t('fhCharter')}*/}
                   {/*/!*<a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>*!/*/}
                   {/*</Link> */}
-                  <Link to="/" className={classes.link}>
-                    FAQ
-                  {/*<a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>*/}
-                  </Link>
+                  {/*<Link to="/" className={classes.link}>*/}
+                  {/*  FAQ*/}
+                  {/*/!*<a target="_blank" href="https://github.com/Calcutatator/Frontinus-House-Docs/blob/main/Charter/Charter.md" className={classes.link}>{t('fhCharter')}</a>*!/*/}
+                  {/*</Link>*/}
                   {/*<span className={classes.divider}></span>*/}
                 </Nav.Link>
 

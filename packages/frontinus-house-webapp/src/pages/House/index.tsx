@@ -39,6 +39,7 @@ import BIPContent from "../../components/BIPContent";
 import clsx from "clsx";
 import {Swiper, SwiperSlide} from "swiper/react";
 import BIPRightCard from "../../components/BIPRightCard";
+import dayjs from "dayjs";
 
 const House = () => {
   const location = useLocation();
@@ -229,6 +230,7 @@ const House = () => {
       try {
         setLoadingBIPs(true);
         const bips = await client.current.getBipForCommunityId(community.id);
+
         setBips(bips);
         setLoadingBIPs(false);
       } catch (e) {
@@ -238,7 +240,9 @@ const House = () => {
     };
     fetchBIP();
   }, [community]);
-
+  const sortHelper = (a: any, b: any, ascending: boolean) => {
+    return ascending ? (a < b ? -1 : 1) : a < b ? 1 : -1;
+  };
 
   useEffect(() => {
     rounds &&
@@ -433,7 +437,9 @@ const House = () => {
                           <Col xl={8}>
                             {
                               bips.length > 0 ? (
-                                bips.map((round, index) => (
+                                bips.sort((a, b) =>
+                                    sortHelper(dayjs(a.createdDate), dayjs(b.createdDate), false),
+                                ).map((round, index) => (
                                             <Col key={index}><BIPContent bip={round}/></Col>
                               ))
                               ):(

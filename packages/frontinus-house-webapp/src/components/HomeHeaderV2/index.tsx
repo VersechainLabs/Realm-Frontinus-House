@@ -25,24 +25,24 @@ const HomeHeaderV2 = ({ input, handleSeachInputChange, stats, communities }: Hom
     <Row className={classes.wrapper}>
       <HomeTitleV2 />
 
-      <button
-        className={classes.learnMoreBtn}
-        onClick={e => {
-          if (cmdPlusClicked(e)) {
-            openInNewTab('/create-round-form');
-            return;
-          }
+      {/*<button*/}
+      {/*  className={classes.learnMoreBtn}*/}
+      {/*  onClick={e => {*/}
+      {/*    if (cmdPlusClicked(e)) {*/}
+      {/*      openInNewTab('/create-round-form');*/}
+      {/*      return;*/}
+      {/*    }*/}
 
-          navigate('/create-round-form');
-        }}
-      >
-        {t('createAProposalRound')}
-      </button>
+      {/*    navigate('/create-round-form');*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  {t('createAProposalRound')}*/}
+      {/*</button>*/}
       <HomeStatsV2 stats={stats} />
 
       <div className={classes.searchBarSection}>
         <Container className={classes.searchBarContainer}>
-          <p className={classes.subtitle}>{communities.length} Community</p>
+          <p className={classes.subtitle}>{communities.length} Communities</p>
           <SearchBarV2
             input={input}
             handleSeachInputChange={handleSeachInputChange}

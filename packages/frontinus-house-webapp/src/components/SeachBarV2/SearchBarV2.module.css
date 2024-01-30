@@ -31,7 +31,8 @@
   box-shadow: var(--shadow-high);
   background-color: #111111;
   margin-left: -2px;
-  background-color: transparent;  
+  background-color: transparent;
+  color: #FFFFFF;
 }
 .searchBar input:active,
 .searchBar input:focus:focus-visible {
