@@ -13,6 +13,7 @@ import {useTranslation} from "react-i18next";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useAccount} from "wagmi";
 import {getSlug} from "../../utils/communitySlugs";
+import {useAppSelector} from "../../hooks";
 
 
 
@@ -26,7 +27,7 @@ const BIPRightCard: React.FC<{
     const { t } = useTranslation();
     const navigate = useNavigate();
     const { address: account } = useAccount();
-
+    const community1 = useAppSelector(state => state.propHouse.activeCommunity);
     const content = (
         <>
             <b>{t('howProposingWorks')}:</b>
@@ -35,7 +36,7 @@ const BIPRightCard: React.FC<{
                     <hr className={classes.bullet} />
                     <div className={classes.customParagraph}>
                         <li>It functions similarly to snapshot voting. You present a proposal with multiple options for the community to vote on. </li>
-                        <li>Realms NFT owners will cast their votes on the proposed options within the proposal.</li>
+                        <li>{community1 && community1.nftName} NFT owners will cast their votes on the proposed options within the proposal.</li>
                     </div>
                 </div>
             </div>

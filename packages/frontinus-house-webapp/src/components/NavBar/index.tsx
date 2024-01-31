@@ -34,7 +34,7 @@ const NavBar = () => {
   useEffect(() => {
     backendClient.current = new ApiWrapper(backendHost, walletClient);
   }, [walletClient, backendHost]);
-
+console.log(community);
 
   useEffect(() => {
     if(account){
@@ -73,7 +73,7 @@ const NavBar = () => {
               <Navbar.Brand>
                 {(
                     <>
-                      <div className={clsx('frontinusTitle', classes.navbarBrand)}>{t('frontinusHouse')}</div>
+                      <div className={clsx('frontinusTitle', classes.navbarBrand)}>{community && community.name} House</div>
                     </>
                 )}
               </Navbar.Brand>

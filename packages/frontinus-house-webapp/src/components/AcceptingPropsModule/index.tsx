@@ -27,6 +27,7 @@ const AcceptingPropsModule: React.FC<{
   const { auction, community } = props;
   const location = useLocation();
   const proposals = useAppSelector(state => state.propHouse.activeProposals);
+  const community1 = useAppSelector(state => state.propHouse.activeCommunity);
   const { data: walletClient } = useWalletClient();
   const [proposalSubmitted, setProposalSubmitted] = useState(false);
   const backendHost = useAppSelector(state => state.configuration.backendHost);
@@ -66,7 +67,7 @@ const AcceptingPropsModule: React.FC<{
           <hr className={classes.bullet} />
           <div className={classes.customParagraph}>
             <li>Anyone can submit a proposal to get funded.</li>
-            <li>Owners of the Realms NFT will vote on the best proposals.</li>
+            <li>Owners of the {community1 && community1.nftName} NFT will vote on the best proposals.</li>
             <li>
               The top {auction.numWinners} proposal will get funded{' '}
               <TruncateThousands

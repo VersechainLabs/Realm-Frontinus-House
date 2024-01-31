@@ -301,12 +301,12 @@ const Application = () => {
                 </div>
               </div>
               <div className={classes.voteHeaderRight}>
-                {delegateCount} Realms
+                {delegateCount} {community && community.nftName}
                 <HtmlTooltip
                     title={
                       <React.Fragment>
                         <div>
-                          1. The Realms count here is based on the block height recorded at the time of delegation. When a proposal round begins, we'll reconfirm the Realms held by each delegate at that moment, using the current block height. Delegates will then cast their votes based on their current Realms count.
+                          1. The {community && community.nftName} count here is based on the block height recorded at the time of delegation. When a proposal round begins, we'll reconfirm the {community && community.nftName} held by each delegate at that moment, using the current block height. Delegates will then cast their votes based on their current {community && community.nftName} count.
                         </div>
                         <div>
                           2. Proposals created outside of a delegation round can still receive votes, but delegates will only have their own individual voting power to cast their votes.
@@ -333,7 +333,7 @@ const Application = () => {
                         {/*<div>X3 vote</div>*/}
                       </div>
                       <div>
-                        {item.actualWeight} Realms
+                        {item.actualWeight} {community && community.nftName}
                       </div>
                     </div>
 
