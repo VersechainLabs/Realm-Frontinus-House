@@ -48,6 +48,26 @@ export class Community {
   @Field(() => String)
   description: string;
 
+  @Column({ default: null })
+  @Field(() => String)
+  nftName: string;
+
+  @Column({ default: null })
+  @Field(() => String)
+  discordLink: string;
+
+  @Column({ default: null })
+  @Field(() => String)
+  twLink: string;
+
+  @Column({ default: null })
+  @Field(() => String)
+  gitLink: string;
+
+  @Column({ default: null })
+  @Field(() => String)
+  manualLink: string;
+
   @Field(() => Int)
   numAuctions: number;
 
