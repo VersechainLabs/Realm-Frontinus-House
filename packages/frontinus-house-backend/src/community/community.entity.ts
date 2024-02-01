@@ -68,6 +68,10 @@ export class Community {
   @Field(() => String)
   manualLink: string;
 
+  @Column({ default: null })
+  @Field(() => String)
+  icon: string;
+
   @Field(() => Int)
   numAuctions: number;
 
