@@ -79,6 +79,16 @@ export class BipRoundController {
     if (!bipRounds)
       throw new HttpException('Bip Auction not found', HttpStatus.NOT_FOUND);
     // auctions.map((a) => (a.numProposals = Number(a.numProposals) || 0));
+
+    // Add voting period:
+    bipRounds.forEach((bipRound) => {
+      if (new Date() < bipRound.startTime)
+        bipRound.votingPeriod = VotingPeriod.NOT_START;
+      else if (new Date() > bipRound.endTime)
+        bipRound.votingPeriod = VotingPeriod.END;
+      else bipRound.votingPeriod = VotingPeriod.VOTING;
+    });
+
     return bipRounds;
   }
 
