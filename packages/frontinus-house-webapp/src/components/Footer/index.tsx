@@ -4,14 +4,42 @@ import { useLocation } from 'react-router-dom';
 import bgColorForFooter from '../../utils/bgColorForFooter';
 import { FaDiscord, FaTwitter, FaGithub } from 'react-icons/fa';
 import { externalURL, ExternalURL } from '../../utils/externalURLs';
+import {useAppSelector} from "../../hooks";
+import {useEffect, useState} from "react";
+import {setActiveCommunity} from "../../state/slices/propHouse";
+import {useDispatch} from "react-redux";
+import {getSlug} from "../../utils/communitySlugs";
 
 const Footer = () => {
   const location = useLocation();
-
-  const twitterURL = externalURL(ExternalURL.twitter);
-  const discordURL = externalURL(ExternalURL.discord);
-  const githubURL = externalURL(ExternalURL.github);
-  const usermannualUrl = externalURL(ExternalURL.usermannual);
+  const slug = getSlug(location.pathname);
+  const community = useAppSelector(state => state.propHouse.activeCommunity);
+  var twitterURL = community && community.twLink;
+  var discordURL = community && community.discordLink;
+  var githubURL = community && community.gitLink;
+  var usermannualUrl = community && community.manualLink;
+  const [loadingCommunity, setLoadingCommunity] = useState(false);
+  const [failedLoadingCommunity, setFailedLoadingCommunity] = useState(false);
+  const dispatch = useDispatch();
+  // fetch community
+  useEffect(() => {
+    const fetchCommunity = async () => {
+      try {
+        setLoadingCommunity(true);
+        const community = await client.current.getCommunityWithName(slug);
+        dispatch(setActiveCommunity(community));
+        twitterURL = community && community.twLink;
+        discordURL = community && community.discordLink;
+        githubURL = community && community.gitLink;
+        usermannualUrl = community && community.manualLink;
+        setLoadingCommunity(false);
+      } catch (e) {
+        setLoadingCommunity(false);
+        setFailedLoadingCommunity(true);
+      }
+    };
+    fetchCommunity();
+  }, [slug, dispatch]);
 
   return (
     <div className={clsx(classes.footerContainer, bgColorForFooter(location.pathname))}>

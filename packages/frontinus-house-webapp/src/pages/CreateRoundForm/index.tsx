@@ -322,7 +322,7 @@ const CreateRound: React.FC<{}> = () => {
             <div className={clsx('frontinusTitle', classes.title)}>Round Creation</div>
             <div className={classes.desc1}>
               A standard of how a Frontius House proposal should be submitted. Please follow each snapshot to the dao in a similar fashion. Amendments are required in sections in parentheses. Please visit our Discord if you have any
-              questions: <a className={classes.qLink} target="_blank" href="https://discord.gg/bibliothecadao">https://discord.gg/bibliothecadao</a>.
+              questions: <a className={classes.qLink} target="_blank" href={community && community.discordLink}>{community && community.discordLink}</a>.
             </div>
             <div className={classes.labelMargin}>
               <div className={classes.desc}>

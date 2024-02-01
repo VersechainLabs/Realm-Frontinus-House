@@ -285,12 +285,12 @@ const CreateDelegateForm: React.FC<{}> = (props) => {
               Use this form to create a new delegation round. Please visit our Discord if you have
               any questions:{' '}
               <a
-                href="https://discord.gg/uQnjZhZPfu"
+                href={community && community.discordLink}
                 target="_blank"
                 className={classes.alink}
                 rel="noreferrer"
               >
-                https://discord.gg/uQnjZhZPfu
+                {community && community.discordLink}
               </a>
               .
             </div>
