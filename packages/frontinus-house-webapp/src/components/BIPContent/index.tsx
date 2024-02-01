@@ -3,7 +3,7 @@ import Card, { CardBgColor, CardBorderRadius } from '../Card';
 import { StoredProposalWithVotes } from '@nouns/frontinus-house-wrapper/dist/builders';
 import detailedTime from '../../utils/detailedTime';
 import clsx from 'clsx';
-import { AuctionStatus } from '../../utils/auctionStatus';
+import {AuctionStatus, deadlineBipTime, deadlineCopy, deadlineTime} from '../../utils/auctionStatus';
 import { ProposalCardStatus } from '../../utils/cardStatus';
 import diffTime from '../../utils/diffTime';
 import EthAddress from '../EthAddress';
@@ -27,10 +27,11 @@ import { BiAward } from 'react-icons/bi';
 import Divider from '../Divider';
 import getFirstImageFromProp from '../../utils/getFirstImageFromProp';
 import { useEffect, useState } from 'react';
-import { isTimedAuction } from '../../utils/auctionType';
+import {isInfAuction, isTimedAuction} from '../../utils/auctionType';
 import { isMobile } from 'web3modal';
 import sanitizeHtml from "sanitize-html";
 import Markdown from "markdown-to-jsx";
+import dayjs from "dayjs";
 
 const BIPCard: React.FC<{
     bip: StoredProposalWithVotes;
@@ -86,7 +87,25 @@ const BIPCard: React.FC<{
 
                             <div className={classes.titleContainer}>
                                 <div className={clsx('frontinusTitle',classes.propTitle)}>{bip.title}</div>
-                                <div className={clsx(classes.statusBlock,bip.votingPeriod=='Voting' && classes.statusVoting,bip.votingPeriod=='Not Started' && classes.statusNotStarted)}>{bip.votingPeriod}</div>
+                                <div className={clsx(classes.statusBlock,bip.votingPeriod=='Voting' && classes.statusVoting,bip.votingPeriod=='Not Started' && classes.statusNotStarted)}>
+
+
+                                    {/*{bip.votingPeriod}*/}
+
+                                    <Tooltip
+                                        content={
+                                            bip.votingPeriod
+                                        }
+                                        tooltipContent={
+                                            `${dayjs(deadlineBipTime(bip)).tz().format('MMMM D, YYYY h:mm A')}`
+                                        }
+                                    />
+
+
+
+
+
+                                </div>
                             </div>
 
                             <div className={classes.secondLine}>

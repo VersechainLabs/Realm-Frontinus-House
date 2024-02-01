@@ -69,7 +69,7 @@ console.log(community);
         <Container >
           <Navbar bg="transparent" expand="lg" className={classes.navbar} expanded={isNavExpanded}>
             <Link to="/" className={classes.logoGroup}>
-              <img className={classes.bulbImg} src="/bulb.png" alt="bulb" />
+              <img className={classes.bulbImg} src={community && community.icon} alt="bulb" />
               <Navbar.Brand>
                 {(
                     <>

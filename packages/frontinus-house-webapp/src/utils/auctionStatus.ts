@@ -85,6 +85,11 @@ export const deadlineTime = (auction: any) =>
     ? auction.proposalEndTime
     : auction.votingEndTime;
 
+export const deadlineBipTime = (auction: any) =>
+    auction.votingPeriod=='Ended'
+        ? auction.endTime
+        : auction.startTime;
+
 
 
 export const delegateStatus = (auction: any): DelegateVoteStatus => {
