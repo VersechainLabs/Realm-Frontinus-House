@@ -120,7 +120,7 @@ console.log(community);
 
 
                   <Nav.Link as="div" className={classes.connectBtnContainer}>
-                    <ConnectButton showBalance={false} label={t('connect')} />
+                    <ConnectButton chainStatus={'icon'} showBalance={false} label={t('connect')} />
                   </Nav.Link>
 
                   {/*<AdminTool>*/}
