@@ -7,6 +7,8 @@ import {useAccount} from "wagmi";
 import ConnectButton from "../ConnectButton";
 import dayjs from "dayjs";
 import {DeleteVote} from "@nouns/frontinus-house-wrapper/dist/builders";
+import {useAppSelector} from "../../hooks";
+import {setUserType} from "../../state/slices/user";
 
 
 
@@ -25,8 +27,16 @@ const CastVote: React.FC<{
     const [optionId, setOptionId] = useState(0);
     const { address: account } = useAccount();
     const [isEnd,setIsEnd] = useState(false);
+    const [reason,setReason] = useState('');
 
-
+    const community = useAppSelector(state => state.propHouse.activeCommunity);
+    useEffect(() => {
+        console.log(2222,account,community);
+        if(account && community){
+            setReason(voteState.reason.replace("approve", "vote").replace("{Realms}", community && community.nftName));
+            console.log(111,reason);
+        }
+    }, [ account,community]);
     useEffect(() => {
         countDown();
     },[voteOptionId,endTime,voteState]);
@@ -164,7 +174,7 @@ const CastVote: React.FC<{
 
                                 ) : (
                                     <div className={classes.reason}>
-                                        {voteState.reason.replace("approve", "vote")}
+                                        {reason}
                                     </div>
                                 )
 

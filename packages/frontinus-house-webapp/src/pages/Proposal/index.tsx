@@ -401,7 +401,7 @@ const Proposal = () => {
             )}
             {canVote === 3 && (
                 <div className={classes.noPow} >
-                  {proposal && proposal.voteState && proposal.voteState.reason}
+                  {proposal && proposal.voteState && proposal.voteState.reason.replace("{Realms}", community && community.nftName)}
                 </div>
             )}
             {canVote === 0 && (

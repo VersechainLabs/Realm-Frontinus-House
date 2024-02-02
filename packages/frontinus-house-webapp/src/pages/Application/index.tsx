@@ -281,7 +281,7 @@ const Application = () => {
               {
                 (status.code !==  VoteStates.OK.code) && (status.code !==  VoteStates.VOTED.code) && (status.code !==  VoteStates.NOT_LOGIN.code) &&
                 <div className={classes.reason}>
-                  {status.reason}
+                  {status.reason.replace("{Realms}", community && community.nftName)}
                 </div>
               }
 

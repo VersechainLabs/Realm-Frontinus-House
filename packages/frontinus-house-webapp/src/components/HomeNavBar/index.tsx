@@ -35,35 +35,6 @@ const NavBar = () => {
     backendClient.current = new ApiWrapper(backendHost, walletClient);
   }, [walletClient, backendHost]);
 
-
-  useEffect(() => {
-    if(account){
-      fetch();
-    } else {
-      dispatch(setUserType({
-        type : '',
-        address : ''
-      }));
-    }
-
-
-  }, [ account]);
-
-  const fetch = async ( ) => {
-    try {
-      const type = (await backendClient.current.getUserType(
-          account
-      ));
-      dispatch(setUserType({
-        type : type,
-        address : account
-      }));
-
-    } catch (e) {
-
-    }
-  };
-
   return (
       <div className={'bgTop'}>
         <Container >

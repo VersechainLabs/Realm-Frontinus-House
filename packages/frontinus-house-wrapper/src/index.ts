@@ -372,9 +372,11 @@ export class ApiWrapper {
     }
   }
 
-  async getUserType( address: string) {
+  async getUserType( address: string,communityId: number) {
     try {
-      return (await axios.post(`${this.host}/admins/getUserType?address=${address}`)).data;
+      return (await axios.get(`${this.host}/admins/forCommunity/${communityId}?address=${address}`)).data;
+
+
     } catch (e: any) {
       throw e.response.data.message;
     }

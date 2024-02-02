@@ -135,7 +135,7 @@ const NomineesCard: React.FC<{
               <span className={classes.weights}>
                 (
                 <TruncateThousands amount={proposal.actualWeight} />
-                &nbsp;Realms)
+                &nbsp;{community && community.nftName})
               </span>
 ·
               {proposal.lastUpdatedDate !== null ? (

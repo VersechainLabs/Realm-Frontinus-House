@@ -1,5 +1,5 @@
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import classes from './NavBar.module.css';
 import clsx from 'clsx';
 import LocaleSwitcher from '../LocaleSwitcher';
@@ -15,7 +15,8 @@ import { ApiWrapper } from '@nouns/frontinus-house-wrapper';
 import {useAppSelector} from "../../hooks";
 import {useDispatch} from "react-redux";
 import { setUserType } from "../../state/slices/user";
-import {nameToSlug} from "../../utils/communitySlugs";
+import {getSlug, nameToSlug} from "../../utils/communitySlugs";
+import {setActiveCommunity} from "../../state/slices/propHouse";
 
 const NavBar = () => {
   const { t } = useTranslation();
@@ -31,13 +32,32 @@ const NavBar = () => {
 
   const userType = useAppSelector(state => state.user.type);
   const community = useAppSelector(state => state.propHouse.activeCommunity);
+  const [loadingCommunity, setLoadingCommunity] = useState(false);
+  const [failedLoadingCommunity, setFailedLoadingCommunity] = useState(false);
+  const location = useLocation();
+  const slug = getSlug(location.pathname);
   useEffect(() => {
     backendClient.current = new ApiWrapper(backendHost, walletClient);
   }, [walletClient, backendHost]);
-console.log(community);
+
+  // fetch community
+  useEffect(() => {
+    const fetchCommunity = async () => {
+      try {
+        setLoadingCommunity(true);
+        const community = await backendClient.current.getCommunityWithName(slug);
+        dispatch(setActiveCommunity(community));
+        setLoadingCommunity(false);
+      } catch (e) {
+        setLoadingCommunity(false);
+        setFailedLoadingCommunity(true);
+      }
+    };
+    fetchCommunity();
+  }, [slug, dispatch]);
 
   useEffect(() => {
-    if(account){
+    if(account && community){
       fetch();
     } else {
       dispatch(setUserType({
@@ -47,12 +67,12 @@ console.log(community);
     }
 
 
-  }, [ account]);
+  }, [ account,community]);
 
   const fetch = async ( ) => {
     try {
       const type = (await backendClient.current.getUserType(
-          account
+          account,community.id
       ));
       dispatch(setUserType({
         type : type,
