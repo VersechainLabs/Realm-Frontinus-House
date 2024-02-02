@@ -11,14 +11,14 @@ export const ApplicationCreateStatusMap: Record<string, ApplicationCreateStatus>
   CREATED: { code: 311, canCreate: false, message: 'You have created application in this delegation.' },
   WRONG_PERIOD: { code: 312, canCreate: false, message: 'Not in the eligible create application period.' },
   DELEGATE_TO_OTHER: { code: 313, canCreate: false, message: 'Already delegate to another in this delegation' },
-  NO_VOTING_POWER: { code: 314, canCreate: false, message: 'Only Realms NFT Holder can submit application.' },
+  NO_VOTING_POWER: { code: 314, canCreate: false, message: 'Only {Realms} NFT Holder can submit application.' },
 };
 export const ProposalCreateStatusMap: Record<string, ApplicationCreateStatus> = {
   OK: { code: 200, canCreate: true, message: '' },
   CREATED: { code: 411, canCreate: false, message: 'You have created proposal in this round.' },
   WRONG_PERIOD: { code: 412, canCreate: false, message: 'Not in the eligible create proposal period.' },
   VOTED_TO_OTHER: { code: 413, canCreate: false, message: 'Already vote to another in this round' },
-  NO_VOTING_POWER: { code: 414, canCreate: false, message: 'Only Realms NFT Holder can submit proposal.' },
+  NO_VOTING_POWER: { code: 414, canCreate: false, message: 'Only {Realms} NFT Holder can submit proposal.' },
   NOT_APPROVE: { code: 415, canCreate: false, message: 'Proposals cannot be created before the round is approved.' },
 };
 
@@ -50,8 +50,8 @@ export const VoteStates: Record<string, VoteStatesClass> = {
   NOT_VOTING : new VoteStatesClass( 312,  "Not in the eligible voting period."),
   VOTED_ANOTHER : new VoteStatesClass( 313,  "Your voting power is already used up in this round."),
   DELEGATE_ANOTHER : new VoteStatesClass( 320,  "You've already delegated your voting power to someone else."),
-  NO_POWER : new VoteStatesClass( 314,  "Only Realms NFT holders have permission to approve."),
-  NO_DELEGATE_POWER : new VoteStatesClass( 321,  "Only Realms NFT holders have permission to delegate."),
+  NO_POWER : new VoteStatesClass( 314,  "Only {Realms} NFT holders have permission to approve."),
+  NO_DELEGATE_POWER : new VoteStatesClass( 321,  "Only {Realms} NFT holders have permission to delegate."),
   ALREADY_DELEGATED : new VoteStatesClass( 319,  "You've already delegated your voting power to someone else."),
 
   // For Application only:
