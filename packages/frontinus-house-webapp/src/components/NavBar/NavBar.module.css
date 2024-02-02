@@ -29,6 +29,11 @@
   border-radius: 10px !important;
 }
 
+.menuLink {
+  display: flex;
+  align-items: center;
+}
+
 @media (max-width: 991px) {
   .menuLink {
     border: 1px solid var(--border-med);
@@ -81,9 +86,9 @@
   flex-direction: row;
   justify-content: center;
   padding: 0px 16px;
-  gap: 12px;
-
-  width: 220px;
+  /*gap: 12px;*/
+  /**/
+  /*width: 220px;*/
 
   border: 1px solid #D0A059!important;
   border-radius: 8px;
@@ -130,6 +135,9 @@
   }
   .link {
     margin-right: 0.75rem;
+  }
+  .link1 {
+    margin-right: 0;
   }
   .menuLink {
     padding-left: 0rem !important;
