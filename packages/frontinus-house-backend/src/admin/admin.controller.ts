@@ -43,14 +43,19 @@ export class AdminsController {
   @Get('/forCommunity/:id')
   async findAllForCommunity(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<Admin[]> {
+    @Query('address') address: UserType
+  ): Promise<UserType> {
     const admins = await this.adminService.findAllForCommunity(
-      id,
+      id, address
     );
-    
-    if (!admins) throw new HttpException('Admins not found', HttpStatus.NOT_FOUND);
 
-    return admins;
+    // 6v在env里加了个开关，enable为false的时候，全部用户都是admin:
+    if (!config().enableAdmin) return UserType.Admin;
+
+    // return (await adminRecord).length;
+    if ((await admins).length === 0) return UserType.User;
+
+    return UserType.Admin;
   }
 
 

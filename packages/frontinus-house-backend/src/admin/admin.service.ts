@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Delegation } from '../delegation/delegation.entity';
 import { Admin } from './admin.entity';
-import { CreateAdminDto } from './admin.types';
+import { CreateAdminDto, UserType } from './admin.types';
 import config from '../config/configuration';
 
 export type AuctionWithProposalCount = Delegation & { numProposals: number };
@@ -24,16 +24,12 @@ export class AdminService {
 
   findAllForCommunity(
     communityId: number,
+    address: string
   ): Promise<Admin[]> {
-    const where: any = {
-      community: { id: communityId },
-    };
-
     return this.adminRepository.find({
-      loadRelationIds: {
-        relations: ['community'],
+      where: {
+        communityId: communityId, address: address
       },
-      where,
     });
   }
 
