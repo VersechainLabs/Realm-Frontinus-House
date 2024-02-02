@@ -179,3 +179,67 @@ export const findByState = async (
     });
   }
 };
+
+/**
+Similar to findByState() above, only add communityId
+ * @param delegationRepository 
+ * @param communityId 
+ * @param stateToFind 
+ * @param timeToFind 
+ * @returns 
+ */
+export const findByStateForMultiCommunity = async (
+  delegationRepository: Repository<Delegation>,
+  communityId: number,
+  stateToFind: DelegationState,
+  timeToFind?: Date,
+): Promise<Delegation[]> => {
+  if (timeToFind === undefined) {
+    timeToFind = new Date();
+  }
+
+  if (stateToFind == DelegationState.NOT_START) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        communityId: communityId,
+        startTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.APPLYING) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        communityId: communityId,
+        startTime: LessThanOrEqual(timeToFind),
+        proposalEndTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.DELEGATING) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        communityId: communityId,
+        proposalEndTime: LessThanOrEqual(timeToFind),
+        votingEndTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.ACTIVE) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        communityId: communityId,
+        votingEndTime: LessThanOrEqual(timeToFind),
+        endTime: MoreThan(timeToFind),
+      },
+    });
+  } else if (stateToFind == DelegationState.EXPIRED) {
+    return delegationRepository.find({
+      where: {
+        visible: true,
+        communityId: communityId,
+        endTime: LessThanOrEqual(timeToFind),
+      },
+    });
+  }
+};

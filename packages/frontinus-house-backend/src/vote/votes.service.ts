@@ -13,7 +13,7 @@ import { Proposal } from '../proposal/proposal.entity';
 import { BlockchainService } from '../blockchain/blockchain.service';
 import { Auction } from '../auction/auction.entity';
 import { DelegationState } from '../delegation/delegation.types';
-import { findByState } from '../delegation/delegation.service';
+import { findByStateForMultiCommunity } from '../delegation/delegation.service';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 import { VoteStates, VoteStatesClass } from '@nouns/frontinus-house-wrapper';
@@ -256,12 +256,16 @@ export class VotesService {
   }
 
   async getDelegateListByAuction(address: string, auction: Auction) {
+
     // Check if user has delegated to other user.
-    const currentDelegationList = await findByState(
+    const currentDelegationList = await findByStateForMultiCommunity(
       this.delegationRepository,
+      auction.community.id,
       DelegationState.ACTIVE,
       auction.createdDate,
     );
+
+    // Should be only 1 active delegation for 1 community:
     const currentDelegation =
       currentDelegationList.length > 0 ? currentDelegationList[0] : null;
     if (!currentDelegation) {
